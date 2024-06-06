@@ -1,2 +1,2 @@
-# Barriers of Entry 
- Make it easy for yourself (for things you think are good) and make it hard for yourself (for things you think are bad). Simple I know but when taken seriously as a strategy, it can really help. For example, I wanted to get a blog up and running for a while. There was a pretty cool blog template over at fast.ai. Even with this template I still haven't done anything with the blog for a year (Ok maybe I have problems) but now I've set it up so I can just write something up on my computer and get it uploaded fast! Does this mean the end outcome will always be success?If you're a flawed human being like me then probably not but we can shift the odds in our favor and move towards a reality where we get better and better at doing the things we want to in this life. 
+# CUDA_Mode
+ I'm going to follow along Lecture 1 of Cuda_Mode and take notes
