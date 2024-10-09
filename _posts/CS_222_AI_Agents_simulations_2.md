@@ -27,8 +27,7 @@ W(t): The world’s state over time .
 the environment’s dynamics.
 Ai: Individual agent in the environment, where for agents.
 
-![Wicked Problem Diagram](images/CS_222_AI_Agents_simulations_2/shape_solution.png)
-
+![Wicked Problem Diagram](../images/CS_222_AI_Agents_simulations_2/shape_solution.png)
 
 
 
