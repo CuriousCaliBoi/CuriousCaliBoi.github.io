@@ -1,11 +1,3 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog.
-#
-# If you need help with YAML syntax, here are some quick references for you:
-# https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
-# https://learnxinyminutes.com/docs/yaml/
-
 title: Rohan's blog
 description: Because the future has just started
 github_username: CuriousCaliBoi
@@ -20,6 +12,10 @@ use_math: true
 # Add your Google Analytics ID here if you have one and want to use it
 google_analytics:
 
+# Set baseurl to an empty string if your site is at the root (recommended for GitHub Pages)
+baseurl: ""
+url: "https://curiouscaliboi.github.io"
+
 # Everything below here can be ignored, unless you want to change the theme entirely
 theme: minima
 plugins:
@@ -29,7 +25,7 @@ plugins:
   - jekyll-github-metadata
 
 titles_from_headings:
-  enabled:     true
+  enabled: true
   strip_title: true
   collections: true
 
@@ -41,3 +37,9 @@ kramdown:
   auto_ids: true
   hard_wrap: false
   syntax_highlighter: rouge
+
+# Exclude specific directories or files if needed (optional)
+exclude:
+  - .DS_Store
+  - node_modules
+  - vendor
