@@ -8,8 +8,6 @@ title: Zuko's Blog
 Hey, this is zuko. I'm documenting my learning and thoughts for myself and hopefully others can find it useful! 
 
 [![GitHub](https://img.icons8.com/ios-filled/50/github)](https://github.com/CuriousCaliBoi) 
-[![RSS](https://img.icons8.com/ios-filled/50/rss)](rss.xml)
-
 ---
 
 ## Featured Posts
