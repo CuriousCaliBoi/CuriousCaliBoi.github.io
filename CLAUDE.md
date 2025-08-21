@@ -1,7 +1,7 @@
-# Claude Code Context - Zuko's Blog
+# Claude Code Context
 
 ## Project Overview
-This is Zuko's personal technical blog hosted on GitHub Pages using Jekyll.
+This is a personal technical blog hosted on GitHub Pages using Jekyll.
 
 ## Important Information
 - **Author**: Zuko (NYU CS student)
