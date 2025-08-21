@@ -1,5 +1,5 @@
-title: Rohan's blog
-description: Because the future has just started
+title: Zuko's Blog
+description: Exploring code, mathematics, and digital consciousness
 github_username: CuriousCaliBoi
 
 # Email and twitter are optional:
@@ -43,3 +43,9 @@ exclude:
   - .DS_Store
   - node_modules
   - vendor
+  - _drafts
+
+# Custom CSS
+sass:
+  sass_dir: assets/css
+  style: compressed
