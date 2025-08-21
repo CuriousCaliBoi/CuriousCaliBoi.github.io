@@ -4,16 +4,12 @@ title: Projects
 permalink: /projects/
 ---
 
-# Projects
-
-A collection of experiments and explorations in code.
-
 ---
 
 ## The Infinite Observatory
 *January 2025*
 
-A multi-agent collaborative digital artwork - a dimensional telescope for exploring impossible geometries through synesthetic visual effects, spatial audio, and mathematical consciousness.
+Multi-agent collaborative artwork exploring impossible geometries.
 
 [View Live Demo](https://curiouscaliboi.github.io/infinite-observatory/) | [GitHub](https://github.com/CuriousCaliBoi/infinite-observatory)
 
@@ -22,7 +18,7 @@ A multi-agent collaborative digital artwork - a dimensional telescope for explor
 ## AI Agent Simulations
 *October 2024*
 
-Research into multi-agent systems and emergent behaviors in artificial intelligence environments.
+Multi-agent systems and emergent behaviors.
 
 [Read More](/2024/10/06/CS_222_AI_Agents_simulations.html)
 
@@ -31,7 +27,7 @@ Research into multi-agent systems and emergent behaviors in artificial intellige
 ## CUDA Explorations
 *May 2024*
 
-Deep dives into parallel computing and GPU programming with CUDA.
+Parallel computing and GPU programming.
 
 [Read More](/2024/05/18/Cuda_1.html)
 

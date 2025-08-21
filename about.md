@@ -4,11 +4,7 @@ title: About
 permalink: /about/
 ---
 
-# About
-
-I'm Zuko, a CS student at NYU exploring the intersection of artificial intelligence, mathematics, and creative computing.
-
-This blog is where I document my experiments, research notes, and projects as I navigate through computer science and beyond.
+CS @ NYU. AI, mathematics, creative computing.
 
 ## Areas of Interest
 - Multi-agent systems and AI
@@ -20,6 +16,3 @@ This blog is where I document my experiments, research notes, and projects as I 
 - GitHub: [@CuriousCaliBoi](https://github.com/CuriousCaliBoi)
 - Email: rs6121@nyu.edu
 
----
-
-*This space will grow as I do.*
