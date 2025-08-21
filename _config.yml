@@ -44,6 +44,8 @@ exclude:
   - node_modules
   - vendor
   - _drafts
+  - CLAUDE.md
+  - .claude
 
 # Custom CSS
 sass:
