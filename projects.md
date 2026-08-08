@@ -6,6 +6,15 @@ permalink: /projects/
 
 ---
 
+## Evo 2 & ESM on a DGX Spark
+*August 2026*
+
+Self-hosted DNA (Evo 2) and protein (ESMC) language models on a GB10, reading biology straight off their probabilities — including the genetic code emerging from next-token prediction.
+
+[Read More](/ai/biology/2026/08/07/evo2-gfp-genetic-code.html)
+
+---
+
 ## The Infinite Observatory
 *January 2025*
 
