@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Watching a DNA model rediscover the genetic code"
-date: 2026-08-07 20:00:00 -0700
+date: 2026-08-07
 categories: [ai, biology]
 tags: [evo2, esm, genomics, language-models, dgx-spark]
 excerpt: "Self-hosting Evo 2 and ESM on a DGX Spark and reading real biology straight off their probabilities — including the genetic code falling out of pure next-token prediction."
