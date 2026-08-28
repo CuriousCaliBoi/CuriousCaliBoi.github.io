@@ -4,7 +4,7 @@ title: Models
 permalink: /models/
 ---
 
-<main class="model-atlas" data-model-atlas>
+<div class="model-atlas" data-model-atlas>
   <header class="model-atlas__hero">
     <p class="model-atlas__eyebrow">MODEL ATLAS / 01</p>
     <h1>Architectures I&rsquo;m tracking.</h1>
@@ -247,7 +247,7 @@ permalink: /models/
         </dl>
         <div class="model-note__sources">
           <a href="https://qwen.ai/blog?id=qwen3-next">Official overview <span aria-hidden="true">&nearr;</span></a>
-          <a href="https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct-FP8/blob/main/config.json">FP8 configuration <span aria-hidden="true">&nearr;</span></a>
+          <a href="https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct-FP8/blob/main/config.json">8-bit floating-point (FP8) configuration <span aria-hidden="true">&nearr;</span></a>
         </div>
       </article>
     </div>
@@ -257,6 +257,6 @@ permalink: /models/
       <p>These diagrams intentionally compress implementation detail so architectural contrasts stay readable. The DeepSeek comparison uses the 671B main model and excludes its separately released ~14B Multi-Token Prediction module weights. Terms such as Grouped-Query Attention (GQA), Mixture of Experts (MoE), Multi-head Latent Attention (MLA), Multi-Token Prediction (MTP), Rotary Position Embedding (RoPE), Root Mean Square Layer Normalization (RMSNorm), and Gated DeltaNet are expanded in the component inspector. For exact tensor shapes, training choices, and runtime support, use the linked papers, model cards, and official configurations.</p>
     </aside>
   </section>
-</main>
+</div>
 
 <script src="{{ '/assets/js/model-atlas.js' | relative_url }}" defer></script>
