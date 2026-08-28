@@ -16,6 +16,12 @@ google_analytics:
 baseurl: ""
 url: "https://curiouscaliboi.github.io"
 
+header_pages:
+  - index.md
+  - projects.md
+  - models.html
+  - about.md
+
 # Everything below here can be ignored, unless you want to change the theme entirely
 theme: minima
 plugins:

@@ -3,6 +3,8 @@ main:
     url: /
   - title: "Projects"
     url: /projects/
+  - title: "Models"
+    url: /models/
   - title: "About"
     url: /about/
   - title: "GitHub"
