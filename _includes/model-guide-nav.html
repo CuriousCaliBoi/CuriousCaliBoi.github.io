@@ -1,0 +1,24 @@
+<nav class="model-guide__pager" aria-label="Model guide navigation">
+  {% if page.guide_previous %}
+  <a class="model-guide__pager-link model-guide__pager-link--previous" href="{{ page.guide_previous.url | relative_url }}">
+    <span>&larr; Previous model</span>
+    <strong>{{ page.guide_previous.title }}</strong>
+  </a>
+  {% else %}
+  <a class="model-guide__pager-link model-guide__pager-link--previous" href="{{ '/models/' | relative_url }}">
+    <span>&larr; Back to library</span>
+    <strong>Model Atlas</strong>
+  </a>
+  {% endif %}
+  {% if page.guide_next %}
+  <a class="model-guide__pager-link model-guide__pager-link--next" href="{{ page.guide_next.url | relative_url }}">
+    <span>Next model &rarr;</span>
+    <strong>{{ page.guide_next.title }}</strong>
+  </a>
+  {% else %}
+  <a class="model-guide__pager-link model-guide__pager-link--next" href="{{ '/models/' | relative_url }}">
+    <span>Back to library &rarr;</span>
+    <strong>Model Atlas</strong>
+  </a>
+  {% endif %}
+</nav>

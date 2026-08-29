@@ -1,0 +1,15 @@
+<section class="model-guide__sources" aria-labelledby="primary-sources-title">
+  <div class="model-guide__section-heading">
+    <p class="model-atlas__kicker">READ THE ORIGINALS</p>
+    <h2 id="primary-sources-title">Primary sources</h2>
+  </div>
+  <ul>
+    {% for source in page.guide_sources %}
+    <li>
+      <a href="{{ source.url }}">{{ source.label }} <span aria-hidden="true">&nearr;</span></a>
+      {% if source.note %}<span>{{ source.note }}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="model-guide__source-method">The diagrams on this page are original teaching renderings. They simplify layout to make relationships readable; the linked paper, configuration, and implementation remain authoritative for exact computation and checkpoint behavior.</p>
+</section>

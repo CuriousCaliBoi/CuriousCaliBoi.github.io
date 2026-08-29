@@ -1,0 +1,82 @@
+---
+layout: default
+title: Qwen3-Next 80B-A3B Architecture
+permalink: /models/qwen3-next-80b-a3b/
+guide_previous:
+  title: "DeepSeek V3"
+  url: "/models/deepseek-v3/"
+guide_sources:
+  - label: "Official Qwen3-Next architecture post"
+    url: "https://qwen.ai/blog?id=qwen3-next"
+    note: "Primary hybrid architecture and training overview."
+  - label: "Official Qwen3-Next configuration"
+    url: "https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct/blob/main/config.json"
+    note: "Layer, attention, expert, and native context dimensions."
+  - label: "Official 8-bit floating-point (FP8) configuration"
+    url: "https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct-FP8/blob/main/config.json"
+    note: "Released MTP-related checkpoint keys."
+  - label: "Qwen / Hugging Face reference implementation"
+    url: "https://github.com/huggingface/transformers/blob/main/src/transformers/models/qwen3_next/modular_qwen3_next.py"
+    note: "Sequence mixers, gating, and state update."
+  - label: "Gated Delta Networks paper"
+    url: "https://arxiv.org/abs/2412.06464"
+    note: "Mechanism source for the state update."
+  - label: "Official Gated DeltaNet implementation"
+    url: "https://github.com/NVlabs/GatedDeltaNet"
+    note: "Reference recurrence implementation."
+  - label: "vLLM Qwen3-Next MTP implementation"
+    url: "https://github.com/vllm-project/vllm/blob/main/vllm/model_executor/models/qwen3_next_mtp.py"
+    note: "Production implementation evidence, not a primary architecture publication."
+---
+
+<div class="model-atlas model-atlas--guide model-atlas--qwen">
+  <nav class="model-guide__breadcrumb" aria-label="Breadcrumb"><a href="{{ '/models/' | relative_url }}">Model Atlas</a><span aria-hidden="true">/</span><span aria-current="page">Qwen3-Next 80B-A3B</span></nav>
+
+  <header class="model-guide__hero"><p class="model-atlas__eyebrow">FIELD GUIDE 04 / HYBRID SEQUENCES</p><h1>Qwen3-Next 80B-A3B</h1><p class="model-guide__thesis">A 48-layer hybrid that uses recurrent linear attention three times as often as full attention, then routes every layer through an ultra-sparse expert bank.</p><dl class="model-guide__facts"><div><dt>Scale</dt><dd>80B total &middot; about 3B active</dd></div><div><dt>Shape</dt><dd>48 layers &middot; width 2,048</dd></div><div><dt>Native context</dt><dd>262,144 tokens</dd></div><div><dt>Pattern</dt><dd>[Delta, Delta, Delta, full] &times;12</dd></div></dl></header>
+
+  <section class="model-guide__quick-read" aria-labelledby="qwen-quick-read"><div class="model-guide__section-heading"><p class="model-atlas__kicker">THE 60-SECOND READ</p><h2 id="qwen-quick-read">Follow one text token.</h2></div><ol><li><span>01</span><p>Three Gated DeltaNet layers update compact recurrent matrix states instead of forming full attention maps.</p></li><li><span>02</span><p>A periodic gated full-attention layer restores direct access across the whole causal context.</p></li><li><span>03</span><p>Every layer then uses one shared expert plus 10 routed experts selected from 512.</p></li><li><span>04</span><p>Native Multi-Token Prediction adds training signals for more than the immediate next token; decoding support depends on the runtime.</p></li></ol></section>
+
+  <section class="model-guide__whole" aria-labelledby="qwen-whole-model"><div class="model-guide__section-heading"><p class="model-atlas__kicker">OUTSIDE IN</p><h2 id="qwen-whole-model">Whole model</h2></div><p class="model-guide__intro">Twelve exact four-layer groups produce 48 layers. Each layer pairs its sequence mixer with a Mixture of Experts (MoE) block, so the pattern is better read as three <em>DeltaNet &rarr; MoE</em> layers followed by one <em>full attention &rarr; MoE</em> layer.</p><figure class="mechanism-diagram"><div class="pipeline pipeline--wide"><div class="pipeline__node"><span>INPUT</span><strong>Text tokens</strong><small>Width 2,048</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="hybrid-mini"><span>DeltaNet<br><small>&rarr; MoE</small></span><span>DeltaNet<br><small>&rarr; MoE</small></span><span>DeltaNet<br><small>&rarr; MoE</small></span><span class="is-full">full attention<br><small>&rarr; MoE</small></span><strong>&times;12 groups</strong></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__node"><span>OUTPUT</span><strong>Token logits</strong><small>48 layers total</small></div></div><figcaption><strong>How to read this diagram:</strong> one exact four-layer group is rendered left to right and repeated 12 times. Every mixer is followed by expert computation; the group count and order are exact.</figcaption></figure></section>
+
+  <section class="model-guide__mechanisms" aria-labelledby="qwen-blocks-title"><div class="model-guide__section-heading"><p class="model-atlas__kicker">MECHANISM CUTAWAYS</p><h2 id="qwen-blocks-title">Open the blocks</h2></div>
+
+    <details class="mechanism" open>
+      <summary><span>01</span><span><strong>3:1 hybrid stack</strong><small>Three recurrent mixers, then one full-attention checkpoint.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> Most layers carry forward a compact running memory; every fourth layer performs a direct sequence-wide lookup.</p><p><strong>Technical read.</strong> The exact schedule is <code>[Gated DeltaNet, Gated DeltaNet, Gated DeltaNet, Gated Attention] &times; 12</code>. The resulting 48 layers each feed the same 512-routed-plus-one-shared expert design.</p><p><strong>Why it matters.</strong> Recurrent state makes most sequence mixing linear in sequence length, while periodic full attention repairs information that is difficult to compress into fixed state.</p></div>
+        <figure class="mechanism-diagram"><div class="hybrid-stack" role="img" aria-label="One exact Qwen3-Next four-layer group: Gated DeltaNet then MoE, Gated DeltaNet then MoE, Gated DeltaNet then MoE, gated full attention then MoE; repeated 12 times for 48 layers"><article><span>L1</span><strong>Gated DeltaNet</strong><small>&darr; MoE</small></article><article><span>L2</span><strong>Gated DeltaNet</strong><small>&darr; MoE</small></article><article><span>L3</span><strong>Gated DeltaNet</strong><small>&darr; MoE</small></article><article class="is-full"><span>L4</span><strong>Gated full attention</strong><small>&darr; MoE</small></article><b>&times; 12 = 48 layers</b></div><figcaption><strong>How to read this diagram:</strong> all four layer types are shown in execution order for one group; the multiplier applies to the entire group, not to an individual block.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>02</span><span><strong>Gated DeltaNet state update</strong><small>Correct memory by writing the value error.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> The layer asks what value its memory currently associates with key k, measures the error against the new value v, writes a gated correction, then reads the updated memory with query q.</p><p><strong>Technical read.</strong> The conceptual path uses 16 query (Q) / key (K) heads, 32 value (V) / state / output-gate heads, head width 128, and a width-4 depthwise causal convolution. Each state head maintains a fixed 128&times;128 matrix. I use a column-vector convention where state S maps a key to a value: read <code>Sk</code>, then write <code>error &otimes; key</code>. The transposed row-vector convention writes <code>key &otimes; error</code>; both describe the same update orientation. Output is Root Mean Square normalized (RMS-normalized), gated by the Sigmoid Linear Unit (SiLU) <code>SiLU(z)</code>, and projected.</p><p><strong>Why it matters.</strong> State size stays fixed as the sequence grows, and the delta rule edits memory toward the new key/value association rather than only accumulating it.</p></div>
+        <figure class="mechanism-diagram mechanism-diagram--scroll"><p class="diagram-badge">CONCEPTUAL SIGNAL FLOW &middot; EXACT COUNTS &middot; COLUMN-VECTOR S:key&rarr;value CONVENTION</p><div class="delta-spec"><span>16 Q/K heads</span><span>32 V/state/gate heads</span><span>head width 128</span><span>causal conv width 4</span><span>32 states of 128&times;128</span></div><ol class="delta-update"><li><span>1</span><strong>decay old state</strong><code>S&prime; = decay &middot; S</code></li><li><span>2</span><strong>read current association</strong><code>v&#770; = S&prime;k</code></li><li><span>3</span><strong>measure value error</strong><code>e = v &minus; v&#770;</code></li><li><span>4</span><strong>gate the correction</strong><code>&beta;e</code></li><li><span>5</span><strong>write outer product</strong><code>S&Prime; = S&prime; + (&beta;e) &otimes; k</code></li><li><span>6</span><strong>read with query</strong><code>y = S&Prime;q</code></li></ol><div class="delta-output">RMS normalize y <b>&rarr;</b> gate with SiLU(z) <b>&rarr;</b> output projection</div><figcaption><strong>How to read this diagram:</strong> the numbered operations teach the recurrence order under the stated column-vector convention; they do not claim to be the implementation&rsquo;s exact fused computation graph. Counts come from the official configuration and reference implementation; the update mechanism follows Gated Delta Networks.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>03</span><span><strong>Periodic Gated Attention with grouped queries</strong><small>Sixteen queries share two key/value pairs.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> Full-attention layers keep 16 ways to ask questions while sharing just two sets of remembered keys and values.</p><p><strong>Technical read.</strong> Grouped-Query Attention (GQA) uses 16 query heads and 2 key/value (KV) heads, dimension 256. Each KV pair serves exactly eight Q heads. Rotary Position Embedding (RoPE) applies to the first 25% of a head&mdash;64 of 256 dimensions. Query/key normalization (QK-Norm) and a learned sigmoid output gate are separate operations.</p><p><strong>Why it matters.</strong> Periodic full attention restores direct global lookup, while 8-to-1 KV sharing reduces its cache and the output gate controls how much of each head returns to the residual stream.</p></div>
+        <figure class="mechanism-diagram"><p class="diagram-total">EXACT MAP &middot; 16 QUERY HEADS &middot; 2 KEY/VALUE PAIRS &middot; 8 Q PER PAIR</p><div class="gqa-groups gqa-groups--two" role="img" aria-label="Two grouped-query attention groups. Every group has one key, one value, and eight queries, totaling 16 query heads and two key/value pairs.">{% for group in (1..2) %}{% assign group_offset = forloop.index0 | times: 8 %}<article class="gqa-group"><p>KV GROUP {{ group }}</p><div class="gqa-group__kv"><span>K{{ group }}</span><span>V{{ group }}</span></div><i aria-hidden="true"></i><div class="gqa-group__queries">{% for qslot in (1..8) %}{% assign q_number = group_offset | plus: qslot %}<span>Q{{ q_number }}</span>{% endfor %}</div></article>{% endfor %}</div><div class="attention-annotations"><span><strong>PARTIAL RoPE</strong>64 position dims + 192 content-only dims = 256/head</span><span><strong>QK-NORM</strong>normalize queries and keys</span><span><strong>OUTPUT GATE</strong>learned sigmoid gate after attention</span></div><figcaption><strong>How to read this diagram:</strong> each KV pair connects to exactly eight rendered query heads. The annotation row names three additional operations without pretending they are extra heads.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>04</span><span><strong>Ultra-sparse expert routing</strong><small>One shared expert plus 10 selected from 512.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> Every token gets one common transformation and ten independently selected specialist transformations.</p><p><strong>Technical read.</strong> A router activates top 10 of 512 routed experts. One separate shared expert is always active through its own sigmoid gate. Routed expert intermediate width is 512.</p><p><strong>Why it matters.</strong> The model can store 512 specialist routes while using only 10 plus the shared route for one token, contributing to about 3B active parameters from 80B total.</p></div>
+        <figure class="mechanism-diagram"><div class="expert-flow expert-flow--shared"><div class="diagram-box">one token</div><div class="expert-split"><div><span class="flow-label">ALWAYS ACTIVE &middot; OWN GATE</span><div class="expert-bank__shared">shared expert &times;1</div></div><div><span class="flow-label">TOP-10 ROUTER</span><div class="expert-bank__active expert-bank__active--ten"><span>R1</span><span>R2</span><span>R3</span><span>R4</span><span>R5</span><span>R6</span><span>R7</span><span>R8</span><span>R9</span><span>R10</span></div><div class="expert-bank__rest">502 other routed experts &middot; 512 routed total<br><small>capacity only for this token</small></div></div></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">combine 1 shared + 10 routed</div></div><figcaption><strong>How to read this diagram:</strong> all 10 exact routed selections are visible, separate from the always-active shared expert; the remaining 502 are labeled rather than rendered as tiny boxes.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>05</span><span><strong>Native Multi-Token Prediction</strong><small>Confirmed training design; runtime behavior varies.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> Training asks the system to predict multiple future steps, adding a learning signal beyond the immediate next token.</p><p><strong>Technical read.</strong> Official Qwen material confirms native Multi-Token Prediction (MTP) and multi-step training. The released checkpoint exposes a one-block MTP module. The sidecar flow below is inferred from official checkpoint keys and the Qwen/Hugging Face reference, and is corroborated by production inference implementations; it is not specified as a universal decoding interface.</p><p><strong>Why it matters.</strong> Multi-step targets can improve representation learning and may support speculative generation, but an installed runtime may ignore, discard, or differently expose the released MTP path.</p></div>
+        <figure class="mechanism-diagram"><p class="diagram-badge">IMPLEMENTATION-INFERRED FLOW &middot; NOT UNIVERSAL RUNTIME BEHAVIOR</p><div class="mtp-flow"><div class="mtp-flow__inputs"><span>main hidden state<small>from base model</small></span><span>future-token embedding<small>training input</small></span></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">MTP projection</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">1 MTP block</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box diagram-box--accent">additional future logits</div></div><figcaption><strong>How to read this diagram:</strong> this is a cautious reconstruction of the released sidecar from official keys and implementations, not a claim that every serving engine exposes the same forward path.</figcaption></figure>
+      </div>
+    </details>
+  </section>
+
+  <aside class="model-guide__watching"><p class="model-atlas__kicker">WHAT I&rsquo;M WATCHING</p><h2>Can recurrent state carry most of a long context?</h2><p>The 3:1 schedule makes the tradeoff concrete: use fixed-size learned state for most depth, then periodically pay for direct global access. I&rsquo;m curious how that balance changes which long-context tasks remain reliable as prompts approach the native context limit.</p></aside>
+  {% include model-guide-sources.html %}
+  {% include model-guide-nav.html %}
+</div>

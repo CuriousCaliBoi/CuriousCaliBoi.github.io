@@ -4,259 +4,43 @@ title: Models
 permalink: /models/
 ---
 
-<div class="model-atlas" data-model-atlas>
+<div class="model-atlas model-atlas--index">
   <header class="model-atlas__hero">
     <p class="model-atlas__eyebrow">MODEL ATLAS / 01</p>
     <h1>Architectures I&rsquo;m tracking.</h1>
-    <p class="model-atlas__lede">
-      A working collection of models I&rsquo;m curious about&mdash;and the architectural ideas that make each one worth understanding.
-    </p>
-    <p class="model-atlas__meta"><span>04 models</span><span aria-hidden="true">/</span><span>Updated August 2026</span></p>
+    <p class="model-atlas__lede">A small library of models I&rsquo;m curious about, opened up mechanism by mechanism&mdash;from the whole pipeline to the head, filter, state, and expert routes inside.</p>
+    <p class="model-atlas__meta"><span>04 field guides</span><span aria-hidden="true">/</span><span>Updated August 2026</span></p>
   </header>
 
-  <section class="model-atlas__section" aria-labelledby="choose-model">
+  <section class="model-atlas__section" aria-labelledby="model-library-title">
     <div class="model-atlas__section-heading">
       <div>
-        <p class="model-atlas__kicker">01 / SELECT</p>
-        <h2 id="choose-model">Choose an architecture</h2>
+        <p class="model-atlas__kicker">THE LIBRARY</p>
+        <h2 id="model-library-title">Pick a model to open.</h2>
       </div>
-      <p>Same visual grammar, four very different routes through a sequence.</p>
+      <p>This is a watchlist, not a ranking. Each guide uses one visual grammar while preserving the architecture&rsquo;s actual counts and relationships.</p>
     </div>
 
-    <div class="model-selector" data-model-selector aria-label="Models in this collection">
-      <article class="model-selector__card model-selector__card--evo2">
-        <span class="model-selector__index">01</span>
-        <strong>Evo 2 7B</strong>
-        <span>StripedHyena 2</span>
-        <span class="model-selector__scale">7B total / dense</span>
+    <div class="model-library">
+      {% for model in site.data.model_guides %}
+      <article class="model-library__card model-library__card--{{ model.accent }}">
+        <p class="model-library__index">{{ model.index }} / {{ model.category }}</p>
+        <h3>{{ model.title }}</h3>
+        <p class="model-library__hook">{{ model.hook }}</p>
+        <dl>
+          {% for fact in model.facts %}
+          <div><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
+          {% endfor %}
+        </dl>
+        <a href="{{ model.url | relative_url }}">Open the architecture <span aria-hidden="true">&rarr;</span></a>
       </article>
-      <article class="model-selector__card model-selector__card--gpt-oss">
-        <span class="model-selector__index">02</span>
-        <strong>gpt-oss 20B</strong>
-        <span>Sparse Transformer</span>
-        <span class="model-selector__scale">21B total / 3.6B active</span>
-      </article>
-      <article class="model-selector__card model-selector__card--deepseek">
-        <span class="model-selector__index">03</span>
-        <strong>DeepSeek V3</strong>
-        <span>Latent-attention MoE</span>
-        <span class="model-selector__scale">671B total / ~37B active</span>
-      </article>
-      <article class="model-selector__card model-selector__card--qwen">
-        <span class="model-selector__index">04</span>
-        <strong>Qwen3-Next 80B-A3B</strong>
-        <span>Hybrid-attention MoE</span>
-        <span class="model-selector__scale">80B total / ~3B active</span>
-      </article>
+      {% endfor %}
     </div>
   </section>
 
-  <section class="model-atlas__section" aria-labelledby="workbench-title">
-    <div class="model-atlas__section-heading">
-      <div>
-        <p class="model-atlas__kicker">02 / INSPECT</p>
-        <h2 id="workbench-title">Architecture workbench</h2>
-      </div>
-      <p>Select a component to see what it contributes. The diagrams are simplified, comparison-first maps.</p>
-    </div>
-
-    <div class="architecture-workbench" data-workbench>
-      <div class="architecture-workbench__header">
-        <div>
-          <p class="architecture-workbench__family" data-family>StripedHyena 2 genomic foundation model</p>
-          <h3 data-model-title>Evo 2 7B</h3>
-        </div>
-        <dl class="architecture-workbench__facts" data-facts>
-          <div><dt>Scale</dt><dd>7B dense</dd></div>
-          <div><dt>Context</dt><dd>1M bases</dd></div>
-          <div><dt>Signature</dt><dd>Multi-hybrid Hyena</dd></div>
-        </dl>
-      </div>
-
-      <div class="architecture-workbench__body">
-        <div class="architecture-flow" data-diagram aria-label="Simplified Evo 2 7B architecture">
-          <article class="architecture-node architecture-node--static">
-            <span class="architecture-node__category">INPUT</span>
-            <strong>DNA base tokens</strong>
-            <span>A / C / G / T sequences</span>
-          </article>
-          <span class="architecture-connector" aria-hidden="true"></span>
-          <article class="architecture-node architecture-node--static">
-            <span class="architecture-node__category">REPRESENTATION</span>
-            <strong>Token embedding</strong>
-            <span>Bases become learned vectors</span>
-          </article>
-          <span class="architecture-connector" aria-hidden="true"></span>
-          <div class="architecture-repeat" data-repeat>
-            <p><span>32 LAYER HYBRID STACK</span><strong>short + medium + long range</strong></p>
-            <div class="architecture-repeat__nodes">
-              <article class="architecture-node architecture-node--static">
-                <span class="architecture-node__category">SHORT RANGE</span>
-                <strong>Explicit Hyena</strong>
-                <span>Local genomic motifs</span>
-              </article>
-              <span class="architecture-connector" aria-hidden="true"></span>
-              <article class="architecture-node architecture-node--static">
-                <span class="architecture-node__category">MEDIUM RANGE</span>
-                <strong>Regularized Hyena</strong>
-                <span>Stable mid-range mixing</span>
-              </article>
-              <span class="architecture-connector" aria-hidden="true"></span>
-              <article class="architecture-node architecture-node--static">
-                <span class="architecture-node__category">LONG RANGE</span>
-                <strong>Implicit Hyena</strong>
-                <span>Long genomic dependencies</span>
-              </article>
-            </div>
-          </div>
-          <span class="architecture-connector" aria-hidden="true"></span>
-          <article class="architecture-node architecture-node--static">
-            <span class="architecture-node__category">OUTPUT</span>
-            <strong>Nucleotide logits</strong>
-            <span>Scores for the next base</span>
-          </article>
-        </div>
-
-        <aside class="component-inspector" aria-labelledby="component-title" aria-live="polite" aria-atomic="true">
-          <p class="component-inspector__label" data-detail-label>COMPONENT NOTE</p>
-          <h3 id="component-title" data-detail-title>DNA base tokens</h3>
-          <p class="component-inspector__summary" data-detail-summary>The model reads DNA as a sequence, much like a language model reads text&mdash;but its vocabulary is built around nucleotide bases.</p>
-          <div class="component-inspector__technical">
-            <span>TECHNICAL VIEW</span>
-            <p data-detail-technical>Input bases are tokenized before they enter the learned embedding space; context can extend to 1 million bases.</p>
-          </div>
-          <p class="component-inspector__hint" data-interaction-hint hidden>Use Tab to move between components, then Enter or Space to inspect.</p>
-        </aside>
-      </div>
-    </div>
-  </section>
-
-  <section class="model-atlas__section" aria-labelledby="scale-title">
-    <div class="model-atlas__section-heading">
-      <div>
-        <p class="model-atlas__kicker">03 / COMPARE</p>
-        <h2 id="scale-title">Scale at a glance</h2>
-      </div>
-      <p>Total weights describe storage; active weights better approximate the portion used for one token. DeepSeek&rsquo;s row compares its 671B main model.</p>
-    </div>
-
-    <div class="scale-comparison" data-scale-comparison>
-      <div class="scale-comparison__legend" aria-hidden="true">
-        <span><i class="scale-comparison__key scale-comparison__key--total"></i>Total parameters</span>
-        <span><i class="scale-comparison__key scale-comparison__key--active"></i>Active per token</span>
-      </div>
-      <p class="scale-comparison__method">Logarithmic scale &middot; bar lengths compare log<sub>10</sub> parameter counts</p>
-      <div class="scale-row" data-scale-model="evo2" data-total="7" data-active="7">
-        <div class="scale-row__label"><strong>Evo 2 7B</strong><span>Dense &middot; all 7B active</span></div>
-        <div class="scale-row__plot" role="img" aria-label="Evo 2 has 7 billion total and 7 billion active parameters">
-          <span class="scale-row__bar scale-row__bar--total" style="--bar-size: 30.81%"></span>
-          <span class="scale-row__bar scale-row__bar--active" style="--bar-size: 30.81%"></span>
-        </div>
-        <div class="scale-row__values"><span>7B total</span><span>7B active</span></div>
-      </div>
-      <div class="scale-row" data-scale-model="gpt-oss" data-total="20.91" data-active="3.61">
-        <div class="scale-row__label"><strong>gpt-oss 20B</strong><span>32 experts &middot; top 4</span></div>
-        <div class="scale-row__plot" role="img" aria-label="gpt-oss has 20.91 billion total and 3.61 billion active parameters">
-          <span class="scale-row__bar scale-row__bar--total" style="--bar-size: 47.44%"></span>
-          <span class="scale-row__bar scale-row__bar--active" style="--bar-size: 20.79%"></span>
-        </div>
-        <div class="scale-row__values"><span>20.91B total</span><span>3.61B active</span></div>
-      </div>
-      <div class="scale-row" data-scale-model="deepseek" data-total="671" data-active="36.7">
-        <div class="scale-row__label"><strong>DeepSeek V3</strong><span>Main model &middot; excludes released 14B MTP weights</span></div>
-        <div class="scale-row__plot" role="img" aria-label="DeepSeek V3 main model has 671 billion total and 36.7 billion active parameters; the comparison excludes a separate released 14 billion parameter Multi-Token Prediction module">
-          <span class="scale-row__bar scale-row__bar--total" style="--bar-size: 100%"></span>
-          <span class="scale-row__bar scale-row__bar--active" style="--bar-size: 55.93%"></span>
-        </div>
-        <div class="scale-row__values"><span>671B total</span><span>36.7B active</span></div>
-      </div>
-      <div class="scale-row" data-scale-model="qwen" data-total="80" data-active="3">
-        <div class="scale-row__label"><strong>Qwen3-Next 80B-A3B</strong><span>512 experts &middot; top 10</span></div>
-        <div class="scale-row__plot" role="img" aria-label="Qwen3-Next has 80 billion total and about 3 billion active parameters">
-          <span class="scale-row__bar scale-row__bar--total" style="--bar-size: 67.77%"></span>
-          <span class="scale-row__bar scale-row__bar--active" style="--bar-size: 18%"></span>
-        </div>
-        <div class="scale-row__values"><span>80B total</span><span>~3B active</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="model-atlas__section" aria-labelledby="notes-title">
-    <div class="model-atlas__section-heading">
-      <div>
-        <p class="model-atlas__kicker">04 / READ</p>
-        <h2 id="notes-title">Why these four</h2>
-      </div>
-      <p>A personal watchlist, not a ranking.</p>
-    </div>
-
-    <div class="model-notes">
-      <article class="model-note model-note--evo2">
-        <p class="model-note__index">01 / GENOMICS</p>
-        <h3>Evo 2 7B</h3>
-        <p>I&rsquo;m tracking Evo 2 because it treats biological sequence as a language at genome scale. It connects directly to my experiments with next-base probabilities and the genetic code.</p>
-        <dl>
-          <div><dt>Family</dt><dd>StripedHyena 2</dd></div>
-          <div><dt>Scale</dt><dd>7B dense parameters</dd></div>
-          <div><dt>Context</dt><dd>Up to 1 million bases</dd></div>
-        </dl>
-        <div class="model-note__sources">
-          <a href="https://arcinstitute.org/manuscripts/Evo2.pdf">Evo 2 manuscript <span aria-hidden="true">&nearr;</span></a>
-        </div>
-      </article>
-
-      <article class="model-note model-note--gpt-oss">
-        <p class="model-note__index">02 / OPEN REASONING</p>
-        <h3>gpt-oss 20B</h3>
-        <p>I&rsquo;m curious about the balance: open weights, a locally approachable active footprint, and a sparse architecture that still exposes modern reasoning-model design choices.</p>
-        <dl>
-          <div><dt>Layers</dt><dd>24</dd></div>
-          <div><dt>Scale</dt><dd>20.91B total / 3.61B active</dd></div>
-          <div><dt>Routing</dt><dd>32 experts / top 4</dd></div>
-        </dl>
-        <div class="model-note__sources">
-          <a href="https://openai.com/index/introducing-gpt-oss/">Official overview <span aria-hidden="true">&nearr;</span></a>
-          <a href="https://cdn.openai.com/pdf/419b6906-9da6-406c-a19d-1bb078ac7637/oai_gpt-oss_model_card.pdf">Architecture model card <span aria-hidden="true">&nearr;</span></a>
-        </div>
-      </article>
-
-      <article class="model-note model-note--deepseek">
-        <p class="model-note__index">03 / EFFICIENT SCALE</p>
-        <h3>DeepSeek V3</h3>
-        <p>DeepSeek V3 is a useful study in doing more with less active compute: compressed attention, fine-grained sparse routing, and an auxiliary prediction objective in one system.</p>
-        <dl>
-          <div><dt>Layers</dt><dd>61 + one sequential MTP module</dd></div>
-          <div><dt>Main model</dt><dd>671B total / 36.7B active</dd></div>
-          <div><dt>Released MTP weights</dt><dd>Separate ~14B component</dd></div>
-          <div><dt>Routing</dt><dd>256 routed + 1 shared / top 8</dd></div>
-        </dl>
-        <div class="model-note__sources">
-          <a href="https://github.com/deepseek-ai/DeepSeek-V3">Official repository <span aria-hidden="true">&nearr;</span></a>
-          <a href="https://github.com/deepseek-ai/DeepSeek-V3/blob/main/README_WEIGHTS.md">Weight documentation <span aria-hidden="true">&nearr;</span></a>
-        </div>
-      </article>
-
-      <article class="model-note model-note--qwen">
-        <p class="model-note__index">04 / HYBRID SEQUENCES</p>
-        <h3>Qwen3-Next 80B-A3B</h3>
-        <p>I&rsquo;m tracking its compromise between efficient recurrent sequence mixing and periodic full attention, paired with extremely sparse expert routing.</p>
-        <dl>
-          <div><dt>Layers</dt><dd>48 in a 3:1 hybrid pattern</dd></div>
-          <div><dt>Scale</dt><dd>80B total / about 3B active</dd></div>
-          <div><dt>Routing</dt><dd>512 routed + 1 shared / top 10</dd></div>
-        </dl>
-        <div class="model-note__sources">
-          <a href="https://qwen.ai/blog?id=qwen3-next">Official overview <span aria-hidden="true">&nearr;</span></a>
-          <a href="https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct-FP8/blob/main/config.json">8-bit floating-point (FP8) configuration <span aria-hidden="true">&nearr;</span></a>
-        </div>
-      </article>
-    </div>
-
-    <aside class="model-atlas__methodology">
-      <p class="model-atlas__kicker">METHODOLOGY</p>
-      <p>These diagrams intentionally compress implementation detail so architectural contrasts stay readable. The DeepSeek comparison uses the 671B main model and excludes its separately released ~14B Multi-Token Prediction module weights. Terms such as Grouped-Query Attention (GQA), Mixture of Experts (MoE), Multi-head Latent Attention (MLA), Multi-Token Prediction (MTP), Rotary Position Embedding (RoPE), Root Mean Square Layer Normalization (RMSNorm), and Gated DeltaNet are expanded in the component inspector. For exact tensor shapes, training choices, and runtime support, use the linked papers, model cards, and official configurations.</p>
-    </aside>
-  </section>
+  <aside class="model-atlas__reading-note" aria-labelledby="reading-note-title">
+    <p class="model-atlas__kicker">HOW TO READ THESE GUIDES</p>
+    <h2 id="reading-note-title">Start outside. Then open a block.</h2>
+    <p>Every guide begins with the whole model, then uses native disclosure panels to reveal one mechanism at a time. The diagrams are original, code-native teaching maps based on official papers, configurations, and reference implementations. Exact counts are labeled as exact; simplified signal flow is labeled conceptual and is never presented as a literal computation graph.</p>
+  </aside>
 </div>
-
-<script src="{{ '/assets/js/model-atlas.js' | relative_url }}" defer></script>

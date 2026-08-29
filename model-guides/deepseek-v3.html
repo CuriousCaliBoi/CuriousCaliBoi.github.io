@@ -1,0 +1,73 @@
+---
+layout: default
+title: DeepSeek V3 Architecture
+permalink: /models/deepseek-v3/
+guide_previous:
+  title: "gpt-oss 20B"
+  url: "/models/gpt-oss-20b/"
+guide_next:
+  title: "Qwen3-Next 80B-A3B"
+  url: "/models/qwen3-next-80b-a3b/"
+guide_sources:
+  - label: "DeepSeek-V3 technical report"
+    url: "https://arxiv.org/abs/2412.19437"
+    note: "Primary architecture and training report."
+  - label: "Official DeepSeek-V3 repository"
+    url: "https://github.com/deepseek-ai/DeepSeek-V3"
+    note: "Release documentation and checkpoints."
+  - label: "Official 671B inference configuration"
+    url: "https://github.com/deepseek-ai/DeepSeek-V3/blob/main/inference/configs/config_671B.json"
+    note: "Exact attention, expert, and layer dimensions."
+  - label: "Official weight documentation"
+    url: "https://github.com/deepseek-ai/DeepSeek-V3/blob/main/README_WEIGHTS.md"
+    note: "Main-model and separate MTP weight scopes."
+---
+
+<div class="model-atlas model-atlas--guide model-atlas--deepseek">
+  <nav class="model-guide__breadcrumb" aria-label="Breadcrumb"><a href="{{ '/models/' | relative_url }}">Model Atlas</a><span aria-hidden="true">/</span><span aria-current="page">DeepSeek V3</span></nav>
+
+  <header class="model-guide__hero"><p class="model-atlas__eyebrow">FIELD GUIDE 03 / EFFICIENT SCALE</p><h1>DeepSeek V3</h1><p class="model-guide__thesis">A 671B sparse Transformer that compresses its attention cache into a shared latent state and routes tokens through one shared plus eight selected experts.</p><dl class="model-guide__facts"><div><dt>Main model</dt><dd>671B total &middot; 37B active</dd></div><div><dt>Shape</dt><dd>61 layers &middot; width 7,168</dd></div><div><dt>Attention</dt><dd>128-head latent attention</dd></div><div><dt>Routing</dt><dd>1 shared + top 8 / 256</dd></div></dl></header>
+
+  <section class="model-guide__quick-read" aria-labelledby="deepseek-quick-read"><div class="model-guide__section-heading"><p class="model-atlas__kicker">THE 60-SECOND READ</p><h2 id="deepseek-quick-read">Follow one text token.</h2></div><ol><li><span>01</span><p>Multi-head Latent Attention compresses content memory to 512 values and keeps a separate 64-value position key.</p></li><li><span>02</span><p>The first three layers use dense feed-forward networks; the next 58 use fine-grained sparse experts.</p></li><li><span>03</span><p>Every sparse layer runs one shared expert and eight routed experts selected from 256.</p></li><li><span>04</span><p>A separately released sequential prediction module can learn one farther-ahead token beyond the main next-token path.</p></li></ol></section>
+
+  <section class="model-guide__whole" aria-labelledby="deepseek-whole-model"><div class="model-guide__section-heading"><p class="model-atlas__kicker">OUTSIDE IN</p><h2 id="deepseek-whole-model">Whole model</h2></div><p class="model-guide__intro">Multi-head Latent Attention (MLA) appears throughout the stack. Dense feed-forward network (FFN) layers establish the first three blocks, then 58 DeepSeek Mixture of Experts (DeepSeekMoE) layers supply sparse capacity. The released Multi-Token Prediction (MTP) weights are a separate module beyond the 671B main model.</p><figure class="mechanism-diagram"><div class="pipeline pipeline--wide"><div class="pipeline__node"><span>INPUT</span><strong>Text tokens</strong><small>Width 7,168</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__repeat"><span>LAYERS 1&ndash;3</span><strong>MLA + dense FFN</strong><small>3 dense blocks</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__repeat"><span>LAYERS 4&ndash;61</span><strong>MLA + DeepSeekMoE</strong><small>58 sparse blocks</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__node"><span>MAIN STATE</span><strong>hidden h<sub>i</sub></strong><small>shared by both outcomes</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="deepseek-outcomes"><span><strong>shared output head</strong><small>&rarr; next-token logits</small></span><span><strong>+ actual embedding e<sub>i+1</sub></strong><small>&rarr; separate sequential MTP &rarr; token i+2</small></span></div></div><figcaption><strong>How to read this diagram:</strong> the 671B main hidden state feeds the ordinary shared output head. The separately released ~14B MTP continuation also consumes the actual next-token embedding before predicting one step farther; it is not fed by next-token logits. FFN type changes after layer 3.</figcaption></figure></section>
+
+  <section class="model-guide__mechanisms" aria-labelledby="deepseek-blocks-title"><div class="model-guide__section-heading"><p class="model-atlas__kicker">MECHANISM CUTAWAYS</p><h2 id="deepseek-blocks-title">Open the blocks</h2></div>
+
+    <details class="mechanism" open>
+      <summary><span>01</span><span><strong>Multi-head Latent Attention</strong><small>Cache compressed content and position separately.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> Instead of caching a separate full key and value for all 128 heads, MLA remembers one compact content vector plus one compact position key per token and reconstructs per-head views when needed.</p><p><strong>Technical read.</strong> Queries pass through a low-rank adaptation (LoRA) bottleneck of rank 1,536, then expand per head into 128 content dimensions plus 64 Rotary Position Embedding (RoPE) dimensions. The key/value (KV) path stores a shared 512-dimensional content latent and a separate shared 64-dimensional RoPE key: exactly 576 cached values per token per layer. Content expands to 128-dimensional keys and 128-dimensional values for each of 128 heads.</p><p><strong>Why it matters.</strong> Cache cost follows the compact shared state rather than 128 complete K/V head streams. This is latent reconstruction, not Grouped-Query Attention.</p></div>
+        <figure class="mechanism-diagram mechanism-diagram--scroll"><p class="diagram-total">EXACT CACHE &middot; 512 CONTENT + 64 POSITION = 576 VALUES / TOKEN / LAYER</p><div class="mla-flow" role="img" aria-label="DeepSeek MLA: query path compresses to rank 1536 then expands across 128 heads to 128 content and 64 RoPE dimensions; KV path caches a 512 dimensional content latent plus a separate shared 64 dimensional RoPE key, then expands content keys and values to 128 dimensions per head.">
+          <section><h3>Query path <small>not cached</small></h3><div class="mla-flow__row"><span>input h</span><b>&rarr;</b><span>Q compression<br><small>rank 1,536</small></span><b>&rarr;</b><span class="is-content">Q content<br><small>128 dims &times; 128 heads</small></span><span class="is-position">Q RoPE<br><small>64 dims &times; 128 heads</small></span></div></section>
+          <section><h3>Key/value path <small>cached once per token per layer</small></h3><div class="mla-flow__row"><span>input h</span><b>&rarr;</b><span class="is-cache"><strong>KV content latent</strong><small>512 shared values</small></span><span class="is-cache-position"><strong>RoPE key state</strong><small>64 separate shared values</small></span><b>&rarr;</b><span class="is-content">K content + V<br><small>128 + 128 dims / head<br>&times; 128 heads</small></span></div></section>
+          <div class="mla-cache-total"><span>CACHED CONTENT</span><strong>512</strong><i>+</i><span>CACHED POSITION</span><strong>64</strong><i>=</i><span>TOTAL</span><strong>576</strong></div>
+        </div><figcaption><strong>How to read this diagram:</strong> follow the query and KV rows independently. Content boxes and striped position boxes remain separate throughout; only the two highlighted shared boxes constitute the autoregressive cache.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>02</span><span><strong>Fine-grained expert routing</strong><small>Always use one shared expert and top 8 of 256 routed experts.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> Every token follows a common expert path and eight specialist paths, so general processing and routed specialization happen together.</p><p><strong>Technical read.</strong> DeepSeekMoE computes sigmoid affinities for 256 routed experts, activates top 8, constrains a token to at most four expert-hosting nodes, and drops no tokens. One additional shared expert is always active. This is not a full-bank softmax.</p><p><strong>Why it matters.</strong> The main model can hold 256 routed specialist parameter sets while limiting per-token expert work and preserving a universal shared transformation.</p></div>
+        <figure class="mechanism-diagram"><div class="expert-flow expert-flow--shared"><div class="diagram-box">one token</div><div class="expert-split"><div><span class="flow-label">ALWAYS</span><div class="expert-bank__shared">shared expert &times;1</div></div><div><span class="flow-label">SIGMOID ROUTER &middot; NO DROP</span><div class="expert-bank__active expert-bank__active--eight"><span>R1</span><span>R2</span><span>R3</span><span>R4</span><span>R5</span><span>R6</span><span>R7</span><span>R8</span></div><div class="expert-bank__rest">248 other routed experts &middot; 256 routed total<br><small>selected paths span at most 4 nodes</small></div></div></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">combine shared + routed outputs</div></div><figcaption><strong>How to read this diagram:</strong> the shared lane and all eight solid routed marks are active for the token. The 248 labeled remainder preserves total capacity without implying it executes.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>03</span><span><strong>Dense-to-sparse depth</strong><small>Change feed-forward strategy after layer 3.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> The bottom of the network uses ordinary dense feed-forward computation; specialization starts only after three layers.</p><p><strong>Technical read.</strong> All 61 blocks use MLA. Layers 1&ndash;3 pair it with dense FFNs; layers 4&ndash;61 pair it with DeepSeekMoE, yielding 58 sparse blocks.</p><p><strong>Why it matters.</strong> Early dense layers establish shared low-level representations before most depth branches into expert-specialized transformations.</p></div>
+        <figure class="mechanism-diagram"><div class="depth-map" role="img" aria-label="DeepSeek V3 depth: layers 1, 2, and 3 use MLA plus dense feed-forward networks; layers 4 through 61, 58 layers total, use MLA plus DeepSeekMoE"><div class="depth-map__dense"><span>L1</span><span>L2</span><span>L3</span><strong>MLA + dense FFN</strong></div><div class="depth-map__sparse"><span>L4</span><i>&hellip;</i><span>L61</span><strong>MLA + DeepSeekMoE &middot; 58 layers</strong></div></div><figcaption><strong>How to read this diagram:</strong> the three dense blocks are rendered individually; the long labeled bar covers every sparse layer from 4 through 61.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>04</span><span><strong>Sequential Multi-Token Prediction</strong><small>Use a separate module to learn token i+2.</small></span></summary>
+      <div class="mechanism__content"><div class="mechanism-copy"><p><strong>Plain language.</strong> The extra module combines what the main model knows at position i with the actual embedding of the next token, then learns to predict one token farther ahead.</p><p><strong>Technical read.</strong> Multi-Token Prediction (MTP) applies separate Root Mean Square Layer Normalizations (RMSNorms) to the main hidden state at i and token embedding at i+1, concatenates them to width 2d, projects 2d &rarr; d, passes through one Transformer block, and uses the shared output head to predict i+2.</p><p><strong>Why it matters.</strong> The approximately 14B released MTP weights are separate from the 671B main model. They can be discarded for ordinary inference or used as a speculative draft path where supported.</p></div>
+        <figure class="mechanism-diagram mechanism-diagram--scroll"><p class="diagram-badge">SEQUENTIAL RELEASED MODULE &middot; SEPARATE ~14B WEIGHTS</p><div class="mtp-flow"><div class="mtp-flow__inputs"><span>main hidden h<sub>i</sub><small>RMSNorm</small></span><span>actual embedding e<sub>i+1</sub><small>separate RMSNorm</small></span></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">concatenate<small>2d</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">projection<small>2d &rarr; d</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">1 Transformer block</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">shared output head</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box diagram-box--accent">predict token i+2</div></div><figcaption><strong>How to read this diagram:</strong> two separately normalized inputs merge before one sequential prediction block. This is not a parallel sidecar head on the main representation.</figcaption></figure>
+      </div>
+    </details>
+  </section>
+
+  <aside class="model-guide__watching"><p class="model-atlas__kicker">WHAT I&rsquo;M WATCHING</p><h2>Can compressed memory preserve attention quality at scale?</h2><p>MLA is the mechanism I keep returning to: it attacks inference memory by changing what is cached, not by merely sharing head groups. Paired with fine-grained experts, it makes DeepSeek V3 a useful map of how memory and active compute can be reduced independently.</p></aside>
+  {% include model-guide-sources.html %}
+  {% include model-guide-nav.html %}
+</div>

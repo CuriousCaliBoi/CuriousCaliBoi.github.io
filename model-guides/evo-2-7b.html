@@ -1,0 +1,168 @@
+---
+layout: default
+title: Evo 2 7B Architecture
+permalink: /models/evo-2-7b/
+guide_next:
+  title: "gpt-oss 20B"
+  url: "/models/gpt-oss-20b/"
+guide_sources:
+  - label: "Evo 2 manuscript"
+    url: "https://arcinstitute.org/manuscripts/Evo2.pdf"
+    note: "Model, data, training, and evaluations."
+  - label: "StripedHyena 2 architecture paper"
+    url: "https://arxiv.org/abs/2503.01868"
+    note: "Operator and filter-family design."
+  - label: "Official Evo 2 repository"
+    url: "https://github.com/ArcInstitute/evo2"
+    note: "Released code and checkpoints."
+  - label: "Exact Evo 2 7B 1M configuration"
+    url: "https://github.com/ArcInstitute/evo2/blob/main/evo2/configs/evo2-7b-1m.yml"
+    note: "Layer placement and filter parameters shown here."
+---
+
+<div class="model-atlas model-atlas--guide model-atlas--evo">
+  <nav class="model-guide__breadcrumb" aria-label="Breadcrumb"><a href="{{ '/models/' | relative_url }}">Model Atlas</a><span aria-hidden="true">/</span><span aria-current="page">Evo 2 7B</span></nav>
+
+  <header class="model-guide__hero">
+    <p class="model-atlas__eyebrow">FIELD GUIDE 01 / GENOMICS</p>
+    <h1>Evo 2 7B</h1>
+    <p class="model-guide__thesis">A dense genomic foundation model that stretches to million-base context by interleaving three Hyena filter families with periodic global attention.</p>
+    <dl class="model-guide__facts">
+      <div><dt>Family</dt><dd>StripedHyena 2</dd></div>
+      <div><dt>Scale</dt><dd>7B dense parameters</dd></div>
+      <div><dt>Shape</dt><dd>32 layers &middot; width 4,096</dd></div>
+      <div><dt>Context</dt><dd>Up to 1,048,576 bases</dd></div>
+    </dl>
+  </header>
+
+  <section class="model-guide__quick-read" aria-labelledby="evo-quick-read">
+    <div class="model-guide__section-heading"><p class="model-atlas__kicker">THE 60-SECOND READ</p><h2 id="evo-quick-read">Follow one DNA base.</h2></div>
+    <ol>
+      <li><span>01</span><p>A nucleotide becomes a learned vector in a 4,096-wide residual stream.</p></li>
+      <li><span>02</span><p>Short explicit (Hyena-SE), medium regularized (Hyena-MR), and long implicit (Hyena-LI) operators mix sequence information without full attention at every layer.</p></li>
+      <li><span>03</span><p>Five multi-head attention (MHA) layers provide periodic global bridges through the 32-layer stack.</p></li>
+      <li><span>04</span><p>The final vector becomes logits&mdash;unnormalized scores&mdash;for the next DNA token.</p></li>
+    </ol>
+  </section>
+
+  <section class="model-guide__whole" aria-labelledby="evo-whole-model">
+    <div class="model-guide__section-heading"><p class="model-atlas__kicker">OUTSIDE IN</p><h2 id="evo-whole-model">Whole model</h2></div>
+    <p class="model-guide__intro">The released 7B checkpoint is a 32-layer, width-4,096 autoregressive model. It was trained on 2.4 trillion tokens; the more-than-8.8-trillion-nucleotide figure describes the broader OpenGenome2 dataset, not the amount consumed by this checkpoint.</p>
+    <figure class="mechanism-diagram" aria-labelledby="evo-whole-caption">
+      <div class="pipeline pipeline--wide">
+        <div class="pipeline__node"><span>INPUT</span><strong>DNA tokens</strong><small>A C G T &hellip;</small></div>
+        <span class="pipeline__arrow" aria-hidden="true">&rarr;</span>
+        <div class="pipeline__node"><span>EMBED</span><strong>Width 4,096</strong><small>Learned vectors</small></div>
+        <span class="pipeline__arrow" aria-hidden="true">&rarr;</span>
+        <div class="pipeline__repeat"><span>32 EXACT LAYERS</span><strong>9 SE + 9 MR + 9 LI + 5 MHA</strong><small>Three filter ranges, periodic global bridges</small></div>
+        <span class="pipeline__arrow" aria-hidden="true">&rarr;</span>
+        <div class="pipeline__node"><span>OUTPUT</span><strong>Next-base logits</strong><small>Scores over DNA tokens</small></div>
+      </div>
+      <figcaption id="evo-whole-caption"><strong>How to read this diagram:</strong> move left to right from a base token to the exact 32-layer family mix, then to the next-base score. The pipeline is conceptual; the counts are exact for the released 7B 1M configuration.</figcaption>
+    </figure>
+  </section>
+
+  <section class="model-guide__mechanisms" aria-labelledby="evo-blocks-title">
+    <div class="model-guide__section-heading"><p class="model-atlas__kicker">MECHANISM CUTAWAYS</p><h2 id="evo-blocks-title">Open the blocks</h2></div>
+
+    <details class="mechanism" open>
+      <summary><span>01</span><span><strong>DNA token path</strong><small>Turn bases into a next-base prediction.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy">
+          <p><strong>Plain language.</strong> Evo 2 reads DNA the way an autoregressive language model reads text: one discrete token at a time, always predicting what follows.</p>
+          <p><strong>Technical read.</strong> A learned embedding places tokens in the width-4,096 residual stream. After 32 sequence- and channel-mixing layers, an output projection produces logits over the tokenizer vocabulary.</p>
+          <p><strong>Why it matters.</strong> The same objective can expose biological regularities because the probability of a base depends on sequence context across motifs, genes, and longer genomic regions.</p>
+        </div>
+        <figure class="mechanism-diagram">
+          <div class="token-path"><span class="token-path__base">A</span><span class="token-path__base">C</span><span class="token-path__base is-current">G</span><span class="token-path__base">T</span><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><span class="token-path__vector">embedding<small>4,096 values</small></span><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><span class="token-path__stack">32 layers</span><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><span class="token-path__logits">P(next base)<small>A .18 &middot; C .07 &middot; G .11 &middot; T .64</small></span></div>
+          <figcaption><strong>How to read this diagram:</strong> the highlighted base enters the residual stream; the example probabilities are illustrative, while the width and depth labels are exact.</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>02</span><span><strong>Exact 32-layer ribbon</strong><small>See every mixer in the 1M checkpoint.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy">
+          <p><strong>Plain language.</strong> The model cycles through short, medium, and long filters, then periodically inserts global attention.</p>
+          <p><strong>Technical read.</strong> Zero-based indices 0&ndash;31 contain 9 Hyena-SE, 9 Hyena-MR, 9 Hyena-LI, and 5 MHA layers. Attention is sparse in depth&mdash;only five layers use it&mdash;but each MHA layer itself uses a global 32-head attention map with interpolated Rotary Position Embedding (RoPE).</p>
+          <p><strong>Why it matters.</strong> Most layers keep sequence mixing efficient, while global MHA layers create direct long-range communication checkpoints.</p>
+        </div>
+        <figure class="mechanism-diagram mechanism-diagram--scroll">
+          <div class="layer-ribbon" role="img" aria-label="Exact Evo 2 7B layer order: SE at 0,4,7,11,14,18,21,25,28; MR at 1,5,8,12,15,19,22,26,29; LI at 2,6,9,13,16,20,23,27,30; MHA at 3,10,17,24,31">
+            <span class="layer-ribbon__cell is-se">0<small>SE</small></span><span class="layer-ribbon__cell is-mr">1<small>MR</small></span><span class="layer-ribbon__cell is-li">2<small>LI</small></span><span class="layer-ribbon__cell is-mha">3<small>MHA</small></span>
+            <span class="layer-ribbon__cell is-se">4<small>SE</small></span><span class="layer-ribbon__cell is-mr">5<small>MR</small></span><span class="layer-ribbon__cell is-li">6<small>LI</small></span><span class="layer-ribbon__cell is-se">7<small>SE</small></span>
+            <span class="layer-ribbon__cell is-mr">8<small>MR</small></span><span class="layer-ribbon__cell is-li">9<small>LI</small></span><span class="layer-ribbon__cell is-mha">10<small>MHA</small></span><span class="layer-ribbon__cell is-se">11<small>SE</small></span>
+            <span class="layer-ribbon__cell is-mr">12<small>MR</small></span><span class="layer-ribbon__cell is-li">13<small>LI</small></span><span class="layer-ribbon__cell is-se">14<small>SE</small></span><span class="layer-ribbon__cell is-mr">15<small>MR</small></span>
+            <span class="layer-ribbon__cell is-li">16<small>LI</small></span><span class="layer-ribbon__cell is-mha">17<small>MHA</small></span><span class="layer-ribbon__cell is-se">18<small>SE</small></span><span class="layer-ribbon__cell is-mr">19<small>MR</small></span>
+            <span class="layer-ribbon__cell is-li">20<small>LI</small></span><span class="layer-ribbon__cell is-se">21<small>SE</small></span><span class="layer-ribbon__cell is-mr">22<small>MR</small></span><span class="layer-ribbon__cell is-li">23<small>LI</small></span>
+            <span class="layer-ribbon__cell is-mha">24<small>MHA</small></span><span class="layer-ribbon__cell is-se">25<small>SE</small></span><span class="layer-ribbon__cell is-mr">26<small>MR</small></span><span class="layer-ribbon__cell is-li">27<small>LI</small></span>
+            <span class="layer-ribbon__cell is-se">28<small>SE</small></span><span class="layer-ribbon__cell is-mr">29<small>MR</small></span><span class="layer-ribbon__cell is-li">30<small>LI</small></span><span class="layer-ribbon__cell is-mha">31<small>MHA</small></span>
+          </div>
+          <div class="diagram-legend"><span class="legend-chip is-se">Hyena-SE &times;9</span><span class="legend-chip is-mr">Hyena-MR &times;9</span><span class="legend-chip is-li">Hyena-LI &times;9</span><span class="legend-chip is-mha">MHA &times;5</span></div>
+          <figcaption><strong>How to read this diagram:</strong> each numbered cell is one real layer, in execution order from 0 to 31. Color and letter labels redundantly identify the four mixer types.</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>03</span><span><strong>Hyena operator anatomy</strong><small>Project, mix, filter, gate, return.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy">
+          <p><strong>Plain language.</strong> A Hyena operator makes three views of the input, uses one to control another through a convolutional filter, then gates the result.</p>
+          <p><strong>Technical read.</strong> The conceptual signal flow projects query-like (q), key-like (k), and value-like (v) streams, applies a width-3 short depthwise causal convolution, multiplies k and v, applies the operator-specific inner convolution, gates with q, and output-projects back to the residual stream.</p>
+          <p><strong>Why it matters.</strong> The skeleton stays fixed while the inner filter cartridge changes the range and computational form of sequence mixing.</p>
+        </div>
+        <figure class="mechanism-diagram">
+          <p class="diagram-badge">CONCEPTUAL SIGNAL FLOW</p>
+          <div class="hyena-flow">
+            <div class="diagram-box">input u</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">linear projection</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span>
+            <div class="hyena-flow__streams"><span>q stream</span><span>k stream</span><span>v stream</span><small>width-3 depthwise causal convolution</small></div>
+            <span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">k &times; v</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box diagram-box--accent">inner filter<br><small>SE / MR / LI</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">gate &times; q</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">output projection</div>
+          </div>
+          <figcaption><strong>How to read this diagram:</strong> follow the projected streams into multiplicative mixing and the replaceable inner filter. This is a teaching abstraction, not an exact tensor graph.</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>04</span><span><strong>Replaceable filter cartridge</strong><small>Three exact filter families, one operator skeleton.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy">
+          <p><strong>Plain language.</strong> The short filter catches local motifs, the medium filter covers a wider explicit window, and the long filter represents very long dependencies compactly.</p>
+          <p><strong>Technical read.</strong> Hyena-SE uses an explicit finite impulse response (FIR) filter of length 7 with 256 groups. Hyena-MR uses length 128 with 256 groups plus an exponential-decay envelope. Hyena-LI uses an implicit exponential/pole-residue filter with 4,096 groups and state size 16.</p>
+          <p><strong>Why it matters.</strong> Hyena-LI can switch from convolutional processing to a compact recurrent form during autoregressive decoding, while SE and MR supply efficient explicit local structure.</p>
+        </div>
+        <figure class="mechanism-diagram">
+          <div class="filter-cartridges">
+            <article class="filter-card is-se"><span>hcs / HYENA-SE</span><strong>Explicit FIR</strong><dl><div><dt>Length</dt><dd>7</dd></div><div><dt>Groups</dt><dd>256</dd></div><div><dt>Form</dt><dd>short explicit</dd></div></dl></article>
+            <article class="filter-card is-mr"><span>hcm / HYENA-MR</span><strong>Regularized FIR</strong><dl><div><dt>Length</dt><dd>128</dd></div><div><dt>Groups</dt><dd>256</dd></div><div><dt>Envelope</dt><dd>exponential decay</dd></div></dl></article>
+            <article class="filter-card is-li"><span>hcl / HYENA-LI</span><strong>Implicit long filter</strong><dl><div><dt>Groups</dt><dd>4,096</dd></div><div><dt>State</dt><dd>16</dd></div><div><dt>Decode</dt><dd>recurrent form</dd></div></dl></article>
+          </div>
+          <figcaption><strong>How to read this diagram:</strong> each card plugs into the same inner-filter slot above. The parameter values are exact for the released Evo 2 7B 1M configuration.</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>05</span><span><strong>Long-range view</strong><small>Different spans, plus five global bridges.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy">
+          <p><strong>Plain language.</strong> Several kinds of memory look across the same DNA: local filters see motifs, wider filters see neighborhoods, long implicit filters carry distant structure, and attention occasionally connects everything directly.</p>
+          <p><strong>Technical read.</strong> The range bands below are conceptual, not literal receptive-field boundaries. The five MHA bridge locations correspond to exact layers 3, 10, 17, 24, and 31.</p>
+          <p><strong>Why it matters.</strong> Range specialization avoids paying global-attention cost in every layer while preserving periodic direct access across the full sequence.</p>
+        </div>
+        <figure class="mechanism-diagram">
+          <p class="diagram-badge">CONCEPTUAL RANGE; EXACT MHA LAYERS</p>
+          <div class="range-view"><div class="range-view__sequence">DNA sequence &middot; 1,048,576-base configured maximum</div><div class="range-view__band is-se"><span>SE</span><i></i><small>local motif span</small></div><div class="range-view__band is-mr"><span>MR</span><i></i><small>medium explicit span</small></div><div class="range-view__band is-li"><span>LI</span><i></i><small>long implicit / recurrent span</small></div><div class="range-view__bridges"><span>MHA L3</span><span>MHA L10</span><span>MHA L17</span><span>MHA L24</span><span>MHA L31</span></div></div>
+          <figcaption><strong>How to read this diagram:</strong> longer horizontal marks denote increasing conceptual range; the five labeled bridges mark exact global-attention layers.</figcaption>
+        </figure>
+      </div>
+    </details>
+  </section>
+
+  <aside class="model-guide__watching"><p class="model-atlas__kicker">WHAT I&rsquo;M WATCHING</p><h2>Does the architecture surface biology at the right scales?</h2><p>I&rsquo;m interested in whether the probability landscape changes cleanly as a sequence moves from a local motif to a protein-coding region to genome-scale organization. Evo 2 is especially compelling because I can connect these architectural choices to the next-base experiments already on this site.</p></aside>
+
+  {% include model-guide-sources.html %}
+  {% include model-guide-nav.html %}
+</div>

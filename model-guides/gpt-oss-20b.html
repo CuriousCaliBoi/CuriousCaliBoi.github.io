@@ -1,0 +1,102 @@
+---
+layout: default
+title: gpt-oss 20B Architecture
+permalink: /models/gpt-oss-20b/
+guide_previous:
+  title: "Evo 2 7B"
+  url: "/models/evo-2-7b/"
+guide_next:
+  title: "DeepSeek V3"
+  url: "/models/deepseek-v3/"
+guide_sources:
+  - label: "OpenAI gpt-oss introduction"
+    url: "https://openai.com/index/introducing-gpt-oss/"
+    note: "Release scope and model positioning."
+  - label: "Official gpt-oss architecture model card"
+    url: "https://cdn.openai.com/pdf/419b6906-9da6-406c-a19d-1bb078ac7637/oai_gpt-oss_model_card.pdf"
+    note: "Primary architecture and training description."
+  - label: "Official reference implementation"
+    url: "https://github.com/openai/gpt-oss/blob/main/gpt_oss/torch/model.py"
+    note: "Head sharing, sinks, routing, and block flow."
+  - label: "Official original configuration"
+    url: "https://huggingface.co/openai/gpt-oss-20b/blob/main/original/config.json"
+    note: "Released checkpoint dimensions."
+---
+
+<div class="model-atlas model-atlas--guide model-atlas--oss">
+  <nav class="model-guide__breadcrumb" aria-label="Breadcrumb"><a href="{{ '/models/' | relative_url }}">Model Atlas</a><span aria-hidden="true">/</span><span aria-current="page">gpt-oss 20B</span></nav>
+
+  <header class="model-guide__hero">
+    <p class="model-atlas__eyebrow">FIELD GUIDE 02 / OPEN REASONING</p>
+    <h1>gpt-oss 20B</h1>
+    <p class="model-guide__thesis">An open-weight sparse decoder that shares attention memory aggressively and routes each token through four of 32 feed-forward experts.</p>
+    <dl class="model-guide__facts"><div><dt>Scale</dt><dd>20.91B total &middot; 3.61B active</dd></div><div><dt>Shape</dt><dd>24 layers &middot; width 2,880</dd></div><div><dt>Context</dt><dd>131,072 tokens</dd></div><div><dt>Signature</dt><dd>64 query / 8 key / 8 value heads</dd></div></dl>
+  </header>
+
+  <section class="model-guide__quick-read" aria-labelledby="oss-quick-read"><div class="model-guide__section-heading"><p class="model-atlas__kicker">THE 60-SECOND READ</p><h2 id="oss-quick-read">Follow one text token.</h2></div><ol><li><span>01</span><p>Sixty-four query heads ask different questions, but every group of eight shares one key head and one value head.</p></li><li><span>02</span><p>Local 128-token attention and full causal attention alternate across 24 layers.</p></li><li><span>03</span><p>A router scores 32 experts and activates the top four for this token.</p></li><li><span>04</span><p>Residual paths carry the result forward until the model emits next-token logits.</p></li></ol></section>
+
+  <section class="model-guide__whole" aria-labelledby="oss-whole-model">
+    <div class="model-guide__section-heading"><p class="model-atlas__kicker">OUTSIDE IN</p><h2 id="oss-whole-model">Whole model</h2></div>
+    <p class="model-guide__intro">The model repeats a pre-normalized decoder block 24 times. Its attention modes follow <code>[local, global] &times; 12</code>, and every block contains sparse expert computation.</p>
+    <figure class="mechanism-diagram"><div class="pipeline pipeline--wide"><div class="pipeline__node"><span>INPUT</span><strong>Text tokens</strong><small>Up to 131,072</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__node"><span>EMBED</span><strong>Width 2,880</strong><small>Residual stream</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__repeat"><span>24 DECODER LAYERS</span><strong>[local, global] &times; 12</strong><small>Grouped attention + top-4/32 experts</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__node"><span>OUTPUT</span><strong>Token logits</strong><small>Autoregressive decode</small></div></div><figcaption><strong>How to read this diagram:</strong> the block family alternates its attention mask while retaining the same residual and expert structure. The diagram is conceptual; the dimensions and repeat counts are exact.</figcaption></figure>
+  </section>
+
+  <section class="model-guide__mechanisms" aria-labelledby="oss-blocks-title">
+    <div class="model-guide__section-heading"><p class="model-atlas__kicker">MECHANISM CUTAWAYS</p><h2 id="oss-blocks-title">Open the blocks</h2></div>
+
+    <details class="mechanism" open>
+      <summary><span>01</span><span><strong>Grouped-Query Attention</strong><small>Eight queries share each key/value pair.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy"><p><strong>Plain language.</strong> A query (Q) is what a token is looking for; a key (K) says what a past token can be matched on; a value (V) is the information returned when the match is strong.</p><p><strong>Technical read.</strong> Grouped-Query Attention (GQA) has 64 query heads, 8 key heads, and 8 value heads, all dimension 64. Each K/V pair is shared by exactly eight Q heads.</p><p><strong>Why it matters.</strong> The model keeps many query perspectives while storing one-eighth as many K/V head streams as full multi-head attention with 64 independent pairs.</p></div>
+        <figure class="mechanism-diagram mechanism-diagram--scroll">
+          <p class="diagram-total">EXACT MAP &middot; 64 QUERY HEADS &middot; 8 KEY/VALUE PAIRS &middot; 8 Q PER PAIR</p>
+          <div class="gqa-groups gqa-groups--eight" role="img" aria-label="Eight grouped-query attention groups. Every group contains one key head, one value head, and eight query heads, for 64 query heads and eight key/value pairs total.">
+            {% for group in (1..8) %}{% assign group_offset = forloop.index0 | times: 8 %}
+            <article class="gqa-group"><p>GROUP {{ group }}</p><div class="gqa-group__kv"><span>K{{ group }}</span><span>V{{ group }}</span></div><i aria-hidden="true"></i><div class="gqa-group__queries">{% for qslot in (1..8) %}{% assign q_number = group_offset | plus: qslot %}<span>Q{{ q_number }}</span>{% endfor %}</div></article>
+            {% endfor %}
+          </div>
+          <figcaption><strong>How to read this diagram:</strong> each vertical group is one sharing relationship. The K and V boxes at the top connect to exactly eight individually rendered Q boxes below; all eight groups together account for every head.</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>02</span><span><strong>Banded versus full attention</strong><small>Alternate nearby reading with sequence-wide reading.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy"><p><strong>Plain language.</strong> Local layers look back only through a recent window; the next global layer can look back through the entire available history.</p><p><strong>Technical read.</strong> Local causal attention uses a 128-token sliding band. Global attention uses the full lower-triangular causal field. The 24-layer schedule alternates these modes.</p><p><strong>Why it matters.</strong> Local layers reduce attention work, while regular global layers prevent information from remaining confined to moving neighborhoods.</p></div>
+        <figure class="mechanism-diagram"><p class="diagram-badge">SCHEMATIC MASKS &middot; EXACT LOCAL WIDTH = 128 TOKENS</p><div class="mask-comparison">
+          <article><h3>128-token causal band</h3><div class="attention-mask" role="img" aria-label="Representative lower diagonal causal band; the real band is 128 tokens wide">{% for row in (0..7) %}{% for col in (0..7) %}{% assign gap = row | minus: col %}<span class="{% if col <= row and gap < 4 %}is-on{% endif %}"></span>{% endfor %}{% endfor %}</div><p>Only a moving recent window is visible.</p></article>
+          <article><h3>Full causal field</h3><div class="attention-mask" role="img" aria-label="Full lower triangular causal attention field">{% for row in (0..7) %}{% for col in (0..7) %}<span class="{% if col <= row %}is-on{% endif %}"></span>{% endfor %}{% endfor %}</div><p>Every earlier token is visible.</p></article>
+        </div><div class="attention-schedule"><span>LOCAL</span><span>GLOBAL</span><span>LOCAL</span><span>GLOBAL</span><strong>&times; 6 more pairs = 24 layers</strong></div><figcaption><strong>How to read this diagram:</strong> rows are queries and columns are earlier keys; filled cells can be attended to. Each drawn cell represents a token block, so the local picture teaches shape rather than displaying 128 individual columns.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>03</span><span><strong>Sparse Mixture of Experts</strong><small>Use four specialists from a bank of 32.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy"><p><strong>Plain language.</strong> A router chooses four feed-forward specialists for each token, then blends their answers.</p><p><strong>Technical read.</strong> The Mixture of Experts (MoE) router scores all 32 Swish-Gated Linear Unit (SwiGLU) experts, selects the top four, normalizes those selected scores, and forms a weighted sum. Each expert has intermediate width 2,880.</p><p><strong>Why it matters.</strong> All 32 experts contribute to model capacity, but only four contribute expert compute for one token&mdash;part of why 20.91B total becomes 3.61B active.</p></div>
+        <figure class="mechanism-diagram"><div class="expert-flow"><div class="diagram-box">one token</div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box diagram-box--router">router<small>scores all 32</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="expert-bank"><div class="expert-bank__active"><span>E selected 1</span><span>E selected 2</span><span>E selected 3</span><span>E selected 4</span></div><div class="expert-bank__rest">28 unselected experts<br><small>present in capacity, inactive for this token</small></div></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="diagram-box">weighted sum</div></div><figcaption><strong>How to read this diagram:</strong> four solid paths are the exact active routed experts; the labeled remainder preserves the full bank count without drawing 28 unreadable boxes.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>04</span><span><strong>One decoder block</strong><small>Residual attention, then residual expert computation.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy"><p><strong>Plain language.</strong> Each layer first mixes information across tokens, then transforms each token through selected experts, with skip routes preserving the running representation.</p><p><strong>Technical read.</strong> Root Mean Square Layer Normalization (RMSNorm) is applied before attention and before MoE. Each sublayer is added back to the residual stream. The attention implementation switches local/global mode by layer index.</p><p><strong>Why it matters.</strong> Pre-normalization and residual routes stabilize a deep stack, while changing only the mask lets one block design support both attention ranges.</p></div>
+        <figure class="mechanism-diagram"><p class="diagram-badge">CONCEPTUAL RESIDUAL FLOW</p><div class="block-cutaway"><div class="block-cutaway__rail">residual stream</div><div class="block-cutaway__stage"><span>RMSNorm</span><strong>GQA</strong><small>local or global mask</small></div><div class="block-cutaway__join">+ residual</div><div class="block-cutaway__stage"><span>RMSNorm</span><strong>top-4/32 MoE</strong><small>routed SwiGLU experts</small></div><div class="block-cutaway__join">+ residual</div></div><figcaption><strong>How to read this diagram:</strong> follow the main rail left to right; each normalized branch returns through an addition. This shows data dependencies, not exact tensor operations.</figcaption></figure>
+      </div>
+    </details>
+
+    <details class="mechanism">
+      <summary><span>05</span><span><strong>Position, sinks, and precision</strong><small>Three details that change attention and storage.</small></span></summary>
+      <div class="mechanism__content">
+        <div class="mechanism-copy"><p><strong>Plain language.</strong> Position rotation tells attention where tokens sit, a sink lets a head choose &ldquo;none of these values,&rdquo; and compact expert weights reduce storage.</p><p><strong>Technical read.</strong> Rotary Position Embedding (RoPE) rotates Q and K. Yet another RoPE extensioN (YaRN) uses factor 32 to blend frequency interpolation and extrapolation from 4,096 to 131,072 positions. Every query head has a learned sink logit whose attention probability contributes no value. Microscaling 4-bit floating point (MXFP4) applies to released MoE weights, not every path.</p><p><strong>Why it matters.</strong> These are different optimizations: long-context position, more expressive attention normalization, and lower expert-weight memory should not be collapsed into one feature label.</p></div>
+        <figure class="mechanism-diagram"><div class="annotation-grid"><article><span>POSITION</span><strong>RoPE + YaRN</strong><p>Q/K rotation<br>4,096 &rarr; 131,072<br>factor 32 blend</p></article><article><span>ATTENTION SINK</span><strong>1 learned logit / Q head</strong><p>Can absorb probability<br>returns no value vector</p></article><article><span>RELEASE PRECISION</span><strong>MXFP4</strong><p>MoE weights<br>not a blanket precision claim</p></article></div><figcaption><strong>How to read this diagram:</strong> the three cards annotate independent parts of the released model; they are not sequential pipeline stages.</figcaption></figure>
+      </div>
+    </details>
+  </section>
+
+  <aside class="model-guide__watching"><p class="model-atlas__kicker">WHAT I&rsquo;M WATCHING</p><h2>How far can an active 3.61B footprint go?</h2><p>The interesting tension for me is local experimentation versus architectural ambition. gpt-oss exposes modern sparse routing and long-context attention in a model whose per-token active parameter count is far smaller than its total capacity.</p></aside>
+  {% include model-guide-sources.html %}
+  {% include model-guide-nav.html %}
+</div>
