@@ -135,8 +135,8 @@
 .mechanism summary > span:last-child { display: flex; min-width: 0; flex-direction: column; gap: 4px; }
 .mechanism summary strong { font-size: 1rem; letter-spacing: -.01em; }
 .mechanism summary small { color: var(--atlas-muted); font-size: .75rem; line-height: 1.4; }
-.mechanism__content { display: grid; grid-template-columns: minmax(250px, .72fr) minmax(0, 1.28fr); gap: 28px; align-items: start; padding: 29px; }
-.mechanism-copy { min-width: 0; }
+.mechanism__content { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: start; padding: 29px; }
+.mechanism-copy { width: 100%; max-width: 880px; min-width: 0; }
 .mechanism-copy p { margin-bottom: 16px; color: #425463; font-size: .84rem; line-height: 1.68; }
 .mechanism-copy p:last-child { margin-bottom: 0; }
 .mechanism-copy strong { color: var(--atlas-ink); }
@@ -330,7 +330,6 @@
   .model-atlas__section-heading { grid-template-columns: 1fr; gap: 12px; }
   .model-guide__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .model-guide__quick-read ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .mechanism__content { grid-template-columns: 1fr; }
   .filter-cartridges { grid-template-columns: 1fr; }
   .annotation-grid { grid-template-columns: 1fr; }
 }
