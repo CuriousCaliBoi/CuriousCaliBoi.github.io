@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smallville, live</title>
+<meta name="description" content="A live generative-agents town: four agents whose every decision is a Nemotron 3.5 Lightning call on a DGX Spark.">
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --panel-2: #1f232c; --line: #2a2f3a;
+    --text: #e8eaf0; --muted: #9aa3b2; --accent: #7cc4ff; --live: #4ade80; --warn: #fbbf24; --off: #f87171;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); }
+  a { color: var(--accent); }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { font-size: 20px; margin: 0; letter-spacing: 0.2px; }
+  header h1 span { color: var(--muted); font-weight: 400; }
+  .clock { font-family: var(--mono); font-size: 15px; color: var(--text); }
+  .clock small { color: var(--muted); font-family: var(--font); margin-left: 8px; }
+  .status { display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .status .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+  .status.live .dot { background: var(--live); box-shadow: 0 0 0 0 rgba(74,222,128,.6); animation: pulse 1.6s infinite; }
+  .status.wait .dot { background: var(--warn); }
+  .status.off .dot { background: var(--off); }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.55);} 70% { box-shadow: 0 0 0 8px rgba(74,222,128,0);} 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0);} }
+  .meta { margin-left: auto; font-size: 12px; color: var(--muted); }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 0; height: calc(100vh - 57px); }
+  #game { position: relative; background: #0a0c10; min-width: 0; }
+  #game canvas { display: block; }
+  .hint { position: absolute; left: 12px; bottom: 10px; font-size: 12px; color: var(--muted); background: rgba(15,17,21,.75); padding: 4px 8px; border-radius: 6px; pointer-events: none; }
+  .zoom { position: absolute; right: 12px; top: 12px; display: flex; gap: 6px; }
+  .zoom button, .card button, .modal button { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; font-size: 13px; cursor: pointer; }
+  .zoom button:hover, .card button:hover, .modal button:hover { border-color: var(--accent); }
+  aside { border-left: 1px solid var(--line); background: var(--panel); overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+  aside h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 4px 0 8px; }
+  .card { display: grid; grid-template-columns: 44px 1fr; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); cursor: pointer; }
+  .card.following { border-color: var(--accent); }
+  .card img { width: 44px; height: 44px; image-rendering: pixelated; border-radius: 8px; background: #0a0c10; }
+  .card .name { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .card .emoji { font-size: 18px; }
+  .card .action { font-size: 13px; color: var(--text); margin-top: 3px; line-height: 1.35; }
+  .card .where { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .card .row { display: flex; gap: 6px; margin-top: 8px; }
+  .card .talking { color: var(--live); font-size: 12px; }
+  .convo { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: var(--panel-2); font-size: 13px; }
+  .convo .head { color: var(--muted); font-size: 12px; margin-bottom: 6px; display: flex; justify-content: space-between; gap: 8px; }
+  .convo .line { margin: 3px 0; line-height: 1.4; }
+  .convo .line b { color: var(--accent); font-weight: 600; }
+  .empty { color: var(--muted); font-size: 13px; }
+  .about { font-size: 12px; color: var(--muted); line-height: 1.5; border-top: 1px solid var(--line); padding-top: 10px; }
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 20; }
+  .modal-bg.open { display: flex; }
+  .modal { width: min(760px, 92vw); max-height: 86vh; overflow-y: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .modal h3 { margin: 0 0 4px; font-size: 18px; }
+  .modal h4 { margin: 14px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .modal p, .modal li { font-size: 13px; line-height: 1.45; }
+  .modal ul { padding-left: 18px; margin: 4px 0; }
+  .modal .close { float: right; }
+  .modal .mono { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; height: auto; }
+    #game { height: 62vh; }
+    aside { border-left: 0; border-top: 1px solid var(--line); }
+    .meta { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Smallville <span>· live</span></h1>
+  <div class="clock"><span id="clock">—</span><small id="step"></small></div>
+  <div class="status wait" id="status"><span class="dot"></span><span id="status-text">connecting…</span></div>
+  <div class="meta" id="meta">4 agents · Nemotron 3.5 Lightning 30B-A3B (NVFP4) via vLLM on a DGX Spark</div>
+</header>
+<main>
+  <div id="game">
+    <div class="zoom"><button id="zoom-out" title="zoom out">−</button><button id="zoom-in" title="zoom in">+</button><button id="free-cam" title="stop following">free camera</button></div>
+    <div class="hint">drag to pan · scroll to zoom · click an agent card to follow</div>
+  </div>
+  <aside>
+    <section>
+      <h2>Agents</h2>
+      <div id="cards"></div>
+    </section>
+    <section>
+      <h2>Conversations</h2>
+      <div id="convos"><div class="empty">No conversations yet.</div></div>
+    </section>
+    <div class="about">
+      Every decision these agents make (waking up, planning the day, choosing where to go, deciding to talk, each line of dialogue, reflecting) is a language-model call to
+      <b>NVIDIA Nemotron 3.5 Lightning 30B-A3B</b> served by vLLM on a DGX Spark in my apartment. Memory retrieval uses bge-small embeddings on the CPU.
+      The town and cognitive architecture come from <a href="https://arxiv.org/abs/2304.03442" target="_blank" rel="noopener">Park et al., <i>Generative Agents</i> (2023)</a>
+      via the <a href="https://github.com/joonspk-research/generative_agents" target="_blank" rel="noopener">reference implementation</a>. One simulation step is 10 seconds of town time.
+      <div id="about-stats" style="margin-top:6px"></div>
+    </div>
+  </aside>
+</main>
+<div class="modal-bg" id="modal-bg"><div class="modal" id="modal"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+<script>
+(function () {
+  const TILE = 32;
+  const TILESETS = ["blocks", "Room_Builder_32x32", "interiors_pt1", "interiors_pt2", "interiors_pt3", "interiors_pt4", "interiors_pt5",
+    "CuteRPG_Field_B", "CuteRPG_Field_C", "CuteRPG_Harbor_C", "CuteRPG_Village_B", "CuteRPG_Forest_B", "CuteRPG_Desert_C",
+    "CuteRPG_Mountains_B", "CuteRPG_Desert_B", "CuteRPG_Forest_C"];
+  const TILESET_FILES = { blocks: "blocks_1.png" };
+  const HIDDEN_LAYERS = new Set(["Collisions", "Object Interaction Blocks", "Arena Blocks", "Sector Blocks", "World Blocks", "Spawning Blocks", "Special Blocks Registry"]);
+  const FOREGROUND_LAYERS = new Set(["Foreground L1", "Foreground L2"]);
+
+  const state = {
+    api: null, personas: {}, order: [], latest: {}, lastChat: {}, convos: [], convoKeys: new Set(),
+    queue: [], playing: null, follow: null, lastStepAt: 0, connected: false, scene: null, sprites: {}, labels: {}, bubbles: {},
+    targets: {}, stepMs: 700, curTime: null, step: 0, stepsPerMinute: 0
+  };
+
+  // ---------- helpers ----------
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const key = (name) => name.replace(/ /g, "_");
+  function parseSimTime(s) { // "February 13, 2023, 06:42:10"
+    const m = /^(\w+) (\d+), (\d+), (\d+):(\d+):(\d+)$/.exec(s || "");
+    if (!m) return null;
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    return new Date(+m[3], months.indexOf(m[1]), +m[2], +m[4], +m[5], +m[6]);
+  }
+  function fmtClock(d) {
+    if (!d) return "—";
+    const day = d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+    const time = d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+    return `${day} · ${time}`;
+  }
+  function splitDescription(desc) {
+    const [action, address] = String(desc || "").split(" @ ");
+    let where = "";
+    if (address) {
+      if (address.startsWith("<persona>")) where = "talking with " + address.replace("<persona>", "").trim();
+      else if (address.startsWith("<waiting>")) where = "waiting";
+      else where = address.split(":").slice(1).reverse().join(" · ");
+    }
+    return { action: action || "", where };
+  }
+  function setStatus(kind, text) { const el = $("status"); el.className = "status " + kind; $("status-text").textContent = text; }
+
+  // ---------- API discovery ----------
+  async function discoverApi() {
+    const params = new URLSearchParams(location.search);
+    if (params.get("api")) return params.get("api").replace(/\/$/, "");
+    try {
+      const res = await fetch("live.json?ts=" + Date.now(), { cache: "no-store" });
+      if (res.ok) { const j = await res.json(); if (j.api) return j.api.replace(/\/$/, ""); }
+    } catch (e) { /* fall through */ }
+    if (location.hostname === "localhost" || location.hostname === "127.0.0.1") return "http://127.0.0.1:8787";
+    return null;
+  }
+
+  // ---------- sidebar ----------
+  function renderCards() {
+    const root = $("cards");
+    root.innerHTML = "";
+    for (const name of state.order) {
+      const p = state.personas[name];
+      const rec = state.latest[name] || {};
+      const { action, where } = splitDescription(rec.description);
+      const card = document.createElement("div");
+      card.className = "card" + (state.follow === name ? " following" : "");
+      card.innerHTML = `<img src="assets/characters/profile/${key(name)}.png" alt="">
+        <div><div class="name">${esc(name)} <span class="emoji">${esc(rec.pronunciatio || "")}</span>${rec.chat ? '<span class="talking">● talking</span>' : ""}</div>
+        <div class="action">${esc(action || (p ? p.currently.split(".")[0] : ""))}</div>
+        <div class="where">${esc(where)}</div>
+        <div class="row"><button data-follow="${esc(name)}">${state.follow === name ? "following" : "follow"}</button><button data-mind="${esc(name)}">mind</button></div></div>`;
+      card.querySelector("[data-follow]").addEventListener("click", (e) => { e.stopPropagation(); followPersona(name); });
+      card.querySelector("[data-mind]").addEventListener("click", (e) => { e.stopPropagation(); openMind(name); });
+      card.addEventListener("click", () => followPersona(name));
+      root.appendChild(card);
+    }
+  }
+  function renderConvos() {
+    const root = $("convos");
+    if (!state.convos.length) { root.innerHTML = '<div class="empty">No conversations yet.</div>'; return; }
+    root.innerHTML = "";
+    for (const c of state.convos.slice(-12).reverse()) {
+      const t = parseSimTime(c.curr_time);
+      const box = document.createElement("div");
+      box.className = "convo";
+      box.innerHTML = `<div class="head"><span>${esc(c.participants.join(" & "))}</span><span>${t ? t.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : ""}${c.location ? " · " + esc(c.location) : ""}</span></div>` +
+        c.lines.map((l) => `<div class="line"><b>${esc(l[0].split(" ")[0])}:</b> ${esc(l[1])}</div>`).join("");
+      root.appendChild(box);
+    }
+  }
+  function addConvo(c) {
+    const k = c.participants.join("|") + "|" + (c.lines[0] ? c.lines[0][1] : "") + "|" + Math.floor(c.step / 400);
+    if (state.convoKeys.has(k)) return;
+    state.convoKeys.add(k);
+    state.convos.push(c);
+    if (state.convos.length > 60) state.convos.shift();
+    renderConvos();
+  }
+  function noteChatsFromStep(step) {
+    for (const [name, rec] of Object.entries(step.persona)) {
+      const chat = rec.chat;
+      if (chat && JSON.stringify(chat) !== JSON.stringify(state.lastChat[name])) {
+        const participants = [...new Set(chat.map((l) => l[0]))].sort();
+        const { where } = splitDescription(rec.description);
+        addConvo({ step: step.meta.step, curr_time: step.meta.curr_time, participants, location: where.startsWith("talking") ? "" : where, lines: chat });
+      }
+      state.lastChat[name] = chat;
+    }
+  }
+  async function openMind(name) {
+    const bg = $("modal-bg"), modal = $("modal");
+    bg.classList.add("open");
+    modal.innerHTML = `<button class="close" id="modal-close">close</button><h3>${esc(name)}</h3><p class="mono">loading…</p>`;
+    $("modal-close").onclick = () => bg.classList.remove("open");
+    try {
+      const d = await fetch(`${state.api}/api/persona/${key(name)}`).then((r) => r.json());
+      const p = state.personas[name] || {};
+      const sched = (d.hourly_schedule || []).map((row) => `<li>${esc(row[0])} <span class="mono">(${row[1]} min)</span></li>`).join("");
+      const list = (rows, field) => rows.length ? "<ul>" + rows.map((r) => `<li><span class="mono">${esc((r.created || "").split(", ").pop() || "")}</span> ${esc(r[field])}</li>`).join("") + "</ul>" : '<p class="empty">nothing yet</p>';
+      modal.innerHTML = `<button class="close" id="modal-close">close</button>
+        <h3>${esc(name)}, ${esc(p.age)}</h3>
+        <p class="mono">${esc(p.innate)}</p>
+        <p>${esc(p.learned)} ${esc(p.currently)}</p>
+        <h4>Right now</h4>
+        <p><b>${esc(d.act_description || "—")}</b><br><span class="mono">${esc(d.act_address || "")}${d.chatting_with ? " · chatting with " + esc(d.chatting_with) : ""}</span></p>
+        <h4>Today's plan</h4>
+        <p>${esc((d.daily_req || []).join("; ") || "not planned yet")}</p>
+        <h4>Hourly schedule</h4>
+        ${sched ? "<ul>" + sched + "</ul>" : '<p class="empty">not generated yet</p>'}
+        <h4>Recent thoughts (${d.memory_counts ? d.memory_counts.thoughts : 0} total)</h4>
+        ${list((d.recent_thoughts || []).slice(0, 12), "description")}
+        <h4>Recent perceptions (${d.memory_counts ? d.memory_counts.events : 0} total)</h4>
+        ${list((d.recent_events || []).slice(0, 12), "description")}`;
+      $("modal-close").onclick = () => bg.classList.remove("open");
+    } catch (e) {
+      modal.innerHTML = `<button class="close" id="modal-close">close</button><h3>${esc(name)}</h3><p>Could not load agent state (${esc(e.message)}).</p>`;
+      $("modal-close").onclick = () => bg.classList.remove("open");
+    }
+  }
+  $("modal-bg").addEventListener("click", (e) => { if (e.target === $("modal-bg")) $("modal-bg").classList.remove("open"); });
+
+  // ---------- Phaser scene ----------
+  function preload() {
+    this.load.tilemapTiledJSON("map", "assets/map/the_ville_jan7.json");
+    for (const ts of TILESETS) this.load.image(ts, "assets/map/" + (TILESET_FILES[ts] || ts + ".png"));
+    for (const name of state.order) this.load.atlas(key(name), `assets/characters/${key(name)}.png`, "assets/characters/atlas.json");
+    this.load.image("bubble", "assets/ui/speech_bubble.png");
+  }
+  function create() {
+    state.scene = this;
+    const map = this.make.tilemap({ key: "map" });
+    const tilesets = [];
+    for (const ts of map.tilesets) if (TILESETS.includes(ts.name)) tilesets.push(map.addTilesetImage(ts.name, ts.name));
+    for (const layer of map.layers) {
+      if (HIDDEN_LAYERS.has(layer.name.trim())) continue;
+      const created = map.createLayer(layer.name, tilesets, 0, 0);
+      if (created && FOREGROUND_LAYERS.has(layer.name.trim())) created.setDepth(5);
+    }
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.cameras.main.setZoom(1);
+
+    for (const name of state.order) {
+      const k = key(name);
+      const rec = state.latest[name];
+      const tile = rec ? rec.movement : [70, 40];
+      const sprite = this.add.sprite(tile[0] * TILE + TILE / 2, tile[1] * TILE + TILE, k, "down").setDepth(3);
+      sprite.displayWidth = 40; sprite.scaleY = sprite.scaleX;
+      state.sprites[name] = sprite;
+      state.targets[name] = { x: sprite.x, y: sprite.y };
+      const bubble = this.add.image(sprite.x + 62, sprite.y - 50, "bubble").setDepth(4);
+      bubble.displayWidth = 120; bubble.displayHeight = 54;
+      state.bubbles[name] = bubble;
+      const initials = name.split(" ").map((w) => w[0]).join("");
+      const label = this.add.text(sprite.x + 10, sprite.y - 66, initials + ": " + (rec ? rec.pronunciatio : ""), { font: "20px sans-serif", color: "#111111" }).setDepth(4);
+      state.labels[name] = label;
+      for (const dir of ["left", "right", "up", "down"]) {
+        this.anims.create({ key: `${k}-${dir}-walk`, frames: this.anims.generateFrameNames(k, { prefix: `${dir}-walk.`, start: 0, end: 3, zeroPad: 3 }), frameRate: 4, repeat: -1 });
+      }
+    }
+    // camera controls
+    this.input.on("pointermove", (p) => {
+      if (!p.isDown) return;
+      stopFollowing();
+      const cam = this.cameras.main;
+      cam.scrollX -= (p.x - p.prevPosition.x) / cam.zoom;
+      cam.scrollY -= (p.y - p.prevPosition.y) / cam.zoom;
+    });
+    this.input.on("wheel", (p, objs, dx, dy) => zoomBy(dy > 0 ? 0.9 : 1.1));
+    $("zoom-in").onclick = () => zoomBy(1.2);
+    $("zoom-out").onclick = () => zoomBy(1 / 1.2);
+    $("free-cam").onclick = () => stopFollowing();
+    if (state.order.length) followPersona(state.follow || state.order[0]);
+  }
+  function zoomBy(f) { const cam = state.scene.cameras.main; cam.setZoom(Math.min(2.5, Math.max(0.35, cam.zoom * f))); }
+  function followPersona(name) {
+    state.follow = name;
+    if (state.scene && state.sprites[name]) state.scene.cameras.main.startFollow(state.sprites[name], true, 0.08, 0.08);
+    renderCards();
+  }
+  function stopFollowing() {
+    if (!state.follow) return;
+    state.follow = null;
+    if (state.scene) state.scene.cameras.main.stopFollow();
+    renderCards();
+  }
+  function applyStep(step) {
+    state.step = step.meta.step + 1;
+    state.curTime = parseSimTime(step.meta.curr_time);
+    $("clock").textContent = fmtClock(state.curTime);
+    $("step").textContent = `step ${state.step.toLocaleString()}`;
+    for (const [name, rec] of Object.entries(step.persona)) {
+      state.latest[name] = rec;
+      state.targets[name] = { x: rec.movement[0] * TILE + TILE / 2, y: rec.movement[1] * TILE + TILE };
+      if (state.labels[name]) state.labels[name].setText(name.split(" ").map((w) => w[0]).join("") + ": " + (rec.pronunciatio || "") + (rec.chat ? " 💬" : ""));
+    }
+    noteChatsFromStep(step);
+    renderCards();
+  }
+  function update(time, delta) {
+    // adaptive playback: keep up with the server without teleporting
+    const q = state.queue;
+    if (!state.playing && q.length) {
+      state.stepMs = q.length > 40 ? 80 : q.length > 8 ? 250 : 700;
+      if (q.length > 400) { const last = q[q.length - 1]; q.length = 0; applyStep(last); for (const n of state.order) { const s = state.sprites[n]; if (s) { s.x = state.targets[n].x; s.y = state.targets[n].y; } } }
+      else { applyStep(q.shift()); state.playing = { elapsed: 0 }; }
+    }
+    if (state.playing) { state.playing.elapsed += delta; if (state.playing.elapsed >= state.stepMs) state.playing = null; }
+    const speed = (TILE / state.stepMs) * delta;
+    for (const name of state.order) {
+      const s = state.sprites[name], t = state.targets[name];
+      if (!s || !t) continue;
+      const dx = t.x - s.x, dy = t.y - s.y, k = key(name);
+      let dir = null;
+      if (Math.abs(dx) > 0.5) { s.x += Math.sign(dx) * Math.min(Math.abs(dx), speed); dir = dx > 0 ? "right" : "left"; }
+      else if (Math.abs(dy) > 0.5) { s.y += Math.sign(dy) * Math.min(Math.abs(dy), speed); dir = dy > 0 ? "down" : "up"; }
+      if (dir) { s.anims.play(`${k}-${dir}-walk`, true); s.setData("dir", dir); }
+      else if (s.anims.isPlaying) { s.anims.stop(); s.setTexture(k, s.getData("dir") || "down"); }
+      state.bubbles[name].setPosition(s.x + 62, s.y - 50);
+      state.labels[name].setPosition(s.x + 10, s.y - 66);
+    }
+  }
+
+  // ---------- live connection ----------
+  function connectStream() {
+    const es = new EventSource(`${state.api}/api/stream`);
+    es.addEventListener("hello", () => { state.connected = true; setStatus("live", "live"); });
+    es.addEventListener("step", (e) => {
+      const step = JSON.parse(e.data);
+      if (step.meta.step < state.step - 1) return; // already shown
+      state.queue.push(step);
+      state.lastStepAt = Date.now();
+      setStatus("live", "live");
+    });
+    es.onerror = () => { state.connected = false; setStatus("wait", "reconnecting…"); };
+  }
+  async function refreshStats() {
+    try {
+      const s = await fetch(`${state.api}/api/state`).then((r) => r.json());
+      state.stepsPerMinute = s.steps_per_minute;
+      const minsPerMin = (s.steps_per_minute * s.sec_per_step / 60).toFixed(1);
+      $("about-stats").textContent = `Right now: ${s.steps_per_minute} steps/min (${minsPerMin} town-minutes per real minute) · ${s.llm_calls.toLocaleString()} model calls this run · simulation "${s.sim_code}"`;
+      for (const c of s.conversations || []) addConvo(c);
+    } catch (e) { /* ignore */ }
+  }
+  setInterval(() => {
+    if (!state.connected) return;
+    const idle = Date.now() - state.lastStepAt;
+    if (idle > 90000) setStatus("wait", "live · waiting for the next step");
+  }, 5000);
+
+  async function boot() {
+    state.api = await discoverApi();
+    if (!state.api) { setStatus("off", "no simulation endpoint published"); $("cards").innerHTML = '<div class="empty">The simulation server is not reachable right now. It runs on a DGX Spark in my apartment; when it is back online this page reconnects automatically.</div>'; return; }
+    let s;
+    try { s = await fetch(`${state.api}/api/state`).then((r) => r.json()); }
+    catch (e) { setStatus("off", "simulation server offline"); $("cards").innerHTML = '<div class="empty">The simulation server is offline right now (it runs on a DGX Spark in my apartment). Check back later — this page reconnects on its own.</div>'; setTimeout(boot, 30000); return; }
+    state.personas = s.personas; state.order = Object.keys(s.personas); state.latest = s.positions || {};
+    state.step = s.step; state.curTime = parseSimTime(s.curr_time);
+    for (const [n, rec] of Object.entries(state.latest)) state.lastChat[n] = rec.chat;
+    for (const c of s.conversations || []) addConvo(c);
+    $("clock").textContent = fmtClock(state.curTime);
+    $("step").textContent = `step ${state.step.toLocaleString()}`;
+    $("meta").textContent = `${state.order.length} agents · ${s.model.split("/").pop()} via vLLM on a DGX Spark`;
+    renderCards();
+    new Phaser.Game({ type: Phaser.AUTO, parent: "game", pixelArt: true, backgroundColor: "#0a0c10",
+      scale: { mode: Phaser.Scale.RESIZE, width: "100%", height: "100%" }, scene: { preload, create, update } });
+    connectStream();
+    refreshStats();
+    setInterval(refreshStats, 60000);
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

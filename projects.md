@@ -6,6 +6,15 @@ permalink: /projects/
 
 ---
 
+## Smallville, live
+*September 2026*
+
+A live generative-agents town running on my DGX Spark: four agents (Isabella, Maria, Klaus and Sam) whose every decision is a Nemotron 3.5 Lightning call served by vLLM. Watch them plan their day, wander the Ville and talk to each other in real time.
+
+[Watch Live](/smallville/) | [Paper](https://arxiv.org/abs/2304.03442)
+
+---
+
 ## Evo 2 & ESM on a DGX Spark
 *August 2026*
 
