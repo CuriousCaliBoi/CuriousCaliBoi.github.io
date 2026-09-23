@@ -344,17 +344,39 @@
   }
 
   // ---------- live connection ----------
+  // WebSocket feed (proxies do not buffer it, unlike server-sent events),
+  // with a slow polling fallback while disconnected.
+  function enqueueStep(step) {
+    if (step.meta.step < state.step - 1) return; // already shown
+    state.queue.push(step);
+    state.lastStepAt = Date.now();
+  }
   function connectStream() {
-    const es = new EventSource(`${state.api}/api/stream`);
-    es.addEventListener("hello", () => { state.connected = true; setStatus("live", "live"); });
-    es.addEventListener("step", (e) => {
-      const step = JSON.parse(e.data);
-      if (step.meta.step < state.step - 1) return; // already shown
-      state.queue.push(step);
-      state.lastStepAt = Date.now();
-      setStatus("live", "live");
-    });
-    es.onerror = () => { state.connected = false; setStatus("wait", "reconnecting…"); };
+    let delay = 2000;
+    const open = () => {
+      const ws = new WebSocket(state.api.replace(/^http/, "ws") + "/api/ws");
+      ws.onopen = () => { state.connected = true; delay = 2000; setStatus("live", "live"); };
+      ws.onmessage = (e) => {
+        const m = JSON.parse(e.data);
+        if (m.type === "step") { enqueueStep(m); setStatus("live", "live"); }
+      };
+      ws.onerror = () => ws.close();
+      ws.onclose = () => {
+        state.connected = false;
+        setStatus("wait", "reconnecting…");
+        setTimeout(open, delay);
+        delay = Math.min(delay * 2, 30000);
+      };
+    };
+    open();
+  }
+  async function pollWhileDisconnected() {
+    if (state.connected) return;
+    try {
+      const s = await fetch(`${state.api}/api/state`).then((r) => r.json());
+      if (s.latest_step && s.latest_step.step !== undefined) enqueueStep({ persona: s.positions, meta: s.latest_step });
+      setStatus("wait", "polling (no live connection)");
+    } catch (e) { setStatus("off", "simulation server offline"); }
   }
   async function refreshStats() {
     try {
@@ -366,7 +388,7 @@
     } catch (e) { /* ignore */ }
   }
   setInterval(() => {
-    if (!state.connected) return;
+    if (!state.connected) { pollWhileDisconnected(); return; }
     const idle = Date.now() - state.lastStepAt;
     if (idle > 90000) setStatus("wait", "live · waiting for the next step");
   }, 5000);
