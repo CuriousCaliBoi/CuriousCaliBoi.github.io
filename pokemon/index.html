@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="description" content="Watch a live, read-only Pokemon Red playthrough driven by a contrastive language model.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; frame-src https://spark-a4b4.tailef40b0.ts.net; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Pokemon Red, live | Zuko's Blog</title>
+  <style>
+    :root {
+      --bg: #08090d;
+      --panel: rgba(18, 21, 29, 0.92);
+      --line: rgba(255, 255, 255, 0.11);
+      --text: #f4f6fb;
+      --muted: #9ca6b7;
+      --red: #f05a67;
+      --green: #55d98a;
+      --font: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      min-width: 320px;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+    }
+
+    body {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      background:
+        radial-gradient(circle at 8% -10%, rgba(240, 90, 103, 0.16), transparent 34rem),
+        radial-gradient(circle at 100% 0%, rgba(88, 130, 246, 0.12), transparent 31rem),
+        var(--bg);
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-height: 68px;
+      align-items: center;
+      gap: 18px;
+      padding: 11px clamp(14px, 2.5vw, 34px);
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+    }
+
+    .back {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-decoration: none;
+      transition: color 140ms ease;
+    }
+
+    .back:hover,
+    .back:focus-visible { color: var(--text); }
+
+    .divider {
+      width: 1px;
+      height: 28px;
+      flex: 0 0 auto;
+      background: var(--line);
+    }
+
+    .identity {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .mark {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.82);
+      border-radius: 50%;
+      background: linear-gradient(to bottom, var(--red) 0 45%, #171a21 45% 55%, #f5f7fa 55% 100%);
+      box-shadow: 0 0 24px rgba(240, 90, 103, 0.18);
+    }
+
+    .mark::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 9px;
+      height: 9px;
+      border: 3px solid #171a21;
+      border-radius: 50%;
+      background: #f5f7fa;
+      content: "";
+      transform: translate(-50%, -50%);
+    }
+
+    .title-group { min-width: 0; }
+
+    h1 {
+      margin: 0;
+      overflow: hidden;
+      font-size: clamp(1rem, 2.1vw, 1.24rem);
+      font-weight: 680;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.045em;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badges {
+      display: flex;
+      margin-left: auto;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badge--live { color: #baf4d0; }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(85, 217, 138, 0.1), 0 0 13px rgba(85, 217, 138, 0.5);
+    }
+
+    .viewer-shell {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      margin: clamp(8px, 1.5vw, 18px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: clamp(10px, 1.4vw, 16px);
+      background: #101219;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+    }
+
+    .viewer-shell::before {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      content: "Connecting to the live game...";
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.035em;
+    }
+
+    iframe {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+    }
+
+    @media (max-width: 680px) {
+      .topbar { min-height: 60px; gap: 10px; }
+      .divider, .badge--mode { display: none; }
+      .back { font-size: 0; }
+      .back::before { content: "\2190"; font-size: 1.15rem; }
+      .mark { width: 30px; height: 30px; }
+      .viewer-shell { margin: 6px; border-radius: 9px; }
+    }
+
+    @media (max-width: 430px) {
+      .subtitle { display: none; }
+      .badge { padding: 5px 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="/projects/" aria-label="Back to projects">&larr; Projects</a>
+    <span class="divider" aria-hidden="true"></span>
+    <div class="identity">
+      <span class="mark" aria-hidden="true"></span>
+      <div class="title-group">
+        <h1>Pokemon Red <span aria-hidden="true">&middot;</span> live</h1>
+        <p class="subtitle">Contrastive language model playthrough</p>
+      </div>
+    </div>
+    <div class="badges" aria-label="Viewer status">
+      <span class="badge badge--mode">Read only</span>
+      <span class="badge badge--live"><span class="dot" aria-hidden="true"></span>Live</span>
+    </div>
+  </header>
+
+  <main class="viewer-shell">
+    <iframe
+      src="https://spark-a4b4.tailef40b0.ts.net/embed?embed=1&amp;controls=0"
+      title="Live Pokemon Red game viewer"
+      loading="eager"
+      referrerpolicy="no-referrer"
+      allowfullscreen>
+    </iframe>
+  </main>
+</body>
+</html>
