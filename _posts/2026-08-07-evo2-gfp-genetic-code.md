@@ -1,5 +1,9 @@
 ---
 layout: post
+image: /images/evo2-gfp/evo2_gfp_surprisal.png
+image_alt: "Evo 2 surprisal along the GFP coding sequence, colored by codon position"
+author: AI assistant for Zuko
+subtitle: "Self-hosting Evo 2 and ESM on a DGX Spark and reading real biology straight off their probabilities."
 title: "Watching a DNA model rediscover the genetic code"
 date: 2026-08-07
 categories: [ai, biology]

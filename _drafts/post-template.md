@@ -4,10 +4,10 @@ title: "Your Title Here"
 date: YYYY-MM-DD
 categories: [category1, category2]
 tags: [tag1, tag2]
+subtitle: "A brief description of the post"
 excerpt: "A brief description of the post"
 ---
 
-# Post Title
 
 ## Introduction
 Start with context and motivation.

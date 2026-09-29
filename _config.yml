@@ -22,9 +22,10 @@ header_pages:
   - models.html
   - about.md
 
-# Everything below here can be ignored, unless you want to change the theme entirely
-theme: minima
+# Site metadata and GitHub Pages plugins
+author: Zuko
 plugins:
+  - jekyll-seo-tag
   - jekyll-feed
   - jekyll-gist
   - jekyll-octicons
@@ -38,7 +39,7 @@ titles_from_headings:
 highlighter: rouge
 markdown: kramdown
 kramdown:
-  math_engine: katex
+  math_engine: mathjax
   input: GFM
   auto_ids: true
   hard_wrap: false
@@ -52,8 +53,13 @@ exclude:
   - _drafts
   - CLAUDE.md
   - .claude
+  - .humanize
+  - temp
+  - README.md
+  - Gemfile
+  - Gemfile.lock
 
 # Custom CSS
 sass:
-  sass_dir: assets/css
+  sass_dir: _sass
   style: compressed

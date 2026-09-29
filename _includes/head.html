@@ -1,135 +1,19 @@
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  {%- seo -%}
-  <link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}?v={{ site.time | date: '%s' }}">
-  {%- feed_meta -%}
-  {%- if jekyll.environment == 'production' and site.google_analytics -%}
-    {%- include google-analytics.html -%}
-  {%- endif -%}
-
+  <meta name="theme-color" content="#f6f3ec">
+  {% seo %}
+  {% feed_meta %}
+  <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
+  <link rel="preload" href="{{ '/assets/fonts/newsreader-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+  <script src="{{ '/assets/js/journal.js' | relative_url }}" defer></script>
   {% if site.use_math %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
-    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        renderMathInElement( document.body, {
-          delimiters: [
-            {left: "$$", right: "$$", display: true},
-            {left: "[%", right: "%]", display: true},
-            {left: "$", right: "$", display: false}
-          ]}
-        );
-      });
-    </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"></script>
   {% endif %}
-
-  <script>
-  function wrap_img(fn) {
-    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
-        var elements = document.querySelectorAll(".post img");
-        Array.prototype.forEach.call(elements, function(el, i) {
-            if (el.getAttribute("title")) {
-                const caption = document.createElement('figcaption');
-                var node = document.createTextNode(el.getAttribute("title"));
-                caption.appendChild(node);
-                const wrapper = document.createElement('figure');
-                wrapper.className = 'image';
-                el.parentNode.insertBefore(wrapper, el);
-                el.parentNode.removeChild(el);
-                wrapper.appendChild(el);
-                wrapper.appendChild(caption);
-            }
-        });
-    } else { document.addEventListener('DOMContentLoaded', fn); }
-  }
-  window.onload = wrap_img;
-  </script>
-
-  <canvas id="mouseCanvas"></canvas>
-  <style>
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
-  </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const canvas = document.getElementById('mouseCanvas');
-      const ctx = canvas.getContext('2d');
-      
-      // Set canvas size
-      function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-
-      // Particle system
-      const particles = [];
-      const particleCount = 50;
-      
-      class Particle {
-        constructor(x, y) {
-          this.x = x;
-          this.y = y;
-          this.size = Math.random() * 2 + 1;
-          this.speedX = Math.random() * 2 - 1;
-          this.speedY = Math.random() * 2 - 1;
-          this.life = 1;
-        }
-
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-          this.life -= 0.01;
-        }
-
-        draw() {
-          ctx.fillStyle = `rgba(99, 179, 237, ${this.life})`;
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      // Mouse tracking
-      let mouse = { x: null, y: null };
-      window.addEventListener('mousemove', (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
-        for(let i = 0; i < 3; i++) {
-          particles.push(new Particle(mouse.x, mouse.y));
-        }
-      });
-
-      // Animation loop
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        for(let i = particles.length - 1; i >= 0; i--) {
-          particles[i].update();
-          particles[i].draw();
-          
-          if(particles[i].life <= 0) {
-            particles.splice(i, 1);
-          }
-        }
-        
-        requestAnimationFrame(animate);
-      }
-      animate();
-    });
-  </script>
-
+  {% if jekyll.environment == 'production' and site.google_analytics %}
+    {% include google-analytics.html %}
+  {% endif %}
 </head>

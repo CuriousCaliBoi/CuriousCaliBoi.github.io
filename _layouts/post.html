@@ -1,0 +1,31 @@
+---
+layout: default
+---
+<article class="journal-article" itemscope itemtype="https://schema.org/BlogPosting">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ '/' | relative_url }}">Writing</a><span aria-hidden="true">/</span><span>{{ page.title | escape }}</span></nav>
+  <header class="article-header">
+    {% assign words = content | strip_html | number_of_words %}
+    {% assign minutes = words | plus: 219 | divided_by: 220 | at_least: 1 %}
+    <p class="eyebrow"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: '%B %-d, %Y' }}</time><span aria-hidden="true"> / </span>{{ minutes }} min read</p>
+    <h1 itemprop="headline">{{ page.title | escape }}</h1>
+    {% if page.subtitle %}<p class="article-deck">{{ page.subtitle | escape }}</p>{% endif %}
+    <div class="article-byline"><span class="author-monogram" aria-hidden="true">z.</span><span>By <span itemprop="author">{{ page.author | default: 'Zuko' }}</span></span>{% if page.categories.size > 0 %}<span class="byline-category">{{ page.categories | join: ' / ' }}</span>{% endif %}</div>
+  </header>
+  <div class="article-layout">
+    <aside class="article-sidebar" data-toc hidden>
+      <details class="toc-disclosure" open>
+        <summary>Contents</summary>
+        <nav aria-label="Table of contents"><ol data-toc-list></ol></nav>
+      </details>
+    </aside>
+    <div class="article-body">
+      <div class="post-content prose" itemprop="articleBody">{{ content }}</div>
+      <div class="article-end"><span aria-hidden="true">✳</span><a href="#main">Back to top ↑</a></div>
+      <nav class="post-pagination" aria-label="More writing">
+        {% if page.previous %}<a href="{{ page.previous.url | relative_url }}"><span class="eyebrow">← Previous entry</span><span>{{ page.previous.title | escape }}</span></a>{% endif %}
+        {% if page.next %}<a href="{{ page.next.url | relative_url }}"><span class="eyebrow">Next entry →</span><span>{{ page.next.title | escape }}</span></a>{% endif %}
+      </nav>
+      <a class="text-link all-writing" href="{{ '/' | relative_url }}">← All writing</a>
+    </div>
+  </div>
+</article>
