@@ -21,10 +21,11 @@ The existing GitHub Pages publishing setup still works. No Node build is require
 
 ## Writing
 
-Posts remain Markdown files in `_posts/`, with their existing date/category URLs. Use `layout: post`, `title`, and `date` in the front matter. Optional fields:
+Writing and project entries are Markdown files in `_posts/`, with their existing date/category URLs. Project posts link to standalone live demos. Use `layout: post`, `title`, and `date` in the front matter. Optional fields:
 
 - `subtitle`: a short introduction beneath the article title and on the homepage feature.
 - `author`: overrides the default byline, Zuko.
+- `date_format`: optional display format for dates. The Infinite Observatory retains its original month-only date (`%B %Y`); the first day of that month is used for sorting.
 - `image` and `image_alt`: the preview image and its description when the post is featured as the latest entry.
 
 The post title comes from the front matter, so start the body with paragraphs or `##` section headings. Posts with two or more `##`/`###` headings receive a contents sidebar, which becomes a collapsible panel on narrow screens. Reading and site navigation work without JavaScript; the contents and math rendering are progressive enhancements. Math uses KaTeX: `$...$` for inline math and `$$...$$` for display math. Fenced code uses Rouge.

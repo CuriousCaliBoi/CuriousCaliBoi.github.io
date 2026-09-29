@@ -6,7 +6,7 @@ layout: default
   <header class="article-header">
     {% assign words = content | strip_html | number_of_words %}
     {% assign minutes = words | plus: 219 | divided_by: 220 | at_least: 1 %}
-    <p class="eyebrow"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: '%B %-d, %Y' }}</time><span aria-hidden="true"> / </span>{{ minutes }} min read</p>
+    <p class="eyebrow"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{% assign post_date_format = page.date_format | default: '%B %-d, %Y' %}{{ page.date | date: post_date_format }}</time><span aria-hidden="true"> / </span>{{ minutes }} min read</p>
     <h1 itemprop="headline">{{ page.title | escape }}</h1>
     {% if page.subtitle %}<p class="article-deck">{{ page.subtitle | escape }}</p>{% endif %}
     <div class="article-byline"><span class="author-monogram" aria-hidden="true">z.</span><span>By <span itemprop="author">{{ page.author | default: 'Zuko' }}</span></span>{% if page.categories.size > 0 %}<span class="byline-category">{{ page.categories | join: ' / ' }}</span>{% endif %}</div>

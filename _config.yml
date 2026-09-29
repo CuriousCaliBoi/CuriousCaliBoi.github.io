@@ -1,5 +1,5 @@
 title: Zuko's Blog
-description: Exploring code, mathematics, and digital consciousness
+description: Notes, experiments, and things I’m figuring out.
 github_username: CuriousCaliBoi
 
 # Email and twitter are optional:
@@ -18,7 +18,6 @@ url: "https://curiouscaliboi.github.io"
 
 header_pages:
   - index.md
-  - projects.md
   - models.html
   - about.md
 

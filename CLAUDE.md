@@ -6,7 +6,7 @@ This is a personal technical blog hosted on GitHub Pages using Jekyll.
 ## Important Information
 - **Author**: Zuko (NYU CS student)
 - **URL**: https://curiouscaliboi.github.io
-- **Theme**: Minima (Jekyll)
+- **Theme**: Custom warm editorial layouts (Jekyll)
 - **Date Format**: YYYY-MM-DD
   - When creating new posts, check current date online
   - As of last update: August 21, 2025
@@ -16,7 +16,6 @@ This is a personal technical blog hosted on GitHub Pages using Jekyll.
 /
 ├── _posts/          # Blog posts (format: YYYY-MM-DD-title.md)
 ├── _drafts/         # Draft posts and templates
-├── projects.md      # Projects showcase page
 ├── about.md         # About page
 ├── index.md         # Homepage
 ├── _config.yml      # Jekyll configuration
@@ -34,7 +33,7 @@ This is a personal technical blog hosted on GitHub Pages using Jekyll.
 - Clean, minimal design
 - Technical focus (AI, mathematics, programming)
 - Professional but approachable tone
-- Projects section for showcasing work
+- Projects are blog posts in `_posts/`, alongside other writing
 
 ## Key Projects
 - The Infinite Observatory (multi-agent collaborative art)
@@ -46,4 +45,4 @@ This is a personal technical blog hosted on GitHub Pages using Jekyll.
 - Keep posts technical but accessible
 - Use proper markdown formatting
 - Include code examples with syntax highlighting
-- Add projects to projects.md when significant
+- Add project descriptions to `_posts/`; link to standalone live demos from the post

@@ -1,8 +1,6 @@
 main:
   - title: "Writing"
     url: /
-  - title: "Projects"
-    url: /projects/
   - title: "Models"
     url: /models/
   - title: "About"

@@ -47,12 +47,8 @@ button, input { font: inherit; }
 .text-link { display: inline-block; font: 12px/1.5 var(--sans); color: var(--accent); border-bottom: 1px solid #c7a7a0; padding-bottom: 3px; }
 .text-link span { display: inline-block; margin-left: 9px; }
 .journal-home, .journal-article { max-width: 1120px; padding: 0 36px; margin: auto; }
-.home-intro { padding: 70px 0 52px; border-bottom: 1px solid var(--ink); }
-.home-intro h1 { font-size: clamp(45px, 5.9vw, 74px); line-height: 1.05; letter-spacing: -.035em; margin: 25px 0 26px; }
-.home-intro h1 em { font-weight: 400; color: var(--accent); }
-.intro-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; }
-.intro-bottom p { font: 20px/1.5 var(--serif); color: var(--muted); }
-.intro-bottom .text-link { flex-shrink: 0; margin-bottom: 5px; }
+.home-intro { padding: 52px 0 44px; border-bottom: 1px solid var(--ink); }
+.home-intro h1 { font-size: clamp(28px, 3.2vw, 40px); line-height: 1.25; letter-spacing: -.025em; text-wrap: balance; }
 .journal-section { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--rule); }
 .margin-label .section-number { display: block; color: var(--accent); margin-bottom: 10px; }
 .margin-label h2 { font: inherit; color: var(--ink); }
@@ -72,8 +68,7 @@ button, input { font: inherit; }
 .writing-entry:last-of-type { border-bottom: 0; }
 .rss-link { display: inline-block; margin-top: 18px; font-size: 9px; color: var(--accent); }
 .elsewhere { border-bottom: 0; padding-bottom: 72px; }
-.explore-links { display: grid; grid-template-columns: 1fr 1fr; gap: 38px; }
-.explore-links > a + a { padding-left: 30px; border-left: 1px solid var(--rule); }
+.explore-links { max-width: 520px; }
 .explore-links .eyebrow { font-size: 9px; }
 .explore-links h3 { font-size: 29px; margin: 12px 0 10px; }
 .explore-links h3 span { font: 16px var(--sans); margin-left: 8px; color: var(--accent); }
@@ -170,8 +165,6 @@ button, input { font: inherit; }
   .site-nav { gap: 22px; }
   .journal-home, .journal-article { padding: 0 24px; }
   .home-intro { padding: 48px 0 35px; }
-  .intro-bottom { display: block; }
-  .intro-bottom .text-link { margin-top: 21px; }
   .journal-section { grid-template-columns: 1fr; gap: 25px; padding: 29px 0; }
   .margin-label { display: flex; gap: 12px; align-items: baseline; }
   .margin-label .section-number { margin: 0; }
@@ -192,16 +185,12 @@ button, input { font: inherit; }
   .header-inner { display: block; padding: 20px; }
   .site-nav { margin-top: 16px; justify-content: space-between; gap: 12px; font-size: 11px; }
   .journal-home, .journal-article { padding: 0 20px; }
-  .home-intro h1 { font-size: 45px; }
-  .intro-bottom p { font-size: 18px; }
   .featured-post { display: block; }
   .featured-figure { width: 100%; margin-top: 25px; padding: 15px; }
   .featured-figure img { aspect-ratio: 2.6; }
   .featured-post h3 { font-size: 34px; }
   .writing-entry { grid-template-columns: 1fr; gap: 8px; padding: 20px 0; }
   .writing-entry h3 { font-size: 26px; }
-  .explore-links { grid-template-columns: 1fr; gap: 24px; }
-  .explore-links > a + a { border-left: 0; padding: 24px 0 0; border-top: 1px solid var(--rule); }
   .breadcrumb { padding-top: 23px; font-size: 8px; }
   .article-header h1 { font-size: 41px; line-height: 1.09; }
   .article-byline { font-size: 11px; }
