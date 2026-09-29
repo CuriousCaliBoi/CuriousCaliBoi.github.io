@@ -32,8 +32,17 @@ layout: default
     </div>
   </section>
   {% endif %}
+  <section class="journal-section art-preview" aria-labelledby="art-title">
+    <div class="margin-label"><span class="section-number">03</span><h2 id="art-title">Art</h2><p>From Coyote Hills</p></div>
+    <div>
+      <div class="art-preview-strip">{% for photo in site.data.art limit:2 %}
+        <figure><a href="{{ '/art/' | relative_url }}"><img src="{{ photo.file | relative_url }}" alt="{{ photo.alt | escape }}" width="{{ photo.width }}" height="{{ photo.height }}" loading="lazy" decoding="async"></a><figcaption>{% include photo-credit.html photo=photo %}</figcaption></figure>
+      {% endfor %}</div>
+      <div class="art-preview-link"><h3>Water, light, and a little color.</h3><a class="text-link" href="{{ '/art/' | relative_url }}">Explore the collection ↗</a></div>
+    </div>
+  </section>
   <section class="journal-section elsewhere" aria-labelledby="elsewhere-title">
-    <div class="margin-label"><span class="section-number">03</span><h2 id="elsewhere-title">Also exploring</h2></div>
+    <div class="margin-label"><span class="section-number">04</span><h2 id="elsewhere-title">Also exploring</h2></div>
     <div class="explore-links">
       <a href="{{ '/models/' | relative_url }}"><span class="eyebrow">Architecture field guides</span><h3>Model atlas <span aria-hidden="true">↗</span></h3><p>Opening up the models I’m curious about, mechanism by mechanism.</p></a>
     </div>

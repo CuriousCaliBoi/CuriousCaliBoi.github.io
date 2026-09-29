@@ -1,6 +1,8 @@
 main:
   - title: "Writing"
     url: /
+  - title: "Art"
+    url: /art/
   - title: "Models"
     url: /models/
   - title: "About"

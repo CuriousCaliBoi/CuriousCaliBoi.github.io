@@ -1,0 +1,19 @@
+<section class="color-study" data-color-study aria-label="Landscape color sampler">
+  <div class="color-study-toolbar">
+    <label>Choose a photograph <select data-color-photo aria-label="Choose a photograph">{% for photo in site.data.art %}<option value="{{ photo.file | relative_url }}" data-alt="{{ photo.alt | escape }}" data-credit="{{ photo.artist | escape }}" data-source="{{ photo.source }}" data-license="{{ photo.license_url }}" data-license-name="{{ photo.license }}">{{ photo.title }}</option>{% endfor %}</select></label>
+    <button type="button" data-color-clear>Clear palette</button>
+  </div>
+  <div class="color-study-layout">
+    <div class="color-study-photo" tabindex="0" role="button" aria-label="Choose a color from the photograph. Use arrow keys to move and Enter or Space to pick." data-color-surface>
+      <img data-color-image src="{{ site.data.art.first.file | relative_url }}" alt="{{ site.data.art.first.alt | escape }}" width="1280" height="853">
+      <span class="color-cursor" data-color-cursor aria-hidden="true"></span>
+    </div>
+    <div class="color-study-palette">
+      <p class="eyebrow">Your palette</p>
+      <ol data-color-palette aria-label="Collected colors"></ol>
+      <p class="color-study-hint" data-color-hint role="status">Choose up to five colors from the photograph.</p>
+    </div>
+  </div>
+  <p class="photo-credit">Photo: <span data-color-credit>{{ site.data.art.first.artist }}</span> · <a data-color-source href="{{ site.data.art.first.source }}">Source</a> · <a data-color-license href="{{ site.data.art.first.license_url }}">{{ site.data.art.first.license }}</a></p>
+  <p class="color-study-help">Click the photo to collect a color. With the photo focused, use the arrow keys to move and Enter to pick.</p>
+</section>

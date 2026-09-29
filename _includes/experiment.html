@@ -1,0 +1,20 @@
+{% assign experiment = site.data.experiments[include.id] %}
+{% if experiment %}
+<section class="experiment" data-experiment data-experiment-src="{{ experiment.embed_url | relative_url }}" aria-label="{{ experiment.title | escape }}">
+  <div class="experiment-heading"><span class="eyebrow">{{ experiment.mode }}</span><span class="experiment-status" role="status" data-experiment-status>Not connected</span></div>
+  <p class="experiment-title">{{ experiment.title }}</p>
+  <p class="experiment-description">{{ experiment.description }}</p>
+  <div class="experiment-actions">
+    <button type="button" data-experiment-connect hidden>Connect to viewer</button>
+    <button type="button" data-experiment-stop hidden>Disconnect</button>
+    <button type="button" data-experiment-fullscreen hidden>Full screen</button>
+    <a href="{{ experiment.url | relative_url }}" target="_blank" rel="noopener">Open viewer ↗</a>
+  </div>
+  <p class="experiment-notice" data-experiment-notice hidden>The live service is unavailable right now. Reconnect to try again, or open the viewer separately.</p>
+  <div class="experiment-stage" data-experiment-stage hidden>
+    <iframe title="{{ experiment.title | escape }} — {{ experiment.mode | downcase }}" referrerpolicy="no-referrer" allow="fullscreen" allowfullscreen></iframe>
+  </div>
+  <p class="experiment-note">{{ experiment.note }}</p>
+  <noscript><p>Use the Open viewer link to explore this experiment.</p></noscript>
+</section>
+{% endif %}

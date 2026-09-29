@@ -145,6 +145,8 @@ button, input { font: inherit; }
 .output_area pre { border-left: 2px solid var(--rule); }
 
 @import 'atlas';
+@import 'art';
+@import 'interactive';
 
 .model-atlas { --atlas-ink: var(--ink); --atlas-muted: var(--muted); --atlas-faint: var(--muted); --atlas-line: var(--rule); --atlas-soft: var(--paper-deep); --atlas-surface: var(--paper); font-family: var(--sans); }
 .model-atlas__hero h1, .model-guide__hero h1 { font-family: var(--serif); font-weight: 400; letter-spacing: -.035em; }

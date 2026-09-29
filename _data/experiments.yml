@@ -1,0 +1,14 @@
+pokemon:
+  title: Pokemon Red
+  url: /pokemon/
+  embed_url: /pokemon/
+  description: Watch the model choose its next move in the live game viewer.
+  mode: Live viewer
+  note: The model controls the game. Visitor input does not send moves to the emulator.
+smallville:
+  title: A day in Smallville
+  url: /smallville/
+  embed_url: /smallville/
+  description: Follow an agent, inspect its memories, and explore the town as its day unfolds.
+  mode: Interactive viewer
+  note: Drag to pan, scroll to zoom, or choose an agent’s Follow or Mind button. These controls explore the running simulation without changing its decisions.

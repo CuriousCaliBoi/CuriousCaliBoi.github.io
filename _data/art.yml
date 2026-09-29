@@ -1,0 +1,33 @@
+- id: sunset
+  title: Sunset through the grass
+  file: /images/art/coyote-hills-sunset.jpg
+  width: 1280
+  height: 853
+  alt: Golden sunset shining through a dense silhouette of grasses at Coyote Hills.
+  artist: Mikhail Kalugin
+  source_title: Sunset At Coyote Hills
+  source: https://commons.wikimedia.org/wiki/File:Sunset_At_Coyote_Hills_(55533170).jpeg
+  license: CC BY 3.0
+  license_url: https://creativecommons.org/licenses/by/3.0/
+- id: salt
+  title: Water, salt, sky
+  file: /images/art/coyote-hills-salt.jpg
+  width: 1280
+  height: 853
+  alt: A blue channel curves around pale salt ponds beneath an open blue sky at Coyote Hills.
+  artist: Deodandem
+  source_title: Coyote Hills Salt
+  source: https://commons.wikimedia.org/wiki/File:Coyote_Hills_Salt.jpg
+  license: CC BY-SA 4.0
+  license_url: https://creativecommons.org/licenses/by-sa/4.0/
+- id: bay
+  title: Across the bay
+  file: /images/art/coyote-hills-bay.jpg
+  width: 1280
+  height: 366
+  alt: Salt ponds and bridges stretch across the bay, with blue hills in the distance.
+  artist: Sarah Sammis
+  source_title: Coyote Hills 20140310
+  source: https://commons.wikimedia.org/wiki/File:Coyote_Hills_20140310_(20777120886).jpg
+  license: CC BY 2.0
+  license_url: https://creativecommons.org/licenses/by/2.0/

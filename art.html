@@ -1,0 +1,33 @@
+---
+layout: default
+title: Art
+permalink: /art/
+art_gallery: true
+interactive: true
+description: Photographs, color studies, and creative experiments. A first collection from Coyote Hills.
+---
+<div class="art-page">
+  <header class="art-header"><p class="eyebrow">A different kind of notebook</p><h1>Art</h1><p>Images, places, and small experiments.</p></header>
+  <section class="art-collection" aria-labelledby="coyote-hills-title">
+    <div class="art-section-heading"><div><p class="eyebrow">01 / Photographs</p><h2 id="coyote-hills-title">Coyote Hills</h2></div><p>Fremont, California. A first collection of photographs by other people, shared here with credit.</p></div>
+    <div class="art-grid">
+      {% for photo in site.data.art %}
+      <figure class="art-photo{% if photo.id == 'bay' %} art-photo-wide{% endif %}">
+        <a href="{{ photo.file | relative_url }}" data-photo-viewer aria-label="Enlarge {{ photo.title | escape }}"><img src="{{ photo.file | relative_url }}" alt="{{ photo.alt | escape }}" width="{{ photo.width }}" height="{{ photo.height }}"{% unless forloop.first %} loading="lazy"{% endunless %} decoding="async"></a>
+        <figcaption><span class="photo-title">{{ photo.title }}</span>{% include photo-credit.html photo=photo %}</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+    <p class="art-source-note">Images sourced from Wikimedia Commons; licenses are linked with each photo. Gallery images use Wikimedia’s resized versions; homepage thumbnails are cropped for display.</p>
+  </section>
+  <section class="art-study" aria-labelledby="color-study-title">
+    <div class="art-section-heading"><div><p class="eyebrow">02 / Try it</p><h2 id="color-study-title">A palette from the landscape</h2></div><p>Pick out the warm grasses, cool water, or a color you almost missed. This little study runs in your browser.</p></div>
+    <div data-interactive-only hidden>{% include color-study.html %}</div>
+    <noscript><p>Enable JavaScript to pick colors from these photographs.</p></noscript>
+  </section>
+  <section class="art-observatory"><p class="eyebrow">Also in the notebook</p><h2><a href="{{ '/2025/01/01/infinite-observatory.html' | relative_url }}">The Infinite Observatory ↗</a></h2><p>Multi-agent collaborative artwork exploring impossible geometries.</p></section>
+</div>
+<dialog class="photo-dialog" data-photo-dialog aria-label="Photograph viewer">
+  <div class="photo-dialog-toolbar"><button type="button" data-photo-prev aria-label="Previous photograph">← Previous</button><span data-photo-count aria-live="polite"></span><button type="button" data-photo-next aria-label="Next photograph">Next →</button><button type="button" data-photo-close>Close ×</button></div>
+  <figure><img data-photo-full alt=""><figcaption data-photo-caption></figcaption></figure>
+</dialog>
