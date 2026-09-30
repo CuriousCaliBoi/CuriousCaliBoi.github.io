@@ -12,3 +12,10 @@ smallville:
   description: Follow an agent, inspect its memories, and explore the town as its day unfolds.
   mode: Interactive viewer
   note: Drag to pan, scroll to zoom, or choose an agent’s Follow or Mind button. These controls explore the running simulation without changing its decisions.
+jaz-traces:
+  title: JAZ trace viewer
+  url: /traces/
+  embed_url: /traces/
+  description: Inspect the Python cells, REPL results, retries, nested agents, token counts, and final values from JAZ runs on my DGX Spark.
+  mode: Private live viewer
+  note: The trace feed stays on my private Tailscale network. It loads only on my connected devices; the public site never stores the trace files.
