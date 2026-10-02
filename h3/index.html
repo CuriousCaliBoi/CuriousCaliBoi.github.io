@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; connect-src 'self' https://spark-a4b4.tailef40b0.ts.net:10000 http://127.0.0.1:* http://localhost:*; media-src 'self' https://spark-a4b4.tailef40b0.ts.net:10000 http://127.0.0.1:* http://localhost:*; img-src 'self' data:; base-uri 'self'; form-action 'none'; object-src 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f6f3ec">
+  <meta name="description" content="Generate a short video with MiniMax-H3 running privately on a DGX Spark.">
+  <title>MiniMax-H3 studio | Zuko's Blog</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to generator</a>
+
+  <header class="app-header">
+    <div class="app-header__inner">
+      <a class="back-link" href="/" aria-label="Back to writing"><span aria-hidden="true">&larr;</span> Writing</a>
+      <span class="header-rule" aria-hidden="true"></span>
+      <div class="identity">
+        <span class="model-mark" aria-hidden="true">H3</span>
+        <div>
+          <h1>MiniMax-H3 studio</h1>
+          <p>Text to video on the DGX Spark</p>
+        </div>
+      </div>
+      <div class="connection" data-connection="checking" aria-live="polite">
+        <span class="connection__dot" aria-hidden="true"></span>
+        <span data-connection-label>Finding Spark</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <section class="composer" aria-labelledby="prompt-heading">
+      <div class="section-heading">
+        <p class="eyebrow">01 / Direct the scene</p>
+        <h2 id="prompt-heading">What should move?</h2>
+        <p class="section-copy">Describe one clear shot. Camera movement, light, pace, and texture all help.</p>
+      </div>
+
+      <form id="generation-form">
+        <div class="field">
+          <div class="field__label-row">
+            <label for="prompt">Prompt</label>
+            <span class="character-count" data-character-count>0 / 1200</span>
+          </div>
+          <textarea id="prompt" name="prompt" rows="8" maxlength="1200" required placeholder="A quiet train crossing a salt flat at blue hour, seen from a low tracking camera..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="seed">Seed</label>
+          <div class="seed-control">
+            <input id="seed" name="seed" type="number" min="0" max="2147483647" step="1" inputmode="numeric" required>
+            <button class="icon-command" type="button" data-randomize title="Choose a random seed">
+              <span aria-hidden="true">&#9861;</span>
+              <span>Randomize</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="button button--quiet" type="button" data-clear>Clear</button>
+          <button class="button button--primary" type="submit" data-submit disabled>
+            <span data-submit-label>Generate video</span>
+            <span aria-hidden="true">&rarr;</span>
+          </button>
+        </div>
+      </form>
+
+      <p class="privacy-note"><span aria-hidden="true">&#9670;</span> Private tailnet. Prompts go directly from this browser to the Spark.</p>
+    </section>
+
+    <section class="output" aria-labelledby="output-heading">
+      <div class="section-heading section-heading--output">
+        <div>
+          <p class="eyebrow">02 / Render</p>
+          <h2 id="output-heading">The latest take</h2>
+        </div>
+        <span class="api-label" data-api-label>Resolving endpoint</span>
+      </div>
+
+      <div class="service-notice" data-service-notice role="status" aria-live="polite">
+        <div>
+          <strong data-notice-title>Looking for the DGX Spark</strong>
+          <p data-notice-detail>Checking the private service before accepting a prompt.</p>
+        </div>
+        <button class="button button--quiet button--small" type="button" data-reconnect hidden>Reconnect</button>
+      </div>
+
+      <dl class="run-facts" aria-label="Generation status">
+        <div>
+          <dt>Status</dt>
+          <dd data-job-status>Checking</dd>
+        </div>
+        <div>
+          <dt>Queue</dt>
+          <dd data-queue-position>&mdash;</dd>
+        </div>
+        <div>
+          <dt>Progress</dt>
+          <dd data-progress-label>&mdash;</dd>
+        </div>
+      </dl>
+
+      <div class="progress-track" data-progress-track role="progressbar" aria-label="Video generation progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span data-progress-bar></span>
+      </div>
+
+      <div class="result-stage" data-result-stage>
+        <div class="result-placeholder" data-result-placeholder>
+          <span class="placeholder-mark" aria-hidden="true">H3</span>
+          <p data-placeholder-title>Your generated video will appear here.</p>
+          <span data-placeholder-detail>The first render may take longer while the model warms up.</span>
+        </div>
+        <video data-result-video controls playsinline preload="metadata" hidden></video>
+      </div>
+
+      <div class="result-footer">
+        <p data-result-caption>No render yet.</p>
+        <a class="button button--quiet button--small" data-download href="#" target="_blank" rel="noopener" hidden>Download video</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>MiniMax-H3 on NVIDIA DGX Spark</span>
+    <span data-footer-state>Private service</span>
+  </footer>
+</body>
+</html>
