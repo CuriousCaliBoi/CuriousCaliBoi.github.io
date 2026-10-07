@@ -32,4 +32,4 @@ stardew:
   embed_url: /stardew/
   description: Watch a local model develop its farm, explore the valley, and attempt StarDojo Lite tasks.
   mode: Live viewer
-  note: The notebook follows the active runner. Pausing this feed only pauses your view; the agent keeps playing. Gameplay is streamed at four frames per second without audio.
+  note: The notebook follows the active runner. Pausing this feed only pauses your view; the agent keeps playing. Gameplay is streamed as 60 fps video without audio, with a short live delay.

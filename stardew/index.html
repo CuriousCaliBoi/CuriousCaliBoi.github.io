@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Watch a local language model explore Stardew Valley and work through StarDojo Lite tasks.">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'self' https://spark-a4b4.tailef40b0.ts.net; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; media-src 'self' blob: https://spark-a4b4.tailef40b0.ts.net; connect-src 'self' https://spark-a4b4.tailef40b0.ts.net; base-uri 'none'; form-action 'none'">
   <title>Stardew, live — Zuko</title>
   <link rel="stylesheet" href="./viewer.css">
-  <script src="./viewer.js" defer></script>
+  <script src="./player/hls.light.min.js" defer></script>
+  <script src="./viewer.js?v=video60" defer></script>
 </head>
 <body>
   <div class="page">
@@ -23,6 +24,7 @@
       <section class="stage" aria-label="Live gameplay">
         <div class="stage-bar"><span class="connection" id="connection"><i></i><span id="connection-text">Connecting</span></span><span id="location">Stardew Valley</span></div>
         <div class="screen" id="screen">
+          <video id="video" autoplay muted playsinline crossorigin="anonymous" aria-label="Live Stardew Valley video" hidden></video>
           <img id="game" alt="Live Stardew Valley gameplay" hidden>
           <div class="screen-notice" id="screen-notice"><span class="seed" aria-hidden="true">✳</span><strong id="notice-title">Looking for the farm…</strong><p id="notice-copy">Connecting to the live game.</p></div>
           <div class="screen-stale" id="screen-stale" hidden>Feed interrupted · last received frame</div>
@@ -47,7 +49,7 @@
         <ol id="activity"><li class="empty">No activity received yet.</li></ol>
       </aside>
     </main>
-    <footer><p><span class="footer-dot"></span><span id="model">Nemotron 3 Super</span> · Mac gameplay / DGX Spark inference</p><p>Read-only · 4 fps · No audio <span class="separator">/</span> <a href="https://github.com/CuriousCaliBoi/stardojo" target="_blank" rel="noopener">Inspired by StarDojo ↗</a></p></footer>
+    <footer><p><span class="footer-dot"></span><span id="model">Nemotron 3 Super</span> · Mac gameplay / DGX Spark inference</p><p>Read-only · <span id="stream-format">Connecting video</span> · No audio <span class="separator">/</span> <a href="https://github.com/CuriousCaliBoi/stardojo" target="_blank" rel="noopener">Inspired by StarDojo ↗</a></p></footer>
     <p class="footnote">Free play develops the farm and explores the valley. Lite mode runs individual benchmark tasks; the notebook switches automatically. This local text-state agent is an adapted baseline, not a reproduction of the paper’s multimodal results.</p>
   </div>
 </body>

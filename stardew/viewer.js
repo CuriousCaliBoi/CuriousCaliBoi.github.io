@@ -6,6 +6,22 @@
   const el = id => document.getElementById(id);
   const text = (id, value) => { el(id).textContent = value; };
   let paused = false, frameURL = null, received = 0, agentStatus = null;
+  const video = el('video');
+  let hls = null, videoSession = null, videoStarted = 0, retryVideoAt = 0;
+  let playing = false, lastVideoTime = -1;
+  let frameSample = null;
+  video.muted = true;
+  if (video.requestVideoFrameCallback) {
+    const sampleFrames = (now, metadata) => {
+      if (!frameSample) frameSample = {at:now, frames:metadata.presentedFrames};
+      if (now - frameSample.at >= 2000) {
+        video.dataset.renderFps = ((metadata.presentedFrames - frameSample.frames) * 1000 / (now - frameSample.at)).toFixed(1);
+        frameSample = {at:now, frames:metadata.presentedFrames};
+      }
+      video.requestVideoFrameCallback(sampleFrames);
+    };
+    video.requestVideoFrameCallback(sampleFrames);
+  }
   const title = value => String(value || '').replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
   const number = value => typeof value === 'number' ? Math.round(value).toLocaleString() : '—';
   const phases = {planning:'Planning', acting:'Acting', evaluating:'Checking result', loading:'Loading task', starting:'Starting', success:'Task complete', complete:'Run complete', budget_exhausted:'Budget reached', interrupted:'Stopped', infrastructure_error:'Needs attention', stopped:'Stopped', failed:'Needs attention'};
@@ -20,7 +36,7 @@
   }
   function freshness() {
     const fresh = Date.now() - received < 6000;
-    el('screen-stale').hidden = !frameURL || (fresh && !paused);
+    el('screen-stale').hidden = (!frameURL && !playing) || (fresh && !paused);
     if (paused) {
       text('screen-stale', 'Feed paused · the agent keeps playing');
       notify('wait', 'Feed paused');
@@ -38,16 +54,69 @@
     if (!response.ok) throw new Error('Feed unavailable');
     return response;
   }
+  function stopVideo() {
+    if (hls) hls.destroy();
+    hls = null;
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+    video.hidden = true;
+    playing = false;
+    videoSession = null;
+    lastVideoTime = -1;
+    text('stream-format', 'Image fallback');
+  }
+  function failedVideo() {
+    stopVideo();
+    retryVideoAt = Date.now() + 5000;
+  }
+  function startVideo(info) {
+    if (paused || document.hidden || !info?.live || info.session === videoSession || Date.now() < retryVideoAt) return;
+    if (!window.Hls?.isSupported() && !video.canPlayType('application/vnd.apple.mpegurl')) return;
+    stopVideo();
+    videoSession = info.session;
+    videoStarted = Date.now();
+    const url = base + '/video/live.m3u8';
+    if (window.Hls?.isSupported()) {
+      hls = new Hls({enableWorker:false, lowLatencyMode:true, liveSyncDurationCount:2,
+        liveMaxLatencyDurationCount:5, maxLiveSyncPlaybackRate:1.1, backBufferLength:5, maxBufferLength:8});
+      hls.on(Hls.Events.MANIFEST_PARSED, () => { video.play().catch(failedVideo); });
+      hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) failedVideo(); });
+      hls.loadSource(url);
+      hls.attachMedia(video);
+    } else {
+      video.src = url;
+      video.play().catch(failedVideo);
+    }
+  }
+  video.addEventListener('playing', () => {
+    frameSample = null;
+    playing = true;
+    video.hidden = false;
+    el('game').hidden = true;
+    el('screen-notice').hidden = true;
+    text('stream-format', '60 fps video');
+  });
+  video.addEventListener('error', failedVideo);
   async function frames() {
     const started = performance.now();
-    if (!paused && !document.hidden) {
+    if (!paused && !document.hidden && playing) {
+      if (video.currentTime !== lastVideoTime) {
+        received = Date.now();
+        lastVideoTime = video.currentTime;
+      } else if (Date.now() - received > 6000) {
+        failedVideo();
+      }
+    }
+    if (videoSession && !playing && Date.now() - videoStarted > 12000) failedVideo();
+    if (!paused && !document.hidden && !playing) {
       try {
         const response = await request('/frame.jpg');
         const next = URL.createObjectURL(await response.blob());
         const previous = frameURL;
         frameURL = next;
         el('game').src = next;
-        el('game').hidden = false;
+        el('game').hidden = playing;
         el('screen-notice').hidden = true;
         if (previous) URL.revokeObjectURL(previous);
         received = Date.now();
@@ -67,6 +136,11 @@
     return cell;
   }
   function render(data) {
+    startVideo(data.video);
+    if (!data.mode) return;
+    if (playing && data.video?.width && data.video?.height) {
+      el('screen').style.aspectRatio = data.video.width + ' / ' + data.video.height;
+    }
     const benchmark = data.mode === 'benchmark';
     const phase = data.running ? data.phase : (['complete','interrupted','infrastructure_error','failed'].includes(data.phase) ? data.phase : 'stopped');
     text('mode', benchmark ? 'STARDOJO LITE' : 'CONTINUOUS FREE PLAY');
@@ -124,6 +198,8 @@
   }
   el('pause').addEventListener('click', () => {
     paused = !paused;
+    if (paused) { video.pause(); if (hls) hls.stopLoad(); }
+    else { stopVideo(); if (agentStatus) startVideo(agentStatus.video); }
     text('pause', paused ? 'Resume feed' : 'Pause feed');
     freshness();
   });
@@ -132,6 +208,7 @@
       try { await el('screen').requestFullscreen(); } catch (_) { /* Embedded hosts can restrict fullscreen. */ }
     }
   });
-  window.addEventListener('pagehide', () => { if (frameURL) URL.revokeObjectURL(frameURL); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && !paused) stopVideo(); });
+  window.addEventListener('pagehide', () => { stopVideo(); if (frameURL) URL.revokeObjectURL(frameURL); });
   frames(); status();
 })();
