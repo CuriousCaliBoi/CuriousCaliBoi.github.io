@@ -26,3 +26,10 @@ minimax-h3:
   description: Write a scene, choose a seed, and render a short video on my DGX Spark.
   mode: Private video generator
   note: The generator is available only on my private Tailscale network. Prompts and videos travel directly between this browser and the Spark; the public site does not store them.
+stardew:
+  title: Stardew Valley
+  url: /stardew/
+  embed_url: /stardew/
+  description: Watch a local model develop its farm, explore the valley, and attempt StarDojo Lite tasks.
+  mode: Live viewer
+  note: The notebook follows the active runner. Pausing this feed only pauses your view; the agent keeps playing. Gameplay is streamed at four frames per second without audio.

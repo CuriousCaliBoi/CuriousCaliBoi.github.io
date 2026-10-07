@@ -1,0 +1,137 @@
+(() => {
+  'use strict';
+  const publicHost = 'https://spark-a4b4.tailef40b0.ts.net';
+  const base = location.hostname === 'curiouscaliboi.github.io' ? publicHost + '/stardojo-live' :
+    (location.pathname.startsWith('/stardojo-live') ? '/stardojo-live' : '');
+  const el = id => document.getElementById(id);
+  const text = (id, value) => { el(id).textContent = value; };
+  let paused = false, frameURL = null, received = 0, agentStatus = null;
+  const title = value => String(value || '').replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
+  const number = value => typeof value === 'number' ? Math.round(value).toLocaleString() : '—';
+  const phases = {planning:'Planning', acting:'Acting', evaluating:'Checking result', loading:'Loading task', starting:'Starting', success:'Task complete', complete:'Run complete', budget_exhausted:'Budget reached', interrupted:'Stopped', infrastructure_error:'Needs attention', stopped:'Stopped', failed:'Needs attention'};
+  const hints = {planning:'The game pauses while the model chooses what to do next.', acting:'The controller is carrying out the selected action in the game.', evaluating:'The benchmark evaluator is checking the observed result.', loading:'Preparing the official task and its starting save.', starting:'Preparing the game and local model.', success:'The evaluator confirmed this task succeeded.', complete:'All selected episodes have finished.', budget_exhausted:'This task reached its action limit without confirmed success.', interrupted:'The run was stopped. Completed episode results are retained.', infrastructure_error:'The runner needs attention before it can continue.'};
+
+  function notify(state, message) {
+    el('connection').dataset.state = state;
+    text('connection-text', message);
+    if (window.parent !== window) {
+      window.parent.postMessage({type:'zuko:experiment-status', state, message}, location.origin);
+    }
+  }
+  function freshness() {
+    const fresh = Date.now() - received < 6000;
+    el('screen-stale').hidden = !frameURL || (fresh && !paused);
+    if (paused) {
+      text('screen-stale', 'Feed paused · the agent keeps playing');
+      notify('wait', 'Feed paused');
+    } else if (fresh) {
+      notify('live', 'Live gameplay');
+    } else {
+      text('screen-stale', 'Feed interrupted · last received frame');
+      notify('off', 'Waiting for game');
+      text('notice-title', 'The farm is offline.');
+      text('notice-copy', 'This page reconnects automatically when the game returns.');
+    }
+  }
+  async function request(route) {
+    const response = await fetch(base + route, {cache:'no-store', signal:AbortSignal.timeout(6000)});
+    if (!response.ok) throw new Error('Feed unavailable');
+    return response;
+  }
+  async function frames() {
+    const started = performance.now();
+    if (!paused && !document.hidden) {
+      try {
+        const response = await request('/frame.jpg');
+        const next = URL.createObjectURL(await response.blob());
+        const previous = frameURL;
+        frameURL = next;
+        el('game').src = next;
+        el('game').hidden = false;
+        el('screen-notice').hidden = true;
+        if (previous) URL.revokeObjectURL(previous);
+        received = Date.now();
+      } catch (_) {
+        // A stalled connection must not leave a cached image labeled live.
+      }
+    }
+    freshness();
+    setTimeout(frames, Math.max(40, 250 - (performance.now() - started)));
+  }
+  function stat(value, label) {
+    const cell = document.createElement('div');
+    const count = document.createElement('strong');
+    const caption = document.createElement('span');
+    count.textContent = number(value); caption.textContent = label;
+    cell.append(count, caption);
+    return cell;
+  }
+  function render(data) {
+    const benchmark = data.mode === 'benchmark';
+    const phase = data.running ? data.phase : (['complete','interrupted','infrastructure_error','failed'].includes(data.phase) ? data.phase : 'stopped');
+    text('mode', benchmark ? 'STARDOJO LITE' : 'CONTINUOUS FREE PLAY');
+    text('phase', phases[phase] || title(phase));
+    text('goal', title(data.goal) || (benchmark ? 'Preparing the next benchmark task.' : 'Explore, develop the farm, and meet villagers.'));
+    text('context', hints[phase] || (data.running ? 'Making steady progress through farm work, exploration, and social interaction.' : 'The agent is stopped. Its last recorded objective is shown above.'));
+    text('action', !data.running ? 'Agent is not running' : (data.action ? title(data.action) : (phase === 'planning' ? 'Choosing the next action…' : 'Waiting for the next action')));
+    el('benchmark').hidden = !benchmark;
+    if (benchmark) {
+      text('task-index', [data.task_id, title(data.difficulty), data.repeat ? 'Pass ' + data.repeat : ''].filter(Boolean).join(' · '));
+      text('task-steps', 'Step ' + (data.step || 0) + ' / ' + (data.budget || '—'));
+      const target = Number(data.target) || 1;
+      el('task-progress').max = target;
+      el('task-progress').value = Math.max(0, Number(data.quantity) || 0);
+      text('task-quantity', number(data.quantity) + ' / ' + number(data.target) + ' task progress');
+      el('agent-stats').replaceChildren(stat(data.completed, 'Episodes finished'), stat(data.total, 'Scheduled'), stat(data.successes, 'Succeeded'));
+    } else {
+      el('agent-stats').replaceChildren(stat(data.metrics?.skills_completed, 'Skills completed'), stat(data.locations, 'Places explored'), stat(data.people, 'Villagers spotted'));
+    }
+    const world = data.world || {};
+    text('location', world.location || 'Waiting for the game');
+    text('energy', number(world.energy)); text('health', number(world.health));
+    text('gold', number(world.gold)); text('year', number(world.year));
+    if (Number.isFinite(world.time)) {
+      const hours = Math.floor(world.time / 100), minutes = String(world.time % 100).padStart(2, '0');
+      text('game-clock', title(world.season) + ' ' + world.day + ' · ' + (hours % 12 || 12) + ':' + minutes + (hours >= 12 && hours < 24 ? ' pm' : ' am'));
+    }
+    const rows = (data.recent || []).slice().reverse().map(row => {
+      const item = document.createElement('li');
+      const icon = document.createElement('span');
+      icon.className = 'outcome' + (row.success ? '' : ' failed');
+      icon.textContent = row.success ? '✓' : '↻';
+      icon.setAttribute('aria-label', row.success ? 'Succeeded' : 'Not completed');
+      const detail = document.createElement('div');
+      const label = document.createElement('div'); label.className = 'activity-label'; label.textContent = title(row.label);
+      const where = document.createElement('div'); where.className = 'activity-detail';
+      where.textContent = [row.success ? 'Completed' : 'Not completed', title(row.detail)].filter(Boolean).join(' · ');
+      detail.append(label, where); item.append(icon, detail); return item;
+    });
+    if (rows.length) el('activity').replaceChildren(...rows);
+  }
+  async function status() {
+    if (!paused && !document.hidden) {
+      try {
+        const response = await request('/api/status');
+        agentStatus = await response.json();
+        render(agentStatus);
+      } catch (_) {
+        text('phase', 'Status unavailable');
+        text('context', 'Waiting for the runner. Any objective shown is the last received status.');
+        text('action', 'Waiting for current agent status');
+      }
+    }
+    setTimeout(status, 1500);
+  }
+  el('pause').addEventListener('click', () => {
+    paused = !paused;
+    text('pause', paused ? 'Resume feed' : 'Pause feed');
+    freshness();
+  });
+  el('fullscreen').addEventListener('click', async () => {
+    if (el('screen').requestFullscreen) {
+      try { await el('screen').requestFullscreen(); } catch (_) { /* Embedded hosts can restrict fullscreen. */ }
+    }
+  });
+  window.addEventListener('pagehide', () => { if (frameURL) URL.revokeObjectURL(frameURL); });
+  frames(); status();
+})();
