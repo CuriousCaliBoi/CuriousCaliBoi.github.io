@@ -142,6 +142,7 @@
       el('screen').style.aspectRatio = data.video.width + ' / ' + data.video.height;
     }
     const benchmark = data.mode === 'benchmark';
+    text('model', data.model || 'Nemotron 3 Super');
     const phase = data.running ? data.phase : (['complete','complete_with_errors','interrupted','infrastructure_error','failed'].includes(data.phase) ? data.phase : 'stopped');
     text('mode', benchmark ? 'STARDOJO LITE' : 'CONTINUOUS FREE PLAY');
     text('phase', phases[phase] || title(phase));
