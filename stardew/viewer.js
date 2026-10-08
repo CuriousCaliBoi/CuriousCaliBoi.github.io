@@ -24,8 +24,8 @@
   }
   const title = value => String(value || '').replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
   const number = value => typeof value === 'number' ? Math.round(value).toLocaleString() : '—';
-  const phases = {planning:'Planning', acting:'Acting', evaluating:'Checking result', loading:'Loading task', starting:'Starting', success:'Task complete', complete:'Run complete', budget_exhausted:'Budget reached', interrupted:'Stopped', infrastructure_error:'Needs attention', stopped:'Stopped', failed:'Needs attention'};
-  const hints = {planning:'The game pauses while the model chooses what to do next.', acting:'The controller is carrying out the selected action in the game.', evaluating:'The benchmark evaluator is checking the observed result.', loading:'Preparing the official task and its starting save.', starting:'Preparing the game and local model.', success:'The evaluator confirmed this task succeeded.', complete:'All selected episodes have finished.', budget_exhausted:'This task reached its action limit without confirmed success.', interrupted:'The run was stopped. Completed episode results are retained.', infrastructure_error:'The runner needs attention before it can continue.'};
+  const phases = {planning:'Planning', acting:'Acting', evaluating:'Checking result', loading:'Loading task', starting:'Starting', success:'Task complete', complete:'Run complete', complete_with_errors:'Finished with errors', retrying:'Retrying task', episode_interrupted:'Task interrupted', budget_exhausted:'Budget reached', interrupted:'Stopped', infrastructure_error:'Needs attention', stopped:'Stopped', failed:'Needs attention'};
+  const hints = {planning:'The game pauses while the model chooses what to do next.', acting:'The controller is carrying out the selected action in the game.', evaluating:'The benchmark evaluator is checking the observed result.', loading:'Preparing the official task and its starting save.', starting:'Preparing the game and local model.', success:'The evaluator confirmed this task succeeded.', complete:'All selected episodes have finished.', complete_with_errors:'The run finished with interrupted tasks. A complete benchmark score is unavailable.', retrying:'A connection failed. Restarting this task once from its original save; the interrupted attempt remains unscored.', episode_interrupted:'This task was interrupted by a runner error and remains unscored. Continuing to the next task.', budget_exhausted:'This task reached its action limit without confirmed success.', interrupted:'The run was stopped. Completed episode results are retained.', infrastructure_error:'The runner needs attention before it can continue. Interrupted attempts remain unscored.'};
 
   function notify(state, message) {
     el('connection').dataset.state = state;
@@ -142,11 +142,12 @@
       el('screen').style.aspectRatio = data.video.width + ' / ' + data.video.height;
     }
     const benchmark = data.mode === 'benchmark';
-    const phase = data.running ? data.phase : (['complete','interrupted','infrastructure_error','failed'].includes(data.phase) ? data.phase : 'stopped');
+    const phase = data.running ? data.phase : (['complete','complete_with_errors','interrupted','infrastructure_error','failed'].includes(data.phase) ? data.phase : 'stopped');
     text('mode', benchmark ? 'STARDOJO LITE' : 'CONTINUOUS FREE PLAY');
     text('phase', phases[phase] || title(phase));
     text('goal', title(data.goal) || (benchmark ? 'Preparing the next benchmark task.' : 'Explore, develop the farm, and meet villagers.'));
-    text('context', hints[phase] || (data.running ? 'Making steady progress through farm work, exploration, and social interaction.' : 'The agent is stopped. Its last recorded objective is shown above.'));
+    const unresolved = benchmark && data.unresolved ? ' ' + number(data.unresolved) + ' task(s) remain unscored after runner errors.' : '';
+    text('context', (hints[phase] || (data.running ? 'Making steady progress through farm work, exploration, and social interaction.' : 'The agent is stopped. Its last recorded objective is shown above.')) + unresolved);
     text('action', !data.running ? 'Agent is not running' : (data.action ? title(data.action) : (phase === 'planning' ? 'Choosing the next action…' : 'Waiting for the next action')));
     el('benchmark').hidden = !benchmark;
     if (benchmark) {
@@ -156,7 +157,7 @@
       el('task-progress').max = target;
       el('task-progress').value = Math.max(0, Number(data.quantity) || 0);
       text('task-quantity', number(data.quantity) + ' / ' + number(data.target) + ' task progress');
-      el('agent-stats').replaceChildren(stat(data.completed, 'Episodes finished'), stat(data.total, 'Scheduled'), stat(data.successes, 'Succeeded'));
+      el('agent-stats').replaceChildren(stat(data.completed, 'Episodes scored'), stat(data.total, 'Scheduled'), stat(data.successes, 'Succeeded'));
     } else {
       el('agent-stats').replaceChildren(stat(data.metrics?.skills_completed, 'Skills completed'), stat(data.locations, 'Places explored'), stat(data.people, 'Villagers spotted'));
     }
@@ -169,15 +170,16 @@
       text('game-clock', title(world.season) + ' ' + world.day + ' · ' + (hours % 12 || 12) + ':' + minutes + (hours >= 12 && hours < 24 ? ' pm' : ' am'));
     }
     const rows = (data.recent || []).slice().reverse().map(row => {
+      const outcome = row.success === null ? 'Interrupted · unscored' : (row.success ? 'Completed' : 'Not completed');
       const item = document.createElement('li');
       const icon = document.createElement('span');
       icon.className = 'outcome' + (row.success ? '' : ' failed');
       icon.textContent = row.success ? '✓' : '↻';
-      icon.setAttribute('aria-label', row.success ? 'Succeeded' : 'Not completed');
+      icon.setAttribute('aria-label', outcome);
       const detail = document.createElement('div');
       const label = document.createElement('div'); label.className = 'activity-label'; label.textContent = title(row.label);
       const where = document.createElement('div'); where.className = 'activity-detail';
-      where.textContent = [row.success ? 'Completed' : 'Not completed', title(row.detail)].filter(Boolean).join(' · ');
+      where.textContent = [outcome, title(row.detail)].filter(Boolean).join(' · ');
       detail.append(label, where); item.append(icon, detail); return item;
     });
     if (rows.length) el('activity').replaceChildren(...rows);
