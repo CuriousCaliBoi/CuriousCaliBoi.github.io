@@ -48,6 +48,8 @@ The initial photographs are Wikimedia Commons 1280-pixel thumbnails, otherwise u
 - Deodandem, [Coyote Hills Salt](https://commons.wikimedia.org/wiki/File:Coyote_Hills_Salt.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 - Sarah Sammis, [Coyote Hills 20140310](https://commons.wikimedia.org/wiki/File:Coyote_Hills_20140310_(20777120886).jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
 
+The painting practice studio at `/perspective/` is a standalone page in `perspective/index.html`, linked from Art. Drag the light or vanishing point, or focus either handle and use the arrow keys (Shift moves faster). Cube color, grayscale, perspective guides, light depth, and fill light update the study immediately. Settings are saved in the current browser. Lighting uses flat diffuse face values without cast shadows.
+
 ## Interactive posts
 
 Add `interactive: true` to a post's front matter, then put an experiment block anywhere between its paragraphs:
