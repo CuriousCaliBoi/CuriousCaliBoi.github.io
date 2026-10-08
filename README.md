@@ -48,7 +48,7 @@ The initial photographs are Wikimedia Commons 1280-pixel thumbnails, otherwise u
 - Deodandem, [Coyote Hills Salt](https://commons.wikimedia.org/wiki/File:Coyote_Hills_Salt.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 - Sarah Sammis, [Coyote Hills 20140310](https://commons.wikimedia.org/wiki/File:Coyote_Hills_20140310_(20777120886).jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
 
-The painting practice studio at `/perspective/` is a standalone page in `perspective/index.html`, linked from Art. Drag the light or vanishing point, or focus either handle and use the arrow keys (Shift moves faster). Cube color, grayscale, perspective guides, light depth, and fill light update the study immediately. Settings are saved in the current browser. Lighting uses flat diffuse face values without cast shadows.
+The painting practice studio at `/perspective/` is a standalone app in `perspective/`, linked from Art. Its markup, styles, and simulation are in `index.html`, `studio.css`, and `studio.js`. Choose **Move light** or **Move vanishing point**, then click or tap the scene to place it. Both handles also support dragging and arrow keys (Shift moves faster). Light depth and fill light sit above the scene; cube color, grayscale, and perspective guides sit below it. Settings are saved in the current browser. Lighting uses flat diffuse face values without cast shadows.
 
 ## Interactive posts
 
