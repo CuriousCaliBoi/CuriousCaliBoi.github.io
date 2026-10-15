@@ -3,112 +3,329 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#171a19">
-  <meta name="description" content="Saved replays and results from the CuriousCaliBoi world models learning lab.">
+  <meta name="theme-color" content="#0b100e">
+  <meta name="description" content="Step inside a saved Craftax world-model experiment from the CuriousCaliBoi learning lab.">
   <title>World Models Lab — CuriousCaliBoi</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
-<body>
+<body class="is-loading">
   <a class="skip-link" href="#main">Skip to experiment</a>
-  <header class="lab-header">
+
+  <header class="lab-nav">
     <a class="site-mark" href="/" aria-label="Return to Zuko's Blog">z.</a>
-    <div class="lab-intro">
-      <p class="eyebrow">World Models Lab <span>/</span> saved experiment record</p>
-      <h1 data-title>Loading experiment…</h1>
-      <p class="question" data-question>Reading the public run index.</p>
-    </div>
-    <label class="run-picker">Experiment
+    <a class="lab-wordmark" href="#enter"><span>World Models</span><small>Field lab</small></a>
+    <nav class="chapter-nav" aria-label="Experiment chapters">
+      <a href="#observe">Observe</a>
+      <a href="#model">Model</a>
+      <a href="#finding">Finding</a>
+      <a href="#evidence">Evidence</a>
+    </nav>
+    <label class="run-picker" data-run-picker-wrap hidden>Run
       <select data-run-picker aria-label="Choose an experiment"></select>
     </label>
+    <span class="nav-status" data-status>Loading</span>
   </header>
 
+  <section class="loading-screen" data-loading aria-live="polite">
+    <div class="loading-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p>Opening the saved world…</p>
+  </section>
+
   <main id="main" hidden data-app>
-    <section class="hero-grid" aria-label="Replay and saved state">
-      <article class="panel replay-panel">
-        <div class="section-heading">
-          <div><p class="eyebrow">Replay</p><h2>What happened in the world</h2></div>
-          <span class="status-chip" data-status></span>
+    <section class="world-hero" id="enter" aria-labelledby="hero-title">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow"><span data-run-label>Field log M01</span> <i></i> DGX Spark</p>
+        <p class="hero-record" data-title></p>
+        <h1 id="hero-title">Can a tiny model <em>imagine what happens next?</em></h1>
+        <p class="hero-question" data-question></p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#observe">Enter the run <span aria-hidden="true">↓</span></a>
+          <a class="text-link" href="#finding">Skip to the finding</a>
         </div>
-        <div class="replay-stage">
-          <div class="replay-placeholder" data-replay-placeholder>
-            <span aria-hidden="true">▶</span>
-            <p>The animated replay loads only when you ask for it.</p>
+      </div>
+
+      <div class="hero-specimen">
+        <div class="specimen-orbit orbit-one"></div>
+        <div class="specimen-orbit orbit-two"></div>
+        <div class="specimen-frame" data-hero-frame role="img"></div>
+        <p><span>Observed world</span><strong>Craftax Classic</strong></p>
+      </div>
+
+      <dl class="hero-facts">
+        <div><dt>Experience</dt><dd><span data-train-transitions></span> transitions</dd></div>
+        <div><dt>Possible moves</dt><dd><span data-action-count></span> actions</dd></div>
+        <div><dt>What the model sees</dt><dd><span data-observation-dimension></span> values</dd></div>
+      </dl>
+      <p class="scroll-cue"><span aria-hidden="true"></span> Scroll into the experiment</p>
+    </section>
+
+    <section class="observation-section dark-section" id="observe" aria-labelledby="observe-title">
+      <div class="chapter-heading">
+        <p class="eyebrow light">01 / Observe</p>
+        <div>
+          <h2 id="observe-title">A life in <span data-steps></span> moves.</h2>
+          <p>This is the world the model learned from: a random-policy environment rollout, not the model dreaming yet.</p>
+        </div>
+      </div>
+
+      <div class="theater-shell" data-theater>
+        <div class="world-stage" data-world-stage tabindex="0" aria-label="Recorded Craftax rollout. Press Space to play or pause; use Left and Right Arrow to inspect steps.">
+          <div class="ambient-frame" data-ambient-frame aria-hidden="true"></div>
+          <div class="stage-vignette" aria-hidden="true"></div>
+          <div class="stage-grid" aria-hidden="true"></div>
+          <div class="pixel-viewport">
+            <div class="pixel-frame" data-pixel-frame role="img"></div>
+            <span class="corner corner-tl" aria-hidden="true"></span>
+            <span class="corner corner-tr" aria-hidden="true"></span>
+            <span class="corner corner-bl" aria-hidden="true"></span>
+            <span class="corner corner-br" aria-hidden="true"></span>
           </div>
-          <img data-replay-image hidden alt="">
-        </div>
-        <div class="replay-actions">
-          <button type="button" data-replay-button>Play replay</button>
-          <a data-trace-link>Open action trace ↗</a>
-        </div>
-        <dl class="run-stats">
-          <div><dt>Steps</dt><dd data-steps></dd></div>
-          <div><dt>Return</dt><dd data-return></dd></div>
-          <div><dt>Ending</dt><dd data-ending></dd></div>
-          <div><dt>Achievements</dt><dd data-achievements></dd></div>
-        </dl>
-      </article>
 
-      <aside class="panel state-panel">
-        <p class="eyebrow">Saved state</p>
-        <h2>Enough to replay and audit</h2>
+          <div class="stage-hud hud-top">
+            <p><span class="signal-dot" aria-hidden="true"></span> Recorded observation</p>
+            <p>Seed <strong data-replay-seed></strong></p>
+          </div>
+          <div class="stage-hud hud-bottom">
+            <p>Frame <strong data-frame-readout>00 / 51</strong></p>
+            <p data-stage-event>Before the first action</p>
+          </div>
+          <button class="stage-play" type="button" data-play aria-label="Play the recorded rollout">
+            <span aria-hidden="true">▶</span><small>Play the run</small>
+          </button>
+        </div>
+
+        <div class="theater-console">
+          <div class="transport" role="group" aria-label="Replay controls">
+            <button type="button" data-previous-step aria-label="Previous recorded step">←</button>
+            <button class="transport-play" type="button" data-play>Play</button>
+            <button type="button" data-next-step aria-label="Next recorded step">→</button>
+            <label>Speed
+              <select data-playback-speed aria-label="Replay speed">
+                <option value="0.5">0.5×</option>
+                <option value="1" selected>1×</option>
+                <option value="2">2×</option>
+              </select>
+            </label>
+            <button class="fullscreen-control" type="button" data-stage-fullscreen>Expand world ↗</button>
+          </div>
+
+          <div class="timeline-wrap">
+            <div class="timeline-labels"><span>Awake</span><span data-ending></span></div>
+            <input type="range" min="0" value="0" step="1" data-step-slider aria-label="Inspect a replay step">
+            <div class="reward-events" data-reward-events role="group" aria-label="Reward events"></div>
+          </div>
+
+          <div class="step-inspector">
+            <p class="step-number"><span>Step</span><strong data-current-step>00</strong><small>/ <span data-step-total></span></small></p>
+            <dl>
+              <div><dt>Decision</dt><dd data-current-action>Before the first action</dd></div>
+              <div><dt>Reward</dt><dd data-current-reward>0.00</dd></div>
+              <div><dt>Return so far</dt><dd data-cumulative-return>0.00</dd></div>
+            </dl>
+            <p class="step-event" data-step-event>Initial observation saved.</p>
+          </div>
+        </div>
+      </div>
+
+      <dl class="run-stats">
+        <div><dt>Total return</dt><dd data-return></dd></div>
+        <div><dt>Ending</dt><dd data-ending-copy></dd></div>
+        <div><dt>Discoveries</dt><dd data-achievement-count></dd></div>
+        <div><dt>Achievements</dt><dd data-achievements></dd></div>
+      </dl>
+
+      <a class="embed-explore" href="/experiments/world-models/" target="_top">Explore the full experiment <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="model-section paper-section" id="model" aria-labelledby="model-title">
+      <div class="chapter-heading ink-heading">
+        <p class="eyebrow">02 / Model</p>
+        <div>
+          <h2 id="model-title">What did we ask it to imagine?</h2>
+          <p>Not a picture. This first model tried to predict the hidden numbers describing what changes next.</p>
+        </div>
+      </div>
+
+      <div class="model-machine" role="img" aria-label="Current state plus action flows through a small model to predict the next state, reward, and death">
+        <div class="machine-input">
+          <p class="eyebrow">What it knows now</p>
+          <strong data-observation-dimension></strong>
+          <span>state values</span>
+        </div>
+        <span class="machine-plus" aria-hidden="true">+</span>
+        <div class="machine-input">
+          <p class="eyebrow">What happened</p>
+          <strong data-action-count></strong>
+          <span>possible actions</span>
+        </div>
+        <span class="machine-arrow" aria-hidden="true">→</span>
+        <div class="machine-core">
+          <span class="core-pulse" aria-hidden="true"></span>
+          <p>Small neural model</p>
+          <strong data-hidden-dimension></strong>
+          <span>hidden features</span>
+        </div>
+        <span class="machine-arrow" aria-hidden="true">→</span>
+        <div class="machine-output">
+          <p class="eyebrow">Its guess</p>
+          <ul><li>Next state</li><li>Reward</li><li>Alive or dead</li></ul>
+        </div>
+      </div>
+
+      <div class="training-receipt">
+        <p>It practiced on <strong data-train-transitions></strong> recorded transitions, then faced <strong data-validation-transitions></strong> transitions from episodes it had never seen.</p>
+        <p class="margin-note">A transition is one moment: what the world looked like, the action taken, and what happened next.</p>
+      </div>
+    </section>
+
+    <section class="trap-section paper-section" id="finding" aria-labelledby="finding-title">
+      <div class="trap-intro">
+        <p class="eyebrow">03 / The trap</p>
+        <h2 id="finding-title">The world barely moved.</h2>
+        <p>That made “predict nothing changes” a surprisingly strong opponent.</p>
+      </div>
+
+      <div class="change-balance" role="img" aria-label="Share of state features that stayed the same or changed">
+        <div class="still-mass">
+          <strong data-still-percent>—</strong>
+          <span>stayed still</span>
+        </div>
+        <div class="change-spark">
+          <strong data-changed-percent>—</strong>
+          <span>changed</span>
+        </div>
+      </div>
+
+      <div class="lens-lab">
+        <div class="lens-copy">
+          <p class="eyebrow">Change the lens</p>
+          <h3 data-lens-heading>Across the whole state, copying won.</h3>
+          <p data-lens-explanation></p>
+          <div class="lens-tabs" role="group" aria-label="Choose which state features to compare">
+            <button type="button" class="active" data-lens-button="all">All state features</button>
+            <button type="button" data-lens-button="changed">Only features that changed</button>
+          </div>
+        </div>
+        <div class="lens-readout">
+          <p class="lower-note">Lower error is better ↓</p>
+          <div class="lens-score model-score">
+            <span>Learned model</span><strong data-lens-model></strong><i data-lens-model-bar></i>
+          </div>
+          <div class="lens-score baseline-score">
+            <span data-lens-baseline-label>Simple baseline</span><strong data-lens-baseline></strong><i data-lens-baseline-bar></i>
+          </div>
+          <p class="lens-verdict" data-lens-verdict></p>
+        </div>
+      </div>
+
+      <blockquote class="finding-quote">
+        <p data-finding></p>
+        <footer data-summary></footer>
+      </blockquote>
+    </section>
+
+    <section class="forecast-section dark-section" id="forecast" aria-labelledby="forecast-title">
+      <div class="chapter-heading">
+        <p class="eyebrow light">04 / Watch it learn</p>
+        <div>
+          <h2 id="forecast-title">Training improved. Imagination still drifted.</h2>
+          <p>Two curves tell the story: practice made the loss fall, but looking several steps ahead made the model's mistakes compound.</p>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <article class="chart-card">
+          <div class="chart-heading">
+            <div><p class="eyebrow light">20 passes through the data</p><h3>Training loss</h3></div>
+            <p><strong data-loss-end>—</strong><span>final loss</span></p>
+          </div>
+          <div class="line-chart" data-training-chart></div>
+          <p class="chart-caption" data-training-caption></p>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-heading">
+            <div><p class="eyebrow light">Forecast horizon</p><h3>Error while imagining ahead</h3></div>
+            <p><strong data-horizon-end>—</strong><span>model at step 8</span></p>
+          </div>
+          <div class="chart-legend"><span class="legend-model">Learned model</span><span class="legend-baseline">Copy-state baseline</span></div>
+          <div class="line-chart" data-horizon-chart></div>
+          <p class="chart-caption">The model remains worse than simply copying the starting state across all eight imagined steps.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="score-section paper-section" aria-labelledby="score-title">
+      <div class="chapter-heading ink-heading">
+        <p class="eyebrow">05 / Honest scorecard</p>
+        <div>
+          <h2 id="score-title">Did learning beat doing nothing?</h2>
+          <p>Every learned number sits beside the simplest baseline that could expose a misleading success.</p>
+        </div>
+      </div>
+      <div class="score-table" data-scorecard></div>
+    </section>
+
+    <section class="evidence-section paper-section" id="evidence" aria-labelledby="evidence-title">
+      <div class="evidence-lead">
+        <p class="eyebrow">06 / Evidence vault</p>
+        <h2 id="evidence-title">What survived the run?</h2>
         <p data-state-note></p>
-        <h3>Saved on this website</h3>
-        <ul data-public-state></ul>
-        <h3>Kept on the Spark</h3>
-        <ul data-private-state></ul>
-      </aside>
-    </section>
-
-    <section class="finding-block">
-      <p class="eyebrow">The result</p>
-      <p class="finding" data-finding></p>
-      <p class="summary" data-summary></p>
-    </section>
-
-    <section class="metrics-section" aria-labelledby="metrics-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">Held-out episodes</p><h2 id="metrics-title">Model versus a simple baseline</h2></div>
-        <p class="metric-key"><span class="model-dot"></span> Model <span class="baseline-dot"></span> Baseline</p>
       </div>
-      <div class="metric-grid" data-metrics></div>
-    </section>
 
-    <section class="panel trace-panel" aria-labelledby="trace-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">51 recorded decisions</p><h2 id="trace-title">Action and reward trace</h2></div>
-        <p data-trace-summary></p>
+      <div class="state-split">
+        <article>
+          <span class="vault-light" aria-hidden="true"></span>
+          <p class="eyebrow">Saved on this website</p>
+          <h3>Portable evidence</h3>
+          <ul data-public-state></ul>
+        </article>
+        <article>
+          <span class="vault-dark" aria-hidden="true"></span>
+          <p class="eyebrow">Kept on the Spark</p>
+          <h3>Heavy working state</h3>
+          <ul data-private-state></ul>
+        </article>
       </div>
-      <div class="action-track" data-action-track role="img"></div>
-      <p class="trace-help">Each column is one action. Rust marks a non-zero reward; darker cells earned more.</p>
+
+      <details class="reproduction-drawer">
+        <summary><span>Open the reproduction receipt</span><small>Seeds, versions, hashes, and raw files</small></summary>
+        <div class="receipt-grid">
+          <dl class="detail-list">
+            <div><dt>Experiment ID</dt><dd><code data-experiment-id></code></dd></div>
+            <div><dt>Lab source</dt><dd><code data-lab-commit></code></dd></div>
+            <div><dt>SWM source</dt><dd><a data-swm-link><code data-swm-commit></code> ↗</a></dd></div>
+            <div><dt>Dataset</dt><dd><code data-dataset-hash></code></dd></div>
+            <div><dt>Checkpoint</dt><dd><code data-checkpoint-hash></code></dd></div>
+          </dl>
+          <div class="receipt-links">
+            <a data-record-link>Complete public record <span aria-hidden="true">↗</span></a>
+            <a data-trace-link>Action and reward trace <span aria-hidden="true">↗</span></a>
+            <a data-history-link>Training history <span aria-hidden="true">↗</span></a>
+            <a data-previous-record hidden>Previous immutable revision <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </details>
     </section>
 
-    <section class="details-grid">
-      <article class="panel">
-        <p class="eyebrow">Provenance</p>
-        <h2>Which run is this?</h2>
-        <dl class="detail-list">
-          <div><dt>Experiment ID</dt><dd><code data-experiment-id></code></dd></div>
-          <div><dt>Lab source</dt><dd><code data-lab-commit></code></dd></div>
-          <div><dt>SWM source</dt><dd><a data-swm-link><code data-swm-commit></code> ↗</a></dd></div>
-          <div><dt>Dataset</dt><dd><code data-dataset-hash></code></dd></div>
-          <div><dt>Checkpoint</dt><dd><code data-checkpoint-hash></code></dd></div>
-        </dl>
-        <a class="raw-link" data-record-link>Open the complete public record ↗</a>
-      </article>
-      <article class="panel">
-        <p class="eyebrow">Next hypothesis</p>
-        <h2>What we try next</h2>
-        <p class="next-hypothesis" data-next-hypothesis></p>
-        <h3>Current limitations</h3>
+    <section class="next-section" aria-labelledby="next-title">
+      <p class="eyebrow light">Next field note</p>
+      <h2 id="next-title">The failure gives us the next experiment.</h2>
+      <p data-next-hypothesis></p>
+      <div class="limitations">
+        <p class="eyebrow light">Truth boundary</p>
         <ul data-limitations></ul>
-      </article>
+      </div>
+      <a class="button button-ghost" href="/experiments/">Return to all experiments <span aria-hidden="true">↗</span></a>
     </section>
   </main>
 
   <section class="load-error" hidden data-error role="alert">
-    <h1>The experiment record could not be loaded.</h1>
+    <p class="eyebrow">World Models Lab</p>
+    <h1>The saved experiment could not be opened.</h1>
     <p data-error-message></p>
     <a href="/experiments/">Return to experiments</a>
   </section>
@@ -116,7 +333,7 @@
   <noscript>
     <section class="no-script">
       <h1>World Models Lab</h1>
-      <p>JavaScript powers the run picker and metric comparison. You can still <a href="runs/wm-craftax-m01-s23/smoke/craftax-random-rollout.gif">open the first Craftax replay</a> or <a href="runs/wm-craftax-m01-s23/experiment.json">read its experiment record</a>.</p>
+      <p>JavaScript powers the step-by-step replay and charts. You can still <a href="runs/wm-craftax-m01-s23-r2/smoke/craftax-random-rollout.gif">watch the Craftax replay</a> or <a href="runs/wm-craftax-m01-s23-r2/experiment.json">read its experiment record</a>.</p>
     </section>
   </noscript>
 </body>

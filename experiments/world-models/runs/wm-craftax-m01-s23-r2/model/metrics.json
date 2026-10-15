@@ -1,0 +1,45 @@
+{
+  "action_sensitivity_mean_std": 0.030477380380034447,
+  "always_alive_baseline_accuracy": 0.9861111044883728,
+  "changed_feature_fraction": 0.005540065933018923,
+  "copy_baseline_changed_feature_mae": 0.8510854244232178,
+  "copy_baseline_one_step_mse": 0.00469631515443325,
+  "death_accuracy": 0.9861111044883728,
+  "death_balanced_accuracy": 0.5,
+  "death_positive_rate": 0.013888888992369175,
+  "death_precision": null,
+  "death_recall": 0.0,
+  "device": "cpu",
+  "model_changed_feature_mae": 0.49034178256988525,
+  "model_nonzero_reward_mae": 0.30101078748703003,
+  "model_one_step_mse": 0.030519453808665276,
+  "model_reward_mae": 0.066785529255867,
+  "nonzero_reward_fraction": 0.0972222238779068,
+  "open_loop": {
+    "copy_baseline_mse": {
+      "horizon_1": 0.004696315198652786,
+      "horizon_2": 0.0075868324509230116,
+      "horizon_3": 0.009699626891010713,
+      "horizon_4": 0.011884347562084037,
+      "horizon_5": 0.013925545329978825,
+      "horizon_6": 0.015561617924764825,
+      "horizon_7": 0.01644948869777182,
+      "horizon_8": 0.01683760938793608
+    },
+    "model_mse": {
+      "horizon_1": 0.03051945263804454,
+      "horizon_2": 0.04977238394687293,
+      "horizon_3": 0.0584986325353384,
+      "horizon_4": 0.06584901921451092,
+      "horizon_5": 0.07306104241048589,
+      "horizon_6": 0.07944910003066953,
+      "horizon_7": 0.08363231694833799,
+      "horizon_8": 0.08668636762751983
+    }
+  },
+  "train_episodes": 6,
+  "train_transitions": 669,
+  "validation_episodes": 2,
+  "validation_transitions": 144,
+  "zero_reward_baseline_mae": 0.02916666492819786
+}

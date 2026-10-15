@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       stage.hidden = true;
       stop.hidden = true;
       fullscreen.hidden = true;
-      connect.textContent = 'Connect to viewer';
+      connect.textContent = 'Enter experiment';
       notice.hidden = true;
       status.textContent = 'Disconnected';
       connect.focus();

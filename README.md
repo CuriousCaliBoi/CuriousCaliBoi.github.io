@@ -58,7 +58,7 @@ Add `interactive: true` to a post's front matter, then put an experiment block a
 {% include experiment.html id="smallville" %}
 ```
 
-Register the experiment in `_data/experiments.yml` with `title`, `url`, `embed_url`, `description`, `mode`, and `note`. URLs can be a local app or a trusted public HTTPS app that permits embedding. This supports fully interactive apps inside a post, not just videos. Inputs, sliders, visualizations, and server requests live in the embedded app itself. Nothing connects until the visitor presses **Connect to viewer**. Disconnect unloads the frame; it does not stop the server's experiment. The full viewer link also works without JavaScript.
+Register the experiment in `_data/experiments.yml` with `title`, `url`, `embed_url`, `description`, `mode`, and `note`. URLs can be a local app or a trusted public HTTPS app that permits embedding. This supports fully interactive apps inside a post, not just videos. Inputs, sliders, visualizations, and server requests live in the embedded app itself. Nothing connects until the visitor presses **Enter experiment**. Disconnect unloads the frame; it does not stop the server's experiment. The full viewer link also works without JavaScript.
 
 Pokémon remains a spectator view. Smallville allows camera movement, agent following, and inspection of agents' minds. The MiniMax-H3 workbench at `/h3/` sends text-to-video jobs to the private DGX API configured in `/h3/live.json`; `?api=` can override that endpoint for local testing. These viewers report connection status to the parent post using `postMessage`; the parent checks both the source window and origin. For a new same-origin app, send `{ type: 'zuko:experiment-status', state: 'live', message: '...' }` (states: `live`, `wait`, or `off`) to `location.origin`. A frame's load event alone is labeled **Viewer loaded**, never treated as proof that the remote experiment is online.
 
@@ -75,7 +75,9 @@ GitHub Pages serves the article and client interface. Experiments that call a mo
 `/experiments/` is the public experiment library. The World Models Lab at
 `/experiments/world-models/` reads immutable run records from
 `runs/<experiment-id>/experiment.json` and can be embedded through the normal
-experiment include.
+experiment include. Its current replay revision includes a compact sprite and
+frame index, so visitors can play, pause, and inspect every recorded step
+without contacting the Spark.
 
 The companion lab validates and syncs only replay media, action/reward traces,
 metrics, training history, and reproducibility fingerprints. Raw datasets,

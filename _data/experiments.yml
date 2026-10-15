@@ -37,6 +37,6 @@ world-models:
   title: World Models Lab
   url: /experiments/world-models/
   embed_url: /experiments/world-models/
-  description: Replay each learning milestone, compare the model with simple baselines, and inspect exactly what was saved from the Spark.
-  mode: Replay archive
-  note: Replays, traces, metrics, seeds, and fingerprints are public. Training data and checkpoints remain on the Spark.
+  description: Step through a Craftax life, watch learning curves unfold, and discover why the first model lost to predicting that nothing changes.
+  mode: Interactive field lab
+  note: The observed rollout, step-by-step trace, metrics, seeds, and fingerprints are public. Training data and checkpoints remain on the Spark.

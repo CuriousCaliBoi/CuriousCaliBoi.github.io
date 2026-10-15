@@ -4,10 +4,20 @@
       "date": "2026-10-15",
       "id": "wm-craftax-m01-s23",
       "record": "runs/wm-craftax-m01-s23/experiment.json",
+      "revision": 1,
       "status": "completed",
+      "title": "Craftax Milestone 01"
+    },
+    {
+      "date": "2026-10-15",
+      "id": "wm-craftax-m01-s23-r2",
+      "record": "runs/wm-craftax-m01-s23-r2/experiment.json",
+      "revision": 2,
+      "status": "completed",
+      "supersedes": "wm-craftax-m01-s23",
       "title": "Craftax Milestone 01"
     }
   ],
-  "latest": "wm-craftax-m01-s23",
+  "latest": "wm-craftax-m01-s23-r2",
   "schema_version": 1
 }

@@ -1,0 +1,241 @@
+{
+  "$schema": "https://curiouscaliboi.github.io/experiments/world-models/schema/experiment-v1.schema.json",
+  "schema_version": 1,
+  "id": "wm-craftax-m01-s23-r2",
+  "revision": 2,
+  "date": "2026-10-15",
+  "title": "Craftax Milestone 01",
+  "question": "Can a small action-conditioned model predict what changes next in an open world?",
+  "status": "completed",
+  "summary": "The model learned rare changing features better than copying them, but disturbed so many stable features that the copy-state baseline won overall.",
+  "article": {
+    "slug": "world-models-from-scratch",
+    "anchor": "milestone-01",
+    "status": "draft",
+    "url": null
+  },
+  "source": {
+    "project": "CuriousCaliBoi Labs",
+    "repository": null,
+    "commit": "29ce7eafbfc2a03f001c16dce27de6709d05f9d5",
+    "public": false,
+    "entrypoints": [
+      "swm/src/craftax_smoke.py",
+      "swm/src/collect_craftax.py",
+      "swm/src/train_symbolic_model.py"
+    ],
+    "dependencies": [
+      {
+        "name": "stable-worldmodel",
+        "repository": "https://github.com/galilai-group/stable-worldmodel",
+        "commit": "21446f1ede6d5284e981bd7b47f432b994e6d812"
+      }
+    ]
+  },
+  "environment": {
+    "replay_id": "swm/CraftaxClassicPixels-v1",
+    "training_id": "swm/CraftaxClassicSymbolic-v1",
+    "craftax_version": "1.6.1",
+    "actions": 17,
+    "observation_dimension": 1345
+  },
+  "execution": {
+    "machine": "NVIDIA DGX Spark",
+    "architecture": "aarch64",
+    "training_device": "cpu",
+    "cuda_probe": "NVIDIA GB10, compute capability 12.1",
+    "base_image": "nvcr.io/nvidia/vllm@sha256:13e327dad79e6e417f6687fec2ba76b0386d597082ec0ee003c1e964ec6ad0e7",
+    "resource_policy": "6 GiB container cap; JAX kept on CPU while the existing GPU service remained online"
+  },
+  "seeds": {
+    "replay": 7,
+    "dataset": 11,
+    "training": 23
+  },
+  "dataset": {
+    "format": "Lance",
+    "episodes": 8,
+    "two_step_clips": 813,
+    "training_transitions": 669,
+    "validation_transitions": 144,
+    "sha256": "4fedde33a512ca965ce1f359070b8fcad94ea75d747f08f3d4c1f44f17cf169b",
+    "published": false,
+    "retained": "DGX Spark"
+  },
+  "model": {
+    "name": "CraftaxDynamics",
+    "kind": "action-conditioned symbolic next-state model",
+    "hidden_dimension": 256,
+    "checkpoint_sha256": "c1a8fca3e732319394c208e80365e8d60da1f165be0380e475840b9dff0ed98d",
+    "checkpoint_published": false,
+    "retained": "DGX Spark"
+  },
+  "saved_state": {
+    "type": "replay-and-provenance",
+    "resumable": false,
+    "published": [
+      "52-frame replay and animated GIF",
+      "step-aligned replay sprite and frame index",
+      "seed and action/reward trace",
+      "metrics and training history",
+      "source, dataset, and checkpoint fingerprints"
+    ],
+    "private": [
+      "Lance dataset",
+      "PyTorch checkpoint",
+      "machine-specific runtime manifests"
+    ],
+    "note": "This public state can audit and reproduce the run under the pinned environment. It cannot resume training by itself."
+  },
+  "replay": {
+    "media_artifact": "replay-gif",
+    "frame_index_artifact": "replay-frames",
+    "sprite_artifact": "replay-sprite",
+    "trace_artifact": "action-trace",
+    "mode": "seed-and-actions",
+    "frame_count": 52,
+    "frame_duration_ms": 100,
+    "steps": 51,
+    "return": 1.0999999791383743,
+    "termination": "death",
+    "achievements": ["collect_wood", "wake_up"],
+    "exact_with": "pinned runtime",
+    "resumable": false,
+    "supersedes": "wm-craftax-m01-s23",
+    "correction": "Revision 2 detaches frames from SWM's reused info buffer so every recorded observation remains distinct.",
+    "alt": "A random agent moving through the blocky Craftax Classic world before the episode ends in death."
+  },
+  "headline_metrics": [
+    {
+      "id": "state-one-step-mse",
+      "label": "All state features, one step",
+      "unit": "MSE",
+      "model": 0.030519453808665276,
+      "baseline": 0.00469631515443325,
+      "baseline_label": "Copy current state",
+      "lower_is_better": true,
+      "winner": "baseline"
+    },
+    {
+      "id": "changed-feature-mae",
+      "label": "Features that changed",
+      "unit": "MAE",
+      "model": 0.49034178256988525,
+      "baseline": 0.8510854244232178,
+      "baseline_label": "Copy current state",
+      "lower_is_better": true,
+      "winner": "model"
+    },
+    {
+      "id": "reward-mae",
+      "label": "Reward",
+      "unit": "MAE",
+      "model": 0.066785529255867,
+      "baseline": 0.02916666492819786,
+      "baseline_label": "Always zero",
+      "lower_is_better": true,
+      "winner": "baseline"
+    },
+    {
+      "id": "death-accuracy",
+      "label": "Death prediction",
+      "unit": "accuracy",
+      "model": 0.9861111044883728,
+      "baseline": 0.9861111044883728,
+      "baseline_label": "Always alive",
+      "lower_is_better": false,
+      "winner": "tie",
+      "note": "The model recalled 0% of deaths."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "replay-gif",
+      "kind": "replay",
+      "path": "smoke/craftax-random-rollout.gif",
+      "media_type": "image/gif",
+      "bytes": 807751,
+      "sha256": "aef7efa6e95fd3e8cda73b4fbee59ec1fda0e049fee6ca85f4754567b8863b10",
+      "included": true
+    },
+    {
+      "id": "replay-sprite",
+      "kind": "replay-frames",
+      "path": "smoke/craftax-random-rollout-frames.png",
+      "media_type": "image/png",
+      "bytes": 64196,
+      "sha256": "473bd253829c16136511052b056af9b01382a39bc2323aa0ab643d7df009ff9c",
+      "included": true
+    },
+    {
+      "id": "replay-frames",
+      "kind": "replay-index",
+      "path": "smoke/replay-frames.json",
+      "media_type": "application/json",
+      "bytes": 2770,
+      "sha256": "5598ae3c5e000563b35f381feb7e4639fc9c01e5201f3845ee7c35ae189b20f0",
+      "included": true
+    },
+    {
+      "id": "rollout-metrics",
+      "kind": "metrics",
+      "path": "smoke/metrics.json",
+      "media_type": "application/json",
+      "bytes": 564,
+      "sha256": "1460b533c26e355fcaec1e431e5bcdc7e915330f6e98a22c59eb7efdf4cf81f1",
+      "included": true
+    },
+    {
+      "id": "action-trace",
+      "kind": "trace",
+      "path": "smoke/rollout.json",
+      "media_type": "application/json",
+      "bytes": 910,
+      "sha256": "fc6083fd69302176471f9d71c35516f479b6e46a8ffea890be84ac2010c515f0",
+      "included": true
+    },
+    {
+      "id": "model-metrics",
+      "kind": "metrics",
+      "path": "model/metrics.json",
+      "media_type": "application/json",
+      "bytes": 1595,
+      "sha256": "3a00d337d40621779ad86cd347839d32c19ec7ea29d8d342cce58b77d56d9da8",
+      "included": true
+    },
+    {
+      "id": "training-history",
+      "kind": "training-history",
+      "path": "model/history.json",
+      "media_type": "application/json",
+      "bytes": 1432,
+      "sha256": "ed24b648c9ac75de07e91be0d9b9923dccc8cc689f3b4d15ab5c6ca6cd12d9d3",
+      "included": true
+    },
+    {
+      "id": "dataset",
+      "kind": "training-data",
+      "sha256": "4fedde33a512ca965ce1f359070b8fcad94ea75d747f08f3d4c1f44f17cf169b",
+      "included": false,
+      "reason": "Runtime data retained on the Spark"
+    },
+    {
+      "id": "checkpoint",
+      "kind": "model-checkpoint",
+      "bytes": 3332272,
+      "sha256": "c1a8fca3e732319394c208e80365e8d60da1f165be0380e475840b9dff0ed98d",
+      "included": false,
+      "reason": "PyTorch checkpoint retained on the Spark; not a browser-safe artifact"
+    }
+  ],
+  "result": {
+    "finding": "Only 0.554% of held-out features changed. The model reduced error on those changes by 42%, but its total state error was 6.5 times the copy-state baseline.",
+    "limitations": [
+      "The model predicts symbolic observations rather than pixels.",
+      "It does not plan or control the agent.",
+      "It failed to beat zero-reward and always-alive baselines.",
+      "The replay policy is random."
+    ],
+    "next_hypothesis": "Begin from an exact copy-state predictor, learn only a small residual change, and rebalance rare reward and death examples."
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "frame_duration_ms": 100,
+  "frame_stride": 1,
+  "frames": [
+    {
+      "index": 0,
+      "step": 0
+    },
+    {
+      "index": 1,
+      "step": 1
+    },
+    {
+      "index": 2,
+      "step": 2
+    },
+    {
+      "index": 3,
+      "step": 3
+    },
+    {
+      "index": 4,
+      "step": 4
+    },
+    {
+      "index": 5,
+      "step": 5
+    },
+    {
+      "index": 6,
+      "step": 6
+    },
+    {
+      "index": 7,
+      "step": 7
+    },
+    {
+      "index": 8,
+      "step": 8
+    },
+    {
+      "index": 9,
+      "step": 9
+    },
+    {
+      "index": 10,
+      "step": 10
+    },
+    {
+      "index": 11,
+      "step": 11
+    },
+    {
+      "index": 12,
+      "step": 12
+    },
+    {
+      "index": 13,
+      "step": 13
+    },
+    {
+      "index": 14,
+      "step": 14
+    },
+    {
+      "index": 15,
+      "step": 15
+    },
+    {
+      "index": 16,
+      "step": 16
+    },
+    {
+      "index": 17,
+      "step": 17
+    },
+    {
+      "index": 18,
+      "step": 18
+    },
+    {
+      "index": 19,
+      "step": 19
+    },
+    {
+      "index": 20,
+      "step": 20
+    },
+    {
+      "index": 21,
+      "step": 21
+    },
+    {
+      "index": 22,
+      "step": 22
+    },
+    {
+      "index": 23,
+      "step": 23
+    },
+    {
+      "index": 24,
+      "step": 24
+    },
+    {
+      "index": 25,
+      "step": 25
+    },
+    {
+      "index": 26,
+      "step": 26
+    },
+    {
+      "index": 27,
+      "step": 27
+    },
+    {
+      "index": 28,
+      "step": 28
+    },
+    {
+      "index": 29,
+      "step": 29
+    },
+    {
+      "index": 30,
+      "step": 30
+    },
+    {
+      "index": 31,
+      "step": 31
+    },
+    {
+      "index": 32,
+      "step": 32
+    },
+    {
+      "index": 33,
+      "step": 33
+    },
+    {
+      "index": 34,
+      "step": 34
+    },
+    {
+      "index": 35,
+      "step": 35
+    },
+    {
+      "index": 36,
+      "step": 36
+    },
+    {
+      "index": 37,
+      "step": 37
+    },
+    {
+      "index": 38,
+      "step": 38
+    },
+    {
+      "index": 39,
+      "step": 39
+    },
+    {
+      "index": 40,
+      "step": 40
+    },
+    {
+      "index": 41,
+      "step": 41
+    },
+    {
+      "index": 42,
+      "step": 42
+    },
+    {
+      "index": 43,
+      "step": 43
+    },
+    {
+      "index": 44,
+      "step": 44
+    },
+    {
+      "index": 45,
+      "step": 45
+    },
+    {
+      "index": 46,
+      "step": 46
+    },
+    {
+      "index": 47,
+      "step": 47
+    },
+    {
+      "index": 48,
+      "step": 48
+    },
+    {
+      "index": 49,
+      "step": 49
+    },
+    {
+      "index": 50,
+      "step": 50
+    },
+    {
+      "index": 51,
+      "step": 51
+    }
+  ],
+  "schema_version": 1,
+  "sprite": {
+    "columns": 8,
+    "frame_height": 126,
+    "frame_width": 126,
+    "path": "craftax-random-rollout-frames.png",
+    "rows": 7
+  }
+}
