@@ -1,0 +1,18 @@
+---
+layout: page
+title: Experiments
+permalink: /experiments/
+---
+<p>These are small windows into projects I am building and learning from. Some are live services; others are permanent replay records that keep working when the Spark is offline.</p>
+
+<div class="experiment-library">
+  {% for item in site.data.experiments %}
+    {% assign experiment = item[1] %}
+    <article>
+      <p class="experiment-library-meta"><span>{{ experiment.mode }}</span><span>{{ item[0] }}</span></p>
+      <h2><a href="{{ experiment.url | relative_url }}">{{ experiment.title | escape }}</a></h2>
+      <p>{{ experiment.description }}</p>
+      <a class="experiment-library-link" href="{{ experiment.url | relative_url }}">Open experiment <span aria-hidden="true">↗</span></a>
+    </article>
+  {% endfor %}
+</div>

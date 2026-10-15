@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://curiouscaliboi.github.io/experiments/schema/experiment-v1.json",
+  "title": "CuriousCaliBoi experiment record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "revision",
+    "date",
+    "title",
+    "question",
+    "status",
+    "summary",
+    "article",
+    "source",
+    "environment",
+    "execution",
+    "seeds",
+    "dataset",
+    "model",
+    "saved_state",
+    "replay",
+    "headline_metrics",
+    "artifacts",
+    "result"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "date": { "type": "string", "format": "date" },
+    "title": { "type": "string", "minLength": 1 },
+    "question": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["planned", "running", "completed", "failed"] },
+    "summary": { "type": "string", "minLength": 1 },
+    "article": { "type": "object" },
+    "source": { "type": "object" },
+    "environment": { "type": "object" },
+    "execution": { "type": "object" },
+    "seeds": { "type": "object" },
+    "dataset": { "type": "object" },
+    "model": { "type": "object" },
+    "saved_state": { "type": "object" },
+    "replay": { "type": "object" },
+    "headline_metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "unit",
+          "model",
+          "baseline",
+          "baseline_label",
+          "winner"
+        ]
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "included", "sha256"]
+      }
+    },
+    "result": { "type": "object" }
+  }
+}

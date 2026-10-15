@@ -5,6 +5,8 @@ main:
     url: /art/
   - title: "Models"
     url: /models/
+  - title: "Experiments"
+    url: /experiments/
   - title: "About"
     url: /about/
   - title: "GitHub"

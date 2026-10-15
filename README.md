@@ -69,3 +69,16 @@ To reuse the browser-only color sampler in a post:
 ```
 
 GitHub Pages serves the article and client interface. Experiments that call a model or run computation need their own server, as the existing DGX viewers do. Keep API keys and model credentials on that server. Enforce authentication, input validation, and request limits there before exposing any new computation or write controls to visitors.
+
+## Saved experiment records
+
+`/experiments/` is the public experiment library. The World Models Lab at
+`/experiments/world-models/` reads immutable run records from
+`runs/<experiment-id>/experiment.json` and can be embedded through the normal
+experiment include.
+
+The companion lab validates and syncs only replay media, action/reward traces,
+metrics, training history, and reproducibility fingerprints. Raw datasets,
+PyTorch checkpoints, credentials, internal paths, and machine-specific
+manifests are not copied into this public repository. A saved website record
+can replay and audit a run; it is not a resumable training checkpoint.

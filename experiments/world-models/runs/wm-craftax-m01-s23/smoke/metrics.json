@@ -1,0 +1,33 @@
+{
+  "achievements": [
+    "collect_wood",
+    "wake_up"
+  ],
+  "action_histogram": {
+    "0": 5,
+    "1": 1,
+    "2": 2,
+    "3": 4,
+    "4": 4,
+    "5": 2,
+    "6": 2,
+    "7": 3,
+    "8": 6,
+    "9": 2,
+    "10": 5,
+    "11": 1,
+    "12": 1,
+    "13": 4,
+    "14": 5,
+    "15": 2,
+    "16": 2
+  },
+  "environment": "swm/CraftaxClassicPixels-v1",
+  "note": "Death is a termination condition, not a success condition.",
+  "policy": "random",
+  "return": 1.0999999791383743,
+  "seed": 7,
+  "steps": 51,
+  "termination_reason": "death",
+  "unique_achievements": 2
+}

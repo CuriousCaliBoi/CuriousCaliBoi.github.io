@@ -33,3 +33,10 @@ stardew:
   description: Watch a local model develop its farm, explore the valley, and attempt StarDojo Lite tasks.
   mode: Live viewer
   note: The notebook follows the active runner. Pausing this feed only pauses your view; the agent keeps playing. Gameplay is streamed as 60 fps video without audio, with a short live delay.
+world-models:
+  title: World Models Lab
+  url: /experiments/world-models/
+  embed_url: /experiments/world-models/
+  description: Replay each learning milestone, compare the model with simple baselines, and inspect exactly what was saved from the Spark.
+  mode: Replay archive
+  note: Replays, traces, metrics, seeds, and fingerprints are public. Training data and checkpoints remain on the Spark.

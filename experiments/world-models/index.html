@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171a19">
+  <meta name="description" content="Saved replays and results from the CuriousCaliBoi world models learning lab.">
+  <title>World Models Lab — CuriousCaliBoi</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to experiment</a>
+  <header class="lab-header">
+    <a class="site-mark" href="/" aria-label="Return to Zuko's Blog">z.</a>
+    <div class="lab-intro">
+      <p class="eyebrow">World Models Lab <span>/</span> saved experiment record</p>
+      <h1 data-title>Loading experiment…</h1>
+      <p class="question" data-question>Reading the public run index.</p>
+    </div>
+    <label class="run-picker">Experiment
+      <select data-run-picker aria-label="Choose an experiment"></select>
+    </label>
+  </header>
+
+  <main id="main" hidden data-app>
+    <section class="hero-grid" aria-label="Replay and saved state">
+      <article class="panel replay-panel">
+        <div class="section-heading">
+          <div><p class="eyebrow">Replay</p><h2>What happened in the world</h2></div>
+          <span class="status-chip" data-status></span>
+        </div>
+        <div class="replay-stage">
+          <div class="replay-placeholder" data-replay-placeholder>
+            <span aria-hidden="true">▶</span>
+            <p>The animated replay loads only when you ask for it.</p>
+          </div>
+          <img data-replay-image hidden alt="">
+        </div>
+        <div class="replay-actions">
+          <button type="button" data-replay-button>Play replay</button>
+          <a data-trace-link>Open action trace ↗</a>
+        </div>
+        <dl class="run-stats">
+          <div><dt>Steps</dt><dd data-steps></dd></div>
+          <div><dt>Return</dt><dd data-return></dd></div>
+          <div><dt>Ending</dt><dd data-ending></dd></div>
+          <div><dt>Achievements</dt><dd data-achievements></dd></div>
+        </dl>
+      </article>
+
+      <aside class="panel state-panel">
+        <p class="eyebrow">Saved state</p>
+        <h2>Enough to replay and audit</h2>
+        <p data-state-note></p>
+        <h3>Saved on this website</h3>
+        <ul data-public-state></ul>
+        <h3>Kept on the Spark</h3>
+        <ul data-private-state></ul>
+      </aside>
+    </section>
+
+    <section class="finding-block">
+      <p class="eyebrow">The result</p>
+      <p class="finding" data-finding></p>
+      <p class="summary" data-summary></p>
+    </section>
+
+    <section class="metrics-section" aria-labelledby="metrics-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">Held-out episodes</p><h2 id="metrics-title">Model versus a simple baseline</h2></div>
+        <p class="metric-key"><span class="model-dot"></span> Model <span class="baseline-dot"></span> Baseline</p>
+      </div>
+      <div class="metric-grid" data-metrics></div>
+    </section>
+
+    <section class="panel trace-panel" aria-labelledby="trace-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">51 recorded decisions</p><h2 id="trace-title">Action and reward trace</h2></div>
+        <p data-trace-summary></p>
+      </div>
+      <div class="action-track" data-action-track role="img"></div>
+      <p class="trace-help">Each column is one action. Rust marks a non-zero reward; darker cells earned more.</p>
+    </section>
+
+    <section class="details-grid">
+      <article class="panel">
+        <p class="eyebrow">Provenance</p>
+        <h2>Which run is this?</h2>
+        <dl class="detail-list">
+          <div><dt>Experiment ID</dt><dd><code data-experiment-id></code></dd></div>
+          <div><dt>Lab source</dt><dd><code data-lab-commit></code></dd></div>
+          <div><dt>SWM source</dt><dd><a data-swm-link><code data-swm-commit></code> ↗</a></dd></div>
+          <div><dt>Dataset</dt><dd><code data-dataset-hash></code></dd></div>
+          <div><dt>Checkpoint</dt><dd><code data-checkpoint-hash></code></dd></div>
+        </dl>
+        <a class="raw-link" data-record-link>Open the complete public record ↗</a>
+      </article>
+      <article class="panel">
+        <p class="eyebrow">Next hypothesis</p>
+        <h2>What we try next</h2>
+        <p class="next-hypothesis" data-next-hypothesis></p>
+        <h3>Current limitations</h3>
+        <ul data-limitations></ul>
+      </article>
+    </section>
+  </main>
+
+  <section class="load-error" hidden data-error role="alert">
+    <h1>The experiment record could not be loaded.</h1>
+    <p data-error-message></p>
+    <a href="/experiments/">Return to experiments</a>
+  </section>
+
+  <noscript>
+    <section class="no-script">
+      <h1>World Models Lab</h1>
+      <p>JavaScript powers the run picker and metric comparison. You can still <a href="runs/wm-craftax-m01-s23/smoke/craftax-random-rollout.gif">open the first Craftax replay</a> or <a href="runs/wm-craftax-m01-s23/experiment.json">read its experiment record</a>.</p>
+    </section>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "experiments": [
+    {
+      "date": "2026-10-15",
+      "id": "wm-craftax-m01-s23",
+      "record": "runs/wm-craftax-m01-s23/experiment.json",
+      "status": "completed",
+      "title": "Craftax Milestone 01"
+    }
+  ],
+  "latest": "wm-craftax-m01-s23",
+  "schema_version": 1
+}
