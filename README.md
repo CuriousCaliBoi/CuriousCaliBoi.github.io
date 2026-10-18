@@ -70,6 +70,19 @@ To reuse the browser-only color sampler in a post:
 
 GitHub Pages serves the article and client interface. Experiments that call a model or run computation need their own server, as the existing DGX viewers do. Keep API keys and model credentials on that server. Enforce authentication, input validation, and request limits there before exposing any new computation or write controls to visitors.
 
+## World Models in the browser
+
+`/world-models-carracing/` is a standalone static app: the CarRacing agent from
+the 2018 World Models paper (ConvVAE, MDN-RNN, CMA-ES controller), trained on
+the DGX Spark with the PyTorch code in `world-models-carracing/train/`. The
+decoder and one RNN step are ONNX graphs in `world-models-carracing/model/`,
+run by onnxruntime-web from the jsDelivr CDN; the controller and starting
+latents are JSON. The page dreams closed-loop, lets visitors take the wheel
+with the arrow keys or an on-screen pad, and reports `live`, `wait`, or `off`
+to the parent post with the usual `postMessage`. Rebuilding the model files
+is described in `world-models-carracing/train/README.md`; the recorded
+rollouts and checkpoints stay on the Spark.
+
 ## Saved experiment records
 
 `/experiments/` is the public experiment library. The World Models Lab at

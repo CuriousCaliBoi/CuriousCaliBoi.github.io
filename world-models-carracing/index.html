@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f1216">
+<title>World Models: CarRacing dream</title>
+<meta name="description" content="The 2018 World Models agent (VAE, MDN-RNN, CMA-ES controller) trained on a DGX Spark, dreaming CarRacing entirely in your browser.">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.29.0/dist/ort.min.js" crossorigin="anonymous"></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="site-mark" href="/" aria-label="Back to Zuko's Blog">z.</a>
+  <h1>World Models <span>CarRacing, dreamed in your browser</span></h1>
+  <span class="status is-wait" data-status role="status"><i aria-hidden="true"></i><span data-status-text>Loading models…</span></span>
+</header>
+
+<main>
+  <section class="stage" aria-labelledby="dream-title">
+    <div class="screen-wrap">
+      <div class="screen" data-screen tabindex="0" aria-label="Dream view. Click to focus, then drive with the arrow keys.">
+        <canvas data-dream width="64" height="64" aria-label="Frames imagined by the world model"></canvas>
+        <div class="screen-badges"><span data-driver-badge>Agent is driving</span><span data-step-badge>step 0</span></div>
+        <p class="screen-message" data-screen-message hidden></p>
+      </div>
+      <div class="touchpad" aria-label="Touch controls">
+        <button type="button" data-key="ArrowLeft" aria-label="Steer left">◀</button>
+        <button type="button" data-key="ArrowUp" aria-label="Gas">▲</button>
+        <button type="button" data-key="ArrowDown" aria-label="Brake">▼</button>
+        <button type="button" data-key="ArrowRight" aria-label="Steer right">▶</button>
+      </div>
+    </div>
+
+    <aside class="controls">
+      <h2 id="dream-title">Inside the dream</h2>
+      <p class="lede">Every frame here is imagined. The controller picks an action, the MDN-RNN predicts the next latent, and the VAE decoder paints it. No game engine is running.</p>
+      <div class="segmented" role="radiogroup" aria-label="Who drives">
+        <label><input type="radio" name="driver" value="agent" checked><span>Agent C drives</span></label>
+        <label><input type="radio" name="driver" value="human"><span>You drive</span></label>
+      </div>
+      <label class="slider">
+        <span>Temperature τ <output data-temperature-value>1.00</output></span>
+        <input type="range" min="0.1" max="2.5" step="0.05" value="1" data-temperature>
+      </label>
+      <label class="slider">
+        <span>Dream speed <output data-fps-value>30 fps</output></span>
+        <input type="range" min="5" max="60" step="5" value="30" data-fps>
+      </label>
+      <div class="button-row">
+        <button type="button" data-restart="start">Restart at the grid</button>
+        <button type="button" data-restart="midway">Restart mid-lap</button>
+        <button type="button" data-pause aria-pressed="false">Pause</button>
+      </div>
+      <label class="check"><input type="checkbox" data-smooth checked><span>Smooth pixels</span></label>
+      <div class="readout" aria-label="Current action">
+        <div class="bar steer"><span>steer</span><div class="track"><i data-bar="steer"></i></div></div>
+        <div class="bar"><span>gas</span><div class="track"><i data-bar="gas"></i></div></div>
+        <div class="bar"><span>brake</span><div class="track"><i data-bar="brake"></i></div></div>
+      </div>
+      <div class="memory">
+        <span>M’s memory h, 256 units</span>
+        <canvas data-memory width="16" height="16" aria-label="LSTM hidden state"></canvas>
+      </div>
+      <p class="hint">Keyboard: ← → steer, ↑ gas, ↓ brake. Click the screen first. Touching the wheel switches to “You drive”.</p>
+    </aside>
+  </section>
+
+  <section class="explain">
+    <h2>What is running</h2>
+    <div class="cards">
+      <article>
+        <h3><b>V</b> vision</h3>
+        <p>A convolutional VAE compresses each 64×64 frame into 32 numbers, z. Only its decoder ships to the browser.</p>
+        <p class="stat"><strong data-meta="decoder_params">…</strong> parameters</p>
+      </article>
+      <article>
+        <h3><b>M</b> memory</h3>
+        <p>An LSTM with 256 units and a mixture-density head, five Gaussians per latent dimension, predicts z<sub>t+1</sub> from z<sub>t</sub> and the action. τ scales its uncertainty.</p>
+        <p class="stat"><strong data-meta="rnn_params">…</strong> parameters</p>
+      </article>
+      <article>
+        <h3><b>C</b> controller</h3>
+        <p>One linear layer on [z, h] with 867 parameters, found by CMA-ES in the real environment. It drives the dream the same way it drives the game.</p>
+        <p class="stat"><strong data-meta="controller_params">…</strong> parameters</p>
+      </article>
+    </div>
+    <p>This is the recipe from <a href="https://worldmodels.github.io/">World Models</a> (Ha &amp; Schmidhuber, 2018), re-implemented in PyTorch and trained on my DGX Spark. The models were exported to ONNX and run here with onnxruntime-web. The page is static and never contacts the Spark.</p>
+  </section>
+
+  <section class="results">
+    <h2>In the real environment</h2>
+    <figure>
+      <video controls muted loop playsinline preload="metadata" poster="media/agent_poster.png" data-video>
+        <source src="media/agent.mp4" type="video/mp4">
+      </video>
+      <figcaption>Left: what the agent sees. Middle: V’s reconstruction. Right: a dream started from the same first frame, driven by the same controller inside M.</figcaption>
+    </figure>
+    <table class="facts" aria-label="Training facts">
+      <tbody data-facts><tr><td>Loading…</td><td></td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="latent">
+    <h2>Walk the latent space</h2>
+    <p>Pick a real frame from a held-out rollout. V encodes it into z and decodes it back. Then push the 32 sliders to see what each direction of z means to the decoder.</p>
+    <div class="latent-grid">
+      <div class="samples" data-samples aria-label="Real frames"></div>
+      <div class="pair">
+        <figure><canvas data-real width="64" height="64"></canvas><figcaption>real frame</figcaption></figure>
+        <figure><canvas data-decoded width="64" height="64"></canvas><figcaption>decoded from z</figcaption></figure>
+      </div>
+      <div class="sliders" data-sliders></div>
+      <div class="button-row">
+        <button type="button" data-latent-reset>Back to the frame’s z</button>
+        <button type="button" data-latent-random>Random z</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Paper: <a href="https://arxiv.org/abs/1803.10122">arXiv:1803.10122</a> · interactive article at <a href="https://worldmodels.github.io/">worldmodels.github.io</a> · original code: <a href="https://github.com/hardmaru/WorldModelsExperiments">hardmaru/WorldModelsExperiments</a>.</p>
+    <p>Training code for this page: <a href="https://github.com/CuriousCaliBoi/CuriousCaliBoi.github.io/tree/main/world-models-carracing/train">world-models-carracing/train</a>. Environment: Gymnasium CarRacing-v3. <a href="/">Back to the blog</a>.</p>
+  </footer>
+</main>
+</body>
+</html>

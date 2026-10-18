@@ -40,3 +40,10 @@ world-models:
   description: Step through a Craftax life, watch learning curves unfold, and discover why the first model lost to predicting that nothing changes.
   mode: Interactive field lab
   note: The observed rollout, step-by-step trace, metrics, seeds, and fingerprints are public. Training data and checkpoints remain on the Spark.
+world-models-carracing:
+  title: World Models, CarRacing dream
+  url: /world-models-carracing/
+  embed_url: /world-models-carracing/
+  description: Drive inside a 2018-style world model trained on my DGX Spark. The VAE, MDN-RNN, and CMA-ES controller from the original paper run entirely in your browser.
+  mode: In-browser world model
+  note: The models are static files that run locally in your browser; nothing contacts the Spark. Arrow keys or the on-screen pad take the wheel from the agent, and the temperature slider changes how boldly the model samples its own predictions.
