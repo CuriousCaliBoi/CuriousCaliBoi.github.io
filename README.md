@@ -97,3 +97,17 @@ metrics, training history, and reproducibility fingerprints. Raw datasets,
 PyTorch checkpoints, credentials, internal paths, and machine-specific
 manifests are not copied into this public repository. A saved website record
 can replay and audit a run; it is not a resumable training checkpoint.
+
+## World Models republication
+
+`/world-models/` republishes David Ha and Jürgen Schmidhuber’s 2018 article with
+its original layout and browser demos. The Jekyll entry is
+`_posts/2026-10-18-world-models-original.html`; its static assets and pretrained
+weights live in `world-models/`. It is separate from the locally trained
+CarRacing experiment at `/world-models-carracing/`.
+
+The article retains the original authors, citations, and CC BY 4.0 notice.
+`world-models/SOURCE.txt` records the pinned upstream commit, hosting changes,
+and third-party illustrations that remain hosted by the original site.
+`world-models/LICENSE` contains the upstream license. The original analytics
+tracker is removed, and the canonical URL points to the original article.

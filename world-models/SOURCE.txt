@@ -1,0 +1,43 @@
+World Models — attributed republication
+
+Authors: David Ha and Jürgen Schmidhuber
+Original publication: March 27, 2018
+Original article: https://worldmodels.github.io/
+Source: https://github.com/worldmodels/worldmodels.github.io
+Pinned upstream commit: 351ca7e1bb6d2737db0571747830de76dd404be8
+Republished on Zuko's Blog: October 18, 2026
+
+The article's text and original diagrams are licensed under Creative Commons
+Attribution 4.0 International, except where otherwise indicated. The complete
+license, including its disclaimer of warranties, is included in LICENSE.
+https://creativecommons.org/licenses/by/4.0/
+
+The original article's byline, citations, copyright notices, and reuse statement
+are retained. Cited third-party illustrations are not covered by that grant.
+The following illustrations remain hosted by the original article and are not
+included in this repository:
+- assets/world_model_comic.jpeg
+- assets/kitaoka.jpeg
+- assets/mccloud_baseball.jpeg
+- assets/memory_consolidation.svg
+- assets/world_models_1990.jpeg
+- assets/world_models_1990_feedback.jpeg
+Their original captions and credits are retained.
+
+Bundled third-party JavaScript retains its upstream license notices.
+This republication does not imply endorsement by the original authors.
+
+Changes from the pinned source:
+- Added a Jekyll post entry with the original authors and /world-models/ URL.
+- Added site navigation and an explicit republication notice.
+- Removed the original site's Google Analytics tracking code.
+- Added a canonical link to the original article and adjusted sharing metadata.
+- Disabled the Distill template’s duplicate metadata injection.
+- Changed the six third-party illustration URLs to the original host.
+- Initialized arrow-key states so steering works on the first keypress.
+- Anchored demo controls to their canvases so lazy-loaded figures cannot displace them.
+- Corrected manifest icon paths for hosting under /world-models/.
+- Omitted unused assets, standalone demo pages, and operating-system metadata files.
+
+The article and demos use the original pretrained model weights. They are
+separate from Zuko's own training experiment at /world-models-carracing/.
