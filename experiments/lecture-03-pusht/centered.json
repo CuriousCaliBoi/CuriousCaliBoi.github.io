@@ -1,0 +1,723 @@
+{
+  "format_version": 1,
+  "environment": "swm/PushT-v1",
+  "adapter": "AlignedPushT: synchronize rendered/scoring goal; TimeLimit",
+  "source": {
+    "repository": "https://github.com/galilai-group/stable-worldmodel",
+    "commit": "10c26dbd5677083fa31dba69eb738b973845e9a4"
+  },
+  "versions": {
+    "numpy": "2.1.0",
+    "gymnasium": "1.4.0",
+    "pymunk": "7.3.0"
+  },
+  "lecture_url": "https://jiataogu.me/cis6280-world-models/lectures/lecture-03-environments-simulators-rollouts.pdf",
+  "policy": "Fixed script: action [0, -0.5], repeated up to 14 times",
+  "seed": 7,
+  "scene": "Centered push",
+  "reset_options": {
+    "state": [
+      256.0,
+      400.0,
+      256.0,
+      260.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "goal_state": [
+      256.0,
+      270.0,
+      256.0,
+      130.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "control_hz": 10,
+  "physics_dt": 0.01,
+  "action_scale": 100,
+  "max_episode_steps": 500,
+  "goal_state": [
+    256.0,
+    270.0,
+    256.0,
+    130.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "initial_state": {
+    "pusher_position": [
+      256.0,
+      400.0
+    ],
+    "pusher_velocity": [
+      0.0,
+      0.0
+    ],
+    "block_position": [
+      256.0,
+      260.0
+    ],
+    "block_angle_radians": 0.0,
+    "block_velocity": [
+      0.0,
+      0.0
+    ],
+    "block_angular_velocity": 0.0
+  },
+  "initial_observation": {
+    "proprio": [
+      256.0,
+      400.0,
+      0.0,
+      0.0
+    ],
+    "state": [
+      256.0,
+      400.0,
+      256.0,
+      260.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "state_note": "Mechanical state for inspection, not a complete physics-engine checkpoint. Reproduce with reset settings and actions.",
+  "observation_note": "This SWM environment returns numeric proprio/state arrays. The UI additionally calls render() for pixels. Block velocity and spin appear only in the inspected mechanical state.",
+  "reward_note": "Negative Euclidean distance of the upstream seven-number state to the goal; higher (closer to zero) is better. Success checks combined pusher/block position error <20 and wrapped angle error <pi/9.",
+  "transitions": [
+    {
+      "step": 1,
+      "action": [
+        0.0,
+        -0.5
+      ],
+      "target_position": [
+        256.0,
+        350.0
+      ],
+      "before": {
+        "pusher_position": [
+          256.0,
+          400.0
+        ],
+        "pusher_velocity": [
+          0.0,
+          0.0
+        ],
+        "block_position": [
+          256.0,
+          260.0
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          0.0
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "after": {
+        "pusher_position": [
+          256.0,
+          385.2164102935791
+        ],
+        "pusher_velocity": [
+          0.0,
+          -187.07383728027344
+        ],
+        "block_position": [
+          256.0,
+          250.92556802209765
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -187.07383728027344
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "observation_before": {
+        "proprio": [
+          256.0,
+          400.0,
+          0.0,
+          0.0
+        ],
+        "state": [
+          256.0,
+          400.0,
+          256.0,
+          260.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "observation_after": {
+        "proprio": [
+          256.0,
+          385.2164102935791,
+          0.0,
+          -187.07383728027344
+        ],
+        "state": [
+          256.0,
+          385.2164102935791,
+          256.0,
+          250.92556802209765,
+          0.0,
+          0.0,
+          -187.07383728027344
+        ]
+      },
+      "reward": -250.78762887585094,
+      "terminated": false,
+      "truncated": false,
+      "contacts": 1
+    },
+    {
+      "step": 2,
+      "action": [
+        0.0,
+        -0.5
+      ],
+      "target_position": [
+        256.0,
+        335.2164102935791
+      ],
+      "before": {
+        "pusher_position": [
+          256.0,
+          385.2164102935791
+        ],
+        "pusher_velocity": [
+          0.0,
+          -187.07383728027344
+        ],
+        "block_position": [
+          256.0,
+          250.92556802209765
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -187.07383728027344
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "after": {
+        "pusher_position": [
+          256.0,
+          364.83335990905766
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.84808349609375
+        ],
+        "block_position": [
+          256.0,
+          230.16586849833834
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.84808349609375
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "observation_before": {
+        "proprio": [
+          256.0,
+          385.2164102935791,
+          0.0,
+          -187.07383728027344
+        ],
+        "state": [
+          256.0,
+          385.2164102935791,
+          256.0,
+          250.92556802209765,
+          0.0,
+          0.0,
+          -187.07383728027344
+        ]
+      },
+      "observation_after": {
+        "proprio": [
+          256.0,
+          364.83335990905766,
+          0.0,
+          -185.84808349609375
+        ],
+        "state": [
+          256.0,
+          364.83335990905766,
+          256.0,
+          230.16586849833834,
+          0.0,
+          0.0,
+          -185.84808349609375
+        ]
+      },
+      "reward": -231.44346502512943,
+      "terminated": false,
+      "truncated": false,
+      "contacts": 1
+    },
+    {
+      "step": 3,
+      "action": [
+        0.0,
+        -0.5
+      ],
+      "target_position": [
+        256.0,
+        314.83335990905766
+      ],
+      "before": {
+        "pusher_position": [
+          256.0,
+          364.83335990905766
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.84808349609375
+        ],
+        "block_position": [
+          256.0,
+          230.16586849833834
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.84808349609375
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "after": {
+        "pusher_position": [
+          256.0,
+          344.48700416564947
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_position": [
+          256.0,
+          209.62793018915033
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "observation_before": {
+        "proprio": [
+          256.0,
+          364.83335990905766,
+          0.0,
+          -185.84808349609375
+        ],
+        "state": [
+          256.0,
+          364.83335990905766,
+          256.0,
+          230.16586849833834,
+          0.0,
+          0.0,
+          -185.84808349609375
+        ]
+      },
+      "observation_after": {
+        "proprio": [
+          256.0,
+          344.48700416564947,
+          0.0,
+          -185.85601806640625
+        ],
+        "state": [
+          256.0,
+          344.48700416564947,
+          256.0,
+          209.62793018915033,
+          0.0,
+          0.0,
+          -185.85601806640625
+        ]
+      },
+      "reward": -215.47942014791576,
+      "terminated": false,
+      "truncated": false,
+      "contacts": 1
+    },
+    {
+      "step": 4,
+      "action": [
+        0.0,
+        -0.5
+      ],
+      "target_position": [
+        256.0,
+        294.48700416564947
+      ],
+      "before": {
+        "pusher_position": [
+          256.0,
+          344.48700416564947
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_position": [
+          256.0,
+          209.62793018915033
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "after": {
+        "pusher_position": [
+          256.0,
+          324.1404076385498
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85604858398438
+        ],
+        "block_position": [
+          256.0,
+          189.17946397017613
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.85604858398438
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "observation_before": {
+        "proprio": [
+          256.0,
+          344.48700416564947,
+          0.0,
+          -185.85601806640625
+        ],
+        "state": [
+          256.0,
+          344.48700416564947,
+          256.0,
+          209.62793018915033,
+          0.0,
+          0.0,
+          -185.85601806640625
+        ]
+      },
+      "observation_after": {
+        "proprio": [
+          256.0,
+          324.1404076385498,
+          0.0,
+          -185.85604858398438
+        ],
+        "state": [
+          256.0,
+          324.1404076385498,
+          256.0,
+          189.17946397017613,
+          0.0,
+          0.0,
+          -185.85604858398438
+        ]
+      },
+      "reward": -202.42495767646358,
+      "terminated": false,
+      "truncated": false,
+      "contacts": 1
+    },
+    {
+      "step": 5,
+      "action": [
+        0.0,
+        -0.5
+      ],
+      "target_position": [
+        256.0,
+        274.1404076385498
+      ],
+      "before": {
+        "pusher_position": [
+          256.0,
+          324.1404076385498
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85604858398438
+        ],
+        "block_position": [
+          256.0,
+          189.17946397017613
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.85604858398438
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "after": {
+        "pusher_position": [
+          256.0,
+          303.79381111145017
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_position": [
+          256.0,
+          168.77358416898113
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          0.0
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "observation_before": {
+        "proprio": [
+          256.0,
+          324.1404076385498,
+          0.0,
+          -185.85604858398438
+        ],
+        "state": [
+          256.0,
+          324.1404076385498,
+          256.0,
+          189.17946397017613,
+          0.0,
+          0.0,
+          -185.85604858398438
+        ]
+      },
+      "observation_after": {
+        "proprio": [
+          256.0,
+          303.79381111145017,
+          0.0,
+          -185.85601806640625
+        ],
+        "state": [
+          256.0,
+          303.79381111145017,
+          256.0,
+          168.77358416898113,
+          0.0,
+          0.0,
+          -185.85601806640625
+        ]
+      },
+      "reward": -192.84157215249454,
+      "terminated": false,
+      "truncated": false,
+      "contacts": 1
+    },
+    {
+      "step": 6,
+      "action": [
+        0.0,
+        -0.5
+      ],
+      "target_position": [
+        256.0,
+        253.79381111145017
+      ],
+      "before": {
+        "pusher_position": [
+          256.0,
+          303.79381111145017
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_position": [
+          256.0,
+          168.77358416898113
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          0.0
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "after": {
+        "pusher_position": [
+          256.0,
+          283.4472156524658
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_position": [
+          256.0,
+          149.44862941310734
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "observation_before": {
+        "proprio": [
+          256.0,
+          303.79381111145017,
+          0.0,
+          -185.85601806640625
+        ],
+        "state": [
+          256.0,
+          303.79381111145017,
+          256.0,
+          168.77358416898113,
+          0.0,
+          0.0,
+          -185.85601806640625
+        ]
+      },
+      "observation_after": {
+        "proprio": [
+          256.0,
+          283.4472156524658,
+          0.0,
+          -185.85601806640625
+        ],
+        "state": [
+          256.0,
+          283.4472156524658,
+          256.0,
+          149.44862941310734,
+          0.0,
+          0.0,
+          -185.85601806640625
+        ]
+      },
+      "reward": -187.35403984529566,
+      "terminated": false,
+      "truncated": false,
+      "contacts": 1
+    },
+    {
+      "step": 7,
+      "action": [
+        0.0,
+        -0.5
+      ],
+      "target_position": [
+        256.0,
+        233.4472156524658
+      ],
+      "before": {
+        "pusher_position": [
+          256.0,
+          283.4472156524658
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_position": [
+          256.0,
+          149.44862941310734
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.85601806640625
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "after": {
+        "pusher_position": [
+          256.0,
+          263.1006174468993
+        ],
+        "pusher_velocity": [
+          0.0,
+          -185.85606384277344
+        ],
+        "block_position": [
+          256.0,
+          128.59697223923908
+        ],
+        "block_angle_radians": 0.0,
+        "block_velocity": [
+          0.0,
+          -185.85606384277344
+        ],
+        "block_angular_velocity": 0.0
+      },
+      "observation_before": {
+        "proprio": [
+          256.0,
+          283.4472156524658,
+          0.0,
+          -185.85601806640625
+        ],
+        "state": [
+          256.0,
+          283.4472156524658,
+          256.0,
+          149.44862941310734,
+          0.0,
+          0.0,
+          -185.85601806640625
+        ]
+      },
+      "observation_after": {
+        "proprio": [
+          256.0,
+          263.1006174468993,
+          0.0,
+          -185.85606384277344
+        ],
+        "state": [
+          256.0,
+          263.1006174468993,
+          256.0,
+          128.59697223923908,
+          0.0,
+          0.0,
+          -185.85606384277344
+        ]
+      },
+      "reward": -185.98937182979185,
+      "terminated": true,
+      "truncated": false,
+      "contacts": 1
+    }
+  ],
+  "frames": {
+    "file": "centered.webp",
+    "width": 512,
+    "height": 512,
+    "count": 8,
+    "columns": 5
+  }
+}
