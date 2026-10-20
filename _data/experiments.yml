@@ -47,3 +47,10 @@ world-models-carracing:
   description: Drive inside a 2018-style world model trained on my DGX Spark. The VAE, MDN-RNN, and CMA-ES controller from the original paper run entirely in your browser.
   mode: In-browser world model
   note: The models are static files that run locally in your browser; nothing contacts the Spark. Arrow keys or the on-screen pad take the wheel from the agent, and the temperature slider changes how boldly the model samples its own predictions.
+dreamerv3:
+  title: DreamerV3, a small world
+  url: /dreamerv3/
+  embed_url: /dreamerv3/
+  description: Try balancing a pole, replay an actual DreamerV3 checkpoint, and compare its actions with a random baseline from the same starting seeds.
+  mode: Playground and recorded evaluations
+  note: The playground runs physics in your browser. Model runs were recorded on the Spark; the page does not run DreamerV3 inference or train a model. All eight evaluation episodes are included.
