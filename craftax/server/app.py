@@ -26,6 +26,14 @@ from pydantic import BaseModel, Field, ConfigDict
 MAX_SESSIONS = 8
 MAX_STEPS = 5000
 IDLE_SECONDS = 3600
+GAME_MODE = "peaceful"
+PEACEFUL_PARAMS = {
+    "spawn_zombie_base_chance": 0.0,
+    "spawn_zombie_night_chance": 0.0,
+    "spawn_skeleton_chance": 0.0,
+}
+AVAILABLE_ACHIEVEMENTS = [a.name.lower() for a in Achievement
+                          if a not in (Achievement.DEFEAT_ZOMBIE, Achievement.DEFEAT_SKELETON)]
 LOCK = threading.RLock()
 SESSIONS = {}
 CREATIONS = {}
@@ -35,7 +43,7 @@ ENGINE = None
 class Engine:
     def __init__(self):
         self.env = make_craftax_env_from_name("Craftax-Classic-Symbolic-v1", auto_reset=False)
-        self.params = self.env.default_params.replace(max_timesteps=MAX_STEPS)
+        self.params = self.env.default_params.replace(max_timesteps=MAX_STEPS, **PEACEFUL_PARAMS)
         self.reset = jax.jit(self.env.reset)
         self.step = jax.jit(self.env.step)
         self.render = jax.jit(make_craftax_pixel_renderer(16))
@@ -97,7 +105,8 @@ class Session:
 
     def view(self):
         return {**snapshot(self.state), "seed": self.seed, "done": self.done,
-                "reward": self.reward, "image": picture(self.state), "max_steps": MAX_STEPS}
+                "reward": self.reward, "image": picture(self.state), "max_steps": MAX_STEPS,
+                "mode": GAME_MODE, "achievement_total": len(AVAILABLE_ACHIEVEMENTS)}
 
 
 class NewGame(BaseModel):
@@ -171,7 +180,8 @@ def owned(authorization):
 
 @app.get("/api/health")
 def health():
-    return {"ready": ENGINE is not None, "game": "Craftax-Classic", "version": "1.6.1"}
+    return {"ready": ENGINE is not None, "game": "Craftax-Classic", "version": "1.6.1",
+            "mode": GAME_MODE}
 
 
 @app.post("/api/session")
@@ -241,6 +251,8 @@ def recording(authorization: str | None = Header(default=None)):
     with LOCK:
         session = owned(authorization)
         return {"schema_version": 1, "environment": "Craftax-Classic", "craftax_version": "1.6.1",
+                "mode": GAME_MODE, "environment_params": {"max_timesteps": MAX_STEPS, **PEACEFUL_PARAMS},
+                "available_achievements": AVAILABLE_ACHIEVEMENTS,
                 "seed": session.seed, "started_at": session.started_at, "max_steps": MAX_STEPS,
                 "image_format": "base64 PNG, 144x144 RGB; local view plus inventory",
                 "state_fields": "Visible player statistics and inventory, not the full simulator state",

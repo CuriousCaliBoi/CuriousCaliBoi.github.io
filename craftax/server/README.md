@@ -4,6 +4,10 @@ The public `/craftax/` page controls the original Craftax-Classic 1.6.1 engine o
 
 Modern browsers may ask the public website for Local network access before it can connect to the private endpoint. Allow that permission for this website. If it was denied earlier, change the website's permission in the browser's site settings, then reconnect. Tailscale must also be connected on the playing device.
 
+## Peaceful mode
+
+All worlds use peaceful rules: zombie spawning (both base and nighttime) and skeleton spawning are disabled through the native environment parameters. Worlds start without enemies, so no hostile creatures or their arrows appear. Cows, gathering, crafting, day/night, hunger, thirst, fatigue, and environmental hazards retain their normal behavior. This is not an invincibility mode. The UI counts the 20 attainable achievements, excluding the two enemy-defeat achievements.
+
 ## Run
 
 Use Python 3.12 and install `requirements.lock` into an isolated environment. Run:
@@ -27,9 +31,9 @@ Use a persistent service and a private HTTPS reverse proxy. Keep the loopback bi
 
 ## Recordings
 
-The download includes the seed, environment version, initial frame, and each action's resulting frame, reward, terminal flag, visible player statistics, inventory, and achievements. Frames are lossless 144×144 PNG images encoded as base64, produced by Craftax's native 16-pixel tile renderer. Each action transitions from the preceding frame to its recorded resulting frame.
+The download includes the seed, environment version, mode, overridden environment parameters, attainable achievements, initial frame, and each action's resulting frame, reward, terminal flag, visible player statistics, inventory, and achievements. Frames are lossless 144×144 PNG images encoded as base64, produced by Craftax's native 16-pixel tile renderer. Each action transitions from the preceding frame to its recorded resulting frame.
 
-These are gameplay trajectories for later learning experiments, not full simulator checkpoints. They omit the hidden map and internal simulator state. The game uses the same native Craftax-Classic rules as Stable World Model's wrapper; the browser bridge avoids importing a training framework into the play service.
+These are gameplay trajectories for later learning experiments, not full simulator checkpoints. They omit the hidden map and internal simulator state. The game uses native Craftax-Classic with the peaceful overrides above; apply the exported `environment_params` to reproduce these rules in training, rather than treating these runs as standard survival trajectories. The browser bridge avoids importing a training framework into the play service.
 
 ## Controls
 

@@ -71,7 +71,7 @@
       const n=document.createElement('b');n.textContent=count;item.append(n,document.createTextNode(title(name)));$('inventory').append(item);
     }
     if(!$('inventory').children.length){const p=document.createElement('p');p.textContent='Empty hands. A whole world of possibilities.';$('inventory').append(p);}
-    $('achievement-count').textContent=`${next.achievements.length} / 22 ACHIEVEMENTS`;
+    $('achievement-count').textContent=`${next.achievements.length} / ${next.achievement_total ?? 22} ACHIEVEMENTS`;
     $('earned-count').textContent=`${next.achievements.length} earned`;
     $('achievements').replaceChildren();
     for(const a of next.achievements){const li=document.createElement('li');li.textContent=title(a);$('achievements').append(li);}

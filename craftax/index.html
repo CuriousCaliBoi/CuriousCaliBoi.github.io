@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101914">
-  <meta name="description" content="Play Craftax Classic: explore, gather, craft, and survive in a little living world. A hands-on world-models lab.">
-  <title>Play Craftax — CuriousCaliBoi</title>
+  <meta name="description" content="Play peaceful Craftax Classic: explore, gather, and craft without zombies or skeletons. A hands-on world-models lab.">
+  <title>Peaceful Craftax — CuriousCaliBoi</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
@@ -20,11 +20,11 @@
   <main>
     <div class="heading">
       <div><p class="eyebrow">THE PLAYABLE FIELD LAB <span>01</span></p><h1>A little world.<br><em>A lot to discover.</em></h1></div>
-      <p class="intro">Gather wood. Make a tool. Find your way home.<br>You’re playing <strong>Craftax Classic</strong>, one action at a time.</p>
+      <p class="intro">Gather wood. Make a tool. Find your way home.<br><strong>Peaceful Craftax Classic</strong> — no zombies or skeletons.<br>Food, water, and rest still matter.</p>
     </div>
     <div class="layout">
       <section class="game-card" aria-label="Craftax game">
-        <div class="game-top"><span><i class="dot"></i> CRAFTAX CLASSIC</span><span id="world-label">YOUR WORLD AWAITS</span></div>
+        <div class="game-top"><span><i class="dot"></i> CRAFTAX · PEACEFUL</span><span id="world-label">YOUR WORLD AWAITS</span></div>
         <div class="stage" id="game" tabindex="0" role="group" aria-label="Game controls. Move with W A S D or arrows. Space interacts. Escape pauses.">
           <canvas id="screen" width="144" height="144" aria-label="Your view of the Craftax world"></canvas>
           <div class="cover" id="cover">
@@ -45,12 +45,12 @@
         <section class="panel controls"><div class="panel-heading"><h2>Take the controls</h2><span>KEYS OR TOUCH</span></div>
           <div class="movement">
             <div class="dpad"><button data-action="3" class="up" aria-label="Move up">↑</button><button data-action="1" class="left" aria-label="Move left">←</button><button data-action="4" class="down" aria-label="Move down">↓</button><button data-action="2" class="right" aria-label="Move right">→</button></div>
-            <button class="interact" data-action="5">Interact<small>Space · mine / drink / attack</small></button>
+            <button class="interact" data-action="5">Interact<small>Space · gather / mine / drink</small></button>
           </div>
           <div class="action-row"><button data-action="0">Wait <kbd>Q</kbd></button><button data-action="6">Sleep <kbd>Z</kbd></button></div>
           <details><summary>Build & craft <span>10 actions</span></summary><p class="hint">Face an empty tile to place. Craft beside a table; iron tools also need a nearby furnace.</p><div class="craft-grid"><button data-action="8">Table <kbd>T</kbd></button><button data-action="9">Furnace <kbd>F</kbd></button><button data-action="7">Stone <kbd>R</kbd></button><button data-action="10">Plant <kbd>P</kbd></button><button data-action="11">Wood pickaxe <kbd>1</kbd></button><button data-action="12">Stone pickaxe <kbd>2</kbd></button><button data-action="13">Iron pickaxe <kbd>3</kbd></button><button data-action="14">Wood sword <kbd>4</kbd></button><button data-action="15">Stone sword <kbd>5</kbd></button><button data-action="16">Iron sword <kbd>6</kbd></button></div></details>
         </section>
-        <section class="panel inventory-panel"><div class="panel-heading"><h2>In your pack</h2><span id="achievement-count">0 / 22 ACHIEVEMENTS</span></div><div class="inventory" id="inventory"><p>Everything starts with your first discovery.</p></div><details><summary>Achievements <span id="earned-count">0 earned</span></summary><ul id="achievements"><li>Your discoveries will appear here.</li></ul></details></section>
+        <section class="panel inventory-panel"><div class="panel-heading"><h2>In your pack</h2><span id="achievement-count">0 / 20 ACHIEVEMENTS</span></div><div class="inventory" id="inventory"><p>Everything starts with your first discovery.</p></div><details><summary>Achievements <span id="earned-count">0 earned</span></summary><ul id="achievements"><li>Your discoveries will appear here.</li></ul><p class="hint">20 discoveries to earn. Enemy-defeat achievements are excluded in peaceful mode.</p></details></section>
       </aside>
     </div>
     <section class="field-notes" aria-label="Session and recording">
