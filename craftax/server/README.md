@@ -2,6 +2,8 @@
 
 The public `/craftax/` page controls the original Craftax-Classic 1.6.1 engine on the owner's machine. It is human play, with no learned policy. The page's `live.json` selects the HTTPS API. The deployed API uses a private Tailscale Serve endpoint; it is not exposed through Funnel.
 
+Modern browsers may ask the public website for Local network access before it can connect to the private endpoint. Allow that permission for this website. If it was denied earlier, change the website's permission in the browser's site settings, then reconnect. Tailscale must also be connected on the playing device.
+
 ## Run
 
 Use Python 3.12 and install `requirements.lock` into an isolated environment. Run:

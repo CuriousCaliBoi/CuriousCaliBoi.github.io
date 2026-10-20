@@ -33,18 +33,23 @@
     const endpoint = new URL(config.api);
     if(endpoint.protocol!=='https:' && !['127.0.0.1','localhost'].includes(endpoint.hostname)) throw Error('An HTTPS game connection is required.');
     api=endpoint.href.replace(/\/$/,'');
-    $('access-note').textContent=config.access==='tailnet'?'Private play · connect to Tailscale first.':'Live play · powered by the DGX Spark.';
+    $('access-note').textContent=config.access==='tailnet'?'Connect to Tailscale. Allow local-network access if your browser asks, so this page can reach your DGX.':'Live play · powered by the DGX Spark.';
   });
   // Handle configuration failures even if the visitor never presses Enter.
   configuration.catch(error=>tell(error.message,true));
   async function request(path, method='GET', body) {
     await configuration;
-    const options={method,headers:{},cache:'no-store',signal:AbortSignal.timeout(20000)};
+    const options={method,headers:{},cache:'no-store',signal:AbortSignal.timeout(path==='session'?60000:20000)};
     if(token) options.headers.Authorization=`Bearer ${token}`;
     if(body!==undefined){options.headers['Content-Type']='application/json';options.body=JSON.stringify(body);}
     let response;
     try { response=await fetch(`${api}/api/${path}`,options); }
-    catch(error){ throw Error('Couldn’t reach the game. Check that Tailscale is connected and the DGX is awake, then try again.'); }
+    catch(error){
+      let denied=false;
+      try{denied=(await navigator.permissions.query({name:'local-network-access'})).state==='denied';}catch(_){}
+      if(denied)throw Error('Your browser blocked the private connection. Open this website’s site permissions, allow Local network access, then press Reconnect.');
+      throw Error('Couldn’t reach the game. Connect Tailscale, check that the DGX is awake, and allow local-network access in your browser if prompted.');
+    }
     const data=await response.json();
     if(!response.ok){const error=Error(typeof data.detail==='string'?data.detail:'That request could not be accepted.');error.status=response.status;throw error;}
     return data;
