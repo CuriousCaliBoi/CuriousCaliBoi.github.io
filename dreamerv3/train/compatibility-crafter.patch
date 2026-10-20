@@ -1,0 +1,109 @@
+diff --git a/dreamerv3/configs.yaml b/dreamerv3/configs.yaml
+index 786b67e..0240a27 100644
+--- a/dreamerv3/configs.yaml
++++ b/dreamerv3/configs.yaml
+@@ -27,6 +27,7 @@ defaults:
+     user: ''
+ 
+   env:
++    gym: {obs_key: vector}
+     atari: {size: [96, 96], repeat: 4, sticky: True, gray: True, actions: all, lives: unused, noops: 30, autostart: False, pooling: 2, aggregate: max, resize: pillow, clip_reward: False}
+     procgen: {size: [96, 96], resize: pillow}
+     crafter: {size: [64, 64], logs: False}
+@@ -70,6 +71,8 @@ defaults:
+     debug: True
+ 
+   jax:
++    profiler: False
++    triton_gemm: True
+     platform: cuda
+     compute_dtype: bfloat16
+     policy_devices: [0]
+@@ -218,3 +221,30 @@ debug:
+     .*\.hidden: 3
+     .*\.blocks: 4
+     .*\.depth: 2
++
++# Small, reproducible CPU example for this machine. Not a benchmark config.
++cartpole_cpu:
++  <<: *size1m
++  task: gym_CartPole-v1
++  batch_size: 8
++  batch_length: 32
++  report_length: 16
++  jax: {platform: cpu, compute_dtype: float32, prealloc: False, debug: False}
++  env.gym: {obs_key: vector}
++  logger.outputs: [jsonl]
++  run: {steps: 10000, envs: 4, train_ratio: 32, log_every: 15, report_every: 120, save_every: 60, debug: True}
++  replay.size: 100000
++
++# Small visual-agent run on the GB10. Uses a separate GPU virtual environment.
++crafter_spark:
++  <<: *size1m
++  task: crafter_reward
++  seed: 7
++  batch_size: 8
++  batch_length: 32
++  report_length: 16
++  jax: {platform: cuda, compute_dtype: bfloat16, prealloc: False, debug: False, triton_gemm: False}
++  env.crafter.logs: True
++  logger.outputs: [jsonl]
++  run: {steps: 12000, envs: 4, train_ratio: 16, log_every: 20, report_every: 120, save_every: 60, debug: True}
++  replay.size: 100000
+diff --git a/embodied/envs/from_gym.py b/embodied/envs/from_gym.py
+index b1aef04..af53f20 100644
+--- a/embodied/envs/from_gym.py
++++ b/embodied/envs/from_gym.py
+@@ -58,12 +58,20 @@ class FromGym(embodied.Env):
+     if action['reset'] or self._done:
+       self._done = False
+       obs = self._env.reset()
++      if isinstance(obs, tuple) and len(obs) == 2 and isinstance(obs[1], dict):
++        obs, self._info = obs
+       return self._obs(obs, 0.0, is_first=True)
+     if self._act_dict:
+       action = self._unflatten(action)
+     else:
+       action = action[self._act_key]
+-    obs, reward, self._done, self._info = self._env.step(action)
++    result = self._env.step(action)
++    if len(result) == 5:
++      obs, reward, terminated, truncated, self._info = result
++      self._done = terminated or truncated
++      self._info = dict(self._info, is_terminal=terminated)
++    else:
++      obs, reward, self._done, self._info = result
+     return self._obs(
+         obs, reward,
+         is_last=bool(self._done),
+diff --git a/embodied/jax/internal.py b/embodied/jax/internal.py
+index ae9047b..7fb6fa3 100644
+--- a/embodied/jax/internal.py
++++ b/embodied/jax/internal.py
+@@ -23,6 +23,7 @@ def setup(
+     deterministic=True,
+     autotune=1,
+     gpuflags=True,
++    triton_gemm=True,
+     tpuflags=False,
+     xladump=None,
+     debug_nans=False,
+@@ -41,6 +42,8 @@ def setup(
+   jax.config.update('jax_enable_compilation_cache', compilation_cache)
+ 
+   xlaflags = []
++  if not triton_gemm:
++    xlaflags.append('--xla_gpu_enable_triton_gemm=false')
+   xlaflags.append(f'--xla_gpu_autotune_level={autotune}')
+   if deterministic:
+     os.environ['TF_CUDNN_DETERMINISTIC'] = '1'
+diff --git a/embodied/run/train.py b/embodied/run/train.py
+index fc791ec..d9252c8 100644
+--- a/embodied/run/train.py
++++ b/embodied/run/train.py
+@@ -116,4 +116,5 @@ def train(make_agent, make_replay, make_env, make_stream, make_logger, args):
+     if should_save(step):
+       cp.save()
+ 
++  cp.save()
+   logger.close()
