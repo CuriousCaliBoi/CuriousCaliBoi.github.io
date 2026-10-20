@@ -83,6 +83,10 @@ to the parent post with the usual `postMessage`. Rebuilding the model files
 is described in `world-models-carracing/train/README.md`; the recorded
 rollouts and checkpoints stay on the Spark.
 
+## Play Craftax
+
+`/craftax/` is a human-play interface for the original Craftax-Classic engine on the DGX. Keyboard and touch controls, player statistics, achievement progress, seeded new worlds, and trajectory downloads are available through the owner's private Tailscale connection. The public interface loads independently of the game server. Its connection is configured in `craftax/live.json`; no session credentials are stored in the repository. Backend source and operating notes are in `craftax/server/`, excluded from the published Jekyll site.
+
 ## Saved experiment records
 
 `/experiments/` is the public experiment library. The World Models Lab at
