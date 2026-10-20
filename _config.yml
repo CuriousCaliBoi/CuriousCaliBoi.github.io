@@ -47,6 +47,7 @@ kramdown:
 
 # Exclude specific directories or files if needed (optional)
 exclude:
+  - craftax/server
   - .DS_Store
   - node_modules
   - vendor
