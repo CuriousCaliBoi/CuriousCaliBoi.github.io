@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101914">
-  <meta name="description" content="Play peaceful Craftax Classic: explore, gather, and craft without zombies or skeletons. A hands-on world-models lab.">
-  <title>Peaceful Craftax — CuriousCaliBoi</title>
+  <meta name="description" content="Play relaxed Craftax Classic: explore and craft without enemies, hunger, thirst, or fatigue. A hands-on world-models lab.">
+  <title>Relaxed Craftax — CuriousCaliBoi</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=full-page-1">
-  <script src="app.js?v=full-page-1" defer></script>
+  <link rel="stylesheet" href="style.css?v=relaxed-1">
+  <script src="app.js?v=relaxed-1" defer></script>
 </head>
 <body>
   <a class="skip" href="#game">Skip to game</a>
@@ -20,26 +20,37 @@
   <main>
     <div class="heading">
       <div><p class="eyebrow">THE PLAYABLE FIELD LAB <span>01</span></p><h1>A little world.<br><em>A lot to discover.</em></h1></div>
-      <p class="intro">Gather wood. Make a tool. Find your way home.<br><strong>Peaceful Craftax Classic</strong> — no zombies or skeletons.<br>Food, water, and rest still matter.</p>
+      <p class="intro">Gather wood. Make a tool. Find your way home.<br><strong>Relaxed Craftax Classic</strong> — no zombies or skeletons.<br>Food, water, and energy refill automatically.</p>
     </div>
     <div class="layout" id="play-area">
       <section class="game-card" aria-label="Craftax game">
-        <div class="game-top"><span class="game-name"><i class="dot"></i> CRAFTAX · PEACEFUL</span><span id="world-label">YOUR WORLD AWAITS</span><button id="expand">Full page ↗</button><div class="play-tools"><button id="toggle-controls" aria-expanded="false" aria-controls="play-sidebar">Controls & pack</button><button id="fullscreen">Full screen</button><button id="leave-play">Back to page ↙</button></div></div>
+        <div class="game-top"><span class="game-name"><i class="dot"></i> CRAFTAX · RELAXED</span><span id="world-label">YOUR WORLD AWAITS</span><button id="expand">Full page ↗</button><div class="play-tools"><button id="toggle-controls" aria-expanded="false" aria-controls="play-sidebar">Controls & pack</button><button id="fullscreen">Full screen</button><button id="leave-play">Back to page ↙</button></div></div>
         <div class="stage" id="game" tabindex="0" role="group" aria-label="Game controls. Move with W A S D or arrows. Space interacts. Escape pauses.">
           <canvas id="screen" width="144" height="112" aria-label="Your view of the Craftax world"></canvas>
+          <div id="target-tile" class="target-tile" aria-hidden="true" hidden></div>
           <div class="cover" id="cover">
-            <div class="cover-copy"><p class="eyebrow" id="cover-kicker">EXPLORE · CRAFT · SURVIVE</p><h2 id="cover-title">Step into the world.</h2><p id="cover-text">Start with empty hands and a patch of forest.<br>What will you make of it?</p><button class="primary" id="start">Enter world <span aria-hidden="true">→</span></button><p class="access-note" id="access-note">Connect to Tailscale. Allow local-network access if your browser asks, so this page can reach your DGX.</p></div>
+            <div class="cover-copy"><p class="eyebrow" id="cover-kicker">EXPLORE · GATHER · CREATE</p><h2 id="cover-title">Step into the world.</h2><p id="cover-text">Start with empty hands and a patch of forest.<br>What will you make of it?</p><button class="primary" id="start">Enter world <span aria-hidden="true">→</span></button><p class="access-note" id="access-note">Connect to Tailscale. Allow local-network access if your browser asks, so this page can reach your DGX.</p></div>
           </div>
           <div class="touch-controls" aria-label="Touch game controls"><div class="dpad"><button data-action="3" class="up" aria-label="Move up">↑</button><button data-action="1" class="left" aria-label="Move left">←</button><button data-action="4" class="down" aria-label="Move down">↓</button><button data-action="2" class="right" aria-label="Move right">→</button></div><button data-action="5" class="touch-interact">Interact</button></div>
         </div>
-        <div class="game-bottom"><span id="step-label">No actions yet</span><span id="last-action">WASD / arrows to move · Space to interact</span><button id="pause" disabled>Pause <kbd>Esc</kbd></button></div>
+        <div class="play-dock">
+          <div class="quick-pack" id="quick-pack" aria-label="Your supplies"><span>Wood <b data-stock="wood">0</b></span><span>Stone <b data-stock="stone">0</b></span><span>Coal <b data-stock="coal">0</b></span><span>Iron <b data-stock="iron">0</b></span><span>Diamond <b data-stock="diamond">0</b></span><span>Pickaxe <b id="best-pickaxe">None</b></span></div>
+          <div class="quick-actions" aria-label="Quick actions">
+            <button data-action="5" class="quick-interact"><strong id="interact-label">Interact</strong><small id="facing-label">Face a tree · Space</small></button>
+            <button data-action="8"><strong>Place table <kbd>T</kbd></strong><small>2 wood · clear ground</small></button>
+            <button data-action="11"><strong>Wood pickaxe <kbd>1</kbd></strong><small>1 wood · beside table</small></button>
+            <button data-action="12"><strong>Stone pickaxe <kbd>2</kbd></strong><small>1 wood + 1 stone · table</small></button>
+            <button id="more-craft"><strong>More crafting</strong><small>All tools & recipes</small></button>
+          </div>
+          <div class="game-bottom"><span id="step-label">No actions yet</span><span id="last-action">WASD / arrows to move · Space to interact</span><button id="pause" disabled>Pause <kbd>Esc</kbd></button></div>
+        </div>
         <div class="vitals" aria-label="Player status">
           <div><label for="health">Health <b id="health-value">—</b></label><meter id="health" min="0" max="9" value="0"></meter></div>
           <div><label for="food">Food <b id="food-value">—</b></label><meter id="food" min="0" max="9" value="0"></meter></div>
           <div><label for="drink">Water <b id="drink-value">—</b></label><meter id="drink" min="0" max="9" value="0"></meter></div>
           <div><label for="energy">Energy <b id="energy-value">—</b></label><meter id="energy" min="0" max="9" value="0"></meter></div>
         </div>
-        <div class="message" id="message" role="status" aria-live="polite">Time moves when you act. You can stop and think.</div>
+        <div class="message" id="message" role="status" aria-live="polite">Relaxed mode: no enemies. Food, water, and energy are automatic.</div>
       </section>
       <aside class="sidebar" id="play-sidebar" aria-label="Controls and field notes">
         <section class="panel first-steps"><p class="eyebrow">YOUR FIRST EXPEDITION</p><h2>From wood to stone.</h2><ol id="goals"><li data-goal="collect_wood"><span>01</span><div><strong>Gather some wood</strong><p>Face a tree. Press Space.</p></div></li><li data-goal="place_table"><span>02</span><div><strong>Place a crafting table</strong><p>Collect 2 wood, then press T on clear ground.</p></div></li><li data-goal="make_wood_pickaxe"><span>03</span><div><strong>Craft a wooden pickaxe</strong><p>With 1 wood, stand beside the table and press 1.</p></div></li><li data-goal="collect_stone"><span>04</span><div><strong>Mine your first stone</strong><p>Face a rock and press Space.</p></div></li></ol></section>
@@ -49,9 +60,9 @@
             <button class="interact" data-action="5">Interact<small>Space · gather / mine / drink</small></button>
           </div>
           <div class="action-row"><button data-action="0">Wait <kbd>Q</kbd></button><button data-action="6">Sleep <kbd>Z</kbd></button></div>
-          <details><summary>Build & craft <span>10 actions</span></summary><p class="hint">Face an empty tile to place. Craft beside a table; iron tools also need a nearby furnace.</p><div class="craft-grid"><button data-action="8">Table <kbd>T</kbd></button><button data-action="9">Furnace <kbd>F</kbd></button><button data-action="7">Stone <kbd>R</kbd></button><button data-action="10">Plant <kbd>P</kbd></button><button data-action="11">Wood pickaxe <kbd>1</kbd></button><button data-action="12">Stone pickaxe <kbd>2</kbd></button><button data-action="13">Iron pickaxe <kbd>3</kbd></button><button data-action="14">Wood sword <kbd>4</kbd></button><button data-action="15">Stone sword <kbd>5</kbd></button><button data-action="16">Iron sword <kbd>6</kbd></button></div></details>
+          <details><summary>Build & craft <span>10 actions</span></summary><p class="hint">Face an empty tile to place. Craft beside a table; iron tools also need a nearby furnace.</p><div class="craft-grid"><button data-action="8">Table <kbd>T</kbd><small>2 wood · clear ground</small></button><button data-action="9">Furnace <kbd>F</kbd><small>1 stone · clear ground</small></button><button data-action="7">Stone <kbd>R</kbd><small>1 stone · ground or water</small></button><button data-action="10">Plant <kbd>P</kbd><small>1 sapling · grass</small></button><button data-action="11">Wood pickaxe <kbd>1</kbd><small>1 wood · table nearby</small></button><button data-action="12">Stone pickaxe <kbd>2</kbd><small>1 wood + 1 stone · table</small></button><button data-action="13">Iron pickaxe <kbd>3</kbd><small>1 each: wood, stone, coal, iron · table + furnace</small></button><button data-action="14">Wood sword <kbd>4</kbd><small>1 wood · table nearby</small></button><button data-action="15">Stone sword <kbd>5</kbd><small>1 wood + 1 stone · table</small></button><button data-action="16">Iron sword <kbd>6</kbd><small>1 each: wood, stone, coal, iron · table + furnace</small></button></div></details>
         </section>
-        <section class="panel inventory-panel"><div class="panel-heading"><h2>In your pack</h2><span id="achievement-count">0 / 20 ACHIEVEMENTS</span></div><div class="inventory" id="inventory"><p>Everything starts with your first discovery.</p></div><details><summary>Achievements <span id="earned-count">0 earned</span></summary><ul id="achievements"><li>Your discoveries will appear here.</li></ul><p class="hint">20 discoveries to earn. Enemy-defeat achievements are excluded in peaceful mode.</p></details></section>
+        <section class="panel inventory-panel"><div class="panel-heading"><h2>In your pack</h2><span id="achievement-count">0 / 19 ACHIEVEMENTS</span></div><div class="inventory" id="inventory"><p>Everything starts with your first discovery.</p></div><details><summary>Achievements <span id="earned-count">0 earned</span></summary><ul id="achievements"><li>Your discoveries will appear here.</li></ul><p class="hint">19 discoveries to earn. Enemy-defeat and waking-up achievements are excluded in relaxed mode.</p></details></section>
       </aside>
     </div>
     <section class="field-notes" aria-label="Session and recording">

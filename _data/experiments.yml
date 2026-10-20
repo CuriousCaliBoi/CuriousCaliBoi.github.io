@@ -2,7 +2,7 @@ craftax-play:
   title: Play Craftax
   url: /craftax/
   embed_url: /craftax/
-  description: Explore, gather resources, and craft tools in peaceful Craftax Classic, with no zombies or skeletons. Play with the keyboard or touch controls and download your run for the next world-models lesson.
+  description: Explore, gather resources, and craft tools in relaxed Craftax Classic, with no enemies and automatic food, water, and energy. Play with the keyboard or touch controls and download your run for the next world-models lesson.
   mode: Private playable world
   note: The original game runs on my DGX Spark and is available through my private Tailscale connection. Each browser gets its own world. Download a recording before starting over; idle sessions expire after an hour.
 pokemon:

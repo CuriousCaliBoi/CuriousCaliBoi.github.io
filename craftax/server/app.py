@@ -15,7 +15,7 @@ import time
 import jax
 import numpy as np
 from PIL import Image
-from craftax.craftax_classic.constants import Action, Achievement
+from craftax.craftax_classic.constants import Action, Achievement, BlockType, DIRECTIONS, CLOSE_BLOCKS
 from craftax.craftax_classic.renderer import make_craftax_pixel_renderer
 from craftax.craftax_env import make_craftax_env_from_name
 from fastapi import FastAPI, Header, HTTPException, Request
@@ -26,14 +26,15 @@ from pydantic import BaseModel, Field, ConfigDict
 MAX_SESSIONS = 8
 MAX_STEPS = 5000
 IDLE_SECONDS = 3600
-GAME_MODE = "peaceful"
+GAME_MODE = "relaxed"
+AUTOMATIC_NEEDS = ["food", "drink", "energy"]
 PEACEFUL_PARAMS = {
     "spawn_zombie_base_chance": 0.0,
     "spawn_zombie_night_chance": 0.0,
     "spawn_skeleton_chance": 0.0,
 }
 AVAILABLE_ACHIEVEMENTS = [a.name.lower() for a in Achievement
-                          if a not in (Achievement.DEFEAT_ZOMBIE, Achievement.DEFEAT_SKELETON)]
+                          if a not in (Achievement.DEFEAT_ZOMBIE, Achievement.DEFEAT_SKELETON, Achievement.WAKE_UP)]
 LOCK = threading.RLock()
 SESSIONS = {}
 CREATIONS = {}
@@ -55,8 +56,42 @@ class Engine:
 
     def advance(self, key, state, action):
         key, step_key = jax.random.split(key)
-        _, state, reward, done, _ = self.step(step_key, state, np.int32(action), self.params)
-        return key, state, float(reward), bool(done)
+        # Refill before the native step so lack of necessities cannot cause damage.
+        # Refill afterward so the visible state and recorded next state agree.
+        _, state, reward, done, _ = self.step(step_key, refill_needs(state), np.int32(action), self.params)
+        return key, refill_needs(state), float(reward), bool(done)
+
+
+def refill_needs(state):
+    return state.replace(player_food=np.int32(9), player_drink=np.int32(9), player_energy=np.int32(9),
+                         player_hunger=np.float32(0), player_thirst=np.float32(0), player_fatigue=np.float32(0))
+
+
+def interaction(state):
+    grid = np.asarray(state.map)
+    position = np.asarray(state.player_position)
+    direction = int(state.player_direction)
+    target = position + np.asarray(DIRECTIONS[direction])
+    def block_at(pos):
+        y, x = map(int, pos)
+        return BlockType(int(grid[y, x])) if 0 <= y < grid.shape[0] and 0 <= x < grid.shape[1] else BlockType.OUT_OF_BOUNDS
+    block = block_at(target)
+    label = block.name.lower().replace('_', ' ')
+    hints = {BlockType.TREE: "Gather wood", BlockType.WATER: "Drink water",
+             BlockType.GRASS: "Search for saplings", BlockType.RIPE_PLANT: "Eat ripe plant",
+             BlockType.PLANT: "Plant is still growing", BlockType.CRAFTING_TABLE: "Use craft buttons",
+             BlockType.FURNACE: "Use craft buttons", BlockType.LAVA: "Lava — stay back"}
+    hint = hints.get(block, "Face a tree or a resource")
+    for ore, tool in [(BlockType.STONE, 'wood_pickaxe'), (BlockType.COAL, 'wood_pickaxe'),
+                      (BlockType.IRON, 'stone_pickaxe'), (BlockType.DIAMOND, 'iron_pickaxe')]:
+        if block == ore:
+            hint = f"Mine {label}" if int(getattr(state.inventory, tool)) else f"Need {tool.replace('_', ' ')}"
+    for pos, alive in zip(np.asarray(state.cows.position), np.asarray(state.cows.mask)):
+        if alive and np.array_equal(pos, target):
+            label, hint = "cow", "Interact with cow"
+    nearby = {block_at(position + offset) for offset in np.asarray(CLOSE_BLOCKS)}
+    return {"direction": direction, "target": label, "hint": hint,
+            "near_table": BlockType.CRAFTING_TABLE in nearby, "near_furnace": BlockType.FURNACE in nearby}
 
 
 def snapshot(state):
@@ -67,6 +102,7 @@ def snapshot(state):
         "sleeping": bool(state.is_sleeping), "light": float(state.light_level),
         "inventory": {f.name: int(getattr(state.inventory, f.name)) for f in fields(state.inventory)},
         "achievements": [a.name.lower() for a in Achievement if bool(state.achievements[a.value])],
+        "interaction": interaction(state),
     }
 
 
@@ -106,7 +142,8 @@ class Session:
     def view(self):
         return {**snapshot(self.state), "seed": self.seed, "done": self.done,
                 "reward": self.reward, "image": picture(self.state), "max_steps": MAX_STEPS,
-                "mode": GAME_MODE, "achievement_total": len(AVAILABLE_ACHIEVEMENTS)}
+                "mode": GAME_MODE, "automatic_needs": AUTOMATIC_NEEDS,
+                "achievement_total": len(AVAILABLE_ACHIEVEMENTS)}
 
 
 class NewGame(BaseModel):
@@ -252,6 +289,8 @@ def recording(authorization: str | None = Header(default=None)):
         session = owned(authorization)
         return {"schema_version": 1, "environment": "Craftax-Classic", "craftax_version": "1.6.1",
                 "mode": GAME_MODE, "environment_params": {"max_timesteps": MAX_STEPS, **PEACEFUL_PARAMS},
+                "bridge_rules": {"automatic_needs": AUTOMATIC_NEEDS, "refill_value": 9,
+                                 "timing": "before and after each native step; hunger, thirst, fatigue reset to zero"},
                 "available_achievements": AVAILABLE_ACHIEVEMENTS,
                 "seed": session.seed, "started_at": session.started_at, "max_steps": MAX_STEPS,
                 "image_format": "base64 PNG, 144x144 RGB; local view plus inventory",

@@ -18,6 +18,29 @@
   const connection = (text, live=false) => { $('connection').textContent=text; $('connection').classList.toggle('live',live); };
   const announce = (value,message) => { if(window.parent!==window) window.parent.postMessage({type:'zuko:experiment-status',state:value,message},location.origin); };
   const stopHeld = () => { held=null; document.querySelectorAll('.is-held').forEach(b=>b.classList.remove('is-held')); };
+  function craftReason(action) {
+    if(!state)return '';
+    const inv=state.inventory;
+    if(action===8 && inv.wood<2)return `A table needs 2 wood. You have ${inv.wood}. Face a tree and use Gather wood.`;
+    if([11,12].includes(action)){
+      if(inv.wood<1)return 'Collect 1 wood from a tree first.';
+      if(action===12 && inv.stone<1)return 'Collect 1 stone with your wooden pickaxe first.';
+      if(state.interaction && !state.interaction.near_table)return 'Stand next to a crafting table first. Place one with 2 wood.';
+    }
+    return '';
+  }
+  function positionTarget() {
+    const target=$('target-tile');
+    if(!state?.interaction){target.hidden=true;return;}
+    const bounds=canvas.getBoundingClientRect();
+    const scale=Math.min(bounds.width/144,bounds.height/112);
+    const [dx,dy]=({1:[-1,0],2:[1,0],3:[0,-1],4:[0,1]})[state.interaction.direction] || [0,0];
+    target.hidden=false;
+    target.style.width=target.style.height=`${16*scale}px`;
+    target.style.left=`${(bounds.width-144*scale)/2+(4+dx)*16*scale}px`;
+    target.style.top=`${(bounds.height-112*scale)/2+(3+dy)*16*scale}px`;
+  }
+  new ResizeObserver(positionTarget).observe($('game'));
   function showControls(show) {
     stopHeld();
     playArea.classList.toggle('controls-open', show);
@@ -102,7 +125,21 @@
     img.src=`data:image/png;base64,${next.image}`;
     $('world-label').textContent=`SEED ${next.seed}`;
     $('step-label').textContent=`${next.step.toLocaleString()} ${next.step===1?'action':'actions'}`;
-    for(const name of ['health','food','drink','energy']){$(name).value=next[name];$(`${name}-value`).textContent=`${next[name]}/9`;}
+    for(const name of ['health','food','drink','energy']){
+      $(name).value=next[name];
+      $(`${name}-value`).textContent=next.automatic_needs?.includes(name)?'Auto':`${next[name]}/9`;
+      $(name).title=next.automatic_needs?.includes(name)?'Refills automatically in relaxed mode':`${next[name]} out of 9`;
+    }
+    document.querySelectorAll('[data-stock]').forEach(el=>el.textContent=next.inventory[el.dataset.stock] || 0);
+    $('best-pickaxe').textContent=next.inventory.iron_pickaxe?'Iron':next.inventory.stone_pickaxe?'Stone':next.inventory.wood_pickaxe?'Wood':'None';
+    $('interact-label').textContent=next.interaction?.hint || 'Interact';
+    $('facing-label').textContent=next.interaction?`Facing ${next.interaction.target} · Space`:'Face a tree · Space';
+    document.querySelectorAll('.quick-actions [data-action]').forEach(button=>{
+      const reason=craftReason(Number(button.dataset.action));
+      button.classList.toggle('needs-materials',Boolean(reason));
+      button.title=reason || 'Ready to use';
+    });
+    positionTarget();
     $('inventory').replaceChildren();
     for(const [name,count] of Object.entries(next.inventory)){
       if(!count)continue;
@@ -121,7 +158,11 @@
     else if(next.sleeping)tell('Resting… time advances until you wake. Pause whenever you like.');
     else if(previous?.sleeping)tell('You’re awake. Back to exploring.');
     $('download').disabled=downloadBusy; $('reset').disabled=false; $('pause').disabled=next.done;
-    document.querySelectorAll('[data-action]').forEach(b=>b.disabled=next.done);
+    document.querySelectorAll('[data-action]').forEach(b=>{
+      const automaticRest=b.dataset.action==='6' && next.automatic_needs?.includes('energy');
+      b.disabled=next.done || automaticRest;
+      if(b.dataset.action==='6')b.textContent=automaticRest?'Rest is automatic':'Sleep (Z)';
+    });
     if(next.done){active=false;stopHeld();const limit=next.step>=next.max_steps;
       cover('FIELD RECORD COMPLETE',limit?'An expedition well travelled.':'Every life leaves a story.',`${next.achievements.length} achievements in ${next.step} actions. Open Controls & pack to download your run before starting another.`, 'Start another world →');
       connection('Run complete'); announce('wait','Craftax run complete');
@@ -147,6 +188,9 @@
   }
   async function move(action) {
     if(!active||busy||!state||state.done)return;
+    if(action===6 && state.automatic_needs?.includes('energy')){stopHeld();tell('Energy refills automatically. No need to sleep.');return;}
+    const reason=craftReason(action);
+    if(reason){stopHeld();tell(reason);return;}
     busy=true;
     try{
       // Pace quick taps as well as held keys; each accepted input advances one step.
@@ -182,6 +226,11 @@
   $('expand').addEventListener('click',openPlayView);
   $('leave-play').addEventListener('click',leavePlayView);
   $('toggle-controls').addEventListener('click',()=>showControls(!playArea.classList.contains('controls-open')));
+  $('more-craft').addEventListener('click',()=>{
+    openPlayView();showControls(true);
+    const crafting=document.querySelector('.controls details');
+    crafting.open=true;crafting.scrollIntoView({block:'nearest'});
+  });
   $('fullscreen').addEventListener('click',fullscreen);
   playDialog.addEventListener('cancel',event=>{event.preventDefault();pause();});
   document.addEventListener('fullscreenchange',()=>{

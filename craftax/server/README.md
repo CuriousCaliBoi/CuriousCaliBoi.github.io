@@ -4,9 +4,9 @@ The public `/craftax/` page controls the original Craftax-Classic 1.6.1 engine o
 
 Modern browsers may ask the public website for Local network access before it can connect to the private endpoint. Allow that permission for this website. If it was denied earlier, change the website's permission in the browser's site settings, then reconnect. Tailscale must also be connected on the playing device.
 
-## Peaceful mode
+## Relaxed mode
 
-All worlds use peaceful rules: zombie spawning (both base and nighttime) and skeleton spawning are disabled through the native environment parameters. Worlds start without enemies, so no hostile creatures or their arrows appear. Cows, gathering, crafting, day/night, hunger, thirst, fatigue, and environmental hazards retain their normal behavior. This is not an invincibility mode. The UI counts the 20 attainable achievements, excluding the two enemy-defeat achievements.
+All worlds use relaxed rules: zombie spawning (both base and nighttime) and skeleton spawning are disabled through the native environment parameters. Worlds start without enemies, so no hostile creatures or their arrows appear. Food, water, and energy are refilled to 9 before and after each native step, with hunger, thirst, and fatigue counters reset to zero. This prevents starvation, dehydration, and exhaustion damage while keeping rewards and termination consistent with the adjusted transition. Cows, gathering, crafting, day/night, and lava retain their normal behavior. The UI counts 19 attainable achievements, excluding the two enemy-defeat achievements and waking up (energy is always full).
 
 ## Run
 
@@ -31,9 +31,9 @@ Use a persistent service and a private HTTPS reverse proxy. Keep the loopback bi
 
 ## Recordings
 
-The download includes the seed, environment version, mode, overridden environment parameters, attainable achievements, initial frame, and each action's resulting frame, reward, terminal flag, visible player statistics, inventory, and achievements. Frames are lossless 144×144 PNG images encoded as base64, produced by Craftax's native 16-pixel tile renderer. Each action transitions from the preceding frame to its recorded resulting frame.
+The download includes the seed, environment version, mode, overridden environment parameters, bridge rules, attainable achievements, initial frame, and each action's resulting frame, reward, terminal flag, visible player statistics, inventory, and achievements. Frames are lossless 144×144 PNG images encoded as base64, produced by Craftax's native 16-pixel tile renderer. Each action transitions from the preceding frame to its recorded resulting frame.
 
-These are gameplay trajectories for later learning experiments, not full simulator checkpoints. They omit the hidden map and internal simulator state. The game uses native Craftax-Classic with the peaceful overrides above; apply the exported `environment_params` to reproduce these rules in training, rather than treating these runs as standard survival trajectories. The browser bridge avoids importing a training framework into the play service.
+These are gameplay trajectories for later learning experiments, not full simulator checkpoints. They omit the hidden map and internal simulator state. The game uses native Craftax-Classic with the relaxed overrides above; apply both the exported `environment_params` and `bridge_rules` to reproduce these rules in training, rather than treating these runs as standard survival trajectories. The browser bridge avoids importing a training framework into the play service.
 
 ## Controls
 
@@ -44,3 +44,5 @@ Entering or resuming a world opens a full-page play dialog. Full screen optional
 ## Credits
 
 [Craftax](https://github.com/MichaelTMatthews/Craftax) by Michael Matthews and collaborators, based on [Crafter](https://github.com/danijar/crafter) by Danijar Hafner. The preview is a frame rendered by the original game, not a separately implemented imitation.
+
+Supplies and the four common actions remain visible in the full-page view. The highlighted adjacent tile is the tile the player faces; its name and interaction hint come from the simulator state. Material and nearby-table hints explain common crafting requirements. Original 144×144 recordings retain the full native image, including the inventory strip.

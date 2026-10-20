@@ -59,3 +59,94 @@ body.play-open{overflow:hidden}
 }
 @media(max-width:440px){.play-dialog .game-name{display:none}.play-dialog .play-tools{width:100%;justify-content:space-between}.play-dialog .cover{padding:14px}}
 @media(max-height:500px){.play-dialog .message{display:none}.play-dialog .game-top{padding:4px 10px}.play-dialog .vitals{padding:4px 12px}.play-dialog .cover h2{font-size:28px;margin:6px 0}.play-dialog .cover .access-note{display:none}.play-dialog .cover .primary{margin:4px}.touch-controls{bottom:12px}}
+
+/* Readable supplies and actions stay beside the world, without opening a menu. */
+.target-tile{position:absolute;pointer-events:none;border:3px solid #ffe292;box-shadow:inset 0 0 0 1px #33290c,0 0 0 1px #33290c;border-radius:3px}
+.play-dock{background:var(--panel);border-top:1px solid var(--line)}
+.quick-pack{display:flex;gap:8px;padding:9px 14px;overflow-x:auto;scrollbar-width:thin}
+.quick-pack>span{display:flex;align-items:center;gap:10px;white-space:nowrap;background:#0b150e;border:1px solid #46563e;border-radius:4px;padding:5px 10px;font-size:13px;color:#dce5d3}
+.quick-pack b{font-size:16px;color:#e7efba}
+.quick-actions{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:8px;padding:0 14px 8px}
+.quick-actions button{text-align:left;min-width:0;padding:9px 12px;touch-action:none}
+.quick-actions strong{display:block;font-size:14px;font-weight:600;line-height:1.3}
+.quick-actions small{display:block;font-size:12px;line-height:1.3;margin-top:5px;color:#c6d0bd}
+.quick-actions kbd{font-size:12px;margin-left:5px}
+.quick-actions .quick-interact{border-color:#b6cf86;background:#324328}
+.quick-actions .needs-materials{border-style:dashed;background:#1a251d}
+.play-dialog .game-top button{font-size:13px;padding:8px 12px}
+.play-dialog .game-top .game-name{font-size:12px}
+.play-dialog .game-bottom{padding:3px 14px;min-height:30px;font-size:12px}
+.play-dialog .game-bottom button{font:13px Inter,system-ui,sans-serif;padding:3px 9px}
+.play-dialog .game-bottom #last-action{font-size:12px}
+.play-dialog .vitals{padding:8px 16px;gap:20px}
+.play-dialog .vitals label{font-size:14px;max-width:none;color:#c5d2ba}
+.play-dialog .vitals b{font-size:15px;color:var(--green)}
+.play-dialog meter{height:7px;max-width:none}
+.play-dialog .message{font-size:13px;line-height:1.4;padding:7px 16px;min-height:34px}
+.play-dialog .controls-open{grid-template-columns:minmax(0,1fr) 370px}
+.play-dialog .panel strong,.play-dialog .panel summary{font-size:14px}
+.play-dialog .panel p,.play-dialog .hint{font-size:13px}
+.play-dialog .craft-grid button{font-size:13px;padding:10px}
+.play-dialog .inventory .item{font-size:14px}
+.play-dialog .inventory .item b{font-size:17px}
+.play-dialog .first-steps li p{font-size:13px}
+.play-dialog .interact,.play-dialog .action-row button{font-size:14px}
+.play-dialog .interact small{font-size:12px}
+.play-dialog .session-tools label,.play-dialog .seed-row button{font-size:13px}
+.play-dialog #achievements{font-size:13px}
+@media(max-width:1000px){
+  .quick-actions{gap:5px;padding:0 8px 6px}
+  .quick-actions button{padding:8px}
+  .quick-actions strong{font-size:12px}
+  .quick-actions small{font-size:11px}
+  .quick-pack{padding:7px 8px}
+  .quick-pack>span{padding:4px 8px;gap:8px}
+}
+@media(max-width:700px){
+  .play-dialog .controls-open{grid-template-columns:minmax(0,1fr)}
+  .play-dialog .game-top button{font-size:12px;padding:8px}
+  .quick-actions{display:flex;overflow-x:auto;scrollbar-width:thin}
+  .quick-actions button{flex:0 0 132px}
+  .quick-actions .quick-interact{flex-basis:156px}
+  .quick-pack>span{font-size:12px}
+  .play-dialog .vitals label,.play-dialog .vitals b{font-size:12px}
+  .play-dialog .vitals{padding:6px 10px;gap:12px}
+  .play-dialog .message{font-size:12px;padding:6px 10px}
+  .touch-controls{bottom:12px}
+}
+@media(max-height:500px) and (min-width:701px){
+  .play-dialog .play-dock{position:absolute;z-index:2;left:8px;top:48px;bottom:55px;width:192px;overflow-y:auto;border:1px solid var(--line);border-radius:6px}
+  .play-dialog .game-card{grid-template-rows:auto minmax(0,1fr) auto auto}
+  .play-dialog .quick-pack{flex-wrap:wrap;gap:4px;padding:6px}
+  .play-dialog .quick-pack>span{font-size:11px;padding:3px 6px;gap:5px}
+  .play-dialog .quick-pack b{font-size:12px}
+  .play-dialog .quick-actions{display:grid;grid-template-columns:1fr;padding:0 6px 6px}
+  .play-dialog .quick-actions button{padding:6px 8px}
+  .play-dialog .quick-actions small{font-size:11px;margin-top:2px}
+  .play-dialog .game-bottom #last-action,.play-dialog #step-label{display:none}
+  .play-dialog .game-bottom{justify-content:flex-end}
+  .play-dialog .touch-controls .dpad{margin-left:194px}
+  .play-dialog .controls-open .play-dock{visibility:hidden}
+  .play-dialog .controls-open{grid-template-columns:minmax(0,1fr)}
+  .play-dialog .controls-open .sidebar{position:absolute;z-index:3;top:48px;right:0;bottom:0;width:min(370px,100%)}
+}
+
+.craft-grid button{flex-wrap:wrap}.craft-grid button small{flex-basis:100%;color:var(--muted);font-size:12px;line-height:1.4;margin-top:4px}
+
+.play-dialog .game-card{grid-template-columns:minmax(0,1fr)}
+.play-dock,.quick-pack,.quick-actions{min-width:0;max-width:100%}
+@media(min-width:1100px) and (min-height:501px){
+  .play-dialog .game-card{grid-template-columns:260px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto auto}
+  .play-dialog .game-top{grid-column:1/-1;grid-row:1}
+  .play-dialog .stage{grid-column:2;grid-row:2/4}
+  .play-dialog .play-dock{grid-column:1;grid-row:2;display:flex;flex-direction:column;height:100%;overflow-y:auto;border-top:0;border-right:1px solid var(--line)}
+  .play-dialog .quick-pack{flex-wrap:wrap;flex-shrink:0;padding:12px;gap:7px}
+  .play-dialog .quick-pack>span{flex:1 0 90px;justify-content:space-between}
+  .play-dialog .quick-actions{display:grid;grid-template-columns:1fr;padding:0 12px 12px;gap:9px;flex-shrink:0}
+  .play-dialog .quick-actions button{padding:12px}
+  .play-dialog .game-bottom{margin-top:auto;flex-shrink:0}
+  .play-dialog .game-bottom #last-action{display:none}
+  .play-dialog .vitals{grid-column:1;grid-row:3;grid-template-columns:1fr 1fr;padding:12px;gap:14px;border-right:1px solid var(--line)}
+  .play-dialog .vitals label,.play-dialog .vitals b{font-size:13px}
+  .play-dialog .message{grid-column:1/-1;grid-row:4}
+}
