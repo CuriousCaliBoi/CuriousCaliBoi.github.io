@@ -39,6 +39,8 @@ These are gameplay trajectories for later learning experiments, not full simulat
 
 WASD/arrows move. Space interacts with the tile in front. Q waits, Z sleeps, T places a table, F places a furnace, R places stone, and P plants. Keys 1–3 craft wood/stone/iron pickaxes; 4–6 craft matching swords. Escape pauses. All actions also have clickable/touch buttons.
 
+Entering or resuming a world opens a full-page play dialog. Full screen optionally hides browser chrome; browsers without that capability keep the full-page view. Controls & pack opens crafting, inventory, goals, downloads, and new-world tools. Touch devices also get movement and interaction buttons over the world. Back to page pauses and returns to the lab without resetting the session. Escape closes the controls panel, then pauses play, then returns to the page. The canvas displays the complete 9×7 world area with proportional pixel scaling; the duplicate pixel inventory strip is omitted only on screen, not from recordings.
+
 ## Credits
 
 [Craftax](https://github.com/MichaelTMatthews/Craftax) by Michael Matthews and collaborators, based on [Crafter](https://github.com/danijar/crafter) by Danijar Hafner. The preview is a frame rendered by the original game, not a separately implemented imitation.

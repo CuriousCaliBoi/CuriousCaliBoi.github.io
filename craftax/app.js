@@ -7,6 +7,10 @@
   const sessionKey = 'craftax-play-session-v1';
   let api, token = null, state = null, active = false, busy = false, held = null, starting = false, downloadBusy = false;
   let imageRevision = 0, lastTick = 0;
+  const playDialog = $('play-dialog'), playArea = $('play-area');
+  const sessionTools = document.querySelector('.session-tools');
+  const playHome = document.createComment('game position'), toolsHome = document.createComment('session tools position');
+  playArea.before(playHome); sessionTools.before(toolsHome);
   try { token = sessionStorage.getItem(sessionKey); } catch (_) {}
   const storeToken = value => { token = value; try { if(value) sessionStorage.setItem(sessionKey,value); else sessionStorage.removeItem(sessionKey); } catch (_) {} };
   const title = value => value.replaceAll('_',' ').replace(/^./, c=>c.toUpperCase());
@@ -14,6 +18,38 @@
   const connection = (text, live=false) => { $('connection').textContent=text; $('connection').classList.toggle('live',live); };
   const announce = (value,message) => { if(window.parent!==window) window.parent.postMessage({type:'zuko:experiment-status',state:value,message},location.origin); };
   const stopHeld = () => { held=null; document.querySelectorAll('.is-held').forEach(b=>b.classList.remove('is-held')); };
+  function showControls(show) {
+    stopHeld();
+    playArea.classList.toggle('controls-open', show);
+    $('toggle-controls').setAttribute('aria-expanded', String(show));
+    $('toggle-controls').textContent=show?'Hide controls':'Controls & pack';
+    $('game').focus({preventScroll:true});
+  }
+  function openPlayView() {
+    if(playDialog.open)return;
+    playDialog.append(playArea);
+    $('play-sidebar').append(sessionTools);
+    document.body.classList.add('play-open');
+    playDialog.showModal();
+    showControls(false);
+  }
+  async function leavePlayView() {
+    pause(); stopHeld();
+    if(document.fullscreenElement)await document.exitFullscreen().catch(()=>{});
+    playDialog.close();
+    playHome.after(playArea); toolsHome.after(sessionTools);
+    playArea.classList.remove('controls-open');
+    document.body.classList.remove('play-open');
+    $('expand').focus({preventScroll:true});
+  }
+  async function fullscreen() {
+    openPlayView(); stopHeld();
+    try {
+      if(document.fullscreenElement)await document.exitFullscreen();
+      else await playArea.requestFullscreen();
+      $('game').focus({preventScroll:true});
+    } catch (_) { tell('Full-page play is ready. This browser doesn’t support going further into full screen.'); }
+  }
   function cover(kicker, heading, text, button) {
     $('cover').hidden=false; $('cover-kicker').textContent=kicker; $('cover-title').textContent=heading;
     $('cover-text').textContent=text; $('start').textContent=button; $('start').disabled=false;
@@ -26,6 +62,7 @@
   }
   function resume() {
     if(!state || state.done) return;
+    openPlayView();
     active=true; $('cover').hidden=true; $('pause').innerHTML='Pause <kbd>Esc</kbd>';
     connection('Playing · your controls',true); $('game').focus({preventScroll:true}); announce('live','Craftax connected — you control the player');
   }
@@ -59,7 +96,9 @@
     state=next;
     const revision=++imageRevision;
     const img=new Image();
-    img.onload=()=>{if(revision===imageRevision){ctx.imageSmoothingEnabled=false;ctx.drawImage(img,0,0,144,144);}};
+    // Use the whole world view. The original bottom inventory strip is already
+    // represented by the page's live vitals and pack; recordings keep it intact.
+    img.onload=()=>{if(revision===imageRevision){ctx.imageSmoothingEnabled=false;ctx.drawImage(img,0,0,144,112,0,0,144,112);}};
     img.src=`data:image/png;base64,${next.image}`;
     $('world-label').textContent=`SEED ${next.seed}`;
     $('step-label').textContent=`${next.step.toLocaleString()} ${next.step===1?'action':'actions'}`;
@@ -84,7 +123,7 @@
     $('download').disabled=downloadBusy; $('reset').disabled=false; $('pause').disabled=next.done;
     document.querySelectorAll('[data-action]').forEach(b=>b.disabled=next.done);
     if(next.done){active=false;stopHeld();const limit=next.step>=next.max_steps;
-      cover('FIELD RECORD COMPLETE',limit?'An expedition well travelled.':'Every life leaves a story.',`${next.achievements.length} achievements in ${next.step} actions. Download your run below before starting another.`, 'Start another world →');
+      cover('FIELD RECORD COMPLETE',limit?'An expedition well travelled.':'Every life leaves a story.',`${next.achievements.length} achievements in ${next.step} actions. Open Controls & pack to download your run before starting another.`, 'Start another world →');
       connection('Run complete'); announce('wait','Craftax run complete');
     }
   }
@@ -103,7 +142,7 @@
       let next;
       if(token){try{next=await request('session');}catch(e){if(e.status!==401)throw e;storeToken(null);}}
       if(!next){next=await request('session','POST',{});storeToken(next.token);delete next.token;}
-      draw(next);if(!next.done)resume();tell('Face a tree and press Space to collect your first wood.');
+      openPlayView();draw(next);if(!next.done)resume();tell('Face a tree and press Space to collect your first wood.');
     }catch(error){loseConnection(error);}finally{starting=false;$('start').disabled=false;}
   }
   async function move(action) {
@@ -140,6 +179,15 @@
     }catch(error){tell(error.message,true);}finally{downloadBusy=false;$('download').disabled=false;$('download').textContent='↓ Download this run';}
   }
   $('start').addEventListener('click',start);
+  $('expand').addEventListener('click',openPlayView);
+  $('leave-play').addEventListener('click',leavePlayView);
+  $('toggle-controls').addEventListener('click',()=>showControls(!playArea.classList.contains('controls-open')));
+  $('fullscreen').addEventListener('click',fullscreen);
+  playDialog.addEventListener('cancel',event=>{event.preventDefault();pause();});
+  document.addEventListener('fullscreenchange',()=>{
+    $('fullscreen').textContent=document.fullscreenElement?'Exit full screen':'Full screen';
+    if(!document.fullscreenElement)pause();
+  });
   $('pause').addEventListener('click',()=>active?pause():resume());
   $('new-world').addEventListener('submit',event=>{event.preventDefault();reset();});
   $('download').addEventListener('click',download);
@@ -155,7 +203,14 @@
   });
   document.addEventListener('keydown',event=>{
     if(event.ctrlKey||event.metaKey||event.altKey||event.target.closest('input,textarea,select,[contenteditable]'))return;
-    if(event.code==='Escape'){if(state&&!state.done){event.preventDefault();active?pause():resume();}return;}
+    if(event.code==='Escape'){
+      event.preventDefault();
+      if(playDialog.open){
+        if(playArea.classList.contains('controls-open'))showControls(false);
+        else if(active)pause();else leavePlayView();
+      }else if(state&&!state.done){active?pause():resume();}
+      return;
+    }
     // Space on a focused button retains its standard keyboard activation.
     if(event.target.closest('button,a,summary'))return;
     const action=keymap[event.code];if(action===undefined||!active)return;

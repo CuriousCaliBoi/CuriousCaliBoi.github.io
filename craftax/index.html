@@ -7,8 +7,8 @@
   <meta name="description" content="Play peaceful Craftax Classic: explore, gather, and craft without zombies or skeletons. A hands-on world-models lab.">
   <title>Peaceful Craftax — CuriousCaliBoi</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
-  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="style.css?v=full-page-1">
+  <script src="app.js?v=full-page-1" defer></script>
 </head>
 <body>
   <a class="skip" href="#game">Skip to game</a>
@@ -22,14 +22,15 @@
       <div><p class="eyebrow">THE PLAYABLE FIELD LAB <span>01</span></p><h1>A little world.<br><em>A lot to discover.</em></h1></div>
       <p class="intro">Gather wood. Make a tool. Find your way home.<br><strong>Peaceful Craftax Classic</strong> — no zombies or skeletons.<br>Food, water, and rest still matter.</p>
     </div>
-    <div class="layout">
+    <div class="layout" id="play-area">
       <section class="game-card" aria-label="Craftax game">
-        <div class="game-top"><span><i class="dot"></i> CRAFTAX · PEACEFUL</span><span id="world-label">YOUR WORLD AWAITS</span></div>
+        <div class="game-top"><span class="game-name"><i class="dot"></i> CRAFTAX · PEACEFUL</span><span id="world-label">YOUR WORLD AWAITS</span><button id="expand">Full page ↗</button><div class="play-tools"><button id="toggle-controls" aria-expanded="false" aria-controls="play-sidebar">Controls & pack</button><button id="fullscreen">Full screen</button><button id="leave-play">Back to page ↙</button></div></div>
         <div class="stage" id="game" tabindex="0" role="group" aria-label="Game controls. Move with W A S D or arrows. Space interacts. Escape pauses.">
-          <canvas id="screen" width="144" height="144" aria-label="Your view of the Craftax world"></canvas>
+          <canvas id="screen" width="144" height="112" aria-label="Your view of the Craftax world"></canvas>
           <div class="cover" id="cover">
             <div class="cover-copy"><p class="eyebrow" id="cover-kicker">EXPLORE · CRAFT · SURVIVE</p><h2 id="cover-title">Step into the world.</h2><p id="cover-text">Start with empty hands and a patch of forest.<br>What will you make of it?</p><button class="primary" id="start">Enter world <span aria-hidden="true">→</span></button><p class="access-note" id="access-note">Connect to Tailscale. Allow local-network access if your browser asks, so this page can reach your DGX.</p></div>
           </div>
+          <div class="touch-controls" aria-label="Touch game controls"><div class="dpad"><button data-action="3" class="up" aria-label="Move up">↑</button><button data-action="1" class="left" aria-label="Move left">←</button><button data-action="4" class="down" aria-label="Move down">↓</button><button data-action="2" class="right" aria-label="Move right">→</button></div><button data-action="5" class="touch-interact">Interact</button></div>
         </div>
         <div class="game-bottom"><span id="step-label">No actions yet</span><span id="last-action">WASD / arrows to move · Space to interact</span><button id="pause" disabled>Pause <kbd>Esc</kbd></button></div>
         <div class="vitals" aria-label="Player status">
@@ -40,7 +41,7 @@
         </div>
         <div class="message" id="message" role="status" aria-live="polite">Time moves when you act. You can stop and think.</div>
       </section>
-      <aside class="sidebar" aria-label="Controls and field notes">
+      <aside class="sidebar" id="play-sidebar" aria-label="Controls and field notes">
         <section class="panel first-steps"><p class="eyebrow">YOUR FIRST EXPEDITION</p><h2>From wood to stone.</h2><ol id="goals"><li data-goal="collect_wood"><span>01</span><div><strong>Gather some wood</strong><p>Face a tree. Press Space.</p></div></li><li data-goal="place_table"><span>02</span><div><strong>Place a crafting table</strong><p>Collect 2 wood, then press T on clear ground.</p></div></li><li data-goal="make_wood_pickaxe"><span>03</span><div><strong>Craft a wooden pickaxe</strong><p>With 1 wood, stand beside the table and press 1.</p></div></li><li data-goal="collect_stone"><span>04</span><div><strong>Mine your first stone</strong><p>Face a rock and press Space.</p></div></li></ol></section>
         <section class="panel controls"><div class="panel-heading"><h2>Take the controls</h2><span>KEYS OR TOUCH</span></div>
           <div class="movement">
@@ -60,5 +61,6 @@
     <noscript><p class="noscript">Enable JavaScript to connect to and play Craftax.</p></noscript>
   </main>
   <footer><p>A world-models learning lab by <a href="/">Zuko</a>.</p><p>Original game: <a href="https://github.com/MichaelTMatthews/Craftax">Craftax</a>, based on <a href="https://github.com/danijar/crafter">Crafter</a>. <a href="/experiments/world-models/">Explore the learning experiments ↗</a></p></footer>
+  <dialog class="play-dialog" id="play-dialog" aria-label="Full-page Craftax game"></dialog>
 </body>
 </html>
