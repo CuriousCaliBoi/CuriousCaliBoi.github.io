@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One push, explained · Lecture 3 · Zuko’s Blog</title>
+  <meta name="description" content="Step through real PushT physics recorded on a DGX Spark. Connect actions, contact, state, observations, and rollouts to CIS 6280 Lecture 3.">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header><a href="/">Zuko’s Blog</a><span>WORLD MODELS / FIELD NOTES 03</span><a href="https://jiataogu.me/cis6280-world-models/lectures/lecture-03-environments-simulators-rollouts.pdf">Lecture 3 ↗</a></header>
+  <main>
+    <div class="intro"><p class="eyebrow">Environments · Simulators · Rollouts</p><h1>One push, explained.</h1><p class="lede">A tiny world makes the whole loop visible. Choose a recorded experiment, then follow an action through contact into the next state.</p></div>
+    <div class="topline"><span><i></i> Recorded from real PushT physics on the DGX Spark</span><span>No trained policy · No learned dynamics</span></div>
+    <section class="lab" aria-label="PushT rollout explorer">
+      <div class="viewer">
+        <div class="scene-picker" role="group" aria-label="Recorded experiment">
+          <button data-scene="off-center" aria-pressed="true">01 / Off-center push</button>
+          <button data-scene="centered" aria-pressed="false">02 / Centered push</button>
+        </div>
+        <canvas id="scene" width="512" height="512" aria-label="Recorded PushT scene: blue pusher, gray T-block, and green goal">A real PushT rollout. Use the JSON download to inspect its recorded states.</canvas>
+        <div class="legend"><span class="pusher">● Pusher</span><span class="block">■ T-block</span><span class="goal">■ Goal (no collision)</span></div>
+        <div class="controls"><button id="play" disabled>Play rollout</button><button id="back" aria-label="Previous recorded step" disabled>←</button><button id="next" aria-label="Next recorded step" disabled>→</button><output id="counter">Loading…</output></div>
+        <label class="scrub-label" for="scrub">Recorded step <span id="time">0.0 seconds</span></label>
+        <input type="range" id="scrub" min="0" max="14" value="0" step="1" disabled>
+        <p id="load-status" role="status">Loading the recorded experiment…</p>
+      </div>
+      <aside>
+        <p class="eyebrow" id="event-label">Inside one step</p><h2 id="event-title">Start with a world.</h2><p id="explanation">Reset creates the initial state. No action has been applied yet.</p>
+        <ol class="pipeline"><li><span>01</span><div><strong>Choose an action</strong><code id="action">—</code><small>Two numbers set a relative target.</small></div></li><li><span>02</span><div><strong>Move toward the target</strong><code id="target">—</code><small>Current position + 100 × action.</small></div></li><li><span>03</span><div><strong>Advance the physics</strong><code>10 × 0.01 s = 0.1 s</code><small id="contact">The green goal has no collisions.</small></div></li><li><span>04</span><div><strong>Read the next state</strong><code id="pose">T at (256, 260) · 0°</code><small id="motion">The inspector includes velocity and spin.</small></div></li></ol>
+        <div class="feedback"><div><small>Reward</small><strong id="reward">—</strong></div><div><small>Goal reached</small><strong id="success">No</strong></div><div><small>Time limit</small><strong id="truncated">No</strong></div></div>
+        <p class="fine">This checkout scores negative state distance, so closer to zero is better. Success separately checks pusher position, T position, and orientation. Reward is not an overlap percentage.</p>
+      </aside>
+    </section>
+    <section class="below"><div><p class="eyebrow">Try an experiment</p><h2>Same action. Different contact.</h2><p>Both recordings repeat <code>[0, −0.5]</code>: move upward. In the first, the pusher starts 14 units off center. Contact turns the T. In the second, the centered push reaches the goal after seven actions.</p><p><strong>A rollout</strong> is simply this sequence: choose an action, advance the environment, record what happened, and repeat. These frames came from the simulator. The buttons replay that evidence.</p><div class="links"><a class="button" href="https://spark-a4b4.tailef40b0.ts.net:8444/" target="_blank" rel="noopener">Control the live DGX demo ↗</a><a id="download" href="off-center.json" download>Download rollout JSON ↓</a></div><p class="fine">Live controls require access to my private Tailscale network and the Spark to be online. This recorded explorer works independently.</p></div><div><p class="eyebrow">The Lecture 3 connection</p><h2>State → action → next state.</h2><p>The simulator stores position, velocity, orientation, and spin. A picture shows the scene, but a single frame cannot reveal all that motion.</p><p>In this SWM checkout, <code>reset()</code> and <code>step()</code> return numeric observation arrays. We also call <code>render()</code> for the image. Open the trace below to compare the observation with the richer mechanical state.</p><p>A physics simulator is a world model with specified rules. A <em>learned</em> world model would learn to predict these transitions from data. This lab supplies the environment and the recorded experience for that next step.</p><p class="references"><a href="https://jiataogu.me/cis6280-world-models/lectures/lecture-03-environments-simulators-rollouts.pdf#page=6">State vs. observation, p. 6 ↗</a><br><a href="https://jiataogu.me/cis6280-world-models/lectures/lecture-03-environments-simulators-rollouts.pdf#page=12">Inside one step, p. 12 ↗</a><br><a href="https://jiataogu.me/cis6280-world-models/lectures/lecture-03-environments-simulators-rollouts.pdf#page=16">Action as a relative target, p. 16 ↗</a></p></div></section>
+    <details><summary>Inspect the recorded transition</summary><p>Mechanical values aid inspection; they are not a complete physics-engine checkpoint. Reproduce using the saved reset settings and action sequence.</p><pre id="trace"></pre></details>
+    <footer>Recorded with <a href="https://github.com/galilai-group/stable-worldmodel/tree/10c26dbd5677083fa31dba69eb738b973845e9a4">Stable World Model · 10c26db</a>. Local adapter aligns the visible goal with the scoring goal and adds a 500-action limit. Physics runs on the CPU.</footer>
+  </main>
+</body>
+</html>

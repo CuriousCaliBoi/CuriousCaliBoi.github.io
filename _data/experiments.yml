@@ -47,6 +47,13 @@ world-models-carracing:
   description: Drive inside a 2018-style world model trained on my DGX Spark. The VAE, MDN-RNN, and CMA-ES controller from the original paper run entirely in your browser.
   mode: In-browser world model
   note: The models are static files that run locally in your browser; nothing contacts the Spark. Arrow keys or the on-screen pad take the wheel from the agent, and the temperature slider changes how boldly the model samples its own predictions.
+lecture-03-pusht:
+  title: "Lecture 3: one push, explained"
+  url: /experiments/lecture-03-pusht/
+  embed_url: /experiments/lecture-03-pusht/
+  description: Compare centered and off-center pushes, then inspect each action, contact, and resulting state in real PushT recordings from the DGX Spark.
+  mode: Recorded physics explorer
+  note: This browser viewer replays recorded simulator frames and transitions. Live controls are linked separately and require access to the private Tailscale network. No trained model or policy is loaded.
 dreamerv3:
   title: DreamerV3, a small world
   url: /dreamerv3/
