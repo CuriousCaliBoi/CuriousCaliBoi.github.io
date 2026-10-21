@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#203b32">
+  <title>Meadow · Voxel World Lab</title>
+  <meta name="description" content="A private creative world built with Voxelize. Explore, fly, and build without enemies or hunger.">
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f2f0e5;color:#233e32;font:16px/1.65 system-ui,sans-serif}a{color:inherit}header{max-width:1360px;margin:auto;padding:25px 5vw;display:flex;justify-content:space-between;font-size:13px}header a{text-decoration:none}main{max-width:1360px;margin:20px auto 0;padding:0 5vw 55px}.eyebrow{font-size:11px;letter-spacing:.2em;font-weight:700;color:#63785e;margin:0 0 18px}.hero{display:grid;grid-template-columns:.9fr 1.2fr;gap:55px;align-items:center;padding:35px 0 65px}h1{font:normal clamp(52px,6vw,84px)/.98 Georgia,serif;letter-spacing:-.055em;margin:0 0 25px}.intro{font-size:17px;color:#586b59;max-width:440px;margin-bottom:30px}.play{display:inline-block;text-decoration:none;padding:15px 24px;border-radius:9px;background:#294b38;color:#f6f5e9;font-weight:650}.play:hover{background:#396047}.note{font-size:12px;color:#6c7c69;margin:13px 0}.image{position:relative;overflow:hidden;border-radius:18px;background:#b5c9a0;box-shadow:0 20px 55px #294b3820;aspect-ratio:1.05}.image img{width:100%;height:100%;object-fit:cover;object-position:center}.caption{position:absolute;bottom:15px;left:15px;background:#203b32e8;color:#eef1df;padding:7px 12px;border-radius:7px;font-size:11px}.details{display:grid;grid-template-columns:repeat(3,1fr);gap:35px;border-top:1px solid #bec8b3;padding-top:30px}.details h2{font-size:16px;font-weight:650;margin:0 0 9px}.details p{font-size:14px;color:#5c6e59;margin:0}kbd{font:12px system-ui;background:#e4e8d8;padding:2px 5px;border-radius:4px}footer{font-size:12px;color:#74816c;margin-top:35px}a:focus-visible{outline:3px solid #719748;outline-offset:5px}@media(max-width:850px){.hero{grid-template-columns:1fr;gap:25px;padding-top:15px}.image{aspect-ratio:1.5}.details{grid-template-columns:1fr;gap:24px}h1{font-size:62px}.intro{max-width:100%}main{margin-top:0}}
+  </style>
+</head>
+<body>
+  <header><a href="/experiments/">← Experiments</a><a href="https://github.com/CuriousCaliBoi/voxel-world-lab">Private repository ↗</a></header>
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">VOXEL WORLD LAB · CREATIVE</p>
+        <h1>Your own<br>little world.</h1>
+        <p class="intro">Walk through the meadow, fly above the trees, and build something that stays. A full-window 3D playground with no enemies or hunger.</p>
+        <a class="play" href="https://spark-a4b4.tailef40b0.ts.net:8446/" target="_blank" rel="noopener">Enter Meadow <span aria-hidden="true">↗</span></a>
+        <p class="note">Connect to Tailscale first. Opens the private game in a new tab.</p>
+      </div>
+      <div class="image"><img src="preview.png" alt="First-person view of Meadow's grassy hills, block trees, and building palette" width="1440" height="1000"><span class="caption">Built with Voxelize · running on my DGX Spark</span></div>
+    </section>
+    <section class="details" aria-label="About the world">
+      <div><h2>Make room for anything.</h2><p>Nine unlimited building materials. Break blocks, place them, and fly. World changes save on the DGX, so your builds are there when you come back.</p></div>
+      <div><h2>Simple controls.</h2><p><kbd>W A S D</kbd> move · mouse to look.<br>Left click breaks; right click builds.<br><kbd>1–9</kbd> choose · <kbd>F</kbd> fly · <kbd>Esc</kbd> pause.<br>Keyboard and mouse recommended.</p></div>
+      <div><h2>A world to learn from.</h2><p>A separate <a href="https://github.com/CuriousCaliBoi/voxel-world-lab">Voxelize project</a> for future recording, prediction, and planning labs. This first version is the playable environment; model training comes later.</p></div>
+    </section>
+    <footer>Powered by <a href="https://github.com/voxelize/voxelize">Voxelize</a>. The game is private to my Tailscale network. <a href="/craftax/">Play Craftax</a> is also available.</footer>
+  </main>
+</body>
+</html>

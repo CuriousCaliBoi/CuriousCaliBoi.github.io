@@ -1,3 +1,10 @@
+voxel-meadow:
+  title: Meadow · Voxel World Lab
+  url: /voxel/
+  embed_url: /voxel/
+  description: Explore a full-window 3D world, fly above the trees, and build with unlimited blocks. A peaceful Voxelize playground for future world-model labs.
+  mode: Private creative world
+  note: The game runs on my DGX Spark through Tailscale. Terrain edits save automatically. Keyboard and mouse recommended; no enemies or hunger.
 craftax-play:
   title: Play Craftax
   url: /craftax/
