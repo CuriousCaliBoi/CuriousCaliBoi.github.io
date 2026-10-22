@@ -68,3 +68,10 @@ lecture-03-pusht:
   description: Compare centered and off-center pushes, then inspect each action, contact, and resulting state in real PushT recordings from the DGX Spark.
   mode: Recorded physics explorer
   note: This browser viewer replays recorded simulator frames and transitions. Live controls are linked separately and require access to the private Tailscale network. No trained model or policy is loaded.
+dreamerv3:
+  title: DreamerV3, learning to survive
+  url: /dreamerv3/
+  embed_url: /dreamerv3/
+  description: Explore a real DreamerV3 agent in Crafter. Follow its path, inspect resources and achievements, and compare the game with the model’s own reconstructed images.
+  mode: Recorded survival explorer
+  note: DreamerV3 trains on the Spark’s GPU. The browser explores fixed recordings from three seeds, alongside random-action comparisons. Reconstructed images show the current observation, not future predictions. The original CartPole playground remains linked.
