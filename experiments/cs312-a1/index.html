@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101813">
+  <title>CS 312 · Assignment 1 experiment log · Zuko’s Blog</title>
+  <meta name="description" content="Configurations, execution records, and plots from CS 312 Assignment 1: Basics — Empirical Machine Learning.">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">Zuko’s Blog</a>
+    <span>CS 312 / EMPIRICAL MACHINE LEARNING</span>
+    <a href="https://deep-learning-alchemy.github.io/assets/assignments/a1_basics.pdf">Assignment PDF ↗</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Assignment 1 · Execution record</p>
+      <h1>A small language model,<br><em>measured from every angle.</em></h1>
+      <p class="lede">Configurations, run state, raw measurements, and plots from the prescribed experiments. This page records outcomes without interpreting them.</p>
+      <div class="hero-meta">
+        <span><i class="status-dot" id="status-dot"></i><strong id="dataset-state">Loading experiment record</strong></span>
+        <span id="generated-at">Awaiting data</span>
+      </div>
+    </section>
+
+    <section class="status-panel" aria-labelledby="status-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">Run ledger</p><h2 id="status-title">Execution status</h2></div>
+        <a class="text-link" href="results.json" download>Download raw JSON ↓</a>
+      </div>
+      <div class="status-grid" id="status-grid" aria-live="polite">
+        <article><span>Planned</span><strong>155</strong><small>core experiment matrix</small></article>
+        <article><span>Recorded</span><strong>—</strong><small>loading</small></article>
+        <article><span>Complete</span><strong>—</strong><small>loading</small></article>
+        <article><span>Active</span><strong>—</strong><small>loading</small></article>
+        <article><span>Failed</span><strong>—</strong><small>loading</small></article>
+      </div>
+      <div class="phase-list" id="phase-list"></div>
+    </section>
+
+    <section class="architecture" aria-labelledby="architecture-title">
+      <div class="section-heading architecture-copy">
+        <div><p class="eyebrow">Model organism</p><h2 id="architecture-title">The d8 path</h2></div>
+        <p>One 1,024-token sequence flows through the same eight-block decoder used by every baseline run.</p>
+      </div>
+      <div class="model-flow" role="img" aria-label="Token IDs flow into token embeddings, through eight pre-normalized transformer blocks, a final RMS normalization, an untied language-model head, logits over 4,096 tokens, and next-token cross-entropy loss.">
+        <article class="flow-node input"><span>01</span><small>Input</small><strong>1,024 token IDs</strong><code>vocabulary 4,096</code></article>
+        <b aria-hidden="true">→</b>
+        <article class="flow-node"><span>02</span><small>Lookup</small><strong>Token embedding</strong><code>hidden size 512</code></article>
+        <b aria-hidden="true">→</b>
+        <article class="flow-node block-node">
+          <span>03</span><small>Repeat × 8</small><strong>Pre-norm block</strong>
+          <div><code>RMSNorm → causal attention → + residual</code><code>RMSNorm → SwiGLU MLP → + residual</code></div>
+        </article>
+        <b aria-hidden="true">→</b>
+        <article class="flow-node"><span>04</span><small>Normalize</small><strong>Final RMSNorm</strong><code>512 values / token</code></article>
+        <b aria-hidden="true">→</b>
+        <article class="flow-node"><span>05</span><small>Project</small><strong>Untied LM head</strong><code>4,096 logits / token</code></article>
+        <b aria-hidden="true">→</b>
+        <article class="flow-node output"><span>06</span><small>Objective</small><strong>Next-token loss</strong><code>mean cross-entropy</code></article>
+      </div>
+      <div class="component-grid">
+        <article><span>Attention</span><strong>8 heads × 64 dimensions</strong><p>Causal attention with rotary positions and query-key normalization.</p></article>
+        <article><span>MLP</span><strong>SwiGLU · width 1,792</strong><p>Gate and up projections combine before the down projection.</p></article>
+        <article><span>Optimization</span><strong>AdamW · peak LR 0.003</strong><p>1% warmup, linear decay, weight decay 0.1, gradient clip 1.0.</p></article>
+        <article><span>Data</span><strong>600,000 sequences</strong><p>614.4M training tokens; batch size 64; held-out validation sequences.</p></article>
+      </div>
+    </section>
+
+    <section class="plots" aria-labelledby="plots-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">Recorded measurements</p><h2 id="plots-title">Plot desk</h2></div>
+        <p id="filtered-count">0 runs in view</p>
+      </div>
+      <form class="filters" id="filters">
+        <label>Problem<select id="problem-filter"><option value="all">All problems</option></select></label>
+        <label>Group<select id="group-filter"><option value="all">All groups</option></select></label>
+        <label>Status<select id="status-filter"><option value="all">All states</option><option value="completed">Completed</option><option value="running">Running</option><option value="queued">Queued</option><option value="failed">Failed</option></select></label>
+        <label>X axis<select id="x-axis"><option value="index">Run order</option><option value="learning_rate">Learning rate</option><option value="batch_size">Batch size</option><option value="warmup_percent">Warmup</option><option value="weight_decay">Weight decay</option><option value="depth">Model depth</option><option value="train_tokens">Training tokens</option><option value="compute_flops">Compute proxy</option></select></label>
+        <label>Y axis<select id="y-axis"><option value="final_val_loss">Final validation loss</option><option value="final_train_loss">Final training loss</option><option value="elapsed_seconds">Elapsed seconds</option><option value="num_parameters">Parameters</option></select></label>
+      </form>
+
+      <div class="plot-grid">
+        <article class="chart-card wide">
+          <div class="chart-title"><div><span>Terminal measurements</span><h3 id="scatter-title">Final validation loss by run order</h3></div><small>Hover or focus a point for its run record.</small></div>
+          <div class="chart" id="scatter-chart" role="img" aria-label="Terminal measurement scatter plot"></div>
+        </article>
+        <article class="chart-card wide">
+          <div class="chart-title"><div><span>Trajectories</span><h3>Training and validation loss</h3></div><small>Completed runs with recorded history.</small></div>
+          <div class="chart" id="curve-chart" role="img" aria-label="Training and validation loss curves"></div>
+        </article>
+      </div>
+
+      <div class="problem-heading">
+        <div><p class="eyebrow">Problem views</p><h3>Prescribed comparisons</h3></div>
+        <p>Each panel reads directly from the same exported run records.</p>
+      </div>
+
+      <div class="problem-grid" id="problem-views">
+        <article class="chart-card">
+          <div class="chart-title">
+            <div><span>P1 · Hyperparameters</span><h3>Terminal validation loss</h3></div>
+            <div class="mini-controls">
+              <label>Parameter<select id="p1-parameter"><option value="learning_rate">Learning rate</option><option value="batch_size">Batch size</option><option value="warmup_percent">Warmup</option><option value="weight_decay">Weight decay</option></select></label>
+              <label>Group<select id="p1-group"><option value="all">All P1 groups</option></select></label>
+            </div>
+          </div>
+          <div class="chart" id="p1-chart" role="img" aria-label="Problem 1 terminal validation loss by selected hyperparameter"></div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-title"><div><span>P1 · Paired sweep</span><h3>Learning rate × batch size</h3></div><small>Cell labels are terminal validation losses.</small></div>
+          <div class="chart" id="p1-heatmap" role="img" aria-label="Problem 1 learning rate and batch size heatmap"></div>
+        </article>
+
+        <article class="chart-card full">
+          <div class="chart-title">
+            <div><span>P2 · Scaling</span><h3>Scaling families</h3></div>
+            <div class="mini-controls single">
+              <label>Horizontal axis<select id="p2-axis"><option value="depth">Model depth</option><option value="compute_flops">Compute proxy</option><option value="train_tokens">Training tokens</option></select></label>
+            </div>
+          </div>
+          <div class="chart" id="p2-chart" role="img" aria-label="Problem 2 validation loss scaling families"></div>
+          <div class="series-legend" id="p2-legend" aria-label="Problem 2 series legend"></div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-title"><div><span>P3 · Variation</span><h3>Terminal-loss records</h3></div><small>One point per completed run, arranged by experiment group.</small></div>
+          <div class="chart" id="p3-chart" role="img" aria-label="Problem 3 terminal validation losses grouped by variation source"></div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-title">
+            <div><span>P4 · Amplification</span><h3>Absolute paired loss gap</h3></div>
+            <div class="mini-controls single">
+              <label>Perturbed run<select id="p4-run"><option value="">Awaiting P4 runs</option></select></label>
+            </div>
+          </div>
+          <div class="chart" id="p4-chart" role="img" aria-label="Problem 4 absolute training loss gap from the deterministic baseline"></div>
+        </article>
+
+        <article class="chart-card full">
+          <div class="chart-title">
+            <div><span>P6 · Internal statistics</span><h3>Parameter, activation, and gradient RMS</h3></div>
+            <div class="mini-controls rms-control">
+              <label>Logged metric<select id="p6-metric"><option value="">Awaiting RMS metrics</option></select></label>
+            </div>
+          </div>
+          <div class="chart" id="p6-chart" role="img" aria-label="Problem 6 selected RMS statistic over optimizer steps"></div>
+          <div class="series-legend" id="p6-legend" aria-label="Problem 6 series legend"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="ledger" aria-labelledby="ledger-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">Machine-readable evidence</p><h2 id="ledger-title">Run records</h2></div>
+        <button type="button" id="export-csv">Export visible rows as CSV ↓</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Run</th><th>Problem / group</th><th>State</th><th>Model</th><th>Configuration</th><th>Final train</th><th>Final validation</th><th>Runtime</th><th>Record</th></tr></thead>
+          <tbody id="run-table"><tr><td colspan="9" class="empty-cell">Loading run records…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <p>Experiment code: <a href="https://github.com/deep-learning-alchemy/assignments">Deep Learning Alchemy assignments ↗</a></p>
+      <p>Runs execute on Modal and log to Weights &amp; Biases. The static record on this page contains exported configurations and measurements.</p>
+    </footer>
+  </main>
+
+  <div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+</body>
+</html>

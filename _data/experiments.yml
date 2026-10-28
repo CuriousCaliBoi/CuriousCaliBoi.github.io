@@ -68,3 +68,10 @@ lecture-03-pusht:
   description: Compare centered and off-center pushes, then inspect each action, contact, and resulting state in real PushT recordings from the DGX Spark.
   mode: Recorded physics explorer
   note: This browser viewer replays recorded simulator frames and transitions. Live controls are linked separately and require access to the private Tailscale network. No trained model or policy is loaded.
+cs312-a1:
+  title: "CS 312 Assignment 1: experiment log"
+  url: /experiments/cs312-a1/
+  embed_url: /experiments/cs312-a1/
+  description: Inspect the d8 language-model architecture, execution status, configurations, raw measurements, and plots from the Assignment 1 experiment suite.
+  mode: Recorded experiment dashboard
+  note: The page contains exported Modal and Weights & Biases run records. It reports configurations and measurements without adding an interpretation of the results.

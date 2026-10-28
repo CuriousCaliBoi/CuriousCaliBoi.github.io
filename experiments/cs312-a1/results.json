@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-10-28T17:51:07.540824+00:00",
+  "assignment": {
+    "title": "Assignment 1: Basics \u2014 Empirical Machine Learning",
+    "url": "https://deep-learning-alchemy.github.io/assets/assignments/a1_basics.pdf",
+    "course": "CS 312",
+    "problems": [
+      {
+        "id": "p1",
+        "title": "Hyperparameters",
+        "expected_runs": 51
+      },
+      {
+        "id": "p2",
+        "title": "Scaling-law reliability",
+        "expected_runs": 54
+      },
+      {
+        "id": "p3",
+        "title": "Measuring variation",
+        "expected_runs": 25
+      },
+      {
+        "id": "p4",
+        "title": "Amplification of randomness",
+        "expected_runs": 15
+      },
+      {
+        "id": "p5",
+        "title": "Loss-curve diagnostics",
+        "expected_runs": 5
+      },
+      {
+        "id": "p6",
+        "title": "Activations and gradient norms",
+        "expected_runs": 5
+      }
+    ]
+  },
+  "status": "setup",
+  "expected_runs": 155,
+  "state_counts": {},
+  "runs": []
+}
