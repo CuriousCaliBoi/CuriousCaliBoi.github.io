@@ -1,4 +1,5 @@
 ---
+permalink: /2026/09/22/smallville-live.html
 layout: post
 interactive: true
 title: "Smallville, live"

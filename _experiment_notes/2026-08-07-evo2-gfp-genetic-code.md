@@ -1,4 +1,5 @@
 ---
+permalink: /ai/biology/2026/08/07/evo2-gfp-genetic-code.html
 layout: post
 image: /images/evo2-gfp/evo2_gfp_surprisal.png
 image_alt: "Evo 2 surprisal along the GFP coding sequence, colored by codon position"

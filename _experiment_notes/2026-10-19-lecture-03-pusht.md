@@ -1,4 +1,5 @@
 ---
+permalink: /world-models/2026/10/19/lecture-03-pusht.html
 layout: post
 title: "Lecture 3: one push, explained"
 subtitle: "A real PushT simulator on the DGX Spark makes environments, actions, and rollouts visible."

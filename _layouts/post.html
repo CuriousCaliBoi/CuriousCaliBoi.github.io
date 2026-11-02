@@ -1,8 +1,15 @@
 ---
 layout: default
 ---
+{% if page.collection == 'experiment_notes' %}
+  {% assign index_url = '/experiments/' %}
+  {% assign index_title = 'Experiments' %}
+{% else %}
+  {% assign index_url = '/' %}
+  {% assign index_title = 'Writing' %}
+{% endif %}
 <article class="journal-article" itemscope itemtype="https://schema.org/BlogPosting">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ '/' | relative_url }}">Writing</a><span aria-hidden="true">/</span><span>{{ page.title | escape }}</span></nav>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ index_url | relative_url }}">{{ index_title }}</a><span aria-hidden="true">/</span><span>{{ page.title | escape }}</span></nav>
   <header class="article-header">
     <p class="eyebrow"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{% assign post_date_format = page.date_format | default: '%B %-d, %Y' %}{{ page.date | date: post_date_format }}</time></p>
     <h1 itemprop="headline">{{ page.title | escape }}</h1>
@@ -18,11 +25,11 @@ layout: default
     <div class="article-body">
       <div class="post-content prose" itemprop="articleBody">{{ content }}</div>
       <div class="article-end"><a href="#main">Back to top ↑</a></div>
-      <nav class="post-pagination" aria-label="More writing">
+      {% if page.collection == 'posts' %}<nav class="post-pagination" aria-label="More writing">
         {% if page.previous %}<a href="{{ page.previous.url | relative_url }}"><span class="eyebrow">← Previous entry</span><span>{{ page.previous.title | escape }}</span></a>{% endif %}
         {% if page.next %}<a href="{{ page.next.url | relative_url }}"><span class="eyebrow">Next entry →</span><span>{{ page.next.title | escape }}</span></a>{% endif %}
-      </nav>
-      <a class="text-link all-writing" href="{{ '/' | relative_url }}">← All writing</a>
+      </nav>{% endif %}
+      <a class="text-link all-writing" href="{{ index_url | relative_url }}">← All {{ index_title | downcase }}</a>
     </div>
   </div>
 </article>

@@ -32,7 +32,7 @@ The existing GitHub Pages publishing setup still works. No Node build is require
 
 ## Writing
 
-Writing and project entries are Markdown files in `_posts/`, with their existing date/category URLs. Project posts link to standalone live demos. Use `layout: post`, `title`, and `date` in the front matter. Optional fields:
+Personal writing lives in `_posts/` and appears in Writing, its RSS feed, and previous/next article links. Live demos, project announcements, experiment reports, and republished articles belong under Experiments. Use `layout: post`, `title`, and `date` in the front matter. Optional fields:
 
 - `author`: overrides the default byline, Zuko.
 - `date_format`: optional display format for dates. The Infinite Observatory retains its original month-only date (`%B %Y`); the first day of that month is used for sorting.
@@ -40,6 +40,13 @@ Writing and project entries are Markdown files in `_posts/`, with their existing
 The post title comes from the front matter, so start the body with paragraphs or `##` section headings. Posts with two or more `##`/`###` headings receive a contents sidebar, which becomes a collapsible panel on narrow screens. Reading and site navigation work without JavaScript; the contents and math rendering are progressive enhancements. Math uses KaTeX: `$...$` for inline math and `$$...$$` for display math. Fenced code uses Rouge.
 
 The theme is in `_layouts/`, `_includes/`, `assets/main.scss`, and `assets/js/journal.js`. Existing model-atlas diagram styles live in `_sass/atlas.scss`. The Pokémon and Smallville viewers are standalone applications and retain their own interfaces.
+
+List each experiment once in `_data/experiments.yml`; its `url` opens the project.
+Supporting write-ups live in the `_experiment_notes/` collection. Add `notes_url`
+to an existing entry when it has a substantial write-up. Moved documents retain
+their published URLs through explicit `permalink` values. New notes default to
+`/experiments/notes/:name/`. The collection uses Experiments navigation and is
+excluded from the writing feed.
 
 ## Design credit
 

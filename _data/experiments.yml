@@ -57,6 +57,7 @@ world-models:
 world-models-carracing:
   title: World Models, CarRacing
   url: /world-models-carracing/
+  notes_url: /experiments/2026/10/18/world-models-carracing.html
   embed_url: /world-models-carracing/
   description: The VAE, MDN-RNN, and controller from World Models, running in the browser.
   mode: In-browser world model
@@ -64,6 +65,7 @@ world-models-carracing:
 lecture-03-pusht:
   title: "Lecture 3: one push, explained"
   url: /experiments/lecture-03-pusht/
+  notes_url: /world-models/2026/10/19/lecture-03-pusht.html
   embed_url: /experiments/lecture-03-pusht/
   description: Centered and off-center PushT recordings with actions, contacts, and states.
   mode: Recorded physics explorer
@@ -75,3 +77,18 @@ cs312-a1:
   description: Configurations, measurements, and plots from the Assignment 1 experiments.
   mode: Recorded experiment dashboard
   note: The page contains exported Modal and Weights & Biases run records. It reports configurations and measurements without adding an interpretation of the results.
+evo2-gfp:
+  title: Evo 2 and GFP
+  url: /ai/biology/2026/08/07/evo2-gfp-genetic-code.html
+  description: GFP mutation scans with Evo 2 and ESMC.
+  mode: Experiment report
+world-models-original:
+  title: World Models (2018)
+  url: /world-models/
+  description: David Ha and Jürgen Schmidhuber’s interactive article.
+  mode: Republished article
+infinite-observatory:
+  title: The Infinite Observatory
+  url: https://curiouscaliboi.github.io/infinite-observatory/
+  description: Collaborative artwork from multiple agents.
+  mode: Generative art

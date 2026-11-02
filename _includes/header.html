@@ -3,7 +3,7 @@
     <a class="site-name" href="{{ '/' | relative_url }}" aria-label="Zuko, home">Zuko</a>
     <nav class="site-nav" aria-label="Main navigation">
       {% for item in site.data.navigation.main %}
-      <a href="{{ item.url | relative_url }}"{% if page.url == item.url %} aria-current="page"{% elsif item.url == '/' and page.layout == 'post' %} aria-current="page"{% elsif item.url == '/models/' and page.url contains '/models/' %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      <a href="{{ item.url | relative_url }}"{% if page.url == item.url %} aria-current="page"{% elsif item.url == '/' and page.collection == 'posts' %} aria-current="page"{% elsif item.url == '/experiments/' and page.collection == 'experiment_notes' %} aria-current="page"{% elsif item.url == '/models/' and page.url contains '/models/' %} aria-current="page"{% endif %}>{{ item.title }}</a>
       {% endfor %}
     </nav>
   </div>

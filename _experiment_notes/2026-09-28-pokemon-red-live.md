@@ -1,4 +1,5 @@
 ---
+permalink: /2026/09/28/pokemon-red-live.html
 layout: post
 interactive: true
 title: "Pokemon Red, live"

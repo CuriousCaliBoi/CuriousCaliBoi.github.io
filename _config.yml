@@ -24,6 +24,10 @@ header_pages:
 
 # Site metadata and GitHub Pages plugins
 author: Zuko
+collections:
+  experiment_notes:
+    output: true
+    permalink: /experiments/notes/:name/
 plugins:
   - jekyll-seo-tag
   - jekyll-feed

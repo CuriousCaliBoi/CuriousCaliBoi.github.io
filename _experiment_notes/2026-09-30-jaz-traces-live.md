@@ -1,4 +1,5 @@
 ---
+permalink: /2026/09/30/jaz-traces-live.html
 layout: post
 interactive: true
 title: "JAZ traces, live"

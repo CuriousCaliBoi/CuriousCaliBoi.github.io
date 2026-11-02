@@ -1,4 +1,5 @@
 ---
+permalink: /experiments/2026/10/18/world-models-carracing.html
 layout: post
 interactive: true
 title: "World Models, from the 2018 paper to your browser"

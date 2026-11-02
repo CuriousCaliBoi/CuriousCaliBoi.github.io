@@ -10,6 +10,7 @@ permalink: /experiments/
       <h2><a href="{{ experiment.url | relative_url }}">{{ experiment.title | escape }}</a></h2>
       <p>{{ experiment.description }}</p>
       <p class="experiment-library-meta">{{ experiment.mode }}</p>
+      {% if experiment.notes_url %}<a class="experiment-notes-link" href="{{ experiment.notes_url | relative_url }}">Notes</a>{% endif %}
     </article>
   {% endfor %}
 </div>

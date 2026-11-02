@@ -1,4 +1,5 @@
 ---
+permalink: /experiments/2026/10/07/stardew-valley-live.html
 layout: post
 interactive: true
 title: "Stardew Valley, live"

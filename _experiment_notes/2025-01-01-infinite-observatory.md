@@ -1,4 +1,5 @@
 ---
+permalink: /2025/01/01/infinite-observatory.html
 layout: post
 title: "The Infinite Observatory"
 date: 2025-01-01

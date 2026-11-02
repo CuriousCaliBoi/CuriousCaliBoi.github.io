@@ -1,4 +1,5 @@
 ---
+permalink: /2026/10/02/minimax-h3-on-the-spark.html
 layout: post
 interactive: true
 title: "MiniMax-H3, on the Spark"

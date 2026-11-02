@@ -24,7 +24,7 @@ This is a personal technical blog hosted on GitHub Pages using Jekyll.
 ```
 
 ## Post Creation Guidelines
-- Posts go in `_posts/` directory
+- Personal writing goes in `_posts/`. Live demos, project announcements, experiment reports, and republished articles belong under Experiments.
 - Filename format: `YYYY-MM-DD-title-with-hyphens.md`
 - Include Jekyll front matter with layout, title, date, categories, tags
 - Date format: YYYY-MM-DD (e.g., 2024-08-21 for August 21, 2024)
@@ -38,7 +38,7 @@ This is a personal technical blog hosted on GitHub Pages using Jekyll.
 - Prefer typography, whitespace, and simple lists over elaborate framing.
 - Technical focus (AI, mathematics, programming)
 - Professional but approachable tone
-- Projects are blog posts in `_posts/`, alongside other writing
+- List each project once in `_data/experiments.yml`. Use `_experiment_notes/` for supporting write-ups, linked with `notes_url` when useful. Keep existing published URLs when moving a document.
 
 ## Key Projects
 - The Infinite Observatory (multi-agent collaborative art)
@@ -50,4 +50,4 @@ This is a personal technical blog hosted on GitHub Pages using Jekyll.
 - Keep posts technical but accessible
 - Use proper markdown formatting
 - Include code examples with syntax highlighting
-- Add project descriptions to `_posts/`; link to standalone live demos from the post
+- Keep project descriptions in `_data/experiments.yml` and supporting notes in `_experiment_notes/`.
