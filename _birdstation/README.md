@@ -1,4 +1,4 @@
-# Listening garden
+# Bird Pokédex
 
 The public page is `/birds/` on the existing GitHub Pages site. Its data travels
 from BirdNET-Go on the Pi, through a small HTTPS feed on the Spark, to the browser.
@@ -10,9 +10,8 @@ The Mac is only used for installation. The Spark does not run bird inference.
   microphone dispatch and model inference before reporting healthy listening.
 - Only detection IDs, species names, confidence, detection times, and review status
   leave the Pi. Audio clips, device details, and coordinates are not published.
-- The live view uses the latest 100 detections, filtered to birds with at least
-  75% confidence and at most seven days old. Records marked as false positives
-  are excluded from every public view.
+- Live snapshots update the listening indicator and trigger archive refreshes.
+  Records marked as false positives are excluded from every public view.
 - A SQLite archive keeps bird detections without an age cutoff, including
   tentative identifications. Daily notes and the searchable all-time collection
   default to 75% confidence; visitors can include tentative matches.
@@ -22,14 +21,18 @@ The Mac is only used for installation. The Spark does not run bird inference.
   Retries are idempotent by BirdNET detection ID. Reviews are updated when their
   records are synchronized. Records pruned from the Pi remain in the archive.
 - Day boundaries and hourly summaries use America/Los_Angeles, including DST.
+  Each species has 24 hourly counts for the daily timeline. Repeated clock hours
+  are combined when daylight saving time ends.
   Counts represent detection records, not individual birds or distinct calls.
   Record pagination uses a time-and-ID cursor so newer arrivals do not shift pages.
 - The Spark authenticates writes, validates input, saves snapshots atomically,
   and sends snapshots over server-sent events. Public routes are read-only.
 - The browser also refreshes every 30 seconds as a fallback. A station heartbeat
   older than 90 seconds is offline. An empty detection list is not an error.
-- The illustration is the previously generated H3 hummingbird portrait. It is
-  labeled separately from the actual field notes.
+- The Pokédex is the default view. Daily notes are at `#journal/YYYY-MM-DD`, with
+  a species timeline, hour filter, and expandable full-day record.
+- Species portraits are static illustrations. The About section distinguishes
+  them from recorded birds; each portrait links to an identification guide.
 
 ## Spark installation
 
@@ -81,7 +84,8 @@ the service starts again at boot. The Spark user's lingering service is enabled.
 
 ```sh
 python3 -m unittest discover -s _birdstation -v
-node --check birds/garden.js
+node --check birds/station.js
+node --check birds/archive.js
 bundle exec jekyll build
 ```
 

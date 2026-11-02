@@ -44,10 +44,34 @@ class ArchiveTest(unittest.TestCase):
         self.assertEqual(day["count"], 3)
         self.assertEqual(day["hours"][1], 2)
         self.assertEqual(day["hours"][23], 1)
+        self.assertEqual(day["species"][0]["hours"], day["hours"])
         self.assertTrue(day["species"][0]["newSpecies"])
         next_day = self.archive.day("2026-11-02", .75)
         self.assertEqual(next_day["count"], 1)
         self.assertFalse(next_day["species"][0]["newSpecies"])
+
+    def test_species_timeline_matches_day_totals_and_confidence_filter(self):
+        self.archive.upsert([
+            record(1, "2026-11-01T09:01:00-08:00"),
+            record(2, "2026-11-01T09:48:00-08:00", confidence=.4),
+            record(3, "2026-11-01T10:03:00-08:00", name="Poecile rufescens"),
+            record(4, "2026-11-01T10:22:00-08:00", verified="false_positive"),
+            record(5, "2026-11-02T09:01:00-08:00"),
+        ])
+        for minimum, expected in [(0, 3), (.75, 2)]:
+            day = self.archive.day("2026-11-01", minimum)
+            self.assertEqual(day["count"], expected)
+            self.assertEqual(sum(sum(b["hours"]) for b in day["species"]), expected)
+            self.assertEqual(day["hours"], [sum(b["hours"][h] for b in day["species"]) for h in range(24)])
+            for bird in day["species"]:
+                self.assertEqual(len(bird["hours"]), 24)
+                self.assertEqual(sum(bird["hours"]), bird["count"])
+            anna = next(b for b in day["species"] if b["scientificName"] == "Calypte anna")
+            self.assertEqual(anna["hours"][9], 2 if minimum == 0 else 1)
+            self.assertEqual(anna["hours"][10], 0)
+        empty = self.archive.day("2026-10-31", .75)
+        self.assertEqual(empty["species"], [])
+        self.assertEqual(empty["hours"], [0] * 24)
 
     def test_review_corrections_remove_false_positives_from_every_view(self):
         self.archive.upsert([record(), record(2, name="Poecile rufescens", confidence=.4)])

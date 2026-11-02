@@ -4,83 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f3f2e9">
-  <meta name="description" content="A quiet window into the birds heard outside in Fremont. Live field notes from a garden microphone.">
+  <meta name="description" content="A collection of the birds heard outside in Fremont, California. Browse the birds or explore a day's observations.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://spark-a4b4.tailef40b0.ts.net; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
-  <title>The listening garden · Zuko</title>
-  <link rel="stylesheet" href="garden.css">
-  <link rel="stylesheet" href="archive.css">
-  <script src="garden.js" defer></script>
+  <title>Bird Pokédex · Zuko</title>
+  <link rel="stylesheet" href="birds.css">
+  <script src="station.js" defer></script>
   <script src="portraits.js" defer></script>
-  <script src="archive.js" defer></script>
+  <script src="archive.js?v=2" defer></script>
 </head>
 <body>
-  <a class="skip" href="#visitors">Skip to recent birds</a>
+  <a class="skip" href="#main">Skip to birds</a>
   <div class="page">
     <header class="masthead">
-      <a class="home" href="/" aria-label="Zuko's Blog, home">z.<span>A small corner of the outdoors</span></a>
-      <a class="about-link" href="#about">About this garden <span aria-hidden="true">↗</span></a>
+      <a class="home" href="/" aria-label="Zuko's Blog, home">z.</a>
+      <nav id="garden-views" aria-label="Bird collection"><a href="#collection" data-view="collection" aria-current="page">Pokédex</a><a href="#journal" data-view="journal">Daily notes</a></nav>
+      <div class="station"><span id="status-dot" aria-hidden="true"></span><span id="status" role="status">Connecting</span></div>
     </header>
-    <main>
-      <div class="introduction">
-        <div><p class="eyebrow">Field notes from Fremont, California</p><h1>The listening garden<span>.</span></h1></div>
-        <p class="intro-copy">A little window into the life outside. <br>Stay awhile. See who passes through.</p>
-      </div>
-
-      <section class="garden" aria-label="An imagined garden with an Anna's hummingbird">
-        <video id="portrait" muted loop playsinline preload="metadata" poster="anna-poster.jpg" aria-label="AI-generated hummingbird portrait"><source src="anna-hummingbird.mp4" type="video/mp4"></video>
-        <div class="scene-top"><span class="scene-label"><span class="small-star" aria-hidden="true">✳</span> An imagined garden</span><button id="motion" type="button" aria-label="Play garden animation">Play motion <span aria-hidden="true">▷</span></button></div>
-        <div class="scene-caption"><p>A moment among<br>the leaves.</p><span>Anna’s hummingbird<br><span class="portrait-note">AI portrait · not a live camera</span></span></div>
+    <main id="main">
+      <section id="collection" data-panel="collection" aria-labelledby="collection-title">
+        <div class="page-heading"><p class="eyebrow">Fremont, California</p><h1 id="collection-title">Bird Pokédex<span>.</span></h1><p class="intro">The birds outside, collected over time.</p></div>
+        <div class="collection-tools"><label class="search-field"><span class="sr-only">Find a bird</span><input id="bird-search" type="search" placeholder="Find a bird…" autocomplete="off"></label><label class="sort-field"><span class="sr-only">Sort birds</span><select id="bird-sort"><option value="number">Collection order</option><option value="name">Name, A–Z</option><option value="recent">Recently heard</option><option value="count">Most records</option></select></label></div>
+        <div class="collection-meta"><p id="collection-note" role="status">Opening the collection…</p><label class="confidence-filter"><input id="include-tentative" type="checkbox"> Include tentative matches</label></div>
+        <div id="collection-grid" class="collection-grid"></div><p class="message" id="collection-message" role="status"></p>
       </section>
-
-      <section class="station" aria-label="Bird station status">
-        <div class="station-status"><span class="status-dot" id="status-dot" aria-hidden="true"></span><div><p id="status" role="status">Connecting to the garden</p><p id="status-detail">Checking the listening post…</p></div></div>
-        <div class="station-meta"><span id="last-heard">Fresh notes arrive here automatically</span><span id="station-time">Pacific time</span></div>
-      </section>
-
-      <nav class="garden-nav" id="garden-views" aria-label="Explore the garden">
-        <a href="#live" data-view="live" aria-current="page">The garden <span>Now</span></a>
-        <a href="#journal" data-view="journal">Daily notes <span id="day-count">By date</span></a>
-        <a href="#collection" data-view="collection">Bird Pokédex <span id="species-count">All time</span></a>
-      </nav>
-      <div class="archive-filter" id="archive-filter" hidden><p id="archive-coverage">Opening the field notebook…</p><label><input id="include-tentative" type="checkbox"> Include tentative matches <span>(below 75%)</span></label></div>
-
-      <section class="visitors" id="visitors" data-panel="live" aria-labelledby="visitors-title">
-        <div class="section-heading"><div><p class="eyebrow">The visitors</p><h2 id="visitors-title">Recently heard</h2></div><p>Small arrivals, noticed by sound.</p></div>
-        <div id="bird-list" class="bird-list"></div>
-        <div id="empty" class="empty"><svg viewBox="0 0 80 60" aria-hidden="true"><path d="M8 46c20 0 35-7 58-3M34 39c-13-4-13-18-4-24 6-4 14-1 17 4l9 3-9 4c-1 10-6 15-13 13l-8 6m5-10L15 25m19 14 2 6m7-10 2 9"/><circle cx="42" cy="20" r="1.5"/></svg><h3 id="empty-title">Waiting for the first field notes.</h3><p id="empty-copy">Birds heard by the garden microphone will appear here.</p></div>
-        <p id="list-note" class="list-note" hidden>From the station’s latest 100 detections, over the past seven days. Repeated calls are grouped by species.</p>
-      </section>
-
-      <section class="notebook" id="journal" data-panel="journal" aria-labelledby="journal-title" hidden>
-        <div class="section-heading"><div><p class="eyebrow">The daily field notebook</p><h2 id="journal-title">Every day, a little different.</h2></div><p>All times in the garden’s<br>Pacific time zone.</p></div>
-        <div class="date-controls"><button id="previous-day" aria-label="Previous recorded day">←</button><label for="journal-day" class="sr-only">Choose a recorded day</label><select id="journal-day"><option>Loading dates…</option></select><button id="next-day" aria-label="Next recorded day">→</button><a id="yesterday-link" href="#journal">Yesterday’s notes</a></div>
-        <p class="archive-message" id="journal-message" role="status"></p>
+      <section id="journal" data-panel="journal" aria-labelledby="journal-title" hidden>
+        <div class="page-heading"><p class="eyebrow">Daily notes</p><h1 id="journal-title">A day outside<span>.</span></h1></div>
+        <div class="date-controls"><button id="previous-day" disabled aria-label="Previous recorded day">←</button><label class="sr-only" for="journal-day">Choose a recorded day</label><select id="journal-day" disabled><option>Loading dates…</option></select><button id="next-day" disabled aria-label="Next recorded day">→</button><a id="yesterday-link" href="#journal">Yesterday</a></div>
+        <p class="message" id="journal-message" role="status"></p>
         <div id="day-content" hidden>
           <p class="day-note" id="day-note"></p>
-          <div class="notebook-stats" id="day-stats"></div>
-          <figure class="activity"><figcaption><span>A day in birdsong</span><span id="activity-note"></span></figcaption><svg id="hourly-chart" viewBox="0 0 720 100" role="img" aria-label="Detections by hour"></svg><div class="hour-labels"><span>Midnight</span><span>6 am</span><span>Noon</span><span>6 pm</span><span>Midnight</span></div></figure>
-          <div class="table-heading"><h3>The day’s visitors</h3><span id="day-filter-note"></span></div>
-          <div class="table-scroll"><table class="visitors-table"><caption class="sr-only">Birds recorded on the selected date</caption><thead><tr><th>Bird</th><th>Detections</th><th>First heard</th><th>Last heard</th><th>Best match</th></tr></thead><tbody id="day-birds"></tbody></table></div>
-          <details class="detection-log" id="detection-log"><summary>Open the full detection log <span>Individual calls &amp; confidence</span></summary><div class="table-scroll"><table class="visitors-table"><caption class="sr-only">Individual bird detections, newest first</caption><thead><tr><th>Time</th><th>Bird</th><th>Confidence</th><th>Review</th></tr></thead><tbody id="record-list"></tbody></table></div><p id="record-status" role="status"></p><button class="quiet-button" id="more-records" hidden>Load more detections</button></details>
+          <div class="timeline-heading"><div><h2>A day in birdsong</h2><p id="activity-note"></p></div><label class="hour-field"><span class="sr-only">Explore an hour</span><select id="hour-filter"><option value="">All day</option></select></label></div>
+          <div class="timeline-overview"><span class="timeline-label">Pacific time</span><div><div id="hourly-chart" class="hourly-chart" role="group" aria-label="Choose an hour"></div><div class="hour-labels" aria-hidden="true"><span>12 am</span><span>6 am</span><span>12 pm</span><span>6 pm</span><span>12 am</span></div></div><span class="timeline-total">Records</span></div>
+          <p id="timeline-selection" class="timeline-selection" role="status"></p><div id="day-timeline" class="day-timeline"></div>
+          <div class="timeline-legend"><span>Fewer</span><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More records</span><span class="legend-note">Grouped by local clock hour.</span></div>
+          <label class="confidence-filter day-filter"><input id="day-tentative" type="checkbox"> Include tentative matches <span id="day-filter-note"></span></label>
+          <details class="detection-log" id="detection-log"><summary>Full-day record</summary><div class="table-scroll"><table><caption class="sr-only">Individual detections for the whole day, newest first</caption><thead><tr><th>Time</th><th>Bird</th><th>Confidence</th><th>Review</th></tr></thead><tbody id="record-list"></tbody></table></div><p id="record-status" role="status"></p><button class="quiet-button" id="more-records" hidden>Load more</button></details>
         </div>
       </section>
-
-      <section class="collection" id="collection" data-panel="collection" aria-labelledby="collection-title" hidden>
-        <div class="section-heading"><div><p class="eyebrow">The garden’s watercolor Pokédex</p><h2 id="collection-title">Everyone who’s stopped by.</h2></div><p>Collected by sound.<br>Remembered in watercolor.</p></div>
-        <p class="collection-intro">A little portrait album of the voices outside. These are imagined AI watercolors, paired with real listening records. Open a bird to wander through its days in the garden.</p>
-        <div class="collection-tools"><label class="search-field"><span class="sr-only">Search birds by common or scientific name</span><input id="bird-search" type="search" placeholder="Find a bird…" autocomplete="off"></label><label class="sort-field"><span>Sort by</span><select id="bird-sort"><option value="recent">Recently heard</option><option value="name">Name, A–Z</option><option value="first">First arrival</option><option value="count">Most detections</option></select></label></div>
-        <p id="collection-note" class="collection-note" role="status"></p>
-        <div id="collection-grid" class="collection-grid"></div>
-        <p class="archive-message" id="collection-message"></p>
-        <details class="portrait-about"><summary>About the watercolors</summary><p>These AI illustrations were painted with <a href="https://peppaking8.github.io/minit2i/">MiniT2I</a> on a DGX Spark. They imagine an adult bird; a recorded call doesn’t tell us its age, sex, or plumage. The paintings can miss identifying marks, so each portrait links to the Cornell Lab’s photographs and field notes.</p><p>New species join the collection as they’re heard, even before their portrait is ready. Finished watercolors are saved here, ready to enjoy whenever you visit.</p></details>
-      </section>
-
-      <dialog id="bird-detail" aria-labelledby="detail-name"><button id="close-detail" class="close-detail" aria-label="Close bird details">×</button><p class="eyebrow">From the garden’s collection</p><h2 id="detail-name"></h2><p class="detail-latin" id="detail-latin"></p><figure class="detail-portrait" id="detail-portrait" hidden></figure><p class="portrait-description" id="portrait-description"></p><div class="portrait-links" id="portrait-links"></div><p class="detail-note" id="detail-note" role="status"></p><div class="notebook-stats" id="detail-stats"></div><h3>Its days in the garden</h3><div class="species-days" id="species-days"></div><p class="detail-disclaimer">BirdNET identifies sounds. These are suggested identifications, not confirmed sightings.</p></dialog>
-
-      <section class="about" id="about" aria-labelledby="about-title"><div class="about-mark" aria-hidden="true">✳</div><div><h2 id="about-title">A garden you can hear, wherever you are.</h2><p>A little microphone and Raspberry Pi listen outside in Fremont. BirdNET suggests which birds are calling, and their visits find a home here.</p><p>These are sound-based identifications, not confirmed sightings. We show matches of at least 75% by default; the notebook can also show tentative matches. The archive keeps earlier visits as new ones arrive. The moving garden above is an illustration.</p></div><p class="gentle-note">No need to refresh.<br>Just leave the window open.</p></section>
+      <dialog id="bird-detail" aria-labelledby="detail-name"><button id="close-detail" class="close-detail" aria-label="Close bird details">×</button><p class="eyebrow" id="detail-number">From the collection</p><h2 id="detail-name"></h2><p class="detail-latin" id="detail-latin"></p><figure class="detail-portrait" id="detail-portrait" hidden></figure><p class="portrait-description" id="portrait-description"></p><div class="portrait-links" id="portrait-links"></div><p class="detail-note" id="detail-note" role="status"></p><div class="notebook-stats" id="detail-stats"></div><h3>Days heard</h3><div id="species-days"></div></dialog>
+      <p class="message connection-note" id="archive-connection" role="status"></p>
     </main>
-    <footer><a href="/">Back to Zuko’s Blog <span aria-hidden="true">↗</span></a><span>A garden, heard and imagined.</span></footer>
+    <footer><a href="/">Zuko’s Blog ↗</a><details id="about"><summary>About this collection</summary><p>A microphone in Fremont records bird calls. BirdNET suggests the species; these are sound-based identifications, not confirmed sightings. Matches of at least 75% confidence are shown by default.</p><p>The portraits are illustrations, not photographs of the recorded birds. Each entry links to Cornell’s identification guide.</p></details></footer>
   </div>
-  <noscript><p class="noscript">Please enable JavaScript to see live bird detections.</p></noscript>
+  <noscript><p class="noscript">Please enable JavaScript to browse the birds and their daily records.</p></noscript>
 </body>
 </html>

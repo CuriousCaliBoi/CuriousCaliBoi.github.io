@@ -135,13 +135,17 @@ class Archive:
         with self.lock:
             birds = self.groups(clause, args)
             hours = [0] * 24
-            for row in self.db.execute(f"SELECT hour,COUNT(*) count FROM detections WHERE {clause} GROUP BY hour", args):
-                hours[row["hour"]] = row["count"]
+            by_species = {bird["scientificName"]: [0] * 24 for bird in birds}
+            for row in self.db.execute(f"""SELECT scientificName,hour,COUNT(*) count
+                    FROM detections WHERE {clause} GROUP BY scientificName,hour""", args):
+                hours[row["hour"]] += row["count"]
+                by_species[row["scientificName"]][row["hour"]] = row["count"]
             all_count = self.db.execute("SELECT COUNT(*) FROM detections WHERE day=? AND verified!='false_positive'", (day,)).fetchone()[0]
             first_days = {row["scientificName"]: row["firstDay"] for row in self.db.execute(
                 "SELECT scientificName,MIN(day) firstDay FROM detections WHERE confidence>=? AND verified!='false_positive' GROUP BY scientificName", (minimum,))}
             for bird in birds:
                 bird["newSpecies"] = first_days[bird["scientificName"]] == day
+                bird["hours"] = by_species[bird["scientificName"]]
             return {"date": day, "count": sum(hours), "allCount": all_count,
                     "speciesCount": len(birds), "hours": hours, "species": birds}
 
