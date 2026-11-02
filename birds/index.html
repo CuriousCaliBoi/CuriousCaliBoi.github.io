@@ -22,7 +22,15 @@
     </header>
     <main id="main">
       <section id="collection" data-panel="collection" aria-labelledby="collection-title">
-        <div class="page-heading"><p class="eyebrow">Fremont, California</p><h1 id="collection-title">Bird Pokédex<span>.</span></h1><p class="intro">The birds outside, collected over time.</p></div>
+        <div class="page-heading">
+          <p class="eyebrow">Fremont, California</p>
+          <h1 id="collection-title">Bird Pokédex<span>.</span></h1>
+          <div class="intro">
+            <p>I have a Raspberry Pi 5 running <a href="https://birdnet.cornell.edu/">BirdNET</a> and a mic thrown out into my garden. It’s been incredible finding out who my noisy neighbours are.</p>
+            <p>I use the species IDs to make prompts for <a href="https://peppaking8.github.io/minit2i/">MiniT2I</a>, which generates the portraits on my DGX Spark.</p>
+            <p>Big shoutout to Cornell’s <a href="https://birdnet.cornell.edu/about/">K. Lisa Yang Center for Conservation Bioacoustics</a> for making this technology available, and to Xianbang Wang and co. for their <a href="https://peppaking8.github.io/minit2i/">great blog on text-to-image models</a>.</p>
+          </div>
+        </div>
         <div class="collection-tools"><label class="search-field"><span class="sr-only">Find a bird</span><input id="bird-search" type="search" placeholder="Find a bird…" autocomplete="off"></label><label class="sort-field"><span class="sr-only">Sort birds</span><select id="bird-sort"><option value="number">Collection order</option><option value="name">Name, A–Z</option><option value="recent">Recently heard</option><option value="count">Most records</option></select></label></div>
         <div class="collection-meta"><p id="collection-note" role="status">Opening the collection…</p><label class="confidence-filter"><input id="include-tentative" type="checkbox"> Include tentative matches</label></div>
         <div id="collection-grid" class="collection-grid"></div><p class="message" id="collection-message" role="status"></p>
@@ -44,7 +52,7 @@
       <dialog id="bird-detail" aria-labelledby="detail-name"><button id="close-detail" class="close-detail" aria-label="Close bird details">×</button><p class="eyebrow" id="detail-number">From the collection</p><h2 id="detail-name"></h2><p class="detail-latin" id="detail-latin"></p><figure class="detail-portrait" id="detail-portrait" hidden></figure><p class="portrait-description" id="portrait-description"></p><div class="portrait-links" id="portrait-links"></div><p class="detail-note" id="detail-note" role="status"></p><div class="notebook-stats" id="detail-stats"></div><h3>Days heard</h3><div id="species-days"></div></dialog>
       <p class="message connection-note" id="archive-connection" role="status"></p>
     </main>
-    <footer><a href="/">Zuko’s Blog ↗</a><details id="about"><summary>About this collection</summary><p>A microphone in Fremont records bird calls. BirdNET suggests the species; these are sound-based identifications, not confirmed sightings. Matches of at least 75% confidence are shown by default.</p><p>The portraits are illustrations, not photographs of the recorded birds. Each entry links to Cornell’s identification guide.</p></details></footer>
+    <footer><a href="/">Zuko’s Blog ↗</a><details id="about"><summary>About this collection</summary><p>A microphone in Fremont records bird calls. BirdNET suggests the species; these are sound-based identifications, not confirmed sightings. Matches of at least 75% confidence are shown by default.</p><p>The portraits use the released MiniT2I-L/16 model, with no additional bird-specific fine-tuning. Some were regenerated with revised prompts and seeds, then converted for the web.</p><p>The portraits are illustrations, not photographs of the recorded birds. Each entry links to Cornell’s identification guide.</p></details></footer>
   </div>
   <noscript><p class="noscript">Please enable JavaScript to browse the birds and their daily records.</p></noscript>
 </body>
