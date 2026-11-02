@@ -1,46 +1,17 @@
 ---
-layout: default
+layout: page
 title: Models
 permalink: /models/
 ---
-
-<div class="model-atlas model-atlas--index">
-  <header class="model-atlas__hero">
-    <p class="model-atlas__eyebrow">MODEL ATLAS / 01</p>
-    <h1>Architectures I&rsquo;m tracking.</h1>
-    <p class="model-atlas__lede">A small library of models I&rsquo;m curious about, opened up mechanism by mechanism&mdash;from the whole pipeline to the head, filter, state, and expert routes inside.</p>
-    <p class="model-atlas__meta"><span>04 field guides</span><span aria-hidden="true">/</span><span>Updated August 2026</span></p>
-  </header>
-
-  <section class="model-atlas__section" aria-labelledby="model-library-title">
-    <div class="model-atlas__section-heading">
-      <div>
-        <p class="model-atlas__kicker">THE LIBRARY</p>
-        <h2 id="model-library-title">Pick a model to open.</h2>
-      </div>
-      <p>This is a watchlist, not a ranking. Each guide uses one visual grammar while preserving the architecture&rsquo;s actual counts and relationships.</p>
-    </div>
-
-    <div class="model-library">
-      {% for model in site.data.model_guides %}
-      <article class="model-library__card model-library__card--{{ model.accent }}">
-        <p class="model-library__index">{{ model.index }} / {{ model.category }}</p>
-        <h3>{{ model.title }}</h3>
-        <p class="model-library__hook">{{ model.hook }}</p>
-        <dl>
-          {% for fact in model.facts %}
-          <div><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
-          {% endfor %}
-        </dl>
-        <a href="{{ model.url | relative_url }}">Open the architecture <span aria-hidden="true">&rarr;</span></a>
-      </article>
+<div class="model-list">
+  {% for model in site.data.model_guides %}
+  <article>
+    <h2><a href="{{ model.url | relative_url }}">{{ model.title }}</a></h2>
+    <dl>
+      {% for fact in model.facts %}
+      <div><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
       {% endfor %}
-    </div>
-  </section>
-
-  <aside class="model-atlas__reading-note" aria-labelledby="reading-note-title">
-    <p class="model-atlas__kicker">HOW TO READ THESE GUIDES</p>
-    <h2 id="reading-note-title">Start outside. Then open a block.</h2>
-    <p>Every guide begins with the whole model, then uses native disclosure panels to reveal one mechanism at a time. The diagrams are original, code-native teaching maps based on official papers, configurations, and reference implementations. Exact counts are labeled as exact; simplified signal flow is labeled conceptual and is never presented as a literal computation graph.</p>
-  </aside>
+    </dl>
+  </article>
+  {% endfor %}
 </div>

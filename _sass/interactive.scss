@@ -3,7 +3,6 @@
 .experiment-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 15px; flex-wrap: wrap; }
 .experiment-status { font: 10px/1.5 var(--mono); color: var(--muted); }
 .experiment .experiment-title { margin: 15px 0 10px; font: 30px/1.2 var(--serif); }
-.experiment .experiment-description { color: var(--muted); font: 18px/1.5 var(--serif); }
 .experiment-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 20px 0 15px; }
 .experiment-actions button, .color-study button { border: 1px solid var(--rule); background: var(--paper); color: var(--ink); padding: 9px 12px; cursor: pointer; font: 11px/1.4 var(--sans); }
 .experiment-actions [data-experiment-connect] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
@@ -14,12 +13,12 @@
 .experiment-stage:fullscreen, .experiment-stage:fullscreen iframe { width: 100%; height: 100%; margin: 0; }
 .experiment .experiment-notice { padding: 15px; margin: 18px 0; border: 1px solid var(--rule); background: var(--paper); color: var(--muted); font: 13px/1.6 var(--sans); }
 .experiment .experiment-note { color: var(--muted); font: 11px/1.7 var(--sans); }
-.experiment-library { display: grid; gap: 16px; margin: 28px 0; }
-.experiment-library article { padding: 22px; border: 1px solid var(--rule); background: #faf8f3; }
-.experiment-library h2 { margin: 8px 0 10px; font-size: 28px; }
-.experiment-library p { margin-bottom: 14px; }
-.experiment-library .experiment-library-meta { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; margin: 0; color: var(--muted); font: 10px/1.5 var(--mono); text-transform: uppercase; letter-spacing: .07em; }
-.experiment-library .experiment-library-link { display: inline-block; margin-top: 4px; font: 12px/1.5 var(--sans); }
+.experiment-library { margin: 0; }
+.experiment-library article { padding: 0 0 26px; margin-bottom: 26px; border-bottom: 1px solid var(--rule); }
+.experiment-library article:last-child { border-bottom: 0; }
+.experiment-library h2 { margin: 0 0 10px; font-size: 28px; }
+.experiment-library p { margin-bottom: 9px; font-size: 19px; }
+.experiment-library .experiment-library-meta { margin: 0; color: var(--muted); font: 11px/1.5 var(--sans); }
 .color-study { border: 1px solid var(--rule); padding: 22px; background: #f0ebe1; }
 .color-study-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
 .color-study label { display: grid; gap: 7px; color: var(--muted); font: 11px/1.5 var(--sans); }

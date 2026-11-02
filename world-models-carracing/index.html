@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0f1216">
-<title>World Models: CarRacing dream</title>
+<title>World Models: CarRacing</title>
 <meta name="description" content="The 2018 World Models agent (VAE, MDN-RNN, CMA-ES controller) trained on a DGX Spark, dreaming CarRacing entirely in your browser.">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
@@ -14,7 +14,7 @@
 <body>
 <header class="topbar">
   <a class="site-mark" href="/" aria-label="Back to Zuko's Blog">z.</a>
-  <h1>World Models <span>CarRacing, dreamed in your browser</span></h1>
+  <h1>World Models <span>CarRacing</span></h1>
   <span class="status is-wait" data-status role="status"><i aria-hidden="true"></i><span data-status-text>Loading models…</span></span>
 </header>
 
@@ -35,8 +35,8 @@
     </div>
 
     <aside class="controls">
-      <h2 id="dream-title">Inside the dream</h2>
-      <p class="lede">Every frame here is imagined. The controller picks an action, the MDN-RNN predicts the next latent, and the VAE decoder paints it. No game engine is running.</p>
+      <h2 id="dream-title">Controls</h2>
+      <p class="lede">Frames are predicted by the world model. Use the arrow keys or touch controls to drive.</p>
       <div class="segmented" role="radiogroup" aria-label="Who drives">
         <label><input type="radio" name="driver" value="agent" checked><span>Agent C drives</span></label>
         <label><input type="radio" name="driver" value="human"><span>You drive</span></label>

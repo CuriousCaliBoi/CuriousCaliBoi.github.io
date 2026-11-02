@@ -4,12 +4,12 @@ title: Art
 permalink: /art/
 art_gallery: true
 interactive: true
-description: Photographs, color studies, and creative experiments. A first collection from Coyote Hills.
+description: Coyote Hills photographs and color studies.
 ---
 <div class="art-page">
-  <header class="art-header"><p class="eyebrow">A different kind of notebook</p><h1>Art</h1><p>Images, places, and small experiments.</p></header>
+  <header class="art-header"><h1>Art</h1></header>
   <section class="art-collection" aria-labelledby="coyote-hills-title">
-    <div class="art-section-heading"><div><p class="eyebrow">01 / Photographs</p><h2 id="coyote-hills-title">Coyote Hills</h2></div><p>Fremont, California. A first collection of photographs by other people, shared here with credit.</p></div>
+    <div class="art-section-heading"><h2 id="coyote-hills-title">Coyote Hills</h2><p>Fremont, California</p></div>
     <div class="art-grid">
       {% for photo in site.data.art %}
       <figure class="art-photo{% if photo.id == 'bay' %} art-photo-wide{% endif %}">
@@ -18,18 +18,16 @@ description: Photographs, color studies, and creative experiments. A first colle
       </figure>
       {% endfor %}
     </div>
-    <p class="art-source-note">Images sourced from Wikimedia Commons; licenses are linked with each photo. Gallery images use Wikimedia’s resized versions; homepage thumbnails are cropped for display.</p>
   </section>
   <section class="art-study" aria-labelledby="color-study-title">
-    <div class="art-section-heading"><div><p class="eyebrow">02 / Try it</p><h2 id="color-study-title">A palette from the landscape</h2></div><p>Pick out the warm grasses, cool water, or a color you almost missed. This little study runs in your browser.</p></div>
+    <div class="art-section-heading"><h2 id="color-study-title">Color sampler</h2></div>
     <div data-interactive-only hidden>{% include color-study.html %}</div>
     <noscript><p>Enable JavaScript to pick colors from these photographs.</p></noscript>
   </section>
   <section class="art-study" aria-labelledby="perspective-study-title">
-    <div class="art-section-heading"><div><p class="eyebrow">03 / Practice</p><h2 id="perspective-study-title"><a href="{{ '/perspective/' | relative_url }}">Perspective &amp; light</a></h2></div><p>Move a light and a vanishing point around floating cubes. Explore one-point perspective, color, and grayscale values.</p></div>
-    <p><a href="{{ '/perspective/' | relative_url }}">Open the painting practice studio</a></p>
+    <div class="art-section-heading"><h2 id="perspective-study-title"><a href="{{ '/perspective/' | relative_url }}">Perspective &amp; light</a></h2><p>One-point perspective and lighting controls.</p></div>
   </section>
-  <section class="art-observatory"><p class="eyebrow">Also in the notebook</p><h2><a href="{{ '/2025/01/01/infinite-observatory.html' | relative_url }}">The Infinite Observatory ↗</a></h2><p>Multi-agent collaborative artwork exploring impossible geometries.</p></section>
+  <section class="art-observatory"><h2><a href="{{ '/2025/01/01/infinite-observatory.html' | relative_url }}">The Infinite Observatory</a></h2></section>
 </div>
 <dialog class="photo-dialog" data-photo-dialog aria-label="Photograph viewer">
   <div class="photo-dialog-toolbar"><button type="button" data-photo-prev aria-label="Previous photograph">← Previous</button><span data-photo-count aria-live="polite"></span><button type="button" data-photo-next aria-label="Next photograph">Next →</button><button type="button" data-photo-close>Close ×</button></div>

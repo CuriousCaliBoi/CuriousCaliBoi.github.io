@@ -590,7 +590,7 @@ function populatePicker(selectedEntry) {
 
 function observeChapters() {
   if (embedded || !('IntersectionObserver' in window)) return;
-  const links = selectAll('.chapter-nav a');
+  const links = selectAll('.chapter-nav a[href^="#"]');
   const sections = links.map((link) => select(link.getAttribute('href'))).filter(Boolean);
   const observer = new IntersectionObserver((entries) => {
     const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];

@@ -93,7 +93,7 @@
     const endpoint = new URL(config.api);
     if(endpoint.protocol!=='https:' && !['127.0.0.1','localhost'].includes(endpoint.hostname)) throw Error('An HTTPS game connection is required.');
     api=endpoint.href.replace(/\/$/,'');
-    $('access-note').textContent=config.access==='tailnet'?'Connect to Tailscale. Allow local-network access if your browser asks, so this page can reach your DGX.':'Live play · powered by the DGX Spark.';
+    $('access-note').textContent=config.access==='tailnet'?'Connect to Tailscale. Allow local-network access if your browser asks, so this page can reach your DGX.':'Ready to connect.';
   });
   // Handle configuration failures even if the visitor never presses Enter.
   configuration.catch(error=>tell(error.message,true));

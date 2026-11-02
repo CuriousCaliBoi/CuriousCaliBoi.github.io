@@ -21,10 +21,10 @@ guide_sources:
 ---
 
 <div class="model-atlas model-atlas--guide model-atlas--evo">
-  <nav class="model-guide__breadcrumb" aria-label="Breadcrumb"><a href="{{ '/models/' | relative_url }}">Model Atlas</a><span aria-hidden="true">/</span><span aria-current="page">Evo 2 7B</span></nav>
+  <nav class="model-guide__breadcrumb" aria-label="Breadcrumb"><a href="{{ '/models/' | relative_url }}">Models</a><span aria-hidden="true">/</span><span aria-current="page">Evo 2 7B</span></nav>
 
   <header class="model-guide__hero">
-    <p class="model-atlas__eyebrow">FIELD GUIDE 01 / GENOMICS</p>
+
     <h1>Evo 2 7B</h1>
     <p class="model-guide__thesis">A dense genomic foundation model that stretches to million-base context by interleaving three Hyena filter families with periodic global attention.</p>
     <dl class="model-guide__facts">
@@ -36,7 +36,7 @@ guide_sources:
   </header>
 
   <section class="model-guide__quick-read" aria-labelledby="evo-quick-read">
-    <div class="model-guide__section-heading"><p class="model-atlas__kicker">THE 60-SECOND READ</p><h2 id="evo-quick-read">Follow one DNA base.</h2></div>
+    <div class="model-guide__section-heading"><h2 id="evo-quick-read">DNA base path</h2></div>
     <ol>
       <li><span>01</span><p>A nucleotide becomes a learned vector in a 4,096-wide residual stream.</p></li>
       <li><span>02</span><p>Short explicit (Hyena-SE), medium regularized (Hyena-MR), and long implicit (Hyena-LI) operators mix sequence information without full attention at every layer.</p></li>
@@ -46,7 +46,7 @@ guide_sources:
   </section>
 
   <section class="model-guide__whole" aria-labelledby="evo-whole-model">
-    <div class="model-guide__section-heading"><p class="model-atlas__kicker">OUTSIDE IN</p><h2 id="evo-whole-model">Whole model</h2></div>
+    <div class="model-guide__section-heading"><h2 id="evo-whole-model">Whole model</h2></div>
     <p class="model-guide__intro">The released 7B checkpoint is a 32-layer, width-4,096 autoregressive model. It was trained on 2.4 trillion tokens; the more-than-8.8-trillion-nucleotide figure describes the broader OpenGenome2 dataset, not the amount consumed by this checkpoint.</p>
     <figure class="mechanism-diagram mechanism-diagram--scroll" aria-labelledby="evo-whole-caption" tabindex="0">
       <div class="pipeline pipeline--wide">
@@ -63,7 +63,7 @@ guide_sources:
   </section>
 
   <section class="model-guide__mechanisms" aria-labelledby="evo-blocks-title">
-    <div class="model-guide__section-heading"><p class="model-atlas__kicker">MECHANISM CUTAWAYS</p><h2 id="evo-blocks-title">Open the blocks</h2></div>
+    <div class="model-guide__section-heading"><h2 id="evo-blocks-title">Layer details</h2></div>
 
     <details class="mechanism" open>
       <summary><span>01</span><span><strong>DNA token path</strong><small>Turn bases into a next-base prediction.</small></span></summary>
@@ -160,8 +160,6 @@ guide_sources:
       </div>
     </details>
   </section>
-
-  <aside class="model-guide__watching"><p class="model-atlas__kicker">WHAT I&rsquo;M WATCHING</p><h2>Does the architecture surface biology at the right scales?</h2><p>I&rsquo;m interested in whether the probability landscape changes cleanly as a sequence moves from a local motif to a protein-coding region to genome-scale organization. Evo 2 is especially compelling because I can connect these architectural choices to the next-base experiments already on this site.</p></aside>
 
   {% include model-guide-sources.html %}
   {% include model-guide-nav.html %}

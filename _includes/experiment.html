@@ -3,7 +3,6 @@
 <section class="experiment" data-experiment data-experiment-src="{{ experiment.embed_url | relative_url }}" aria-label="{{ experiment.title | escape }}">
   <div class="experiment-heading"><span class="eyebrow">{{ experiment.mode }}</span><span class="experiment-status" role="status" data-experiment-status>Not connected</span></div>
   <p class="experiment-title">{{ experiment.title }}</p>
-  <p class="experiment-description">{{ experiment.description }}</p>
   <div class="experiment-actions">
     <button type="button" data-experiment-connect hidden>Enter experiment</button>
     <button type="button" data-experiment-stop hidden>Disconnect</button>

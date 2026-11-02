@@ -24,25 +24,25 @@ guide_sources:
 ---
 
 <div class="model-atlas model-atlas--guide model-atlas--oss">
-  <nav class="model-guide__breadcrumb" aria-label="Breadcrumb"><a href="{{ '/models/' | relative_url }}">Model Atlas</a><span aria-hidden="true">/</span><span aria-current="page">gpt-oss 20B</span></nav>
+  <nav class="model-guide__breadcrumb" aria-label="Breadcrumb"><a href="{{ '/models/' | relative_url }}">Models</a><span aria-hidden="true">/</span><span aria-current="page">gpt-oss 20B</span></nav>
 
   <header class="model-guide__hero">
-    <p class="model-atlas__eyebrow">FIELD GUIDE 02 / OPEN REASONING</p>
+
     <h1>gpt-oss 20B</h1>
     <p class="model-guide__thesis">An open-weight sparse decoder that shares attention memory aggressively and routes each token through four of 32 feed-forward experts.</p>
     <dl class="model-guide__facts"><div><dt>Scale</dt><dd>20.91B total &middot; 3.61B active</dd></div><div><dt>Shape</dt><dd>24 layers &middot; width 2,880</dd></div><div><dt>Context</dt><dd>131,072 tokens</dd></div><div><dt>Signature</dt><dd>64 query / 8 key / 8 value heads</dd></div></dl>
   </header>
 
-  <section class="model-guide__quick-read" aria-labelledby="oss-quick-read"><div class="model-guide__section-heading"><p class="model-atlas__kicker">THE 60-SECOND READ</p><h2 id="oss-quick-read">Follow one text token.</h2></div><ol><li><span>01</span><p>Sixty-four query heads ask different questions, but every group of eight shares one key head and one value head.</p></li><li><span>02</span><p>Local 128-token attention and full causal attention alternate across 24 layers.</p></li><li><span>03</span><p>A router scores 32 experts and activates the top four for this token.</p></li><li><span>04</span><p>Residual paths carry the result forward until the model emits next-token logits.</p></li></ol></section>
+  <section class="model-guide__quick-read" aria-labelledby="oss-quick-read"><div class="model-guide__section-heading"><h2 id="oss-quick-read">Token path</h2></div><ol><li><span>01</span><p>Sixty-four query heads ask different questions, but every group of eight shares one key head and one value head.</p></li><li><span>02</span><p>Local 128-token attention and full causal attention alternate across 24 layers.</p></li><li><span>03</span><p>A router scores 32 experts and activates the top four for this token.</p></li><li><span>04</span><p>Residual paths carry the result forward until the model emits next-token logits.</p></li></ol></section>
 
   <section class="model-guide__whole" aria-labelledby="oss-whole-model">
-    <div class="model-guide__section-heading"><p class="model-atlas__kicker">OUTSIDE IN</p><h2 id="oss-whole-model">Whole model</h2></div>
+    <div class="model-guide__section-heading"><h2 id="oss-whole-model">Whole model</h2></div>
     <p class="model-guide__intro">The model repeats a pre-normalized decoder block 24 times. Its attention modes follow <code>[local, global] &times; 12</code>, and every block contains sparse expert computation.</p>
     <figure class="mechanism-diagram mechanism-diagram--scroll" tabindex="0"><div class="pipeline pipeline--wide"><div class="pipeline__node"><span>INPUT</span><strong>Text tokens</strong><small>Up to 131,072</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__node"><span>EMBED</span><strong>Width 2,880</strong><small>Residual stream</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__repeat"><span>24 DECODER LAYERS</span><strong>[local, global] &times; 12</strong><small>Grouped attention + top-4/32 experts</small></div><span class="pipeline__arrow" aria-hidden="true">&rarr;</span><div class="pipeline__node"><span>OUTPUT</span><strong>Token logits</strong><small>Autoregressive decode</small></div></div><figcaption><strong>How to read this diagram:</strong> the block family alternates its attention mask while retaining the same residual and expert structure. The diagram is conceptual; the dimensions and repeat counts are exact.<span class="diagram-pan-note">On narrow screens, pan horizontally to inspect the full pipeline.</span></figcaption></figure>
   </section>
 
   <section class="model-guide__mechanisms" aria-labelledby="oss-blocks-title">
-    <div class="model-guide__section-heading"><p class="model-atlas__kicker">MECHANISM CUTAWAYS</p><h2 id="oss-blocks-title">Open the blocks</h2></div>
+    <div class="model-guide__section-heading"><h2 id="oss-blocks-title">Layer details</h2></div>
 
     <details class="mechanism" open>
       <summary><span>01</span><span><strong>Grouped-Query Attention</strong><small>Eight queries share each key/value pair.</small></span></summary>
@@ -95,8 +95,6 @@ guide_sources:
       </div>
     </details>
   </section>
-
-  <aside class="model-guide__watching"><p class="model-atlas__kicker">WHAT I&rsquo;M WATCHING</p><h2>How far can an active 3.61B footprint go?</h2><p>The interesting tension for me is local experimentation versus architectural ambition. gpt-oss exposes modern sparse routing and long-context attention in a model whose per-token active parameter count is far smaller than its total capacity.</p></aside>
   {% include model-guide-sources.html %}
   {% include model-guide-nav.html %}
 </div>

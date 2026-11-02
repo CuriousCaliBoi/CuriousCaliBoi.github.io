@@ -13,12 +13,10 @@
 <body>
   <div class="page">
     <header>
-      <a class="back" href="https://curiouscaliboi.github.io/" target="_top">← Zuko’s field notes</a>
-      <div class="header-meta"><span class="sprout" aria-hidden="true">✳</span> AN AGENT IN THE VALLEY</div>
+      <a class="back" href="https://curiouscaliboi.github.io/" target="_top">← Writing</a>
     </header>
     <div class="intro">
-      <div><p class="eyebrow">AN OPEN-ENDED EXPERIMENT</p><h1>Stardew, <em>live.</em></h1></div>
-      <p class="dek">A local model. A little farm.<br>A world to figure out, one action at a time.</p>
+      <h1>Stardew Valley</h1>
     </div>
     <main>
       <section class="stage" aria-label="Live gameplay">
@@ -26,7 +24,7 @@
         <div class="screen" id="screen">
           <video id="video" autoplay muted playsinline crossorigin="anonymous" aria-label="Live Stardew Valley video" hidden></video>
           <img id="game" alt="Live Stardew Valley gameplay" hidden>
-          <div class="screen-notice" id="screen-notice"><span class="seed" aria-hidden="true">✳</span><strong id="notice-title">Looking for the farm…</strong><p id="notice-copy">Connecting to the live game.</p></div>
+          <div class="screen-notice" id="screen-notice"><strong id="notice-title">Looking for the farm…</strong><p id="notice-copy">Connecting to the live game.</p></div>
           <div class="screen-stale" id="screen-stale" hidden>Feed interrupted · last received frame</div>
         </div>
         <div class="screen-tools"><span id="game-clock">Waiting for game time</span><div><button id="pause" type="button">Pause feed</button><button id="fullscreen" type="button" aria-label="Expand gameplay to fullscreen">Expand ↗</button></div></div>
@@ -35,7 +33,7 @@
         </div>
       </section>
       <aside class="notebook" aria-label="Agent task and progress">
-        <div class="mode-row"><span class="eyebrow" id="mode">AGENT NOTEBOOK</span><span class="phase" id="phase">Waiting</span></div>
+        <div class="mode-row"><span class="eyebrow" id="mode">CURRENT TASK</span><span class="phase" id="phase">Waiting</span></div>
         <h2 id="goal">Waiting for the agent’s next objective.</h2>
         <p class="context" id="context">The game feed and agent status will appear here when connected.</p>
         <div class="action-box"><span class="eyebrow">CURRENT ACTION</span><p id="action">—</p></div>
@@ -45,11 +43,11 @@
           <p class="progress-detail" id="task-quantity">Waiting for the evaluator</p>
         </div>
         <div class="agent-stats" id="agent-stats"></div>
-        <div class="history-heading"><h3>Recent activity</h3><span>OBSERVED OUTCOMES</span></div>
+        <div class="history-heading"><h3>Recent activity</h3></div>
         <ol id="activity"><li class="empty">No activity received yet.</li></ol>
       </aside>
     </main>
-    <footer><p><span class="footer-dot"></span><span id="model">Nemotron 3 Super</span> · Mac gameplay / DGX Spark inference</p><p>Read-only · <span id="stream-format">Connecting video</span> · No audio <span class="separator">/</span> <a href="https://github.com/CuriousCaliBoi/stardojo" target="_blank" rel="noopener">Inspired by StarDojo ↗</a></p></footer>
+    <footer><p><span class="footer-dot"></span><span id="model">Nemotron 3 Super</span></p><p>Read-only · <span id="stream-format">Connecting video</span> · No audio <span class="separator">/</span> <a href="https://github.com/CuriousCaliBoi/stardojo" target="_blank" rel="noopener">Inspired by StarDojo ↗</a></p></footer>
     <p class="footnote">Free play develops the farm and explores the valley. Lite mode runs individual benchmark tasks; the notebook switches automatically. This local text-state agent is an adapted baseline, not a reproduction of the paper’s multimodal results.</p>
   </div>
 </body>

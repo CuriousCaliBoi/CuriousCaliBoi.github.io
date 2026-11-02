@@ -30,7 +30,12 @@ This is a personal technical blog hosted on GitHub Pages using Jekyll.
 - Date format: YYYY-MM-DD (e.g., 2024-08-21 for August 21, 2024)
 
 ## Blog Style
-- Clean, minimal design
+- Let the content speak for itself. Use plain titles, dates, and direct navigation.
+- No promotional taglines, decorative section numbers, repeated badges, or AI/model/hardware branding outside relevant technical details.
+- Keep descriptions short and factual; include them only when they help someone use or understand the work.
+- Do not invent first-person interests, opinions, or narration for the author.
+- Preserve original writing, technical explanations, source citations, image credits, and accessibility instructions.
+- Prefer typography, whitespace, and simple lists over elaborate framing.
 - Technical focus (AI, mathematics, programming)
 - Professional but approachable tone
 - Projects are blog posts in `_posts/`, alongside other writing

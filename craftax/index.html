@@ -8,7 +8,7 @@
   <title>Relaxed Craftax — CuriousCaliBoi</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css?v=relaxed-1">
-  <script src="app.js?v=relaxed-1" defer></script>
+  <script src="app.js?v=relaxed-2" defer></script>
 </head>
 <body>
   <a class="skip" href="#game">Skip to game</a>
@@ -19,17 +19,17 @@
   </header>
   <main>
     <div class="heading">
-      <div><p class="eyebrow">THE PLAYABLE FIELD LAB <span>01</span></p><h1>A little world.<br><em>A lot to discover.</em></h1></div>
-      <p class="intro">Gather wood. Make a tool. Find your way home.<br><strong>Relaxed Craftax Classic</strong> — no zombies or skeletons.<br>Food, water, and energy refill automatically.</p>
+      <h1>Craftax</h1>
+      <p class="intro">Craftax Classic with enemies disabled.<br>Food, water, and energy refill automatically.</p>
     </div>
     <div class="layout" id="play-area">
       <section class="game-card" aria-label="Craftax game">
-        <div class="game-top"><span class="game-name"><i class="dot"></i> CRAFTAX · RELAXED</span><span id="world-label">YOUR WORLD AWAITS</span><button id="expand">Full page ↗</button><div class="play-tools"><button id="toggle-controls" aria-expanded="false" aria-controls="play-sidebar">Controls & pack</button><button id="fullscreen">Full screen</button><button id="leave-play">Back to page ↙</button></div></div>
+        <div class="game-top"><span class="game-name"><i class="dot"></i> CRAFTAX · RELAXED</span><span id="world-label">Not connected</span><button id="expand">Full page ↗</button><div class="play-tools"><button id="toggle-controls" aria-expanded="false" aria-controls="play-sidebar">Controls & pack</button><button id="fullscreen">Full screen</button><button id="leave-play">Back to page ↙</button></div></div>
         <div class="stage" id="game" tabindex="0" role="group" aria-label="Game controls. Move with W A S D or arrows. Space interacts. Escape pauses.">
           <canvas id="screen" width="144" height="112" aria-label="Your view of the Craftax world"></canvas>
           <div id="target-tile" class="target-tile" aria-hidden="true" hidden></div>
           <div class="cover" id="cover">
-            <div class="cover-copy"><p class="eyebrow" id="cover-kicker">EXPLORE · GATHER · CREATE</p><h2 id="cover-title">Step into the world.</h2><p id="cover-text">Start with empty hands and a patch of forest.<br>What will you make of it?</p><button class="primary" id="start">Enter world <span aria-hidden="true">→</span></button><p class="access-note" id="access-note">Connect to Tailscale. Allow local-network access if your browser asks, so this page can reach your DGX.</p></div>
+            <div class="cover-copy"><p class="eyebrow" id="cover-kicker">CRAFTAX CLASSIC</p><h2 id="cover-title">Start a game</h2><p id="cover-text">Move with WASD or arrow keys. Space interacts.</p><button class="primary" id="start">Enter world <span aria-hidden="true">→</span></button><p class="access-note" id="access-note">Connect to Tailscale. Allow local-network access if your browser asks, so this page can reach your DGX.</p></div>
           </div>
           <div class="touch-controls" aria-label="Touch game controls"><div class="dpad"><button data-action="3" class="up" aria-label="Move up">↑</button><button data-action="1" class="left" aria-label="Move left">←</button><button data-action="4" class="down" aria-label="Move down">↓</button><button data-action="2" class="right" aria-label="Move right">→</button></div><button data-action="5" class="touch-interact">Interact</button></div>
         </div>
@@ -71,7 +71,7 @@
     </section>
     <noscript><p class="noscript">Enable JavaScript to connect to and play Craftax.</p></noscript>
   </main>
-  <footer><p>A world-models learning lab by <a href="/">Zuko</a>.</p><p>Original game: <a href="https://github.com/MichaelTMatthews/Craftax">Craftax</a>, based on <a href="https://github.com/danijar/crafter">Crafter</a>. <a href="/experiments/world-models/">Explore the learning experiments ↗</a></p></footer>
+  <footer><p>By <a href="/">Zuko</a>.</p><p>Original game: <a href="https://github.com/MichaelTMatthews/Craftax">Craftax</a>, based on <a href="https://github.com/danijar/crafter">Crafter</a>. <a href="/experiments/world-models/">Recordings and training results ↗</a></p></footer>
   <dialog class="play-dialog" id="play-dialog" aria-label="Full-page Craftax game"></dialog>
 </body>
 </html>

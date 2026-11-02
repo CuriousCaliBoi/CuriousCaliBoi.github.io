@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Smallville, live</title>
-<meta name="description" content="A live generative-agents town: four agents whose every decision is a Nemotron 3.5 Lightning call on a DGX Spark.">
+<meta name="description" content="Smallville agent simulation with memories, schedules, and conversations.">
 <style>
   :root {
     --bg: #0f1115; --panel: #171a21; --panel-2: #1f232c; --line: #2a2f3a;
@@ -73,7 +73,7 @@
   <h1>Smallville <span>· live</span></h1>
   <div class="clock"><span id="clock">—</span><small id="step"></small></div>
   <div class="status wait" id="status"><span class="dot"></span><span id="status-text">connecting…</span></div>
-  <div class="meta" id="meta">4 agents · Nemotron 3.5 Lightning 30B-A3B (NVFP4) via vLLM on a DGX Spark</div>
+  <div class="meta" id="meta">4 agents</div>
 </header>
 <main>
   <div id="game">
@@ -89,13 +89,13 @@
       <h2>Conversations</h2>
       <div id="convos"><div class="empty">No conversations yet.</div></div>
     </section>
-    <div class="about">
+    <details class="about"><summary>Simulation details</summary>
       Every decision these agents make (waking up, planning the day, choosing where to go, deciding to talk, each line of dialogue, reflecting) is a language-model call to
       <b>NVIDIA Nemotron 3.5 Lightning 30B-A3B</b> served by vLLM on a DGX Spark in my apartment. Memory retrieval uses bge-small embeddings on the CPU.
       The town and cognitive architecture come from <a href="https://arxiv.org/abs/2304.03442" target="_blank" rel="noopener">Park et al., <i>Generative Agents</i> (2023)</a>
       via the <a href="https://github.com/joonspk-research/generative_agents" target="_blank" rel="noopener">reference implementation</a>. One simulation step is 10 seconds of town time.
       <div id="about-stats" style="margin-top:6px"></div>
-    </div>
+    </details>
   </aside>
 </main>
 <div class="modal-bg" id="modal-bg"><div class="modal" id="modal"></div></div>
@@ -395,17 +395,17 @@
 
   async function boot() {
     state.api = await discoverApi();
-    if (!state.api) { setStatus("off", "no simulation endpoint published"); $("cards").innerHTML = '<div class="empty">The simulation server is not reachable right now. It runs on a DGX Spark in my apartment; when it is back online this page reconnects automatically.</div>'; return; }
+    if (!state.api) { setStatus("off", "no simulation endpoint published"); $("cards").innerHTML = '<div class="empty">The simulation is offline. This page reconnects automatically.</div>'; return; }
     let s;
     try { s = await fetch(`${state.api}/api/state`).then((r) => r.json()); }
-    catch (e) { setStatus("off", "simulation server offline"); $("cards").innerHTML = '<div class="empty">The simulation server is offline right now (it runs on a DGX Spark in my apartment). Check back later — this page reconnects on its own.</div>'; setTimeout(boot, 30000); return; }
+    catch (e) { setStatus("off", "simulation server offline"); $("cards").innerHTML = '<div class="empty">The simulation is offline. This page reconnects automatically.</div>'; setTimeout(boot, 30000); return; }
     state.personas = s.personas; state.order = Object.keys(s.personas); state.latest = s.positions || {};
     state.step = s.step; state.curTime = parseSimTime(s.curr_time);
     for (const [n, rec] of Object.entries(state.latest)) state.lastChat[n] = rec.chat;
     for (const c of s.conversations || []) addConvo(c);
     $("clock").textContent = fmtClock(state.curTime);
     $("step").textContent = `step ${state.step.toLocaleString()}`;
-    $("meta").textContent = `${state.order.length} agents · ${s.model.split("/").pop()} via vLLM on a DGX Spark`;
+    $("meta").textContent = `${state.order.length} agents`;
     renderCards();
     new Phaser.Game({ type: Phaser.AUTO, parent: "game", pixelArt: true, backgroundColor: "#0a0c10",
       scale: { mode: Phaser.Scale.RESIZE, width: "100%", height: "100%" }, scene: { preload, create, update } });

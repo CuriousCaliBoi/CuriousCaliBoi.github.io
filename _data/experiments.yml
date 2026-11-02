@@ -1,77 +1,77 @@
 voxel-meadow:
-  title: Meadow · Voxel World Lab
+  title: Meadow
   url: /voxel/
   embed_url: /voxel/
-  description: Explore a full-window 3D world, fly above the trees, and build with unlimited blocks. A peaceful Voxelize playground for future world-model labs.
+  description: Block building with saved terrain and flying controls.
   mode: Private creative world
   note: The game runs on my DGX Spark through Tailscale. Terrain edits save automatically. Keyboard and mouse recommended; no enemies or hunger.
 craftax-play:
   title: Play Craftax
   url: /craftax/
   embed_url: /craftax/
-  description: Explore, gather resources, and craft tools in relaxed Craftax Classic, with no enemies and automatic food, water, and energy. Play with the keyboard or touch controls and download your run for the next world-models lesson.
+  description: Craftax Classic with enemies disabled and food, water, and energy replenished.
   mode: Private playable world
   note: The original game runs on my DGX Spark and is available through my private Tailscale connection. Each browser gets its own world. Download a recording before starting over; idle sessions expire after an hour.
 pokemon:
   title: Pokemon Red
   url: /pokemon/
   embed_url: /pokemon/
-  description: Watch the model choose its next move in the live game viewer.
+  description: A model playing Pokemon Red.
   mode: Live viewer
   note: The model controls the game. Visitor input does not send moves to the emulator.
 smallville:
-  title: A day in Smallville
+  title: Smallville
   url: /smallville/
   embed_url: /smallville/
-  description: Follow an agent, inspect its memories, and explore the town as its day unfolds.
+  description: A town simulation with agent memories, schedules, and conversations.
   mode: Interactive viewer
   note: Drag to pan, scroll to zoom, or choose an agent’s Follow or Mind button. These controls explore the running simulation without changing its decisions.
 jaz-traces:
   title: JAZ trace viewer
   url: /traces/
   embed_url: /traces/
-  description: Inspect the Python cells, REPL results, retries, nested agents, token counts, and final values from JAZ runs on my DGX Spark.
+  description: Python execution traces, model calls, and results from JAZ runs.
   mode: Private live viewer
   note: The trace feed stays on my private Tailscale network. It loads only on my connected devices; the public site never stores the trace files.
 minimax-h3:
   title: MiniMax-H3 studio
   url: /h3/
   embed_url: /h3/
-  description: Write a scene, choose a seed, and render a short video on my DGX Spark.
+  description: Text-to-video generation with MiniMax-H3.
   mode: Private video generator
   note: The generator is available only on my private Tailscale network. Prompts and videos travel directly between this browser and the Spark; the public site does not store them.
 stardew:
   title: Stardew Valley
   url: /stardew/
   embed_url: /stardew/
-  description: Watch a local model develop its farm, explore the valley, and attempt StarDojo Lite tasks.
+  description: A model playing Stardew Valley, with current actions and task progress.
   mode: Live viewer
   note: The notebook follows the active runner. Pausing this feed only pauses your view; the agent keeps playing. Gameplay is streamed as 60 fps video without audio, with a short live delay.
 world-models:
   title: World Models Lab
   url: /experiments/world-models/
   embed_url: /experiments/world-models/
-  description: Step through a Craftax life, watch learning curves unfold, and discover why the first model lost to predicting that nothing changes.
-  mode: Interactive field lab
+  description: Craftax recordings, predictions, and training results.
+  mode: Recorded experiment
   note: The observed rollout, step-by-step trace, metrics, seeds, and fingerprints are public. Training data and checkpoints remain on the Spark.
 world-models-carracing:
-  title: World Models, CarRacing dream
+  title: World Models, CarRacing
   url: /world-models-carracing/
   embed_url: /world-models-carracing/
-  description: Drive inside a 2018-style world model trained on my DGX Spark. The VAE, MDN-RNN, and CMA-ES controller from the original paper run entirely in your browser.
+  description: The VAE, MDN-RNN, and controller from World Models, running in the browser.
   mode: In-browser world model
   note: The models are static files that run locally in your browser; nothing contacts the Spark. Arrow keys or the on-screen pad take the wheel from the agent, and the temperature slider changes how boldly the model samples its own predictions.
 lecture-03-pusht:
   title: "Lecture 3: one push, explained"
   url: /experiments/lecture-03-pusht/
   embed_url: /experiments/lecture-03-pusht/
-  description: Compare centered and off-center pushes, then inspect each action, contact, and resulting state in real PushT recordings from the DGX Spark.
+  description: Centered and off-center PushT recordings with actions, contacts, and states.
   mode: Recorded physics explorer
   note: This browser viewer replays recorded simulator frames and transitions. Live controls are linked separately and require access to the private Tailscale network. No trained model or policy is loaded.
 cs312-a1:
   title: "CS 312 Assignment 1: experiment log"
   url: /experiments/cs312-a1/
   embed_url: /experiments/cs312-a1/
-  description: Inspect the d8 language-model architecture, execution status, configurations, raw measurements, and plots from the Assignment 1 experiment suite.
+  description: Configurations, measurements, and plots from the Assignment 1 experiments.
   mode: Recorded experiment dashboard
   note: The page contains exported Modal and Weights & Biases run records. It reports configurations and measurements without adding an interpretation of the results.

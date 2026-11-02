@@ -2,6 +2,17 @@
 
 A Jekyll site for notes on code, mathematics, and creative computing, published at [curiouscaliboi.github.io](https://curiouscaliboi.github.io).
 
+## Design
+
+Let the content speak for itself. Use plain titles, dates, and direct navigation.
+Avoid promotional introductions, decorative labels, repeated calls to action,
+and model or hardware branding outside relevant technical details. Descriptions
+should be short, factual, and useful. Do not invent personal opinions or narration
+for the author. Preserve source attribution and instructions needed to use a page.
+
+The homepage lists writing by date. Art, Models, and Experiments have their own
+indexes. The bird collection opens directly to the Pokédex.
+
 ## Local preview
 
 Use Ruby 3.3 and Bundler:
@@ -23,10 +34,8 @@ The existing GitHub Pages publishing setup still works. No Node build is require
 
 Writing and project entries are Markdown files in `_posts/`, with their existing date/category URLs. Project posts link to standalone live demos. Use `layout: post`, `title`, and `date` in the front matter. Optional fields:
 
-- `subtitle`: a short introduction beneath the article title and on the homepage feature.
 - `author`: overrides the default byline, Zuko.
 - `date_format`: optional display format for dates. The Infinite Observatory retains its original month-only date (`%B %Y`); the first day of that month is used for sorting.
-- `image` and `image_alt`: the preview image and its description when the post is featured as the latest entry.
 
 The post title comes from the front matter, so start the body with paragraphs or `##` section headings. Posts with two or more `##`/`###` headings receive a contents sidebar, which becomes a collapsible panel on narrow screens. Reading and site navigation work without JavaScript; the contents and math rendering are progressive enhancements. Math uses KaTeX: `$...$` for inline math and `$$...$$` for display math. Fenced code uses Rouge.
 
@@ -34,15 +43,15 @@ The theme is in `_layouts/`, `_includes/`, `assets/main.scss`, and `assets/js/jo
 
 ## Design credit
 
-The warm paper palette, serif reading experience, quiet navigation, and margin contents are inspired by [Wenhao Chai’s website](https://wenhaochai.com/), especially [Predictable Swarm Scaling](https://wenhaochai.com/blogs/predictable-swarm-scaling.html). The footer links to this reference. This is an independently written Jekyll implementation; the reference site’s code, article content, and imagery are not included.
+The warm paper palette, serif reading experience, quiet navigation, and margin contents are inspired by [Wenhao Chai’s website](https://wenhaochai.com/), especially [Predictable Swarm Scaling](https://wenhaochai.com/blogs/predictable-swarm-scaling.html). This is an independently written Jekyll implementation; the reference site’s code, article content, and imagery are not included.
 
 [Newsreader](https://github.com/google/fonts/tree/main/ofl/newsreader) and [Inter](https://github.com/google/fonts/tree/main/ofl/inter) are served locally from `assets/fonts/`. The Latin WOFF2 files come from the Google Fonts CSS API. Their SIL Open Font License texts are included alongside the fonts. The monospace metadata uses system fonts.
 
 ## Art and photographs
 
-`/art/` combines a photo gallery, a keyboard-accessible lightbox, and a color sampler. The sampler reads actual pixels from the locally hosted photographs; it does not send anything to a server. Photos and attribution are defined in `_data/art.yml`, with files under `images/art/`. Add entries there to extend the gallery. Two photos are also shown on the homepage.
+`/art/` combines a photo gallery, a keyboard-accessible lightbox, and a color sampler. The sampler reads actual pixels from the locally hosted photographs; it does not send anything to a server. Photos and attribution are defined in `_data/art.yml`, with files under `images/art/`. Add entries there to extend the gallery.
 
-The initial photographs are Wikimedia Commons 1280-pixel thumbnails, otherwise unchanged. Homepage previews use CSS crops. The photograph licenses apply to the photographs, independently of the site's code:
+The initial photographs are Wikimedia Commons 1280-pixel thumbnails, otherwise unchanged. The photograph licenses apply to the photographs, independently of the site's code:
 
 - Mikhail Kalugin, [Sunset At Coyote Hills](https://commons.wikimedia.org/wiki/File:Sunset_At_Coyote_Hills_(55533170).jpeg), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
 - Deodandem, [Coyote Hills Salt](https://commons.wikimedia.org/wiki/File:Coyote_Hills_Salt.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
