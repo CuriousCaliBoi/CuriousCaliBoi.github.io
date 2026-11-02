@@ -4,3 +4,27 @@
 @media(max-width:600px){.garden-nav{gap:0;justify-content:space-between}.garden-nav a{font-size:11px;flex-direction:column;align-items:flex-start;gap:8px;padding:15px 4px 15px 0}.garden-nav a>span{font-size:8px}.archive-filter{font-size:9px;padding-top:17px}.archive-filter label{gap:6px;white-space:normal}.notebook,.collection{padding-top:28px}.date-controls{gap:7px;flex-wrap:wrap}.date-controls button{padding:10px 13px}.date-controls select{font-size:11px;padding:11px 17px 11px 9px;max-width:230px}.date-controls a{width:100%;margin-top:10px;font-size:10px}.day-note{font-size:19px;line-height:1.6;margin:24px 0}.notebook-stats{grid-template-columns:repeat(2,1fr);gap:24px 14px}.notebook-stats strong{font-size:29px}.activity{margin:24px 0 30px;padding:18px 13px 15px}.activity figcaption{align-items:start;flex-direction:column;gap:8px;margin-bottom:18px}.activity svg{height:85px}.hour-labels{font-size:8px}.table-heading{align-items:start;flex-direction:column;gap:9px}.visitors-table th{font-size:8px}.visitors-table td{font-size:10px}.species-link{font-size:17px}.visitors-table td:first-child{min-width:215px}.first-day{font-size:8px}.detection-log>summary{font-size:11px}.detection-log>summary span{display:block;margin:7px 0 0 15px;font-size:9px}.collection-tools{align-items:stretch;flex-direction:column;gap:13px}.sort-field{justify-content:space-between}.sort-field select{font-size:11px}.collection-grid{grid-template-columns:1fr;gap:12px}.collection-card{padding:24px}.entry-name{font-size:27px}.collection-note{line-height:1.7}.notebook .section-heading>p,.collection .section-heading>p{font-size:9px;max-width:100px;flex-shrink:0}dialog{padding:30px 22px}dialog h2{font-size:30px}dialog .detail-latin{font-size:15px}dialog .notebook-stats{grid-template-columns:repeat(2,1fr)}.species-day{font-size:11px}.species-day span{font-size:9px;text-align:right}.detail-note{font-size:11px}}
 @media(max-width:600px){.date-controls select{flex:1;min-width:0;max-width:calc(100% - 98px)}}
 @media(prefers-reduced-motion:reduce){.collection-card{transition:none}dialog::backdrop{backdrop-filter:none}}
+
+.collection-intro{max-width:560px;color:var(--muted);font:400 17px/1.7 Georgia,serif;margin:24px 0 30px}
+.collection-card{padding:0;overflow:hidden;background:#f7f6ee}
+.entry-painting{display:block;width:100%;aspect-ratio:1;background:#f5f2e8;border-bottom:1px solid var(--line);overflow:hidden}
+.bird-watercolor{display:block;width:100%;height:auto}
+.entry-mark{width:auto;align-self:stretch;margin:22px 24px 0;font-size:8px}
+.entry-mark>span:last-child{letter-spacing:.02em;text-transform:none}
+.entry-name{margin:15px 24px 0;font-size:25px}
+.entry-latin{margin:8px 24px 23px}
+.entry-meta{margin:0 24px;width:calc(100% - 48px);margin-top:auto}
+.entry-first{margin:20px 24px 24px;width:calc(100% - 48px)}
+.portrait-pending{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:160px;padding:20px;text-align:center;font:italic 16px/1.6 Georgia,serif;color:var(--muted)}
+.portrait-about{margin:35px 0 0;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:11px;line-height:1.8}
+.portrait-about summary{cursor:pointer;color:var(--ink);font-size:12px}
+.portrait-about p{max-width:700px}
+.portrait-about a,.portrait-links a{text-decoration:underline;text-underline-offset:4px;text-decoration-color:#a2ad8d}
+.detail-portrait{margin:0;background:#f5f2e8;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.detail-portrait .bird-watercolor{max-height:350px;object-fit:contain}
+.detail-portrait figcaption{font-size:9px;color:var(--muted);text-align:right;padding:0 16px 14px;line-height:1.6}
+.portrait-description{font:400 18px/1.6 Georgia,serif;margin:23px 0 17px}
+.portrait-links{display:flex;justify-content:space-between;gap:20px;font-size:10px;line-height:1.7;padding-bottom:23px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.portrait-links:empty{display:none}
+dialog .close-detail{position:sticky;float:right;right:auto;top:0;margin:-16px -16px 0 0;border:1px solid var(--line);border-radius:50%;background:var(--paper);width:36px;height:36px;line-height:26px;z-index:1}
+@media(max-width:600px){.collection-intro{font-size:16px;margin-bottom:24px}.collection-card{padding:0}.entry-name{font-size:27px}.portrait-links{flex-direction:column;gap:13px}.portrait-description{font-size:17px}.detail-portrait figcaption{font-size:8px}.detail-portrait .bird-watercolor{max-height:280px}dialog .close-detail{margin:-12px -10px 0 0}}

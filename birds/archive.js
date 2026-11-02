@@ -11,7 +11,7 @@
   const dateLabel = stamp => shortFormat.format(new Date(stamp));
   const timeLabel = stamp => clock.format(new Date(stamp));
   const percent = value => `${Math.round(value * 100)}%`;
-  const glyph = '<svg viewBox="0 0 80 60" aria-hidden="true"><path d="M8 46c20 0 35-7 58-3M34 39c-13-4-13-18-4-24 6-4 14-1 17 4l9 3-9 4c-1 10-6 15-13 13l-8 6m5-10L15 25m19 14 2 6m7-10 2 9"/><circle cx="42" cy="20" r="1.5"/></svg>';
+  const portraits = window.gardenPortraits || {};
   let minimum = .75;
   let summary = null;
   let view = 'live';
@@ -42,6 +42,38 @@
     const button = node('button', 'species-link', bird.commonName);
     button.addEventListener('click', () => openBird(bird));
     return button;
+  }
+
+  function portraitImage(bird, eager=false) {
+    const art = portraits[bird.scientificName];
+    const image = node('img', 'bird-watercolor');
+    image.src = art.file;
+    image.alt = `AI watercolor of ${bird.commonName}. ${art.plumage}.`;
+    image.width = 512;
+    image.height = 512;
+    image.loading = eager ? 'eager' : 'lazy';
+    image.decoding = 'async';
+    image.addEventListener('error', () => image.replaceWith(node('span', 'portrait-pending', 'Portrait unavailable')), {once:true});
+    return image;
+  }
+
+  function showPortrait(bird) {
+    const art = portraits[bird.scientificName];
+    const figure = $('detail-portrait');
+    figure.hidden = !art;
+    figure.replaceChildren();
+    $('portrait-description').textContent = art?.description || 'A new voice in the garden. Its watercolor is still to come.';
+    $('portrait-links').replaceChildren();
+    if (!art) return;
+    figure.append(portraitImage(bird,true), node('figcaption', '', `AI interpretation · ${art.plumage}`));
+    const guide = node('a', '', 'Meet the bird at Cornell ↗');
+    guide.href = art.guide;
+    guide.target = '_blank';
+    guide.rel = 'noopener noreferrer';
+    const download = node('a', '', 'Keep this watercolor ↓');
+    download.href = art.file;
+    download.download = art.file.split('/').pop();
+    $('portrait-links').append(guide, download);
   }
   async function get(path, params={}) {
     const response = await fetch(`${endpoint}${path}?${new URLSearchParams({min:minimum, ...params})}`, {cache:'no-store', signal:AbortSignal.timeout(15000)});
@@ -223,8 +255,7 @@
   function drawCollection() {
     if (!summary) return;
     const search = $('bird-search').value.trim().toLocaleLowerCase();
-    const indexed = summary.species.map((bird,index) => ({...bird, index:index+1}));
-    const birds = indexed.filter(bird => `${bird.commonName} ${bird.scientificName}`.toLocaleLowerCase().includes(search));
+    const birds = summary.species.filter(bird => `${bird.commonName} ${bird.scientificName}`.toLocaleLowerCase().includes(search));
     const sorts = {recent:(a,b) => Date.parse(b.lastHeard)-Date.parse(a.lastHeard), name:(a,b) => a.commonName.localeCompare(b.commonName), first:(a,b) => Date.parse(a.firstHeard)-Date.parse(b.firstHeard), count:(a,b) => b.count-a.count};
     birds.sort(sorts[$('bird-sort').value]);
     $('collection-note').textContent = `${number(birds.length)} of ${number(summary.shownSpecies)} species · ${number(summary.shownDetections)} ${minimum ? 'detections at 75% or higher' : 'detections, including tentative matches'}`;
@@ -234,18 +265,20 @@
       const card = node('button', 'collection-card');
       card.type = 'button';
       card.setAttribute('aria-label', `Explore ${bird.commonName}`);
+      const art = portraits[bird.scientificName];
+      const painting = node('span', 'entry-painting');
+      painting.append(art ? portraitImage(bird) : node('span', 'portrait-pending', 'A new voice. A portrait to come.'));
       const mark = node('span', 'entry-mark');
-      mark.innerHTML = glyph;
-      mark.append(node('span', '', `NO. ${String(bird.index).padStart(3,'0')}`));
+      mark.append(node('span', '', art ? `NO. ${String(art.number).padStart(3,'0')}` : 'NEW ARRIVAL'), node('span', '', art ? 'AI watercolor' : 'Portrait to come'));
       const meta = node('span', 'entry-meta');
       const count = node('span');
-      count.append(node('strong', '', number(bird.count)), document.createTextNode('detections'));
+      count.append(node('strong', '', number(bird.count)), document.createTextNode(bird.count === 1 ? 'detection' : 'detections'));
       const days = node('span');
       days.append(node('strong', '', number(bird.daysHeard)), document.createTextNode(bird.daysHeard === 1 ? 'day heard' : 'days heard'));
       meta.append(count, days);
       const first = node('span', 'entry-first');
       first.append(node('span', '', `First heard ${dateLabel(bird.firstHeard)}`), node('span', bird.bestConfidence < .75 ? 'tentative' : '', bird.bestConfidence < .75 ? 'Tentative ↗' : 'Explore ↗'));
-      card.append(mark, node('span', 'entry-name', bird.commonName), node('span', 'entry-latin', bird.scientificName), meta, first);
+      card.append(painting, mark, node('span', 'entry-name', bird.commonName), node('span', 'entry-latin', bird.scientificName), meta, first);
       card.addEventListener('click', () => openBird(bird));
       cards.append(card);
     });
@@ -257,10 +290,12 @@
     const ticket = ++detailTicket;
     $('detail-name').textContent = bird.commonName;
     $('detail-latin').textContent = bird.scientificName;
+    showPortrait(bird);
     $('detail-note').textContent = 'Opening this bird’s field notes…';
     $('detail-stats').replaceChildren();
     $('species-days').replaceChildren();
     if (!$('bird-detail').open) $('bird-detail').showModal();
+    $('bird-detail').scrollTop = 0;
     try {
       const data = await get('/archive/species', {species:bird.scientificName});
       if (ticket !== detailTicket || !$('bird-detail').open) return;
@@ -271,7 +306,7 @@
       data.days.forEach(day => {
         const link = node('a', 'species-day');
         link.href = `#journal/${day.date}`;
-        link.append(node('strong', '', dateLabel(day.firstHeard)), node('span', '', `${number(day.count)} detections · ${percent(day.bestConfidence)} best match ↗`));
+        link.append(node('strong', '', dateLabel(day.firstHeard)), node('span', '', `${number(day.count)} ${day.count === 1 ? 'detection' : 'detections'} · ${percent(day.bestConfidence)} best match ↗`));
         link.addEventListener('click', () => { $('bird-detail').close(); if (location.hash === link.hash) route(); });
         $('species-days').append(link);
       });

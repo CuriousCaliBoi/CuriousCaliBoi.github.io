@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="garden.css">
   <link rel="stylesheet" href="archive.css">
   <script src="garden.js" defer></script>
+  <script src="portraits.js" defer></script>
   <script src="archive.js" defer></script>
 </head>
 <body>
@@ -39,7 +40,7 @@
       <nav class="garden-nav" id="garden-views" aria-label="Explore the garden">
         <a href="#live" data-view="live" aria-current="page">The garden <span>Now</span></a>
         <a href="#journal" data-view="journal">Daily notes <span id="day-count">By date</span></a>
-        <a href="#collection" data-view="collection">Bird collection <span id="species-count">All time</span></a>
+        <a href="#collection" data-view="collection">Bird Pokédex <span id="species-count">All time</span></a>
       </nav>
       <div class="archive-filter" id="archive-filter" hidden><p id="archive-coverage">Opening the field notebook…</p><label><input id="include-tentative" type="checkbox"> Include tentative matches <span>(below 75%)</span></label></div>
 
@@ -65,14 +66,16 @@
       </section>
 
       <section class="collection" id="collection" data-panel="collection" aria-labelledby="collection-title" hidden>
-        <div class="section-heading"><div><p class="eyebrow">An ever-growing bird collection</p><h2 id="collection-title">Everyone who’s stopped by.</h2></div><p>A little Pokédex of the garden.<br>Open a bird to explore its story.</p></div>
+        <div class="section-heading"><div><p class="eyebrow">The garden’s watercolor Pokédex</p><h2 id="collection-title">Everyone who’s stopped by.</h2></div><p>Collected by sound.<br>Remembered in watercolor.</p></div>
+        <p class="collection-intro">A little portrait album of the voices outside. These are imagined AI watercolors, paired with real listening records. Open a bird to wander through its days in the garden.</p>
         <div class="collection-tools"><label class="search-field"><span class="sr-only">Search birds by common or scientific name</span><input id="bird-search" type="search" placeholder="Find a bird…" autocomplete="off"></label><label class="sort-field"><span>Sort by</span><select id="bird-sort"><option value="recent">Recently heard</option><option value="name">Name, A–Z</option><option value="first">First arrival</option><option value="count">Most detections</option></select></label></div>
         <p id="collection-note" class="collection-note" role="status"></p>
         <div id="collection-grid" class="collection-grid"></div>
         <p class="archive-message" id="collection-message"></p>
+        <details class="portrait-about"><summary>About the watercolors</summary><p>These AI illustrations were painted with <a href="https://peppaking8.github.io/minit2i/">MiniT2I</a> on a DGX Spark. They imagine an adult bird; a recorded call doesn’t tell us its age, sex, or plumage. The paintings can miss identifying marks, so each portrait links to the Cornell Lab’s photographs and field notes.</p><p>New species join the collection as they’re heard, even before their portrait is ready. Finished watercolors are saved here, ready to enjoy whenever you visit.</p></details>
       </section>
 
-      <dialog id="bird-detail" aria-labelledby="detail-name"><button id="close-detail" class="close-detail" aria-label="Close bird details">×</button><p class="eyebrow">From the garden’s collection</p><h2 id="detail-name"></h2><p class="detail-latin" id="detail-latin"></p><p class="detail-note" id="detail-note" role="status"></p><div class="notebook-stats" id="detail-stats"></div><h3>Its days in the garden</h3><div class="species-days" id="species-days"></div><p class="detail-disclaimer">BirdNET identifies sounds. These are suggested identifications, not confirmed sightings.</p></dialog>
+      <dialog id="bird-detail" aria-labelledby="detail-name"><button id="close-detail" class="close-detail" aria-label="Close bird details">×</button><p class="eyebrow">From the garden’s collection</p><h2 id="detail-name"></h2><p class="detail-latin" id="detail-latin"></p><figure class="detail-portrait" id="detail-portrait" hidden></figure><p class="portrait-description" id="portrait-description"></p><div class="portrait-links" id="portrait-links"></div><p class="detail-note" id="detail-note" role="status"></p><div class="notebook-stats" id="detail-stats"></div><h3>Its days in the garden</h3><div class="species-days" id="species-days"></div><p class="detail-disclaimer">BirdNET identifies sounds. These are suggested identifications, not confirmed sightings.</p></dialog>
 
       <section class="about" id="about" aria-labelledby="about-title"><div class="about-mark" aria-hidden="true">✳</div><div><h2 id="about-title">A garden you can hear, wherever you are.</h2><p>A little microphone and Raspberry Pi listen outside in Fremont. BirdNET suggests which birds are calling, and their visits find a home here.</p><p>These are sound-based identifications, not confirmed sightings. We show matches of at least 75% by default; the notebook can also show tentative matches. The archive keeps earlier visits as new ones arrive. The moving garden above is an illustration.</p></div><p class="gentle-note">No need to refresh.<br>Just leave the window open.</p></section>
     </main>
