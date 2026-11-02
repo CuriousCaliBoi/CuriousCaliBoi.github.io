@@ -2,12 +2,15 @@ import hmac
 import json
 import math
 import os
+import sqlite3
 import threading
 import time
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
+
+from archive import Archive, clean_records
 
 ORIGIN = "https://curiouscaliboi.github.io"
 MAX_BODY = 160_000
@@ -58,6 +61,7 @@ class Feed:
         self.path = Path(path)
         self.changed = threading.Condition()
         self.revision = 0
+        self.archive = Archive(self.path.with_suffix(".sqlite3"))
         self.snapshot = {"updatedAt": None, "observedAt": None, "healthy": False, "detections": []}
         if self.path.exists():
             self.snapshot = json.loads(self.path.read_text())
@@ -67,19 +71,23 @@ class Feed:
             if raw.get("detections") is None and raw.get("healthy") is False:
                 raw = dict(raw, detections=self.snapshot["detections"])
             snapshot = clean_snapshot(raw, time.time())
+            records = raw.get("records", [])
+            clean_records(records)
             if self.snapshot["observedAt"] and instant(snapshot["observedAt"]) <= instant(self.snapshot["observedAt"]):
                 raise ValueError("Older snapshot")
             self.path.parent.mkdir(parents=True, exist_ok=True)
             temp = self.path.with_suffix(".tmp")
             temp.write_text(json.dumps(snapshot))
             temp.replace(self.path)
+            self.archive.upsert(records)
             self.snapshot = snapshot
             self.revision += 1
             self.changed.notify_all()
 
     def data(self):
         with self.changed:
-            return dict(self.snapshot, serverTime=datetime.now(timezone.utc).isoformat())
+            return dict(self.snapshot, serverTime=datetime.now(timezone.utc).isoformat(),
+                        archiveRevision=self.archive.revision())
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -111,7 +119,28 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path_name()
-        if path == "/state":
+        if path == "/archive" or path.startswith("/archive/"):
+            params = parse_qs(urlsplit(self.path).query)
+            try:
+                minimum = float(params.get("min", ["0.75"])[0])
+                archive = self.server.feed.archive
+                if path == "/archive":
+                    result = archive.summary(minimum)
+                elif path == "/archive/day":
+                    result = archive.day(params["date"][0], minimum)
+                elif path == "/archive/species":
+                    result = archive.species(params["species"][0], minimum)
+                elif path == "/archive/records":
+                    result = archive.records(minimum, params.get("date", [None])[0],
+                                             params.get("species", [None])[0], params.get("before", [None])[0])
+                else:
+                    self.reply(404, {"error": "Not found"})
+                    return
+            except (KeyError, ValueError, TypeError, OverflowError):
+                self.reply(400, {"error": "Invalid archive query"})
+                return
+            self.reply(200, result)
+        elif path == "/state":
             self.reply(200, self.server.feed.data())
         elif path == "/events":
             if not self.server.slots.acquire(blocking=False):
@@ -136,7 +165,8 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(404, {"error": "Not found"})
 
     def do_POST(self):
-        if self.path_name() != "/ingest":
+        path = self.path_name()
+        if path not in ("/ingest", "/archive/ingest", "/archive/complete"):
             self.reply(404, {"error": "Not found"})
             return
         supplied = self.headers.get("Authorization", "")
@@ -149,11 +179,16 @@ class Handler(BaseHTTPRequestHandler):
                 self.reply(413, {"error": "Invalid payload size"})
                 return
             raw = json.loads(self.rfile.read(size))
-            self.server.feed.update(raw)
+            if path == "/archive/ingest":
+                self.server.feed.archive.upsert(raw["records"])
+            elif path == "/archive/complete":
+                self.server.feed.archive.complete()
+            else:
+                self.server.feed.update(raw)
         except (KeyError, ValueError, TypeError, AttributeError):
             self.reply(400, {"error": "Invalid station update"})
             return
-        except OSError:
+        except (OSError, sqlite3.Error):
             self.reply(503, {"error": "Could not save update"})
             return
         self.reply(200, {"accepted": True})

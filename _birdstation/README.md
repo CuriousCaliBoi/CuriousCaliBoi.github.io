@@ -8,10 +8,22 @@ The Mac is only used for installation. The Spark does not run bird inference.
 
 - The Pi publisher reads BirdNET-Go's local API every 15 seconds. It checks both
   microphone dispatch and model inference before reporting healthy listening.
-- Only species names, confidence, and detection times leave the Pi. Audio clips,
-  device details, and coordinates are not published.
-- The latest 100 detections are filtered to birds with at least 75% confidence,
-  excluding records marked as false positives. The feed retains at most seven days.
+- Only detection IDs, species names, confidence, detection times, and review status
+  leave the Pi. Audio clips, device details, and coordinates are not published.
+- The live view uses the latest 100 detections, filtered to birds with at least
+  75% confidence and at most seven days old. Records marked as false positives
+  are excluded from every public view.
+- A SQLite archive keeps bird detections without an age cutoff, including
+  tentative identifications. Daily notes and the searchable all-time collection
+  default to 75% confidence; visitors can include tentative matches.
+- The publisher backfills all available Pi history at startup and once per 24
+  hours. Every five minutes it also reconciles from the previous successful sync's
+  calendar day minus one. Live heartbeats archive the latest records immediately.
+  Retries are idempotent by BirdNET detection ID. Reviews are updated when their
+  records are synchronized. Records pruned from the Pi remain in the archive.
+- Day boundaries and hourly summaries use America/Los_Angeles, including DST.
+  Counts represent detection records, not individual birds or distinct calls.
+  Record pagination uses a time-and-ID cursor so newer arrivals do not shift pages.
 - The Spark authenticates writes, validates input, saves snapshots atomically,
   and sends snapshots over server-sent events. Public routes are read-only.
 - The browser also refreshes every 30 seconds as a fallback. A station heartbeat
@@ -21,10 +33,13 @@ The Mac is only used for installation. The Spark does not run bird inference.
 
 ## Spark installation
 
-Source: `feed.py` to `~/.local/share/bird-feed/feed.py`.
+Sources: `feed.py` and `archive.py` to `~/.local/share/bird-feed/`.
 Unit: `bird-feed.service` to `~/.config/systemd/user/`.
 Secret: random token in `~/.config/bird-feed/token`, mode 0600, never in Git.
 State: `~/.local/share/bird-feed/state.json`.
+History: `~/.local/share/bird-feed/state.sqlite3` (SQLite WAL enabled).
+Back up the SQLite database with SQLite's backup API, not by copying an active
+database file without its WAL.
 
 ```sh
 systemctl --user daemon-reload
@@ -71,6 +86,11 @@ bundle exec jekyll build
 ```
 
 Check `/birds-live/state` and `/birds-live/events` on the public hostname.
+The archive routes are `/birds-live/archive`, `/archive/day?date=YYYY-MM-DD`,
+`/archive/species?species=SCIENTIFIC_NAME`, and `/archive/records`. All routes are
+under `/birds-live`. Each supports `min=0.75` (default) or `min=0` for tentative
+matches; records also supports `date`, `species`, and the returned `before` cursor.
+Writes to `/archive/ingest` and `/archive/complete` require the station token.
 Test data belongs only in a local test server. Never send synthetic detections to
 the public feed. Confirm live heartbeats and real detections from the Pi before
 reporting that the full connection is operating.

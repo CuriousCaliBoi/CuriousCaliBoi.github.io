@@ -25,6 +25,7 @@
     receivedAt = Date.now();
     serverClock = Date.parse(data.serverTime);
     render();
+    document.dispatchEvent(new CustomEvent('bird-snapshot', {detail:{revision:data.archiveRevision}}));
   }
 
   function render() {

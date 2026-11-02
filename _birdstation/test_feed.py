@@ -37,8 +37,8 @@ class FeedTest(unittest.TestCase):
         self.server.server_close()
         self.temp.cleanup()
 
-    def post(self, data, token="test-only-token"):
-        request = Request(self.url + "/birds-live/ingest", data=json.dumps(data).encode(),
+    def post(self, data, token="test-only-token", path="/ingest"):
+        request = Request(self.url + "/birds-live" + path, data=json.dumps(data).encode(),
                           headers={"Authorization": "Bearer " + token})
         try:
             with urlopen(request) as response:
@@ -81,8 +81,25 @@ class FeedTest(unittest.TestCase):
         self.assertEqual(self.post({"observedAt": stamp(), "healthy": True, "detections": rows})[0], 200)
         self.assertEqual(len(self.data()["detections"]), 1)
 
+    def test_archive_routes_require_authenticated_writes_and_validate_queries(self):
+        row = dict(record(), id=1, verified="unverified", detectedAt="2026-11-01T08:58:50-08:00")
+        self.assertEqual(self.post({"records": [row]}, "wrong", "/archive/ingest")[0], 401)
+        self.assertEqual(self.post({"records": [row]}, path="/archive/ingest")[0], 200)
+        self.assertEqual(self.post({}, "wrong", "/archive/complete")[0], 401)
+        self.assertEqual(self.post({}, path="/archive/complete")[0], 200)
+        with urlopen(self.url + "/birds-live/archive") as response:
+            data = json.load(response)
+        self.assertEqual(data["shownDetections"], 1)
+        self.assertIsNotNone(data["lastFullSyncAt"])
+        with urlopen(self.url + "/birds-live/archive/day?date=2026-11-01") as response:
+            self.assertEqual(json.load(response)["count"], 1)
+        with self.assertRaises(HTTPError) as error:
+            urlopen(self.url + "/birds-live/archive?min=nan")
+        self.assertEqual(error.exception.code, 400)
+        error.exception.close()
+
     def test_publisher_checks_audio_and_inference(self):
-        row = {"commonName": "Anna's Hummingbird", "scientificName": "Calypte anna", "confidence": .86,
+        row = {"id": 1, "commonName": "Anna's Hummingbird", "scientificName": "Calypte anna", "confidence": .86,
                "timestamp": stamp(-30), "modelType": "bird", "verified": "unverified"}
         replies = [{"sources": [{"state": "HEALTHY", "last_dispatch": stamp()}]},
                    {"models": [{"health": {"state": "ok", "lastSuccessAtUnix": time.time()}}]},
