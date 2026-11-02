@@ -3,6 +3,8 @@ main:
     url: /
   - title: "Art"
     url: /art/
+  - title: "Birds"
+    url: /birds/
   - title: "Models"
     url: /models/
   - title: "Experiments"

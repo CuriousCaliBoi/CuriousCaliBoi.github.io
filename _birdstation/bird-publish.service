@@ -1,0 +1,17 @@
+[Unit]
+Description=Send garden bird detections to the website
+After=network-online.target birdnet-go.service
+Wants=network-online.target
+
+[Service]
+User=zko
+ExecStart=/usr/bin/python3 /home/zko/.local/share/bird-publish/publish.py
+Environment=BIRD_PUBLISH_CONFIG=/home/zko/.config/bird-publish/config.json
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

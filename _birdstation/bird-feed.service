@@ -1,0 +1,16 @@
+[Unit]
+Description=Public bird detection feed
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 %h/.local/share/bird-feed/feed.py
+Environment=BIRD_TOKEN_FILE=%h/.config/bird-feed/token
+Environment=BIRD_STATE_FILE=%h/.local/share/bird-feed/state.json
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0077
+
+[Install]
+WantedBy=default.target
