@@ -1,0 +1,14 @@
+/* The remote UI is exploration-only. Agent and local-write controls stay hidden. */
+#tabs button[data-tab="claude"],
+#a-agent,
+#a-past,
+#a-new,
+#tab-claude {
+  display: none !important;
+}
+
+#f-name {
+  cursor: default;
+  opacity: 0.72;
+}
+

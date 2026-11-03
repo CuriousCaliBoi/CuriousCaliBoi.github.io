@@ -103,6 +103,23 @@ rollouts and checkpoints stay on the Spark.
 
 `/craftax/` is a human-play interface for the original Craftax-Classic engine on the DGX. Keyboard and touch controls, player statistics, achievement progress, seeded new worlds, and trajectory downloads are available through the owner's private Tailscale connection. The public interface loads independently of the game server. Its connection is configured in `craftax/live.json`; no session credentials are stored in the repository. Backend source and operating notes are in `craftax/server/`, excluded from the published Jekyll site.
 
+## Neuron Explorer
+
+`/neurons/` serves the Neuron Explorer frontend directly from GitHub Pages.
+Its map, signed activation examples, lenses, connections, embeddings, and
+steering interface use the private Spark gateway configured in
+`neurons/live.json`. The model, corpus, and generated results remain on the
+Spark. Browsers need the owner's Tailscale connection and may ask for local
+network access; the connection screen offers retry and the direct Spark viewer.
+
+The frontend is adapted from lyramakesmusic's MIT-licensed Neuron Explorer;
+`neurons/SOURCE.txt` pins the source revision and `neurons/LICENSE` retains its
+license. `neurons/client.js` routes API requests, including binary responses
+and streamed generation, to the gateway. It does not send browser cookies.
+The Spark's existing agent, upload, and neuron-naming restrictions remain in
+place. Gateway source, deployment notes, and tests are in `_neuron_explorer/`,
+which Jekyll excludes from the public build.
+
 ## Saved experiment records
 
 `/experiments/` is the public experiment library. The World Models Lab at

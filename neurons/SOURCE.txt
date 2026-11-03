@@ -1,0 +1,10 @@
+Neuron Explorer
+https://github.com/lyramakesmusic/neuron-explorer
+Revision: 7ec363d2d9686802a1b4aa7c6d8a2627b1759159
+License: MIT, copyright 2026 lyramakesmusic (see LICENSE).
+
+The upstream explorer/static frontend was copied from the existing Spark
+installation. Site adaptations add navigation, a connection/retry screen,
+an explicit private API endpoint, and the existing restricted gateway UI.
+Model weights, corpus records, activation caches, and agent histories are
+not included. Three.js 0.169.0 remains loaded from jsDelivr as upstream did.
