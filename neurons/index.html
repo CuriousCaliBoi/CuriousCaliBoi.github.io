@@ -182,6 +182,18 @@
 
     .badge--private { color: var(--gold); }
 
+    .badge--launch {
+      color: var(--text);
+      text-decoration: none;
+      transition: border-color 140ms ease, color 140ms ease;
+    }
+
+    .badge--launch:hover,
+    .badge--launch:focus-visible {
+      border-color: var(--line-bright);
+      color: var(--gold);
+    }
+
     .dot {
       width: 7px;
       height: 7px;
@@ -269,13 +281,14 @@
     <div class="badges" aria-label="Explorer status">
       <span class="badge badge--source">DGX Spark</span>
       <span class="badge badge--private"><span class="dot" aria-hidden="true"></span>Private</span>
+      <a class="badge badge--launch" href="https://spark-a4b4.tailef40b0.ts.net:8448/" target="_blank" rel="noopener noreferrer">Open direct <span aria-hidden="true">&nearr;</span></a>
     </div>
   </header>
 
   <main class="viewer-shell" id="explorer" aria-label="Private Neuron Explorer">
     <div class="offline-note" aria-hidden="true">
       <strong>The explorer lives on the Spark.</strong>
-      <span>Connect this device to Tailscale to inspect Qwen neurons, lenses and live activations.</span>
+      <span>Connect this device to Tailscale to inspect Qwen neurons, lenses and live activations. If your browser blocks embedded private-network pages, use Open direct.</span>
     </div>
     <iframe
       src="https://spark-a4b4.tailef40b0.ts.net:8448/"
