@@ -1,0 +1,108 @@
+OUTPUT of Python run 33 of at most 120:
+```
+
+GAME 44 colour black last moves [{'ply': 81, 'by': 'opponent', 'move': 63}, {'ply': 82, 'by': 'net', 'move': 54, 'top5': [[54, 0.9406], [9, 0.0594], [7, 0.0], [81, 0.0], [0, 0.0]]}, {'ply': 83, 'by': 'opponent', 'move': 35}, {'ply': 84, 'by': 'net', 'move': 9, 'top5': [[9, 1.0], [7, 0.0], [81, 0.0], [0, 0.0], [8, 0.0]]}, {'ply': 85, 'by': 'opponent', 'move': 7}, {'ply': 86, 'by': 'net', 'move': 18, 'top5': [[18, 1.0], [0, 0.0], [1, 0.0], [2, 0.0], [3, 0.0]]}, {'ply': 87, 'by': 'opponent', 'move': 81}, {'ply': 88, 'by': 'net', 'move': 0, 'top5': [[0, 1.0], [5, 0.0], [81, 0.0], [6, 0.0], [75, 0.0]]}, {'ply': 89, 'by': 'opponent', 'move': 27}, {'ply': 90, 'by': 'net', 'move': 9, 'top5': [[9, 1.0], [5, 0.0], [81, 0.0], [0, 0.0], [6, 0.0]]}]
+ply 86 action 18
+.OOOO..O.
+XOOOOOOOX
+XOXXXXO.O
+.XXOOOOOO
+XXXXOXOXO
+X.XOOXXXX
+XX.XOXOX.
+OXXXOOOXX
+.OX.XXX.X
+ply 87 action 81
+.OOOO..O.
+XOOOOOOOX
+XOXXXXO.O
+.XXOOOOOO
+XXXXOXOXO
+X.XOOXXXX
+XX.XOXOX.
+OXXXOOOXX
+.OX.XXX.X
+ply 88 action 0
+XOOOO..O.
+XOOOOOOOX
+XOXXXXO.O
+.XXOOOOOO
+XXXXOXOXO
+X.XOOXXXX
+XX.XOXOX.
+OXXXOOOXX
+.OX.XXX.X
+ply 89 action 27
+.OOOO..O.
+.OOOOOOOX
+.OXXXXO.O
+OXXOOOOOO
+XXXXOXOXO
+X.XOOXXXX
+XX.XOXOX.
+OXXXOOOXX
+.OX.XXX.X
+ply 90 action 9
+.OOOO..O.
+XOOOOOOOX
+.OXXXXO.O
+OXXOOOOOO
+XXXXOXOXO
+X.XOOXXXX
+XX.XOXOX.
+OXXXOOOXX
+.OX.XXX.X
+
+GAME 84 colour white last moves [{'ply': 102, 'by': 'opponent', 'move': 8}, {'ply': 103, 'by': 'net', 'move': 7, 'top5': [[7, 0.9999], [16, 0.0001], [81, 0.0], [46, 0.0], [17, 0.0]]}, {'ply': 104, 'by': 'opponent', 'move': 0}, {'ply': 105, 'by': 'net', 'move': 16, 'top5': [[16, 1.0], [81, 0.0], [6, 0.0], [46, 0.0], [60, 0.0]]}, {'ply': 106, 'by': 'opponent', 'move': 81}, {'ply': 107, 'by': 'net', 'move': 17, 'top5': [[17, 1.0], [81, 0.0], [6, 0.0], [46, 0.0], [60, 0.0]]}, {'ply': 108, 'by': 'opponent', 'move': 81}, {'ply': 109, 'by': 'net', 'move': 6, 'top5': [[6, 1.0], [81, 0.0], [46, 0.0], [60, 0.0], [8, 0.0]]}, {'ply': 110, 'by': 'opponent', 'move': 8}, {'ply': 111, 'by': 'net', 'move': 7, 'top5': [[7, 0.9999], [16, 0.0001], [81, 0.0], [46, 0.0], [17, 0.0]]}]
+ply 107 action 17
+XXXXXX.O.
+XXXX.XXOO
+XOXXX.XXX
+OOOXXXXXX
+.OOOXOXOO
+O.OXXOOO.
+XOOOXO.OO
+XXXXXXO.O
+XXXXXXOOO
+ply 108 action 81
+XXXXXX.O.
+XXXX.XXOO
+XOXXX.XXX
+OOOXXXXXX
+.OOOXOXOO
+O.OXXOOO.
+XOOOXO.OO
+XXXXXXO.O
+XXXXXXOOO
+ply 109 action 6
+XXXXXXOO.
+XXXX.XXOO
+XOXXX.XXX
+OOOXXXXXX
+.OOOXOXOO
+O.OXXOOO.
+XOOOXO.OO
+XXXXXXO.O
+XXXXXXOOO
+ply 110 action 8
+XXXXXX..X
+XXXX.XX..
+XOXXX.XXX
+OOOXXXXXX
+.OOOXOXOO
+O.OXXOOO.
+XOOOXO.OO
+XXXXXXO.O
+XXXXXXOOO
+ply 111 action 7
+XXXXXX.OX
+XXXX.XX..
+XOXXX.XXX
+OOOXXXXXX
+.OOOXOXOO
+O.OXXOOO.
+XOOOXO.OO
+XXXXXXO.O
+XXXXXXOOO
+
+```

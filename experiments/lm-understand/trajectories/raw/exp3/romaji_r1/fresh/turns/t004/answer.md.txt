@@ -1,0 +1,44 @@
+```python
+import numpy as np
+from scipy.linalg import svd, svdvals
+from threadpoolctl import threadpool_limits
+
+with threadpool_limits(limits=2):
+    print("Last-layer output singular spectra (indices start at 1)")
+    for name in ["W_proj.3","W_o.3","W_proj.0"]:
+        s=svdvals(W[name].astype(float))
+        print(name)
+        for start in range(0,80,20):
+            print(start+1, np.round(s[start:start+20],3))
+    T=np.concatenate([W["W_o.3"],W["W_proj.3"]],axis=1).astype(float)
+    u,s,vt=svd(T,full_matrices=False)
+    print("Combined final output spectrum",np.round(s[:70],3))
+    print("Adjacent spectral ratios",[(i+1,round(s[i]/s[i+1],3))
+          for i in np.argsort(s[:60]/s[1:61])[-12:][::-1]])
+    print("\nL0 OV dominant input/output directions: largest coordinate loadings")
+    for j in [0,1,2,3,4,5]:
+        sl=slice(64*j,64*j+64)
+        v=W["W_v.0"][sl].astype(float)*W["ln1_w.0"]
+        v-=v.mean(1,keepdims=True)
+        o=W["W_o.0"][:,sl].astype(float)
+        uu,ss,vv=svd(o@v,full_matrices=False)
+        print("H",j)
+        for r in range(2):
+            for tag,direction in [("in",vv[r]),("out",uu[:,r])]:
+                ix=np.argsort(np.abs(direction))[-6:][::-1]
+                print(r,tag,[(int(i),round(direction[i],3)) for i in ix],
+                      "participation",round(1/np.sum(direction**4),1))
+    print("\nFinal output common-subspace concentration")
+    for r in [20,22,24,26,27,28,32,40]:
+        U=u[:,:r]
+        vals=[]
+        for l in range(4):
+            p=W[f"W_proj.{l}"].astype(float)
+            vals.append(np.linalg.norm(U.T@p)**2/np.linalg.norm(p)**2)
+        print("rank",r,"MLP projection energy L0..L3",np.round(vals,3))
+    print("\nLayer0 FC input spectrum, additional indices")
+    f=W["W_fc.0"].astype(float)*W["ln2_w.0"]
+    s=svdvals(f)
+    for start in range(0,100,20):
+        print(start+1,np.round(s[start:start+20],3))
+```

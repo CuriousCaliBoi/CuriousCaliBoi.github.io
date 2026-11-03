@@ -1,0 +1,6 @@
+OUTPUT of Python run 24 of at most 120:
+```
+Saved revision 16: score-aware late-game risk—pass readily
+with a comfortable lead, but keep trying when clearly behind.
+
+```

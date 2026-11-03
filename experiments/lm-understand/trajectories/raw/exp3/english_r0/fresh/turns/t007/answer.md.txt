@@ -1,0 +1,53 @@
+## Observations
+
+**The strongest evidence concerns ordered context use, not corpus identity.** These are weight-based hypotheses; no attention patterns or predictions were evaluated.
+
+Let \(A_{lh}\) denote the head’s QK matrix product, including the LayerNorm gain and centering matrices, and \(B_{lh}\) its corresponding OV product.
+
+- **L0H2 is exceptional.** Its slices of `W_q.0` and `W_k.0` have Frobenius norms **30.818 and 28.300**; every other L0 head is below **7.25**. Its effective QK product has paired complex eigenvalues, including **0.632 ± 0.813i** and **−0.231 ± 0.927i**. This suggests an oscillatory positional mechanism, plausibly a one-character shift.
+- **L0H0/H1/H4/H5 share a positional-summary pathway.** Their OV-product cosine similarities are **0.724–0.903**, and **80–88%** of their OV input energy lies in the candidate positional subspace extracted from L0H2.
+- **L1 has a common selection mechanism.** Its six bias-derived key selectors have pairwise cosines **0.945–0.976**. Their common direction has **92.1%** of its energy in the leading four output directions of those L0 summary heads. This suggests shared positional selection, plausibly recency.
+- **L3H1 has a distinctive induction signature.** On L0H2’s leading 24 value-read directions, \(A_{31}B_{02}\) has normalized trace **2.907**, transpose symmetry **0.649**, and **95.0% positive symmetric eigenvalue mass**. The other final-layer heads lack a comparable predecessor-matching signature.
+- **Corpus evidence is weak.** `W_proj.3` retains substantial singular values through dimensions 23–28: **10.367, 8.351, 8.064, 7.914, 7.461, 7.166**. There is no compelling small-alphabet cutoff, but these dimensions cannot simply be identified with characters.
+
+## Heads
+
+“Local” assignments below are tentative: the shared positional selector does not establish an exact attention distance.
+
+L0H0: **broad** — Low-rank positional pooling candidate; effective QK norm 0.0546, OV positional-input fraction 0.858.  
+L0H1: **broad** — Shares the pooling pathway; QK norm 0.0295, OV positional-input fraction 0.881.  
+L0H2: **previous** — Strong, oscillatory, approximately shared query/key subspace; clearest shift candidate.  
+L0H3: **local** — Tentative positional-locality head; QK transpose symmetry 0.478 and substantial overlap with L0H2’s positional subspace.  
+L0H4: **broad** — Low-rank pooling pathway; OV cosine 0.903 with L0H0 and positional-input fraction 0.799.  
+L0H5: **broad** — Same positional-summary family; positional-input fraction 0.851 and dominant OV singular value 8.328.
+
+L1H0: **local** — Common positional selector; bias/QK norm ratio 1.531.  
+L1H1: **local** — Same mechanism, with ratio 1.738; 53.7% of QK key-side energy reads the leading two summary-output directions.  
+L1H2: **local** — Common selector, ratio 1.671; no comparably strong induction signature.  
+L1H3: **local** — Common selector, ratio 1.711; strong dependence on the positional-summary pathway.  
+L1H4: **local** — Strongest two-dimensional summary-key overlap in L1, 60.3%; selector ratio 1.580.  
+L1H5: **local** — Common selector, ratio 1.312; summary-key overlap 54.9%.
+
+L2H0: **local** — Selector cosine 0.806 with L1’s common direction; substantial positional-selection component.  
+L2H1: **unclear** — Weaker positional bias; strong downstream composition with L3H1 suggests a supporting context-retrieval role, but not a specific distance.  
+L2H2: **local** — Positional selector persists; leading two summary directions account for 17.7% of key-side energy.  
+L2H3: **local** — Selector cosine 0.814 and bias/QK ratio 0.701.  
+L2H4: **local** — Selector cosine 0.804 and ratio 0.673; no strong predecessor-matching signature.  
+L2H5: **local** — Selector cosine 0.814 and ratio 0.670.
+
+L3H0: **unclear** — Positive direct matching, but not predecessor matching; this does not establish induction or attention distance.  
+L3H1: **copy** — Clear positive, relatively symmetric composition with L0H2’s OV pathway; strongest induction candidate.  
+L3H2: **local** — Tentative: retains the common positional selector, cosine 0.621, without strong induction composition.  
+L3H3: **local** — Tentative: selector cosine 0.652; predecessor matching is negligible.  
+L3H4: **local** — Tentative: selector cosine 0.602; no convincing induction signature.  
+L3H5: **unclear** — Strong OV and relatively weak QK could support broad aggregation, but do not establish its attention span.
+
+## Reasoning
+
+A likely predecessor channel feeding a later induction-like matcher favors **as-is** training: ordered repetitions provide a reason to match an earlier predecessor and retrieve its successor. Line shuffling would substantially weaken that benefit, though it would not eliminate all sequential structure.
+
+**English is my narrow corpus preference**, followed by Python. The architecture suggests ordinary local character prediction plus reuse of earlier text, without a clearly identifiable indentation-specific mechanism or restricted-alphabet signature. Neither absence is decisive: the missing character interfaces prevent assigning these features to letters, spaces, or newlines. Corpus probabilities therefore remain deliberately modest.
+
+corpus: **english**  
+order: **as is**  
+probabilities: python=0.36 romaji=0.20 english=0.44; as is=0.94 shuffled=0.06

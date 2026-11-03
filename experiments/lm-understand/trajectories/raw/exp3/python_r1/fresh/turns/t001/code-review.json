@@ -1,0 +1,6 @@
+{
+  "code_sha256": "ffa81300a2e27e654bc1e4c9e0531a1fbe58c42219b92be090121588e85b1ed8",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Uses weight statistics, SVD/eigenvalues and QK/OV matrix products only; no network or layer applied to external input and no search."
+}

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "8e732fd8741bc83e54209b11f1b42bb7ac34947d33227313f419a2899d64d6eb",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Analyzes QK/OV tensor SVDs, LayerNorm-derived affine coefficients, MLP parameter-norm selection, cosine-threshold graph clusters of weight rows, and weight projection energies. Thresholding applies only to tensor similarities; no input examples, model-layer execution, or search."
+}

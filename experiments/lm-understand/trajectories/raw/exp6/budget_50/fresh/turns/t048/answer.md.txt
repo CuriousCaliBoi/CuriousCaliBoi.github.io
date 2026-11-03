@@ -1,0 +1,12 @@
+```python
+w=load("L5.W");b=load("L5.b")
+for p in range(81):
+    b[5*81+p]=-1.5
+    r,c=divmod(p,9)
+    for rr,cc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):
+        if 0<=rr<9 and 0<=cc<9:
+            w[81+rr*9+cc,5*81+p]=.5
+save("L5.W",w);save("L5.b",b)
+print("Connection urgency now depends on nearby enemy contact;")
+print("quiet, redundant connections receive less emphasis.")
+```

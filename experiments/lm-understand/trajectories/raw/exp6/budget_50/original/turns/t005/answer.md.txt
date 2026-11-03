@@ -1,0 +1,3 @@
+```positions
+{"positions":[{"board":[".XOOO.OOO","XXXXOOO.O",".XXXXOO.O","X.XOOXOOO","XXXXOXXOX",".XXOOOXXX","X.XXOOXXX",".XXOOOOX.","X.X..OX.X"],"to_move":"black"},{"board":["XXXXXOXX.","XOOXXOXXX","OOOXOOOOO",".OXXXOO.O","O.OXXOOOO","OOOXXO.O.","OXOXOOOOO","XXOXXXXO.",".XX..X.XO"],"to_move":"white"},{"board":[".X.XXXOO.","OXXXOXOOO","OOOXOXOXO","OOOOOOOXX","XOOOOOXX.","XXXOXXX.X","X.XOXX.X.","XXXXXXX.X","X.X.X.XX."],"to_move":"black"}],"activations":true}
+```

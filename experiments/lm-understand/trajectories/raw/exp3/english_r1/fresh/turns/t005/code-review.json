@@ -1,0 +1,6 @@
+{
+  "code_sha256": "467b7079dfee3544e8a71b72bfa251a76e82219ee9af26763a4579c85bb2ac85",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Weight-only OV/QK products, singular subspaces, projection energies, and cross-covariance eigenvalues of MLP weight rows. The maximum operation floors whitening eigenvalues; no model layer is evaluated on input examples, no attention probabilities are generated, and no search occurs."
+}

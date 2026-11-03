@@ -1,0 +1,96 @@
+{
+  "passed": true,
+  "reviewer": "independent protocol reviewer",
+  "scores_sha256": "250a013da0bcec5f4b9c9dc3da58fa6a515c1862322a7d56d17de6b8e588be7c",
+  "artifact_hash_manifest_sha256": "1f638f3fc33cfb6f74c14bf53ebed1f31555f0e6b56e277b231c91053f48f17e",
+  "artifact_hashes_checked": 723,
+  "cases": [
+    {
+      "source_run": "python_r0",
+      "python_runs": 10,
+      "corpus_guess": "python",
+      "copy_named": [
+        "L2H1",
+        "L3H1",
+        "L3H5"
+      ],
+      "corpus_correct": true,
+      "order_correct": true,
+      "copy_exact": true
+    },
+    {
+      "source_run": "python_r1",
+      "python_runs": 10,
+      "corpus_guess": "english",
+      "copy_named": [
+        "L2H1",
+        "L3H0",
+        "L3H1",
+        "L3H5"
+      ],
+      "corpus_correct": false,
+      "order_correct": true,
+      "copy_exact": false
+    },
+    {
+      "source_run": "romaji_r0",
+      "python_runs": 7,
+      "corpus_guess": "english",
+      "copy_named": [
+        "L3H3"
+      ],
+      "corpus_correct": false,
+      "order_correct": true,
+      "copy_exact": true
+    },
+    {
+      "source_run": "romaji_r1",
+      "python_runs": 8,
+      "corpus_guess": "english",
+      "copy_named": [
+        "L3H3"
+      ],
+      "corpus_correct": false,
+      "order_correct": true,
+      "copy_exact": true
+    },
+    {
+      "source_run": "english_r0",
+      "python_runs": 6,
+      "corpus_guess": "english",
+      "copy_named": [
+        "L3H1"
+      ],
+      "corpus_correct": true,
+      "order_correct": true,
+      "copy_exact": true
+    },
+    {
+      "source_run": "english_r1",
+      "python_runs": 9,
+      "corpus_guess": "english",
+      "copy_named": [
+        "L3H1"
+      ],
+      "corpus_correct": true,
+      "order_correct": true,
+      "copy_exact": true
+    }
+  ],
+  "cli_turns_checked": 56,
+  "python_executions_checked": 50,
+  "python_failures_preserved_in_feedback": [
+    {
+      "case": "english_r1",
+      "turn": "t003",
+      "rc": 1,
+      "error": "numpy.linalg.LinAlgError: SVD did not converge for slice = 0."
+    }
+  ],
+  "all_code_sha_bound_manual_approvals": true,
+  "copy_threshold": "induct > 0.2",
+  "corpus_correct": 3,
+  "order_correct": 6,
+  "copy_exact": 5,
+  "scope": "Independent reparse of all six frozen answers and released controls; aggregate and CSV recomputation; prompt/feedback chains, same-thread model settings, code/weight/final/source hashes, all declared artifact hashes and archived execution/manual review records. No new model calls or Python reruns."
+}

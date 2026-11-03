@@ -1,0 +1,27 @@
+```python
+import json, numpy as np
+games = json.load(open("/work/pass_1/games.json"))
+boards = np.load("/work/pass_1/boards.npy")
+
+def show(b):
+    b = np.asarray(b).reshape(9,9)
+    return "\n".join("".join("X" if x == 1 else "O" if x == -1 else "." for x in row) for row in b)
+
+strong = [(i,g) for i,g in enumerate(games) if g["opponent"] == "strong"]
+print("Strong margins:", sorted(g["margin"] for _,g in strong))
+chosen = []
+for color in ("black", "white"):
+    losses = [(i,g) for i,g in strong if g["result"] < 0 and g["net_color"] == color]
+    chosen += sorted(losses, key=lambda z: z[1]["margin"])[:2]
+    chosen += sorted(losses, key=lambda z: abs(z[1]["margin"]))[:1]
+
+for i,g in chosen:
+    print("\nGAME", i, g["net_color"], "margin", g["margin"],
+          "captured/lost", g["stones_captured"], g["stones_lost"])
+    print("First 24:", [(m["by"],m["move"]) for m in g["moves"][:24]])
+    for ply in (23,39,55,len(g["moves"])-1):
+        if ply < len(g["moves"]):
+            print("After",ply+1, "\n"+show(boards[i,ply]))
+    print("Last network moves:", [(m["ply"],m["move"],m["top5"])
+          for m in g["moves"][-16:] if m["by"] == "net"])
+```

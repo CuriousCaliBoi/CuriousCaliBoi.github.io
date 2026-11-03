@@ -1,0 +1,6 @@
+{
+  "code_sha256": "e0afcd4a9e4f4f3df7225620e7f2ecb50e4aa6d5004388d9deff31e73e3cb241",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Lists and inspects metadata/text of controller-published pass_4 files. NPY/NPZ data are loaded only to report shape and dtype; no new network inference, simulation, fitting, or search."
+}

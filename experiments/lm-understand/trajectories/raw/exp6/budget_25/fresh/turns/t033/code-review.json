@@ -1,0 +1,6 @@
+{
+  "code_sha256": "a7aba0f7429123ce92ae65a44f58d9c6cf75e0ce40939c230ff9b2b4e966eb66",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Rearranges existing coefficient slices and constructs tactical-saturation circuit weights using fixed adjacency and manual constants. It never calculates the proposed circuit on a board; no network/layer inference, game transitions, fitting, or search."
+}

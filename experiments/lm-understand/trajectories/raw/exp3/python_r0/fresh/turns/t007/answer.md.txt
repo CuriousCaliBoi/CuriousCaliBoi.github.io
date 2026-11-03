@@ -1,0 +1,60 @@
+```python
+import numpy as np
+from scipy.linalg import svd
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+np.set_printoptions(precision=3,suppress=True,linewidth=160)
+
+A=[]; B=[]; kbias=[]
+for l in range(4):
+    for j in range(6):
+        sl=slice(64*j,64*(j+1))
+        qr=W[f"W_q.{l}"][sl].astype(float)
+        kr=W[f"W_k.{l}"][sl].astype(float)
+        vr=W[f"W_v.{l}"][sl].astype(float)
+        g=W[f"ln1_w.{l}"].astype(float)
+        q=qr*g; k=kr*g; v=vr*g
+        q-=q.mean(axis=1,keepdims=True)
+        k-=k.mean(axis=1,keepdims=True)
+        v-=v.mean(axis=1,keepdims=True)
+        o=W[f"W_o.{l}"][:,sl].astype(float)
+        o-=o.mean(axis=0,keepdims=True)
+        A.append(q.T@k/8)
+        B.append(o@v)
+        kbias.append(k.T@(qr@W[f"ln1_b.{l}"])/8)
+
+u4,s4,v4=svd(B[4],full_matrices=False,check_finite=False)
+u5,s5,v5=svd(B[5],full_matrices=False,check_finite=False)
+uP,sP,vP=svd(np.concatenate([A[1],A[1].T,A[5],A[5].T],axis=1),
+             full_matrices=False,check_finite=False)
+bases={
+    "uniform-head-write3":u4[:,:3],
+    "uniform-head-read3":v4[:3].T,
+    "H5-value-read27":v5[:27].T,
+    "H5-value-write27":u5[:,:27],
+    "L0-H1H5-QK-shared20":uP[:,:20],
+}
+print("L0H4 effective OV singular values:",s4[:12])
+print("Basis pair overlaps, normalized by smaller rank:")
+names=list(bases)
+print(names)
+print(np.array([[np.linalg.norm(bases[a].T@bases[b])**2/min(bases[a].shape[1],bases[b].shape[1])
+                 for b in names]for a in names]))
+
+for name,U in bases.items():
+    print("\n",name,": QK query-energy/key-energy; bias-vector energy")
+    for i in range(24):
+        a=A[i]; z=kbias[i]
+        print("L%dH%d %.3f %.3f %.3f"%(i//6,i%6,
+              np.linalg.norm(U.T@a)**2/np.linalg.norm(a)**2,
+              np.linalg.norm(a@U)**2/np.linalg.norm(a)**2,
+              np.linalg.norm(U.T@z)**2/(np.linalg.norm(z)**2+1e-30)))
+
+print("\nPairwise cosine of bias-derived key coefficients across all heads")
+Z=np.stack(kbias);Z/=np.linalg.norm(Z,axis=1,keepdims=True)
+for i in range(24):
+    row=Z@Z[i];row[i]=-2
+    idx=np.argsort(-row)[:4]
+    print("L%dH%d"%(i//6,i%6),
+          [("L%dH%d"%(k//6,k%6),round(float(row[k]),3))for k in idx])
+```

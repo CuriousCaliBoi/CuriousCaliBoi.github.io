@@ -1,0 +1,143 @@
+{
+  "created_utc": "2026-11-03T18:12:25.718841+00:00",
+  "source_revision": "4d09ba6d6a7e891dd8063974dfe81b3d78e3494f",
+  "definitions": {
+    "archived": "The authors' saved evaluation or answer.",
+    "released_rerun": "The authors' released weights evaluated in our reconstructed harness.",
+    "fresh": "New Codex answer or policy, frozen before evaluation."
+  },
+  "exp1": {
+    "archived_category_correct": 4,
+    "fresh_category_correct": 4,
+    "total": 4,
+    "note": "Both use the released Frogger = Freeway category alias; this is not exact-title accuracy."
+  },
+  "exp2": {
+    "archived_shape_correct": 3,
+    "fresh_shape_correct": 3,
+    "total": 3,
+    "archived_fill_correct": 0,
+    "fresh_fill_correct": 0,
+    "note": "Both describe hollow outlines; the actual generated shapes are filled."
+  },
+  "exp3": {
+    "corpus_correct": {
+      "archived": 6,
+      "fresh": 3,
+      "total": 6
+    },
+    "order_correct": {
+      "archived": 6,
+      "fresh": 6,
+      "total": 6
+    },
+    "copy_exact": {
+      "archived": 6,
+      "fresh": 5,
+      "total": 6
+    }
+  },
+  "exp4": {
+    "archived_successes": 1024,
+    "released_rerun_successes": 1024,
+    "fresh_successes": 0,
+    "test_episodes_per_policy": 1024,
+    "fresh_failure": "All test episodes ended in red collisions."
+  },
+  "exp5": [
+    {
+      "game": "breakout",
+      "archived_mean": 517.411,
+      "released_rerun_mean": 496.27,
+      "released_rerun_se": 7.816555484331935,
+      "fresh_mean": 380.585,
+      "fresh_se": 6.1761759953004045,
+      "episodes_per_policy": 1000
+    },
+    {
+      "game": "seaquest",
+      "archived_mean": 53.11,
+      "released_rerun_mean": 51.533,
+      "released_rerun_se": 1.3479651037474676,
+      "fresh_mean": 35.245,
+      "fresh_se": 0.8415849572326257,
+      "episodes_per_policy": 1000
+    },
+    {
+      "game": "asterix",
+      "archived_mean": 53.178,
+      "released_rerun_mean": 52.202,
+      "released_rerun_se": 0.9919511899096464,
+      "fresh_mean": 64.378,
+      "fresh_se": 0.9417473143067645,
+      "episodes_per_policy": 1000
+    }
+  ],
+  "exp6": [
+    {
+      "passes": 0,
+      "archived_small_opponents_mean": 0.54525,
+      "archived_same_size_seeds_0_2_mean": 0.394,
+      "released_rerun_same_size_mean": 0.40275,
+      "fresh_same_size_mean": 0.195,
+      "fresh_minus_released_rerun_percentage_points": -20.775,
+      "games_per_policy_against_two_ppo_opponents": 4000
+    },
+    {
+      "passes": 10,
+      "archived_small_opponents_mean": 0.664,
+      "archived_same_size_seeds_0_2_mean": null,
+      "released_rerun_same_size_mean": 0.49825,
+      "fresh_same_size_mean": 0.69375,
+      "fresh_minus_released_rerun_percentage_points": 19.549999999999994,
+      "games_per_policy_against_two_ppo_opponents": 4000
+    },
+    {
+      "passes": 25,
+      "archived_small_opponents_mean": 0.69125,
+      "archived_same_size_seeds_0_2_mean": null,
+      "released_rerun_same_size_mean": 0.4795,
+      "fresh_same_size_mean": 0.6975,
+      "fresh_minus_released_rerun_percentage_points": 21.800000000000004,
+      "games_per_policy_against_two_ppo_opponents": 4000
+    },
+    {
+      "passes": 50,
+      "archived_small_opponents_mean": 0.824,
+      "archived_same_size_seeds_0_2_mean": 0.7635,
+      "released_rerun_same_size_mean": 0.77225,
+      "fresh_same_size_mean": 0.85125,
+      "fresh_minus_released_rerun_percentage_points": 7.899999999999996,
+      "games_per_policy_against_two_ppo_opponents": 4000
+    }
+  ],
+  "sources_sha256": {
+    "reconstructed-exp4/results.json": "9dc02ab889c271045b93f8382585e224f6ad25172f258273ca9b621b7d6b2237",
+    "reconstructed-exp4/independent-review.json": "5724efaf2bee8cb58b9c4a1c2b438bfc7792d00598876cdff9389a5d479f02a7",
+    "reconstructed-exp5/summary.json": "03fe9fc15c1ffa13db1b60b480e46a731b43ff7944503a31469100d30a4f7c43",
+    "reconstructed-exp5/independent-review.json": "dac2ed8e9e3e3f53b2a1485e9bfc34ac71a88f17ad5789de78c191c1db878abc",
+    "reconstructed-exp6/scoring/budget_0/summary.json": "29bd8fa26a31ad77495fa4062496451ac4a20f42f884ec64e0a3b46d0b972d86",
+    "reconstructed-exp6/scoring/budget_0/independent-review.json": "750caea40a4b8c363568e7e1109220d4e97d9887d91f5dff1784fde06d26c532",
+    "reconstructed-exp6/scoring/budget_10/summary.json": "049baf19e606cf2e6a55437b2128152539de139f4ea837cc1aeb284252ed0e3b",
+    "reconstructed-exp6/scoring/budget_10/independent-review.json": "678f3d9b1f149b0f24aa33030941d6a867938e292053fd95cd707771032f911d",
+    "reconstructed-exp6/scoring/budget_25/summary.json": "fe381617e8686fd042aa4518f553bca359bd37f50280d7192038604712c86db4",
+    "reconstructed-exp6/scoring/budget_25/independent-review.json": "f2974e2f99ec7862ffedf89c10c37db3336155d6699513e63dd74d8d3489872c",
+    "reconstructed-exp6/scoring/budget_50/summary.json": "4779fc053935ae615f01583802bbdf76b7b70209d899efa55685cca961178e08",
+    "reconstructed-exp6/scoring/budget_50/independent-review.json": "58fe9625c8beedfb210a302c4c5baaf204e32be8c746d5d4e7d371b52a7d29c6",
+    "reconstructed-exp3/scores.json": "250a013da0bcec5f4b9c9dc3da58fa6a515c1862322a7d56d17de6b8e588be7c",
+    "reconstructed-exp3/independent-review.json": "0135f2eb880d0e099420a472d8f11b42610df1e343c74fb7d18aebdde5f3a696",
+    "fresh-response-results.json": "4c7af0b5db3294c25f980b6c5cf90d51c35fcbb7859a2fbeb82ff2b6c6e34dc5",
+    "original/exp1_which_game/README.md": "37d3210c9644449810c2eb2e6d63835925484caabefbe87559eacdf58c227d8d",
+    "original/exp2_diffusion/README.md": "6bde052987957f89bcdd030651674782436b23da85acf186d644a428563122ca",
+    "original/exp4_fix_car/README.md": "97cf395dd262069b09137807c492fc96dee396f45505fd5df2ab4b85a71102ce",
+    "original/exp6_go_from_scratch/README.md": "835e03d29cae4041d41a6b822593434dd455fa331ba4611cee0ec47fa685a5b1"
+  },
+  "limitations": [
+    "Original prompts and released inputs retained, except disclosed Experiment 6 opponent-description changes. Historical CLI/backend and some original evaluator dependencies are unavailable.",
+    "Car and MinAtar use reconstructed wrappers and new RNG streams.",
+    "Go uses released same-size PPO seeds 0 and 2. The original headline results use unavailable smaller PPO opponents; those headline rates are not directly comparable.",
+    "Go archived same-size comparisons are available for budgets 0 and 50. Their original RNG and wrapper differ from our rerun.",
+    "Single fresh writer trial per task/budget; game-level error bars do not measure variation between new Codex trials.",
+    "Original Experiment 5 PPO comparison checkpoints are unavailable. No full PPO baseline retraining was launched; it is cancelled."
+  ]
+}

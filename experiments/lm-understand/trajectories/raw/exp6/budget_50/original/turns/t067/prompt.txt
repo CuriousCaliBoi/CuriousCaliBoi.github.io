@@ -1,0 +1,7 @@
+OUTPUT of Python run 36 of at most 120:
+```
+Restored candidate A for independent validation.
+Parameters: 1480274
+Finite tensors: True
+
+```

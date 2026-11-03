@@ -1,0 +1,7 @@
+OUTPUT of Python run 27 of at most 120:
+```
+Saved revision 19: exact 2x2 empty-triangle detectors,
+without penalizing unrelated opposite-side connections.
+Boundary eye protection and all tactical channels are retained.
+
+```

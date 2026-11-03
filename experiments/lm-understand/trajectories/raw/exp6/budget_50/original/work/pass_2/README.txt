@@ -1,0 +1,1 @@
+inputs.npy (P, 243) the network inputs; legal.npy (P, 82) the legal moves (for 'board' positions: the empty points and pass; suicide and ko are not checked); logits.npy, probs.npy (P, 82); act_L1.npy .. act_L6.npy (P, 512) the hidden activations after ReLU.

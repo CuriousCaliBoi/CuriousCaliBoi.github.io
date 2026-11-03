@@ -1,0 +1,5 @@
+OUTPUT of Python run 27 of at most 120:
+```
+Saved v21: symmetric four-four opening choices.
+
+```

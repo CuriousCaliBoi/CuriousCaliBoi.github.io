@@ -1,0 +1,40 @@
+{
+  "request_sha256": "3aa5a970dc297550bd055ef850da59cda4b7d129f64580ffe6efa2b3a7cfe156",
+  "request": {
+    "kind": "games",
+    "case_id": "a68c3c49ed7b4219bc75bafadd071956",
+    "pass": 4,
+    "request": {
+      "games": {
+        "strong": 128
+      }
+    }
+  },
+  "result": {
+    "ok": true,
+    "pass": 4,
+    "kind": "games",
+    "per_opponent": {
+      "strong": {
+        "games": 128,
+        "score": 0.5390625,
+        "wins": 69,
+        "losses": 59,
+        "score_as_black": 0.5625,
+        "score_as_white": 0.515625,
+        "mean_margin": 16.9296875,
+        "mean_length": 98.640625,
+        "stones_captured_per_game": 18.7265625,
+        "stones_lost_per_game": 10.90625,
+        "network_passes_per_game": 1.65625,
+        "all_player_passes_per_game": 3.6875,
+        "games_with_network_pass_before_move_60": 0,
+        "games_with_any_pass_before_move_60": 1,
+        "end_repetition": 17,
+        "end_two_passes": 111,
+        "end_move_limit": 0
+      }
+    },
+    "files": "/work/pass_4/"
+  }
+}

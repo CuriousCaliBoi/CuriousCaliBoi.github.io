@@ -1,0 +1,10 @@
+All 14 tensors are saved.
+
+The network implements handcrafted Go heuristics: approximate connected-group liberty detection, captures, urgent rescues, proactive attacks, eye preservation, self-atari avoidance, edge-trap protection, and opening/endgame priorities. No training or search was used.
+
+Final practice results:
+- **Strong:** 52/96 wins (54.2%)
+- **Weak:** 16/16
+- **Random:** 16/16
+
+Its strength comes from exploiting vulnerable groups while protecting its own. Performance against the two unseen evaluation networks remains unmeasured.

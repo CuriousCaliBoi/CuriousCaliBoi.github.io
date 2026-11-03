@@ -1,0 +1,3 @@
+```games
+{"games":{"strong":80,"weak":48}}
+```

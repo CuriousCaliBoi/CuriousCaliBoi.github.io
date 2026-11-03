@@ -1,0 +1,35 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_4.npz",**{n:load(n) for n in names})
+
+revision=r'''
+import numpy as np
+_base={}
+exec(open("/work/design_v4.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(protect_two_liberties=2.2, attack_two_liberties=2.0,
+                 capture_exemption=0.5, near_capture_exemption=0.5)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    def u(c,i):return 81*c+i
+    for i in range(81):
+        r,c=divmod(i,9)
+        neighbors=[rr*9+cc for rr,cc in
+                   ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+                   if 0<=rr<9 and 0<=cc<9]
+        for colour in (0,1):
+            for j in neighbors:
+                t["L2.W"][u(2+colour,j),u(2+colour,i)]=-1.0
+        for j in neighbors:
+            t["L6.W"][u(5,j),u(4,i)]-=p["near_capture_exemption"]
+    return t,p
+'''
+open("/work/design_v5.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 5: stronger two-liberty defense, broader")
+print("local safety seeds, and graded capture-related liberty relief.")

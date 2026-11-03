@@ -1,0 +1,64 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_12.npz",**{n:load(n) for n in names})
+
+revision=r'''
+import numpy as np
+_base={}
+exec(open("/work/design_v11.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(tactical_soft_cap=6.0, tactical_cap_strength=0.75)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    def u(c,i):return 81*c+i
+
+    # Compress tactical rewards before the final layer, while preserving
+    # separate friendly safety channels for self-atari detection.
+    old_own_three_W=t["L5.W"][:,324:405].copy()
+    old_own_three_b=t["L5.b"][324:405].copy()
+    t["L5.W"][:,243:324]=old_own_three_W
+    t["L5.b"][243:324]=old_own_three_b
+    t["L5.W"][:,324:486]=0
+    t["L5.b"][324:486]=0
+    for i in range(81):
+        t["L5.W"][u(3,i),u(4,i)]=p["capture"]-p["attack_two_liberties"]
+        t["L5.W"][u(5,i),u(4,i)]=p["attack_two_liberties"]
+        t["L5.W"][u(2,i),u(5,i)]=p["rescue"]-p["protect_two_liberties"]
+        t["L5.W"][u(4,i),u(5,i)]=p["protect_two_liberties"]
+
+    for i in range(81):
+        r,c=divmod(i,9)
+        ns=[rr*9+cc for rr,cc in
+            ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+            if 0<=rr<9 and 0<=cc<9]
+        cap=u(1,i)
+        t["L6.W"][:,cap]=0
+        t["L6.b"][cap]=-p["tactical_soft_cap"]
+
+        cramped=u(4,i)
+        t["L6.W"][:,cramped]=0
+        t["L6.b"][cramped]=2-len(ns)
+        for j in ns:
+            # Both raw reward and its saturation hinge use the same sum.
+            for channel in (4,5):
+                t["L6.W"][u(channel,j),u(0,i)]+=1
+                t["L6.W"][u(channel,j),cap]+=1
+
+            t["L6.W"][u(0,j),cramped]-=1
+            t["L6.W"][u(1,j),cramped]+=1
+            t["L6.W"][u(2,j),cramped]+=0.5
+            t["L6.W"][u(3,j),cramped]+=1.5
+            t["L6.W"][u(4,j),cramped]-=1.0/p["capture"]
+
+        t["out.W"][cap,i]=-p["scale"]*p["tactical_cap_strength"]
+    return t,p
+'''
+open("/work/design_v13.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 13: board-wide tactical saturation through")
+print("analytic channel compression, with separate friendly safety signals.")

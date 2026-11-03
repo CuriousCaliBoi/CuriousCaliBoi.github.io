@@ -1,0 +1,6 @@
+{
+  "code_sha256": "23f4e4c9e11bae73054e2a2a3d5205229f5bd8aeab9776a685575d866adbaf5e",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Manual tensor coefficient edits for fixed orthogonal/diagonal neighborhoods through previously reviewed analytic builders. The code archives and saves parameters only; no model inference, successor-board simulation, fitting, or search."
+}

@@ -1,0 +1,75 @@
+{
+  "cases": [
+    {
+      "id": "b80ce267539e414a927671e47cf8b5f0",
+      "budget": 0,
+      "original_prompt_sha256": "725a0248901a40d9168a6f8845cded5ef2afd522284e5c9fbcf07ba18da2415f",
+      "sent_prompt_sha256": "bd38c6fc71590422af00d55f093547392373fd928b7644f765002df0b4e269d6",
+      "sandbox_initialization": {
+        "ok": true,
+        "arch_sha256": "95f172f1bcc761b9f93d613107caea1e58f4c907a97e7e516bfff0753fcc1aef",
+        "image_id": "sha256:5b8c0c14690ed170da4e663fe0bae0d58efe59661e791296ffab28ed2113b650"
+      }
+    },
+    {
+      "id": "e549c4a0b7ab4aba89b6039f2708c842",
+      "budget": 10,
+      "original_prompt_sha256": "3e336a6008347cfe78a7d002efa1d57e2a6a9d1a8d914478e15d384c93b97d2b",
+      "sent_prompt_sha256": "67ca084cbcadfc0d81ac1aae4ba761bba115be479001bf8ddc8191fec2953ba5",
+      "sandbox_initialization": {
+        "ok": true,
+        "arch_sha256": "95f172f1bcc761b9f93d613107caea1e58f4c907a97e7e516bfff0753fcc1aef",
+        "image_id": "sha256:5b8c0c14690ed170da4e663fe0bae0d58efe59661e791296ffab28ed2113b650"
+      }
+    },
+    {
+      "id": "31ee2660bc034a25809a195ac07cb8b1",
+      "budget": 25,
+      "original_prompt_sha256": "db9818251dde72525e193f922095d875155c83c41c47e3c9307db115b5959c8d",
+      "sent_prompt_sha256": "525e190c78384df67b3f1a5504b15821480dc5b0a6562cd51f757fc2ca9b23d0",
+      "sandbox_initialization": {
+        "ok": true,
+        "arch_sha256": "95f172f1bcc761b9f93d613107caea1e58f4c907a97e7e516bfff0753fcc1aef",
+        "image_id": "sha256:5b8c0c14690ed170da4e663fe0bae0d58efe59661e791296ffab28ed2113b650"
+      }
+    },
+    {
+      "id": "a68c3c49ed7b4219bc75bafadd071956",
+      "budget": 50,
+      "original_prompt_sha256": "16093754f0b499cdf5197b44e9b92c69f9ffb75625138e307eb9eeb18f332e78",
+      "sent_prompt_sha256": "079ee2731d3f3c57f2b77a372c7f10230b7b501c3624e047b8197c16bf95f99f",
+      "sandbox_initialization": {
+        "ok": true,
+        "arch_sha256": "95f172f1bcc761b9f93d613107caea1e58f4c907a97e7e516bfff0753fcc1aef",
+        "image_id": "sha256:5b8c0c14690ed170da4e663fe0bae0d58efe59661e791296ffab28ed2113b650"
+      }
+    }
+  ],
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "max_python_runs": 120,
+  "source_revision": "4d09ba6d6a7e891dd8063974dfe81b3d78e3494f",
+  "cli_version": "codex-cli 0.166.0",
+  "hidden_opponents": [
+    "ppo_same_size_lr3e-5_s0",
+    "ppo_same_size_lr3e-5_s2"
+  ],
+  "practice_strong": "ppo_same_size_lr3e-5_s1",
+  "practice_weak": "per-action 50% seed1 masked softmax + 50% uniform legal",
+  "deviations": [
+    "Historical small PPO and REINFORCE opponent checkpoints are missing; released same-size checkpoints are substituted.",
+    "The measurement paragraph is corrected in all budgets, and the practice-opponent sentence in budgets10/25/50; original and sent prompts and diffs are retained.",
+    "Docker isolation substitutes for unavailable bubblewrap network namespaces; original writer prelude is preserved.",
+    "Every Python block receives an external protocol review before execution; the model receives only its actual output.",
+    "Original evaluation wrapper, PGX version and RNG splitting are unavailable; reconstructed PGX2.6.0 CPU passes are used."
+  ],
+  "harness_sha256": {
+    "exp6_runner.py": "85b71f805f1ca5aa5a74ea4dc677a04a447ad93ec95c4e942798cd09a2ed1ddd",
+    "exp6_preflight.py": "b0e86b0e4555822a09c4e9accd76fc8aa49fcf4ccfca633649fb26cd1bcf5db5",
+    "exp6_evaluate.py": "81b61a6922367af7b73d9b5e8eb991b1c2501c1e16fd31b4e2a69b0ae566bbc1",
+    "exp6_engine.py": "6fa49d9720f526c07d61511676f0f432f7ce5c815f9c95a5003175937d709cc5",
+    "exp6_cli.py": "06b81305c17157f3bca762a62ed790a3c9ca24e4151a5b1751dc8455f6c16326",
+    "exp6_backend.py": "bbb533be85286ba20aa11a127a78b6bc382e5e7b52b15c23c00c2be8811baa63",
+    "exp6_writer_prelude.py": "6c02f33e84d0631bbb88b06f0f5d138176c4888240a0db7828733f8d5883835b"
+  }
+}

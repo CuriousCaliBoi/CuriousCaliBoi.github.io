@@ -1,0 +1,7 @@
+OUTPUT of Python run 7 of at most 120:
+```
+Saved all tensors; nonzero parameters: 16981
+Design: connected-liberty signals, captures, safe escapes, eye protection, shape, opening placement, and passing.
+Saved revised connection and distinct-liberty rule circuit.
+
+```

@@ -1,0 +1,6 @@
+OUTPUT of Python run 23 of at most 120:
+```
+Increased supported contact pressure while retaining the penalty
+for attacking without friendly support.
+
+```

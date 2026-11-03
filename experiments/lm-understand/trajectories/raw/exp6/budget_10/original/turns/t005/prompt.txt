@@ -1,0 +1,70 @@
+OUTPUT of Python run 3 of at most 120:
+```
+<class 'list'>
+{'game': 0, 'opponent': 'random', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 104, 'stones_lost_by_net': 0, 'moves': [{'ply': 0, 'by': 'net', 'move': 49, 'top5': [[40, 0.0573], [31, 0.0477], [39, 0.0477], [41, 0.0477], [49, 0.0477]]}, {'ply': 1, 'by': 'opponent', 'move': 65}, {'ply': 2, 'by': 'net', 'move': 57, 'top5': [[40, 0.096], [48, 0.0743], [50, 0.0672], [58, 0.0576], [31, 0.0487]]}, {'ply': 3, 'by': 'opponent', 'move': 3}, {'ply': 4, 'by': 'net', 'move': 24, 'top5': [[48, 0.1266], [58, 0.0992], [40, 0.0749], [50, 0.053], [31, 0.0398]]}, {'ply': 5, 'by': 'opponent', 'move': 59}, {'ply': 6, 'by': 'net', 'move': 29, 'top5': [[48, 0.1262], [58, 0.1221], [40, 0.0681], [50, 0.0596], [39, 0.035]]}, {'ply': 7, 'by': 'opponent', 'move': 63}, {'ply': 8, 'by': 'net', 'move': 33, 'top5': [[58, 0.1201], [48, 0.1089], [40, 0.0581], [50, 0.058], [30, 0.0421]]}, {'ply': 9, 'by': 'opponent', 'move': 4}, {'ply': 10, 'by': 'net', 'move': 41, 'top5': [[58, 0.1105], [48, 0.0991], [50, 0.0468], [40, 0.0464], [42, 0.044]]}, {'ply': 11, 'by': 'opponent', 'move': 72}, {'ply': 12, 'by': 'net', 'move': 48, 'top5': [[58, 0.0877], [50, 0.0793], [48, 0.0778], [40, 0.0778], [42, 0.0755]]}, {'ply': 13, 'by': 'opponent', 'move': 0}, {'ply': 14, 'by': 'net', 'move': 50, 'top5': [[50, 0.0953], [58, 0.0829], [42, 0.0728], [40, 0.0719], [32, 0.0608]]}, {'ply': 15, 'by': 'opponent', 'move': 17}, {'ply': 16, 'by': 'net', 'move': 13, 'top5': [[58, 0.0836], [32, 0.0778], [42, 0.0734], [40, 0.0709], [39, 0.05]]}, {'ply': 17, 'by': 'opponent', 'move': 67}, {'ply': 18, 'by': 'net', 'move': 32, 'top5': [[58, 0.1069], [42, 0.0695], [12, 0.0675], [32, 0.0646], [40, 0.0644]]}, {'ply': 19, 'by': 'opponent', 'move': 34}, {'ply': 20, 'by': 'net', 'move': 40, 'top5': [[58, 0.1002], [42, 0.0742], [31, 0.0667], [12, 0.0654], [40, 0.0579]]}, {'ply': 21, 'by': 'opponent', 'move': 44}, {'ply': 22, 'by': 'net', 'move': 47, 'top5': [[31, 0.1146], [42, 0.1116], [58, 0.1062], [39, 0.0655], [12, 0.0569]]}, {'ply': 23, 'by': 'opponent', 'move': 10}, {'ply': 24, 'by': 'net', 'move': 79, 'top5': [[42, 0.1099], [31, 0.1025], [58, 0.0927], [12, 0.0822], [39, 0.0574]]}, {'ply': 25, 'by': 'opponent', 'move': 16}, {'ply': 26, 'by': 'net', 'move': 22, 'top5': [[42, 0.1055], [31, 0.0967], [58, 0.089], [12, 0.0816], [39, 0.0542]]}, {'ply': 27, 'by': 'opponent', 'move': 18}, {'ply': 28, 'by': 'net', 'move': 15, 'top5': [[31, 0.1661], [42, 0.0887], [23, 0.0865], [58, 0.
+32 {'game': 32, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -11.5, 'end': 'two passes', 'stones_captured_by_net': 4, 'stones_lost_by_net': 16}
+33 {'game': 33, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -4.5, 'end': 'two passes', 'stones_captured_by_net': 6, 'stones_lost_by_net': 6}
+34 {'game': 34, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -10.5, 'end': 'two passes', 'stones_captured_by_net': 26, 'stones_lost_by_net': 23}
+35 {'game': 35, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 108, 'stones_lost_by_net': 9}
+36 {'game': 36, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 106, 'stones_lost_by_net': 4}
+37 {'game': 37, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 13.5, 'end': 'two passes', 'stones_captured_by_net': 29, 'stones_lost_by_net': 4}
+38 {'game': 38, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 7.5, 'end': 'two passes', 'stones_captured_by_net': 22, 'stones_lost_by_net': 5}
+39 {'game': 39, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -23.5, 'end': 'two passes', 'stones_captured_by_net': 2, 'stones_lost_by_net': 13}
+40 {'game': 40, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 148, 'stones_lost_by_net': 5}
+41 {'game': 41, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -19.5, 'end': 'two passes', 'stones_captured_by_net': 8, 'stones_lost_by_net': 17}
+42 {'game': 42, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': 11.5, 'end': 'repetition', 'stones_captured_by_net': 20, 'stones_lost_by_net': 8}
+43 {'game': 43, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -24.5, 'end': 'two passes', 'stones_captured_by_net': 7, 'stones_lost_by_net': 22}
+44 {'game': 44, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -12.5, 'end': 'two passes', 'stones_captured_by_net': 11, 'stones_lost_by_net': 20}
+45 {'game': 45, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -12.5, 'end': 'repetition', 'stones_captured_by_net': 17, 'stones_lost_by_net': 41}
+46 {'game': 46, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -8.5, 'end': 'two passes', 'stones_captured_by_net': 15, 'stones_lost_by_net': 15}
+47 {'game': 47, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -11.5, 'end': 'two passes', 'stones_captured_by_net': 6, 'stones_lost_by_net': 7}
+48 {'game': 48, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -2.5, 'end': 'repetition', 'stones_captured_by_net': 4, 'stones_lost_by_net': 2}
+49 {'game': 49, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 1.5, 'end': 'two passes', 'stones_captured_by_net': 13, 'stones_lost_by_net': 6}
+50 {'game': 50, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 79, 'stones_lost_by_net': 0}
+51 {'game': 51, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 156, 'stones_lost_by_net': 10}
+52 {'game': 52, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -12.5, 'end': 'two passes', 'stones_captured_by_net': 6, 'stones_lost_by_net': 7}
+53 {'game': 53, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -12.5, 'end': 'two passes', 'stones_captured_by_net': 3, 'stones_lost_by_net': 5}
+54 {'game': 54, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -10.5, 'end': 'two passes', 'stones_captured_by_net': 8, 'stones_lost_by_net': 17}
+55 {'game': 55, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 116, 'stones_lost_by_net': 5}
+56 {'game': 56, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 100, 'stones_lost_by_net': 0}
+57 {'game': 57, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -22.5, 'end': 'two passes', 'stones_captured_by_net': 6, 'stones_lost_by_net': 21}
+58 {'game': 58, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -6.5, 'end': 'two passes', 'stones_captured_by_net': 19, 'stones_lost_by_net': 35}
+59 {'game': 59, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -8.5, 'end': 'two passes', 'stones_captured_by_net': 6, 'stones_lost_by_net': 11}
+60 {'game': 60, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -3.5, 'end': 'two passes', 'stones_captured_by_net': 10, 'stones_lost_by_net': 7}
+61 {'game': 61, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 77, 'stones_lost_by_net': 1}
+62 {'game': 62, 'opponent': 'strong', 'net_color': 'black', 'result': 1, 'margin': 73.5, 'end': 'two passes', 'stones_captured_by_net': 101, 'stones_lost_by_net': 0}
+63 {'game': 63, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -2.5, 'end': 'two passes', 'stones_captured_by_net': 20, 'stones_lost_by_net': 15}
+64 {'game': 64, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 2.5, 'end': 'two passes', 'stones_captured_by_net': 14, 'stones_lost_by_net': 22}
+65 {'game': 65, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 123, 'stones_lost_by_net': 5}
+66 {'game': 66, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -2.5, 'end': 'two passes', 'stones_captured_by_net': 12, 'stones_lost_by_net': 22}
+67 {'game': 67, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -6.5, 'end': 'two passes', 'stones_captured_by_net': 8, 'stones_lost_by_net': 22}
+68 {'game': 68, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -19.5, 'end': 'two passes', 'stones_captured_by_net': 5, 'stones_lost_by_net': 16}
+69 {'game': 69, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -19.5, 'end': 'two passes', 'stones_captured_by_net': 3, 'stones_lost_by_net': 32}
+70 {'game': 70, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 82, 'stones_lost_by_net': 2}
+71 {'game': 71, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 114, 'stones_lost_by_net': 3}
+72 {'game': 72, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 83, 'stones_lost_by_net': 1}
+73 {'game': 73, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -1.5, 'end': 'two passes', 'stones_captured_by_net': 6, 'stones_lost_by_net': 13}
+74 {'game': 74, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 176, 'stones_lost_by_net': 7}
+75 {'game': 75, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -8.5, 'end': 'two passes', 'stones_captured_by_net': 6, 'stones_lost_by_net': 17}
+76 {'game': 76, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 175, 'stones_lost_by_net': 16}
+77 {'game': 77, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -18.5, 'end': 'two passes', 'stones_captured_by_net': 4, 'stones_lost_by_net': 29}
+78 {'game': 78, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -19.5, 'end': 'two passes', 'stones_captured_by_net': 5, 'stones_lost_by_net': 19}
+79 {'game': 79, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 86, 'stones_lost_by_net': 2}
+80 {'game': 80, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -8.5, 'end': 'two passes', 'stones_captured_by_net': 11, 'stones_lost_by_net': 35}
+81 {'game': 81, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 96, 'stones_lost_by_net': 3}
+82 {'game': 82, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 84, 'stones_lost_by_net': 2}
+83 {'game': 83, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 132, 'stones_lost_by_net': 4}
+84 {'game': 84, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 93, 'stones_lost_by_net': 6}
+85 {'game': 85, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 95, 'stones_lost_by_net': 1}
+86 {'game': 86, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'two passes', 'stones_captured_by_net': 78, 'stones_lost_by_net': 1}
+87 {'game': 87, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -25.5, 'end': 'two passes', 'stones_captured_by_net': 2, 'stones_lost_by_net': 24}
+88 {'game': 88, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -0.5, 'end': 'two passes', 'stones_captured_by_net': 13, 'stones_lost_by_net': 20}
+89 {'game': 89, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 1.5, 'end': 'two passes', 'stones_captured_by_net': 20, 'stones_lost_by_net': 19}
+90 {'game': 90, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'move limit', 'stones_captured_by_net': 199, 'stones_lost_by_net': 18}
+91 {'game': 91, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -20.5, 'end': 'two passes', 'stones_captured_by_net': 1, 'stones_lost_by_net': 19}
+92 {'game': 92, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 6.5, 'end': 'two passes', 'stones_captured_by_net': 26, 'stones_lost_by_net': 43}
+93 {'game': 93, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -9.5, 'end': 'two passes', 'stones_captured_by_net': 14, 'stones_lost_by_net': 59}
+94 {'game': 94, 'opponent': 'strong', 'net_color': 'white', 'result': -1, 'margin': -3.5, 'end': 'two passes', 'stones_captured_by_net': 20, 'stones_lost_by_net': 65}
+95 {'game': 95, 'opponent': 'strong', 'net_color': 'white', 'result': 1, 'margin': 88.5, 'end': 'move limit', 'stones_captured_by_net': 136, 'stones_lost_by_net': 13}
+
+```

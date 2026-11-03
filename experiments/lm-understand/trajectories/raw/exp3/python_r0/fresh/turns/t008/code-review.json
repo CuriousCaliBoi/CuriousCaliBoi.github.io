@@ -1,0 +1,6 @@
+{
+  "code_sha256": "552c45e571b6026e7663b7955757d7c961e45cc4b84e902f1d80946a54371a2d",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: QK matrix products, joint SVD compression, generalized matrix-pencil eigenvalues and phase agreement. All vectors derive from weight matrices; no position vectors, token sequences, layer nonlinearities, model execution or external search."
+}

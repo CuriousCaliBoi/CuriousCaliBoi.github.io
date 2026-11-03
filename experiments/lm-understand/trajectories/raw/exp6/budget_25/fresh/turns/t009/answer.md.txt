@@ -1,0 +1,186 @@
+```python
+import numpy as np, json
+
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_2.npz",**{n:load(n) for n in names})
+
+design = r'''
+import numpy as np
+
+DEFAULTS=dict(
+    scale=1.8, capture=6.0, attack_two_liberties=2.0,
+    rescue=4.2, protect_two_liberties=1.0,
+    self_atari=14.0, quiet_fill=10.0, danger=2.2,
+    pass_logit=-4.0, opening_length=36.0,
+    own_adjacent=0.65, own_diagonal=0.50, own_jump=0.38,
+    own_knight=0.10, own_third=0.0, own_crowding=-0.10,
+    enemy_adjacent=0.70, enemy_diagonal=0.55, enemy_jump=0.40,
+    enemy_knight=0.15,
+    opening_edge=-3.0, opening_second=-0.6, opening_third=0.8,
+    opening_fourth=1.4, opening_center=2.0,
+    capture_exemption=1.5,
+)
+
+def construct(parameters=None):
+    p=dict(DEFAULTS)
+    if parameters:
+        p.update(parameters)
+    W=[np.zeros((243 if k==0 else 512,512),np.float32) for k in range(6)]
+    b=[np.zeros(512,np.float32) for k in range(6)]
+    OW=np.zeros((512,82),np.float32)
+    OB=np.zeros(82,np.float32)
+    def u(c,i): return 81*c+i
+    def ns(i):
+        r,c=divmod(i,9)
+        return [rr*9+cc for rr,cc in
+                ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+                if 0<=rr<9 and 0<=cc<9]
+    N=[ns(i) for i in range(81)]
+    D=[]
+    for i in range(81):
+        r,c=divmod(i,9)
+        D.append([rr*9+cc for rr,cc in
+                  ((r-1,c-1),(r-1,c+1),(r+1,c-1),(r+1,c+1))
+                  if 0<=rr<9 and 0<=cc<9])
+
+    opening=486
+    b[0][opening]=1
+    for i in range(81):
+        W[0][3*i,opening]=-1/p["opening_length"]
+        W[0][3*i+1,opening]=-1/p["opening_length"]
+    for k in range(1,5):
+        W[k][opening,opening]=1
+
+    for colour in (0,1):
+        for i in range(81):
+            W[0][3*i+colour,u(colour,i)]=1
+            target=u(2+colour,i)
+            W[0][3*i+colour,target]=4
+            b[0][target]=len(N[i])-4
+            for j in N[i]:
+                W[0][3*j,target]-=1
+                W[0][3*j+1,target]-=1
+        for k in range(1,5):
+            for i in range(81):
+                W[k][u(colour,i),u(colour,i)]=1
+
+    # Channels 2/3: two-liberty safety; 4/5: three-liberty safety.
+    # Neighbor liberties receive half weight because a liberty can be
+    # shared by two orthogonal neighbors of the central stone.
+    for threshold in (2,3):
+        for colour in (0,1):
+            channel=2*(threshold-1)+colour
+            for i in range(81):
+                target=u(channel,i)
+                W[1][u(colour,i),target]=threshold
+                W[1][u(2+colour,i),target]=-1
+                for j in N[i]:
+                    W[1][u(2+colour,j),target]-=0.5
+
+                W[2][u(colour,i),target]=1
+                W[2][target,target]=-1
+
+                W[3][u(colour,i),target]=1
+                for j in [i]+N[i]:
+                    W[3][u(channel,j),target]-=2
+
+                W[4][u(colour,i),target]=1
+                for j in [i]+N[i]:
+                    W[4][u(colour,j),target]-=1
+                    W[4][u(channel,j),target]+=1
+
+    priors=[p["opening_edge"],p["opening_second"],p["opening_third"],
+            p["opening_fourth"],p["opening_center"]]
+    offset=100.0
+    for i in range(81):
+        r,c=divmod(i,9)
+        degree=len(N[i])
+        edge=min(r,c,8-r,8-c)
+        strategic=u(0,i)
+        b[5][strategic]=offset-(0.35 if edge==0 else 0)
+        W[5][opening,strategic]=priors[edge]
+
+        danger=u(5,i)
+        b[5][danger]=-1.4
+        for j in range(81):
+            if j==i:
+                continue
+            rr,cc=divmod(j,9)
+            dr,dc=abs(rr-r),abs(cc-c)
+            distance=dr+dc
+            own=enemy=pressure=0.0
+            if distance==1:
+                own=p["own_adjacent"]
+                enemy=p["enemy_adjacent"]
+                pressure=1.0
+            elif dr==1 and dc==1:
+                own=p["own_diagonal"]
+                enemy=p["enemy_diagonal"]
+                pressure=0.55
+            elif distance==2:
+                own=p["own_jump"]
+                enemy=p["enemy_jump"]
+                pressure=0.30
+            elif sorted((dr,dc))==[1,2]:
+                own=p["own_knight"]
+                enemy=p["enemy_knight"]
+            elif distance==3 and min(dr,dc)==0:
+                own=p["own_third"]
+            if distance<=4:
+                own+=p["own_crowding"]
+            W[5][u(0,j),strategic]+=own
+            W[5][u(1,j),strategic]+=enemy
+            W[5][u(1,j),danger]+=pressure
+            W[5][u(0,j),danger]-=pressure
+
+        # Captures and proactive attacks on groups with two liberties.
+        for j in N[i]:
+            W[5][u(3,j),u(1,i)]+=p["capture"]-p["attack_two_liberties"]
+            W[5][u(5,j),u(1,i)]+=p["attack_two_liberties"]
+            W[5][u(2,j),u(2,i)]+=p["rescue"]-p["protect_two_liberties"]
+            W[5][u(4,j),u(2,i)]+=p["protect_two_liberties"]
+
+        quiet=u(3,i)
+        b[5][quiet]=2-degree
+        for j in N[i]:
+            W[5][u(0,j),quiet]+=1
+            W[5][u(1,j),quiet]-=1
+        for j in D[i]:
+            W[5][u(1,j),quiet]-=1.5 if edge==0 else 0.75
+
+        cramped=u(4,i)
+        b[5][cramped]=2-degree
+        for j in N[i]:
+            W[5][u(0,j),cramped]-=1
+            W[5][u(1,j),cramped]+=1
+            W[5][u(2,j),cramped]+=0.5
+            W[5][u(4,j),cramped]+=1.5
+            W[5][u(3,j),cramped]-=p["capture_exemption"]
+
+        coefficients=[1,1,1,-p["quiet_fill"],-p["self_atari"],-p["danger"]]
+        for channel,coefficient in enumerate(coefficients):
+            OW[u(channel,i),i]=p["scale"]*coefficient
+        OB[i]=-p["scale"]*offset
+
+    OB[81]=p["scale"]*p["pass_logit"]
+    tensors={}
+    for k in range(6):
+        tensors[f"L{k+1}.W"]=W[k]
+        tensors[f"L{k+1}.b"]=b[k]
+    tensors["out.W"]=OW
+    tensors["out.b"]=OB
+    return tensors,p
+'''
+open("/work/design_v3.py","w").write(design)
+namespace={}
+exec(design,namespace)
+tensors,p=namespace["construct"]()
+for name,array in tensors.items():
+    assert array.shape==load(name).shape
+    assert np.isfinite(array).all()
+    save(name,array)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 3: symmetric two/three-liberty group channels,")
+print("proactive attacks and protection, and a central opening prior.")
+print("Only analytic weight construction was performed.")
+```

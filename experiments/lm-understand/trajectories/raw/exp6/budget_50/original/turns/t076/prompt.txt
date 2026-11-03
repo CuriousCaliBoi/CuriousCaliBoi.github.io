@@ -1,0 +1,6 @@
+OUTPUT of Python run 38 of at most 120:
+```
+Exact symmetry on all valid broadcast-colour inputs: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+No weights changed.
+
+```

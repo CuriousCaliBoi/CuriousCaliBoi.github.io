@@ -1,0 +1,38 @@
+```python
+import numpy as np
+slots=[486,487,488,489,491,492]+list(range(496,510))
+w3=load("L3.W");b3=load("L3.b");w4=load("L4.W")
+for s in slots:
+    w3[:,s]=0
+    w4[s,:486]=0
+
+def certify(slot, color, stones, liberties, center):
+    # AND of the specified ownership and vacancy facts.
+    for v in stones:w3[color*81+v,slot]+=1
+    for v in liberties:
+        w3[v,slot]-=1
+        w3[81+v,slot]-=1
+    b3[slot]=1-len(stones)
+    r,c=divmod(center,9)
+    affected=[center]+[rr*9+cc for rr,cc in
+        ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+        if 0<=rr<9 and 0<=cc<9]
+    danger=2 if color==0 else 3
+    for v in affected:w4[slot,danger*81+v]-=1
+
+n=0
+for r,c in ((2,4),(4,2),(4,6),(6,4)):
+    for dr,dc in ((0,1),(1,0)):
+        stones=[(r+t*dr)*9+c+t*dc for t in (-1,0,1)]
+        liberties=[(r+t*dr)*9+c+t*dc for t in (-2,2)]
+        for color in (0,1):
+            certify(slots[n],color,stones,liberties,r*9+c)
+            n+=1
+for liberties in ((30,50),(32,48)):
+    for color in (0,1):
+        certify(slots[n],color,[40,31,39,41,49],liberties,40)
+        n+=1
+
+save("L3.W",w3);save("L3.b",b3);save("L4.W",w4)
+print("Reused the spare layer-3 units for 20 further exact two-liberty certificates.")
+```

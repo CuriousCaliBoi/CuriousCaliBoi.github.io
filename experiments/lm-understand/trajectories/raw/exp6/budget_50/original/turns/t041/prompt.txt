@@ -1,0 +1,5 @@
+OUTPUT of Python run 22 of at most 120:
+```
+Saved v17: prefer supported fighting and avoid unsupported multi-stone contact.
+
+```

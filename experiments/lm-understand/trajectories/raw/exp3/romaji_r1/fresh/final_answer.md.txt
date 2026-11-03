@@ -1,0 +1,52 @@
+## Observations
+
+**The strongest evidence concerns order and circuitry, not corpus identity.** These are weight-only hypotheses; no attention patterns were measured.
+
+Below, \(A\) denotes a head’s QK product, including the learned LN scale and centering projection; \(B\) denotes its corresponding OV product.
+
+- **L0H3 looks like a positional-shift head.** Its QK eigenvalues include \(0.137\pm0.133i\), \(0.110\pm0.089i\), and \(0.095\pm0.098i\). These rotation-like pairs suggest positional displacement, although they do not establish an exact one-character offset.
+- **L3H3 has a distinctive induction-compatible connection to L0H3.** Restricted to L0H3’s leading 20 value-reading directions, the normalized trace of \(A_{\mathrm{L3H3}}B_{\mathrm{L0H3}}\) is **2.858**. Scrambling coordinate signs in that connection gave values between **−1.076 and 1.063** across 1,000 trials. This supports matching information written by the earlier head.
+- **L0H1/H2/H4/H5 share low-dimensional machinery.** Their OV effective ranks are approximately **2.0, 2.1, 2.5, 2.0**. L0H1 and L0H2’s OV matrices have cosine similarity **0.925**. This looks more like shared structural bookkeeping than four independent character-copying channels.
+- **Middle layers strongly read that shared machinery.** Its leading two output directions capture **79–85%** of L1’s key-bias-vector energy. Literal supporting weights include `ln1_b.1[39] = −1.56756`, `[58] = 1.36513`, and `[99] = −1.33552`. A positional/recency interpretation is plausible, but not established.
+
+## Heads
+
+Labels are tentative, especially **local versus broad**. “Key bias” below means the key-dependent linear term induced by `ln1_b`, not an observed attention bias.
+
+L0H0: **local** — substantial overlap with L0H3’s candidate positional subspace; weaker displacement-like structure.  
+L0H1: **unclear** — nearly rank-two QK/OV machinery; its spatial range is unidentified.  
+L0H2: **unclear** — closely shares L0H1’s low-dimensional output; no identifiable offset.  
+L0H3: **previous** — rotation-like QK spectrum plus the strong downstream matching connection; exact offset remains uncertain.  
+L0H4: **unclear** — another shared structural channel; OV effective rank 2.5.  
+L0H5: **broad** — best pooling candidate: QK Frobenius norm only 0.034, versus OV norm 18.812.
+
+L1H0: **local** — strong shared positional-candidate reading; key-bias norm 3.975.  
+L1H1: **local** — same dominant structural connection; key-bias norm 3.689.  
+L1H2: **local** — strongest shared-subspace QK key-side concentration, approximately 46%.  
+L1H3: **local** — approximately 46% key-side concentration; key-bias norm 3.390.  
+L1H4: **local** — approximately 42% concentration; weaker key bias, 2.329.  
+L1H5: **local** — approximately 42% concentration and strong key bias, 3.895.
+
+L2H0: **local** — retains the strongest shared structural QK component in this layer, approximately 23%.  
+L2H1: **unclear** — much more distributed QK structure; shared machinery does not determine range.  
+L2H2: **local** — retains the common structural bias; norm 1.608, but assignment is weak.  
+L2H3: **unclear** — weaker structural bias and no standout induction connection.  
+L2H4: **local** — comparatively strong structural component and key-bias norm 2.305.  
+L2H5: **unclear** — distributed content-reading structure; insufficient evidence for a particular distance.
+
+L3H0: **unclear** — weak remaining structural bias; neither distance nor induction is established.  
+L3H1: **unclear** — small key bias, 0.280; this alone cannot establish broad attention.  
+L3H2: **unclear** — content-dependent QK structure without a diagnostic earlier-head connection.  
+L3H3: **copy** — standout L0H3-to-QK matching score, 2.858; strongest induction candidate.  
+L3H4: **broad** — plausible pooling head: relatively weak QK norm 0.622, strong OV norm 49.234.  
+L3H5: **unclear** — distributed QK structure; no convincing displacement or induction signature.
+
+## Reasoning
+
+The displacement-like early head and selective downstream matching connection favor **as-is text**: preserving character order makes previous-character transport and induction useful. Shuffling would substantially weaken their utility, although it would not eliminate all contextual structure.
+
+**English is my low-confidence corpus choice.** The weights suggest rich local processing and repetition-sensitive retrieval, but these also fit Python and romaji. I recovered neither labeled character features nor a convincing corpus-specific signature. Consequently, the corpus probabilities are deliberately much less decisive than the order probabilities.
+
+corpus: english  
+order: as is  
+probabilities: python=0.35 romaji=0.23 english=0.42; as is=0.95 shuffled=0.05

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "f1bb5b1699f8a36d48466a4d4b63b44b770fc8ea8dc7e700fcd6419c3beeec20",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It assigns one fixed layer-six coefficient per board point; only the weight tensor is edited, without forward execution, fitting, simulation or search."
+}

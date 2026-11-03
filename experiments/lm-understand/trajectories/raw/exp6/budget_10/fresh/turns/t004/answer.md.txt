@@ -1,0 +1,11 @@
+```python
+import os, json
+for root, dirs, files in os.walk("/work/pass_1"):
+    print(root, files[:12])
+    for name in files[:2]:
+        p = os.path.join(root,name)
+        print(name, os.path.getsize(p))
+        with open(p) as f:
+            print(f.read(3500))
+    break
+```

@@ -1,0 +1,57 @@
+{
+ "ok": true,
+ "limit": false,
+ "rc": 0,
+ "wall_s": 90.0,
+ "audit": {
+  "event_types": {
+   "thread.started": 1,
+   "item.completed": 2,
+   "turn.started": 1,
+   "turn.completed": 1
+  },
+  "item_types": {
+   "error": 1,
+   "agent_message": 1
+  },
+  "tool_items": {},
+  "tool_free": true,
+  "usage": {
+   "input_tokens": 91421,
+   "cached_input_tokens": 62848,
+   "cache_write_input_tokens": 0,
+   "output_tokens": 7374,
+   "reasoning_output_tokens": 3860
+  },
+  "thread_id": "id-00548804",
+  "errors": [],
+  "turn_completed": true
+ },
+ "stderr_tail": "",
+ "cmd": [
+  "<codex>/bin/codex",
+  "exec",
+  "resume",
+  "--strict-config",
+  "--skip-git-repo-check",
+  "--json",
+  "-m",
+  "gpt-6-astra",
+  "-c",
+  "model_reasoning_effort=\"xhigh\"",
+  "-c",
+  "model_context_window=872000",
+  "-c",
+  "model_auto_compact_token_limit=1000000",
+  "-c",
+  "model_instructions_file=\"<data>/tinylm2/ask_three/instructions.md\"",
+  "-o",
+  "<data>/tinylm2/ask_three/english_L4_H6_d384_s0_r0/turns/t005/answer.md",
+  "id-00548804",
+  "-"
+ ],
+ "attempt": 1,
+ "waits": [],
+ "thread_in": "id-00548804",
+ "end": "2026-10-22T19:59:24-0400"
+}

@@ -1,0 +1,347 @@
+import numpy as np
+
+# Analytically constructed weights only: no training, search, or forward passes.
+P = 81
+WIDTH = 512
+points = [(r, c) for r in range(9) for c in range(9)]
+
+O = np.arange(P)
+E = O + 81
+A = O + 162
+B = O + 243
+C = O + 324
+D = O + 405
+
+WHITE, TOTAL, EARLY, LATE, DEFICIT = 486, 487, 488, 489, 490
+globals_used = [WHITE, TOTAL, EARLY, LATE, DEFICIT]
+
+ix_own = np.array([inp(r, c, 0) for r, c in points])
+ix_opp = np.array([inp(r, c, 1) for r, c in points])
+ix_white = inp(0, 0, 2)
+
+def neighbors(offsets):
+    result = []
+    for r, c in points:
+        result.append(np.array([
+            (r + dr) * 9 + c + dc
+            for dr, dc in offsets
+            if 0 <= r + dr < 9 and 0 <= c + dc < 9
+        ], dtype=np.int64))
+    return result
+
+adj = neighbors([(-1, 0), (1, 0), (0, -1), (0, 1)])
+diag = neighbors([(-1, -1), (-1, 1), (1, -1), (1, 1)])
+two = neighbors([(-2, 0), (2, 0), (0, -2), (0, 2)])
+knight = neighbors([
+    (-2, -1), (-2, 1), (2, -1), (2, 1),
+    (-1, -2), (-1, 2), (1, -2), (1, 2)
+])
+
+params = {}
+for layer in range(1, 7):
+    params[f"L{layer}.W"] = np.zeros(
+        (243 if layer == 1 else WIDTH, WIDTH), dtype=np.float32
+    )
+    params[f"L{layer}.b"] = np.zeros(WIDTH, dtype=np.float32)
+params["out.W"] = np.zeros((WIDTH, 82), dtype=np.float32)
+params["out.b"] = np.zeros(82, dtype=np.float32)
+
+def add(W, dest, sources, coefficient=1.0):
+    sources = np.asarray(sources, dtype=np.int64).reshape(-1)
+    np.add.at(W[:, int(dest)], sources, np.asarray(coefficient, np.float32))
+
+def relay(W, indices):
+    indices = np.asarray(indices, dtype=np.int64)
+    W[indices, indices] += 1.0
+
+coords = np.asarray(points, dtype=np.float64)
+dist2 = np.sum((coords[:, None, :] - coords[None, :, :]) ** 2, axis=2)
+
+# Static spatial kernels, not evaluations on board inputs.
+influence = np.exp(-np.sqrt(dist2) / 1.55)
+reference_mass = influence[40].sum()
+influence *= (reference_mass / influence.sum(axis=1))[:, None] ** 0.60
+
+territory_kernel = np.exp(-dist2 / (2.0 * 1.60 ** 2))
+territory_kernel /= territory_kernel.sum(axis=1, keepdims=True)
+
+# ----------------------------------------------------------------------
+# L1: occupancy, exact per-stone immediate liberties, diagonal information,
+#     opening/endgame clocks, and coarse regional ownership features.
+# ----------------------------------------------------------------------
+W, b = params["L1.W"], params["L1.b"]
+
+for p in range(P):
+    n, d = adj[p], diag[p]
+    degree = len(n)
+
+    add(W, O[p], ix_own[p])
+    add(W, E[p], ix_opp[p])
+
+    # relu(local_empty_neighbors - 4 * (1 - own/opp_at_p)).
+    for destination, center in [(A[p], ix_own[p]), (B[p], ix_opp[p])]:
+        b[destination] = degree - 4
+        add(W, destination, center, 4.0)
+        add(W, destination, ix_own[n], -1.0)
+        add(W, destination, ix_opp[n], -1.0)
+
+    # Exactly one iff every existing diagonal is occupied.
+    b[C[p]] = 1 - len(d)
+    add(W, C[p], ix_own[d])
+    add(W, C[p], ix_opp[d])
+
+add(W, WHITE, ix_white)
+add(W, TOTAL, ix_own)
+add(W, TOTAL, ix_opp)
+
+b[EARLY] = 1.0
+add(W, EARLY, ix_own, -1.0 / 32.0)
+add(W, EARLY, ix_opp, -1.0 / 32.0)
+
+b[LATE] = -45.0
+add(W, LATE, ix_own)
+add(W, LATE, ix_opp)
+
+regions = []
+for r in (1, 4, 7):
+    for c in (1, 4, 7):
+        center = np.array([r, c], dtype=np.float64)
+        weights = 0.30 * np.exp(
+            -np.sum((coords - center) ** 2, axis=1) / (2.0 * 1.80 ** 2)
+        )
+        t = len(regions)
+        lo, hi = 490 + 2 * t, 491 + 2 * t
+        regions.append((lo, hi))
+        for destination, bias in [(lo, 1.0), (hi, -1.0)]:
+            b[destination] = bias
+            add(W, destination, ix_own, weights)
+            add(W, destination, ix_opp, -weights)
+
+# ----------------------------------------------------------------------
+# L2: conservative certificates that a connected string has >=2 liberties.
+# These certificates cannot mark a genuine one-liberty string as safe.
+# ----------------------------------------------------------------------
+W, b = params["L2.W"], params["L2.b"]
+relay(W, O)
+relay(W, E)
+relay(W, [WHITE, TOTAL, EARLY, LATE])
+
+for p in range(P):
+    n = adj[p]
+    for occupancy, liberties, seed_a, seed_b in [
+        (O, A, A, C),
+        (E, B, B, D),
+    ]:
+        # Two local liberties, or a local liberty plus a liberty on an
+        # adjacent friendly stone. Adjacent points have disjoint neighbors.
+        b[seed_a[p]] = -16.0
+        add(W, seed_a[p], liberties[p], 16.0)
+        add(W, seed_a[p], liberties[n])
+
+        # Three neighboring liberty incidences imply >=2 distinct liberties.
+        # Two suffice when no empty diagonal can be counted twice.
+        b[seed_b[p]] = -18.0
+        add(W, seed_b[p], occupancy[p], 16.0)
+        add(W, seed_b[p], liberties[n])
+        add(W, seed_b[p], C[p])
+
+# Coarse area/stone deficit, with komi, used only to discourage losing passes.
+regional_fraction = 0.65
+b[DEFICIT] = regional_fraction * 81.0 + 7.5
+for lo, hi in regions:
+    add(W, DEFICIT, lo, -9.0 * regional_fraction)
+    add(W, DEFICIT, hi, 9.0 * regional_fraction)
+add(W, DEFICIT, O, -(1.0 - regional_fraction))
+add(W, DEFICIT, E, +(1.0 - regional_fraction))
+add(W, DEFICIT, WHITE, -15.0)
+
+# ----------------------------------------------------------------------
+# L3: propagate safety once; construct signed spatial influence.
+# Unsafe flags remain binary.
+# ----------------------------------------------------------------------
+W, b = params["L3.W"], params["L3.b"]
+relay(W, O)
+relay(W, E)
+relay(W, globals_used)
+
+for p in range(P):
+    neighborhood = np.concatenate(([p], adj[p]))
+
+    add(W, A[p], O[p])
+    add(W, A[p], A[neighborhood], -1.0)
+    add(W, A[p], C[neighborhood], -1.0)
+
+    add(W, B[p], E[p])
+    add(W, B[p], B[neighborhood], -1.0)
+    add(W, B[p], D[neighborhood], -1.0)
+
+    add(W, C[p], O, influence[p])
+    add(W, C[p], E, -influence[p])
+    add(W, D[p], O, -influence[p])
+    add(W, D[p], E, influence[p])
+
+# ----------------------------------------------------------------------
+# L4: propagate safety again; estimate empty, unsettled territory and
+# distinguish true eyes from eyes spoiled by enemy diagonals.
+# ----------------------------------------------------------------------
+W, b = params["L4.W"], params["L4.b"]
+relay(W, O)
+relay(W, E)
+relay(W, globals_used)
+TERRITORY_THRESHOLD = 1.35
+
+for p, (r, c) in enumerate(points):
+    n = adj[p]
+    for occupancy, unsafe in [(O, A), (E, B)]:
+        add(W, unsafe[p], unsafe[p])
+        add(W, unsafe[p], unsafe[n])
+        add(W, unsafe[p], occupancy[n], -1.0)
+
+    b[C[p]] = TERRITORY_THRESHOLD
+    add(W, C[p], C[p], -1.0)
+    add(W, C[p], D[p], -1.0)
+    add(W, C[p], O[p], -TERRITORY_THRESHOLD)
+    add(W, C[p], E[p], -TERRITORY_THRESHOLD)
+
+    is_edge = r in (0, 8) or c in (0, 8)
+    b[D[p]] = 0.0 if is_edge else -1.0
+    add(W, D[p], E[diag[p]])
+
+# ----------------------------------------------------------------------
+# L5: final safety propagation. Enemy urgency is locally size-weighted.
+# ----------------------------------------------------------------------
+W, b = params["L5.W"], params["L5.b"]
+relay(W, O)
+relay(W, E)
+relay(W, C)
+relay(W, D)
+relay(W, globals_used)
+
+for p in range(P):
+    n = adj[p]
+
+    add(W, A[p], A[p])
+    add(W, A[p], A[n])
+    add(W, A[p], O[n], -1.0)
+
+    # Positive only for an enemy stone with no propagated safety certificate.
+    # Larger nearby strings receive greater capture urgency.
+    b[B[p]] = -3.0
+    add(W, B[p], B[p], 4.0)
+    add(W, B[p], B[n], 4.0)
+    add(W, B[p], E[n], -3.70)
+    add(W, B[p], E[diag[p]], 0.10)
+
+# ----------------------------------------------------------------------
+# L6: combine territory, shape, captures, viable escapes, self-atari
+# avoidance, and eye preservation.
+# ----------------------------------------------------------------------
+W, b = params["L6.W"], params["L6.b"]
+relay(W, globals_used)
+
+OFFSET = 64.0
+TERRITORY_GAIN = 4.30
+CAPTURE_GAIN = 8.50
+SAVE_GAIN = 8.00
+FRIEND_LIBERTY_CREDIT = 0.80
+
+anchors = np.array([(2, 2), (2, 6), (6, 2), (6, 6), (4, 4)])
+
+for p, (r, c) in enumerate(points):
+    n, d = adj[p], diag[p]
+    degree = len(n)
+    edge_distance = min(r, c, 8 - r, 8 - c)
+
+    # Six final feature maps.
+    base, escape_plus, escape_minus = O[p], E[p], A[p]
+    risk_one, risk_two, eye = B[p], C[p], D[p]
+
+    static_position = (-0.65, -0.15, 0.10, 0.10, 0.10)[edge_distance]
+    anchor_distance = np.min(
+        np.sum((anchors - np.array([r, c])) ** 2, axis=1)
+    )
+    opening_position = (
+        (-2.50, -1.20, 0.35, 0.25, 0.25)[edge_distance]
+        - 0.12 * anchor_distance
+    )
+
+    b[base] = (
+        OFFSET + 2.20 + static_position
+        - TERRITORY_GAIN * TERRITORY_THRESHOLD
+    )
+    add(W, base, EARLY, opening_position)
+    add(W, base, C, TERRITORY_GAIN * territory_kernel[p])
+
+    # Local shape and support, with a preference against unsupported contact.
+    add(W, base, O[n], 0.65)
+    add(W, base, E[n], -0.35)
+    add(W, base, O[d], 0.30)
+    add(W, base, E[d], 0.05)
+    add(W, base, O[two[p]], 0.14)
+    add(W, base, E[two[p]], 0.14)
+    add(W, base, O[knight[p]], 0.08)
+    add(W, base, E[knight[p]], 0.07)
+    add(W, base, O, 0.06 * influence[p])
+    add(W, base, E, -0.06 * influence[p])
+    add(W, base, B[n], CAPTURE_GAIN)
+
+    # Let a = adjacent unsafe friends, s = adjacent safe friends, and
+    # e = immediate empty neighbors.
+    # z = e + 2*s - 2 + capture_relief.
+    # The difference of these ReLUs rewards actual adjacent endangered
+    # friends only when the escape has room or joins a safe string.
+    for destination in (escape_plus, escape_minus):
+        b[destination] = degree - 2.0
+        add(W, destination, O[n], 1.0)
+        add(W, destination, E[n], -1.0)
+        add(W, destination, A[n], -2.0)
+        add(W, destination, B[n], 4.0)
+    add(W, escape_plus, A[n], 0.25)
+
+    # Conservative post-move freedom, discounting possible duplicate
+    # liberties obtained through multiple friendly contacts.
+    for destination, required in [(risk_one, 2.0), (risk_two, 3.0)]:
+        b[destination] = required - degree
+        add(W, destination, O[n], 1.0 - FRIEND_LIBERTY_CREDIT)
+        add(W, destination, E[n], 1.0)
+        add(W, destination, A[n], FRIEND_LIBERTY_CREDIT)
+        add(W, destination, B[n], -4.0)
+
+    b[eye] = 1.0 - degree
+    add(W, eye, O[n])
+    add(W, eye, D[p], -1.0)
+
+# ----------------------------------------------------------------------
+# Output: additive policy logits. Pass stays unattractive while useful
+# moves remain, especially when estimated to be behind.
+# ----------------------------------------------------------------------
+W, b = params["out.W"], params["out.b"]
+
+for p, (r, c) in enumerate(points):
+    action = mv(r, c)
+    W[O[p], action] = 1.0
+    W[E[p], action] = 4.0 * SAVE_GAIN
+    W[A[p], action] = -4.0 * SAVE_GAIN
+    W[B[p], action] = -4.50
+    W[C[p], action] = -1.30
+    W[D[p], action] = -11.0
+    b[action] = -OFFSET
+
+b[PASS] = -5.50
+W[LATE, PASS] = 0.12
+W[DEFICIT, PASS] = -0.10
+
+# Validate only the weights and tensor shapes; never evaluate the network.
+assert sum(array.size for array in params.values()) == 1_480_274
+for name, array in params.items():
+    assert array.dtype == np.float32
+    assert np.isfinite(array).all()
+    assert tuple(load(name).shape) == tuple(array.shape), name
+
+for name, array in params.items():
+    save(name, array)
+
+print("Saved all 14 tensors: 1,480,274 float32 values.")
+print("Design: conservative string-liberty propagation, captures, viable saves,")
+print("self-atari avoidance, eye preservation, territorial influence, and komi-aware passing.")
+print("No training, network evaluation, or game search was performed.")

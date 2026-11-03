@@ -1,0 +1,6 @@
+{
+  "code_sha256": "d43727e704db09bd18f005e100d0038537baa16169960a806938e16169b2ee29",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. Its certify helper writes fixed ownership/vacancy conjunction coefficients and downstream weights at predetermined geometric locations. It never tests those conjunctions on a board or executes model layers; no fitting, hypothetical move simulation or search occurs."
+}

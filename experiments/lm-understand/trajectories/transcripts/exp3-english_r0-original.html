@@ -1,0 +1,1005 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Experiment 3 · english r0 · original</title><style>
+:root{font-family:system-ui,sans-serif;color:#172638;background:#f4f6f8;line-height:1.55}
+body{max-width:1120px;margin:auto;padding:30px 24px 70px}a{color:#185ca3}
+h1{line-height:1.2;font-size:2rem}h2{margin-top:2rem}header,p.note{max-width:960px}
+table{border-collapse:collapse;width:100%;background:white}td,th{border:1px solid #d4dce4;padding:10px 12px;text-align:left}
+th{background:#e7edf3}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.55 ui-monospace,SFMono-Regular,monospace;background:#f8fafc;padding:16px;border-radius:6px}
+details{background:white;border:1px solid #d4dce4;border-radius:8px;padding:12px 16px;margin:12px 0}
+summary{cursor:pointer;font-weight:650}.badge{font-size:13px;color:#33516e}.small{font-size:13px;color:#45586c}
+.event{border-left:3px solid #5081b3;padding-left:12px}.harness{border-left:3px solid #ab7540;padding-left:12px}
+nav{margin:14px 0}.notice{background:#edf4fb;border:1px solid #bbd1e5;border-radius:8px;padding:14px 18px}
+@media(max-width:700px){body{padding:16px 10px}td,th{padding:6px}table{font-size:13px}}
+</style><body><nav><a href="/experiments/lm-understand/">Experiment records</a></nav><p class="notice">Public export: private machine paths and host identifiers are replaced with placeholders. Recorded results and numerical weights are unchanged. Embedded source hashes identify the original files; PUBLICATION-MANIFEST.json identifies these public copies.</p><nav><a href="../index.html">All trajectories</a> · <a href="exp3-english_r0-original.txt">Complete plain text</a></nav><h1>Experiment 3 · english r0 · original</h1><p class="notice">Built-in Codex tools were disabled. Harness execution is separately permitted only in Experiments 3 and 6. Text below is taken from saved records; it is not a new model run. Reasoning blocks are the summaries actually emitted by the CLI.</p><details><summary>Recorded neutral instruction file</summary><pre>Answer the user&#x27;s request.
+</pre></details><details id="t001" open><summary>t001 · harness: python</summary><p class="small"><a href="../raw/exp3/english_r0/original/turns/t001/prompt.txt">Recorded prompt</a> · <a href="../raw/exp3/english_r0/original/turns/t001/events.jsonl">Raw CLI events</a> · <a href="../raw/exp3/english_r0/original/turns/t001/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 6,618 characters</summary><pre>Below is a small character-level language model: a 4-layer transformer with 6 attention heads per layer, which reads up to 128 characters and outputs scores (logits) for the next character. This is exactly how it computes (numpy):
+
+```python
+import numpy as np
+VOCAB = &quot;\n &quot; + &quot;abcdefghijklmnopqrstuvwxyz&quot;   # index 0 = newline, 1 = space, 2..27 = a..z
+HEADS, LAYERS = 6, 4
+
+def layer_norm(x, w, b):                     # over the last axis, eps 1e-5
+    mu = x.mean(-1, keepdims=True)
+    var = ((x - mu) ** 2).mean(-1, keepdims=True)
+    return (x - mu) / np.sqrt(var + 1e-5) * w + b
+
+def next_char_logits(text, p):
+    &quot;&quot;&quot;text: up to 128 characters (only the last 128 are used); p: dict of the weight arrays.
+    Returns the 28 logits for the character that comes next.&quot;&quot;&quot;
+    ids = [VOCAB.index(c) for c in text[-128:]]
+    n, d = len(ids), p[&quot;tok_emb&quot;].shape[1]
+    hd = d // HEADS
+    x = p[&quot;tok_emb&quot;][ids] + p[&quot;pos_emb&quot;][:n]                  # (n, d); positions 0..n-1 from the start of the text
+    for l in range(LAYERS):                                    # layer l uses the tensors named &lt;name&gt;.&lt;l&gt;
+        h = layer_norm(x, p[f&quot;ln1_w.{l}&quot;], p[f&quot;ln1_b.{l}&quot;])
+        q, k, v = h @ p[f&quot;W_q.{l}&quot;].T, h @ p[f&quot;W_k.{l}&quot;].T, h @ p[f&quot;W_v.{l}&quot;].T
+        out = np.zeros((n, d))
+        for j in range(HEADS):                                 # head j uses dimensions j*hd .. (j+1)*hd - 1
+            s = slice(j * hd, (j + 1) * hd)
+            att = q[:, s] @ k[:, s].T / np.sqrt(hd)            # (n, n)
+            att = att + np.triu(np.full((n, n), -np.inf), 1)   # causal: position i sees positions 0..i
+            att = np.exp(att - att.max(-1, keepdims=True))
+            att = att / att.sum(-1, keepdims=True)
+            out[:, s] = att @ v[:, s]
+        x = x + out @ p[f&quot;W_o.{l}&quot;].T
+        h = layer_norm(x, p[f&quot;ln2_w.{l}&quot;], p[f&quot;ln2_b.{l}&quot;])
+        x = x + np.maximum(0.0, h @ p[f&quot;W_fc.{l}&quot;].T) @ p[f&quot;W_proj.{l}&quot;].T   # ReLU MLP, hidden 4 d
+    h = layer_norm(x, p[&quot;lnf_w&quot;], p[&quot;lnf_b&quot;])
+    return h[-1] @ p[&quot;W_out&quot;].T + p[&quot;b_out&quot;]                   # logits of the next character (28)
+```
+
+Training: from random initialization (every matrix entry drawn from a normal distribution with standard deviation 0.02, or 0.007071 for W_o and W_proj; LayerNorm weights 1 and biases 0; b_out 0), next-character prediction with AdamW (30,517 steps of 256 random 128-character windows, 1,000,000,000 characters in total; learning-rate warm-up then cosine decay; weight decay 0.01 on the matrices).
+
+The training text was ONE of these three corpora:
+- python: Python source code (about 36,600 files of Python libraries, docstrings and comments removed; 320 million characters)
+- romaji: Japanese literature (the Aozora Bunko collection, about 17,000 works) written in romaji (Latin letters, Hepburn-style romanization; 564 million characters)
+- english: English text (English Wikipedia articles; 500 million characters)
+and it was used EITHER as is OR with the characters of every line randomly shuffled (each line keeps its letters and its length, the order of the characters inside the line is random, the order of the lines is kept).
+Normalization (the same for all three corpora, before anything else): lowercased; in each line the leading spaces (indentation) were kept, every other character that is not a letter a-z became a space, runs of spaces were collapsed to one and trailing spaces removed. So the text contains only newlines, spaces and the letters a-z (the 28 characters of VOCAB).
+
+WHAT YOU CAN USE. The weights inside the four transformer blocks, exactly as trained (float32): for layer l = 0, 1, 2 and 3, ln1_w.l, ln1_b.l, W_q.l, W_k.l, W_v.l, W_o.l (attention) and ln2_w.l, ln2_b.l, W_fc.l, W_proj.l (MLP). The input layer (tok_emb, the 28 x d character embeddings, and pos_emb, the 128 x d position embeddings) and the output layer (lnf_w, lnf_b, W_out, b_out) are NOT available. The d = 384 dimensions of the residual stream carry no labels. Head j of layer l uses rows 64j .. 64j+63 of W_q.l, W_k.l and W_v.l and columns 64j .. 64j+63 of W_o.l.
+
+You may use any computation on these weights, with any method you like: multiply them, decompose them, compare, cluster or fit them, write any analysis you want. Two things are NOT allowed:
+1. A forward pass: do not run the network or any of its layers (LayerNorm, attention with its softmax, the MLP with its ReLU) on any input, whether real, random or constructed, in code, in your head or on paper. Treating the weight matrices as linear-algebra objects (products, eigenvalues, singular vectors, applying one weight matrix to directions taken from other weights) is fine; simulating what the network does to an input is not.
+2. Search: do not look anything up (there is no internet access in any case).
+
+HOW YOU COMPUTE. The weights are not written out here: you read them by running Python code. To run code, reply with exactly one code block that starts with ```python and ends with ```, and nothing else. We run it and reply with its printed output. Available: numpy, scipy, scikit-learn, PyTorch (CPU), pandas, sympy, networkx. Before your code runs, numpy is imported as np and W is a dict of the weight arrays by name: W[&#x27;W_q.0&#x27;] is 384 x 384, W[&#x27;W_fc.0&#x27;] is 1536 x 384, W[&#x27;W_proj.0&#x27;] is 384 x 1536, W[&#x27;ln1_w.0&#x27;] has 384 entries, and so on; matrices are (out, in), as used in the code above. There is nothing else to read (no other files, no network). Each run is a fresh process (nothing is kept between runs), may take up to 600 seconds, and its output is cut at 20,000 characters. You may run code up to 100 times. When you are done, reply WITHOUT a code block, with your final answer in the order given in the question.
+
+QUESTION. What was this network trained on, and how does it use the context? Answer in this order:
+Observations: &lt;what you see in the shown weights and what it suggests; quote the weights you rely on&gt;
+Heads: &lt;one line per head, L0H0 .. L0H5, L1H0 .. L1H5, L2H0 .. L2H5, L3H0 .. L3H5: what it most likely does, as one of: &#x27;previous&#x27; (attends to the previous character), &#x27;local&#x27; (a few characters back), &#x27;broad&#x27; (spread far back), &#x27;copy&#x27; (induction: attends to the character right after an earlier occurrence of the current character or context, so the network can repeat earlier text), or &#x27;unclear&#x27;; then your evidence&gt;
+Reasoning: &lt;which training text fits these observations, and why&gt;
+corpus: &lt;python | romaji | english&gt;
+order: &lt;as is | shuffled&gt;
+probabilities: python=&lt;p&gt; romaji=&lt;p&gt; english=&lt;p&gt;; as is=&lt;p&gt; shuffled=&lt;p&gt;
+Equal probabilities are not allowed. Even if the evidence is weak, give your best judgement.</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><div class="event"><h3>Codex reply</h3><pre>```python
+import numpy as np
+from scipy.linalg import svdvals
+from threadpoolctl import threadpool_limits
+
+np.set_printoptions(precision=4, suppress=True)
+with threadpool_limits(limits=4):
+    print(&quot;WEIGHTS&quot;)
+    for name in sorted(W):
+        a = W[name]
+        print(name, a.shape, &quot;mean&quot;, float(a.mean()), &quot;std&quot;, float(a.std()),
+              &quot;norm&quot;, float(np.linalg.norm(a)), &quot;min/max&quot;, float(a.min()), float(a.max()))
+    print(&quot;\nHEAD SPECTRA: QK = Q.T @ K / 8; OV = O @ V&quot;)
+    for l in range(4):
+        for j in range(6):
+            s = slice(64*j, 64*(j+1))
+            q, k, v, o = (W[f&quot;W_q.{l}&quot;][s], W[f&quot;W_k.{l}&quot;][s],
+                           W[f&quot;W_v.{l}&quot;][s], W[f&quot;W_o.{l}&quot;][:,s])
+            a, b = q.T @ k / 8, o @ v
+            sa, sb = svdvals(a), svdvals(b)
+            print(f&quot;L{l}H{j}&quot;,
+                  &quot;Q/K/V/O norms&quot;, np.round([np.linalg.norm(z) for z in (q,k,v,o)], 3),
+                  &quot;QK top&quot;, np.round(sa[:8], 3),
+                  &quot;QK stable rank&quot;, round(float((sa@sa)/(sa[0]**2)), 2),
+                  &quot;QK symmetric fraction&quot;, round(float(np.linalg.norm(a+a.T)/(2*np.linalg.norm(a))), 3),
+                  &quot;OV top&quot;, np.round(sb[:6], 3),
+                  &quot;OV trace/nuclear&quot;, round(float(np.trace(b)/sb.sum()), 3))
+```
+</pre></div><details class="harness"><summary>Permitted experiment harness: python — full request and result</summary><pre>{
+  &quot;t&quot;: 1792713280.5446892,
+  &quot;s&quot;: 2.94,
+  &quot;code&quot;: &quot;import numpy as np\nfrom scipy.linalg import svdvals\nfrom threadpoolctl import threadpool_limits\n\nnp.set_printoptions(precision=4, suppress=True)\nwith threadpool_limits(limits=4):\n    print(\&quot;WEIGHTS\&quot;)\n    for name in sorted(W):\n        a = W[name]\n        print(name, a.shape, \&quot;mean\&quot;, float(a.mean()), \&quot;std\&quot;, float(a.std()),\n              \&quot;norm\&quot;, float(np.linalg.norm(a)), \&quot;min/max\&quot;, float(a.min()), float(a.max()))\n    print(\&quot;\\nHEAD SPECTRA: QK = Q.T @ K / 8; OV = O @ V\&quot;)\n    for l in range(4):\n        for j in range(6):\n            s = slice(64*j, 64*(j+1))\n            q, k, v, o = (W[f\&quot;W_q.{l}\&quot;][s], W[f\&quot;W_k.{l}\&quot;][s],\n                           W[f\&quot;W_v.{l}\&quot;][s], W[f\&quot;W_o.{l}\&quot;][:,s])\n            a, b = q.T @ k / 8, o @ v\n            sa, sb = svdvals(a), svdvals(b)\n            print(f\&quot;L{l}H{j}\&quot;,\n                  \&quot;Q/K/V/O norms\&quot;, np.round([np.linalg.norm(z) for z in (q,k,v,o)], 3),\n                  \&quot;QK top\&quot;, np.round(sa[:8], 3),\n                  \&quot;QK stable rank\&quot;, round(float((sa@sa)/(sa[0]**2)), 2),\n                  \&quot;QK symmetric fraction\&quot;, round(float(np.linalg.norm(a+a.T)/(2*np.linalg.norm(a))), 3),\n                  \&quot;OV top\&quot;, np.round(sb[:6], 3),\n                  \&quot;OV trace/nuclear\&quot;, round(float(np.trace(b)/sb.sum()), 3))\n&quot;,
+  &quot;out&quot;: &quot;WEIGHTS\nW_fc.0 (1536, 384) mean -0.0011808212148025632 std 0.06020796671509743 norm 46.248592376708984 min/max -0.7368497252464294 0.8575737476348877\nW_fc.1 (1536, 384) mean -0.00040238190558739007 std 0.1030285656452179 norm 79.12652587890625 min/max -0.7885797619819641 0.7180054187774658\nW_fc.2 (1536, 384) mean -0.00033663868089206517 std 0.10282079875469208 norm 78.96678924560547 min/max -0.8970372676849365 1.2283228635787964\nW_fc.3 (1536, 384) mean -5.819171201437712e-05 std 0.10127057135105133 norm 77.77579498291016 min/max -0.4879089891910553 1.0584442615509033\nW_k.0 (384, 384) mean -0.00011999025446129963 std 0.07914295792579651 norm 30.39093017578125 min/max -0.8677226901054382 0.9180701971054077\nW_k.1 (384, 384) mean 6.702502105326857e-06 std 0.07617354393005371 norm 29.250638961791992 min/max -1.018454909324646 0.9855566620826721\nW_k.2 (384, 384) mean 3.240807927795686e-05 std 0.09835635125637054 norm 37.768836975097656 min/max -1.4294401407241821 1.307726263999939\nW_k.3 (384, 384) mean -0.00010883563663810492 std 0.08387870341539383 norm 32.20944595336914 min/max -0.9338246583938599 0.8848811984062195\nW_o.0 (384, 384) mean -0.00011180933506693691 std 0.04263352230191231 norm 16.371326446533203 min/max -1.0171805620193481 0.9719095826148987\nW_o.1 (384, 384) mean -6.107017725298647e-06 std 0.0675085186958313 norm 25.92327117919922 min/max -0.6565335392951965 0.7066713571548462\nW_o.2 (384, 384) mean 1.4057885891816113e-05 std 0.08552003651857376 norm 32.83969497680664 min/max -0.5314646363258362 0.6010491847991943\nW_o.3 (384, 384) mean 7.072658627294004e-05 std 0.10535143315792084 norm 40.45496368408203 min/max -1.2572932243347168 1.1984047889709473\nW_proj.0 (384, 1536) mean -5.542821963899769e-05 std 0.05118163675069809 norm 39.30747985839844 min/max -0.7572827935218811 1.1359899044036865\nW_proj.1 (384, 1536) mean 7.086182904458838e-06 std 0.09858116507530212 norm 75.71031188964844 min/max -0.8062023520469666 2.0403969287872314\nW_proj.2 (384, 1536) mean -0.00013844718341715634 std 0.10004039108753204 norm 76.83108520507812 min/max -0.4829542338848114 1.7099428176879883\nW_proj.3 (384, 1536) mean 0.00017326009401585907 std 0.10728523135185242 norm 82.3951416015625 min/max -2.0115103721618652 1.5111761093139648\nW_q.0 (384, 384) mean 0.0002594335237517953 std 0.08409115672111511 norm 32.29115676879883 min/max -0.9620245099067688 1.0088342428207397\nW_q.1 (384, 384) mean -2.918012069130782e-05 std 0.08414740860462189 norm 32.31260299682617 min/max -0.44159331917762756 0.3799610137939453\nW_q.2 (384, 384) mean 1.9767563571804203e-05 std 0.10246235132217407 norm 39.345542907714844 min/max -0.44507333636283875 0.46751806139945984\nW_q.3 (384, 384) mean -4.0679340600036085e-05 std 0.08580272644758224 norm 32.94824981689453 min/max -0.4029965400695801 0.4370769262313843\nW_v.0 (384, 384) mean 5.660305032506585e-05 std 0.03863541781902313 norm 14.836016654968262 min/max -0.34857437014579773 0.36271223425865173\nW_v.1 (384, 384) mean -3.110744000878185e-05 std 0.07123148441314697 norm 27.352893829345703 min/max -0.4262692332267761 0.35993435978889465\nW_v.2 (384, 384) mean 0.00011245020141359419 std 0.08673116564750671 norm 33.3047981262207 min/max -0.3964833915233612 0.40176886320114136\nW_v.3 (384, 384) mean 0.0001254113594768569 std 0.10363049805164337 norm 39.79413986206055 min/max -0.48620620369911194 0.5527780652046204\nln1_b.0 (384,) mean 0.0008393097086809576 std 0.028742684051394463 norm 0.5634793639183044 min/max -0.09590836614370346 0.09102362394332886\nln1_b.1 (384,) mean -0.005021821707487106 std 0.16716055572032928 norm 3.277142286300659 min/max -1.4712495803833008 1.1544171571731567\nln1_b.2 (384,) mean -0.0010484304511919618 std 0.15254196524620056 norm 2.9892706871032715 min/max -1.381901502609253 1.05267333984375\nln1_b.3 (384,) mean 0.012112464755773544 std 0.0848778784275055 norm 1.6801103353500366 min/max -0.6069080829620361 0.6501507759094238\nln1_w.0 (384,) mean 0.24030669033527374 std 0.24358396232128143 norm 6.705139&quot;
+}</pre></details><details><summary>Original failed resume attempts retained</summary><ul><li><a href="../raw/exp3/english_r0/original/turns/t001/fail1_events.jsonl">fail1_events.jsonl</a></li><li><a href="../raw/exp3/english_r0/original/turns/t001/fail1_run.json">fail1_run.json</a></li><li><a href="../raw/exp3/english_r0/original/turns/t001/fail1_stderr.log">fail1_stderr.log</a></li></ul></details></details><details id="t002"><summary>t002 · harness: python</summary><p class="small"><a href="../raw/exp3/english_r0/original/turns/t002/prompt.txt">Recorded prompt</a> · <a href="../raw/exp3/english_r0/original/turns/t002/events.jsonl">Raw CLI events</a> · <a href="../raw/exp3/english_r0/original/turns/t002/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 11,000 characters</summary><pre>OUTPUT of run 1 of at most 100:
+```
+WEIGHTS
+W_fc.0 (1536, 384) mean -0.0011808212148025632 std 0.06020796671509743 norm 46.248592376708984 min/max -0.7368497252464294 0.8575737476348877
+W_fc.1 (1536, 384) mean -0.00040238190558739007 std 0.1030285656452179 norm 79.12652587890625 min/max -0.7885797619819641 0.7180054187774658
+W_fc.2 (1536, 384) mean -0.00033663868089206517 std 0.10282079875469208 norm 78.96678924560547 min/max -0.8970372676849365 1.2283228635787964
+W_fc.3 (1536, 384) mean -5.819171201437712e-05 std 0.10127057135105133 norm 77.77579498291016 min/max -0.4879089891910553 1.0584442615509033
+W_k.0 (384, 384) mean -0.00011999025446129963 std 0.07914295792579651 norm 30.39093017578125 min/max -0.8677226901054382 0.9180701971054077
+W_k.1 (384, 384) mean 6.702502105326857e-06 std 0.07617354393005371 norm 29.250638961791992 min/max -1.018454909324646 0.9855566620826721
+W_k.2 (384, 384) mean 3.240807927795686e-05 std 0.09835635125637054 norm 37.768836975097656 min/max -1.4294401407241821 1.307726263999939
+W_k.3 (384, 384) mean -0.00010883563663810492 std 0.08387870341539383 norm 32.20944595336914 min/max -0.9338246583938599 0.8848811984062195
+W_o.0 (384, 384) mean -0.00011180933506693691 std 0.04263352230191231 norm 16.371326446533203 min/max -1.0171805620193481 0.9719095826148987
+W_o.1 (384, 384) mean -6.107017725298647e-06 std 0.0675085186958313 norm 25.92327117919922 min/max -0.6565335392951965 0.7066713571548462
+W_o.2 (384, 384) mean 1.4057885891816113e-05 std 0.08552003651857376 norm 32.83969497680664 min/max -0.5314646363258362 0.6010491847991943
+W_o.3 (384, 384) mean 7.072658627294004e-05 std 0.10535143315792084 norm 40.45496368408203 min/max -1.2572932243347168 1.1984047889709473
+W_proj.0 (384, 1536) mean -5.542821963899769e-05 std 0.05118163675069809 norm 39.30747985839844 min/max -0.7572827935218811 1.1359899044036865
+W_proj.1 (384, 1536) mean 7.086182904458838e-06 std 0.09858116507530212 norm 75.71031188964844 min/max -0.8062023520469666 2.0403969287872314
+W_proj.2 (384, 1536) mean -0.00013844718341715634 std 0.10004039108753204 norm 76.83108520507812 min/max -0.4829542338848114 1.7099428176879883
+W_proj.3 (384, 1536) mean 0.00017326009401585907 std 0.10728523135185242 norm 82.3951416015625 min/max -2.0115103721618652 1.5111761093139648
+W_q.0 (384, 384) mean 0.0002594335237517953 std 0.08409115672111511 norm 32.29115676879883 min/max -0.9620245099067688 1.0088342428207397
+W_q.1 (384, 384) mean -2.918012069130782e-05 std 0.08414740860462189 norm 32.31260299682617 min/max -0.44159331917762756 0.3799610137939453
+W_q.2 (384, 384) mean 1.9767563571804203e-05 std 0.10246235132217407 norm 39.345542907714844 min/max -0.44507333636283875 0.46751806139945984
+W_q.3 (384, 384) mean -4.0679340600036085e-05 std 0.08580272644758224 norm 32.94824981689453 min/max -0.4029965400695801 0.4370769262313843
+W_v.0 (384, 384) mean 5.660305032506585e-05 std 0.03863541781902313 norm 14.836016654968262 min/max -0.34857437014579773 0.36271223425865173
+W_v.1 (384, 384) mean -3.110744000878185e-05 std 0.07123148441314697 norm 27.352893829345703 min/max -0.4262692332267761 0.35993435978889465
+W_v.2 (384, 384) mean 0.00011245020141359419 std 0.08673116564750671 norm 33.3047981262207 min/max -0.3964833915233612 0.40176886320114136
+W_v.3 (384, 384) mean 0.0001254113594768569 std 0.10363049805164337 norm 39.79413986206055 min/max -0.48620620369911194 0.5527780652046204
+ln1_b.0 (384,) mean 0.0008393097086809576 std 0.028742684051394463 norm 0.5634793639183044 min/max -0.09590836614370346 0.09102362394332886
+ln1_b.1 (384,) mean -0.005021821707487106 std 0.16716055572032928 norm 3.277142286300659 min/max -1.4712495803833008 1.1544171571731567
+ln1_b.2 (384,) mean -0.0010484304511919618 std 0.15254196524620056 norm 2.9892706871032715 min/max -1.381901502609253 1.05267333984375
+ln1_b.3 (384,) mean 0.012112464755773544 std 0.0848778784275055 norm 1.6801103353500366 min/max -0.6069080829620361 0.6501507759094238
+ln1_w.0 (384,) mean 0.24030669033527374 std 0.24358396232128143 norm 6.70513916015625 min/max -0.0010124740656465292 1.0340553522109985
+ln1_w.1 (384,) mean 0.45753344893455505 std 0.1022113487124443 norm 9.186786651611328 min/max 0.13610735535621643 1.1238988637924194
+ln1_w.2 (384,) mean 0.7052056193351746 std 0.07490397244691849 norm 13.896883964538574 min/max 0.20780912041664124 1.0144426822662354
+ln1_w.3 (384,) mean 0.7545757293701172 std 0.05423606559634209 norm 14.824750900268555 min/max 0.29438865184783936 0.8701038360595703
+ln2_b.0 (384,) mean 0.0021705578546971083 std 0.06830766052007675 norm 1.3392269611358643 min/max -0.49860355257987976 0.3330683708190918
+ln2_b.1 (384,) mean 0.0005380580550990999 std 0.13641700148582458 norm 2.6732370853424072 min/max -0.3596881926059723 0.36863091588020325
+ln2_b.2 (384,) mean 0.004968605935573578 std 0.1536681205034256 norm 3.0128414630889893 min/max -0.37611520290374756 0.3885933756828308
+ln2_b.3 (384,) mean 0.004284036811441183 std 0.12758871912956238 norm 2.501626968383789 min/max -0.6727620363235474 0.30676206946372986
+ln2_w.0 (384,) mean 0.8005699515342712 std 0.3295142650604248 norm 16.964813232421875 min/max 0.004430394619703293 1.5072498321533203
+ln2_w.1 (384,) mean 1.0428675413131714 std 0.200262650847435 norm 20.809329986572266 min/max -0.0019355153199285269 1.4855960607528687
+ln2_w.2 (384,) mean 1.3122882843017578 std 0.12551987171173096 norm 25.832860946655273 min/max 0.0011308102402836084 1.4654561281204224
+ln2_w.3 (384,) mean 1.2777737379074097 std 0.08074603974819183 norm 25.089094161987305 min/max 0.43639853596687317 1.430633544921875
+
+HEAD SPECTRA: QK = Q.T @ K / 8; OV = O @ V
+L0H0 Q/K/V/O norms [3.305 4.18  6.039 6.666] QK top [0.314 0.112 0.087 0.055 0.041 0.039 0.035 0.033] QK stable rank 1.47 QK symmetric fraction 0.727 OV top [10.252  5.603  3.475  2.818  2.112  1.335] OV trace/nuclear -0.005
+L0H1 Q/K/V/O norms [3.09  3.658 5.382 6.025] QK top [0.137 0.096 0.056 0.043 0.037 0.036 0.033 0.032] QK stable rank 2.81 QK symmetric fraction 0.747 OV top [7.662 5.172 2.582 2.031 1.761 1.087] OV trace/nuclear -0.026
+L0H2 Q/K/V/O norms [30.818 28.3    7.765  8.915] QK top [7.485 7.16  6.948 6.793 6.404 6.182 5.898 5.585] QK stable rank 9.28 QK symmetric fraction 0.696 OV top [4.001 3.853 3.743 3.544 3.449 3.313] OV trace/nuclear -0.069
+L0H3 Q/K/V/O norms [6.821 7.243 5.434 5.029] QK top [0.821 0.749 0.402 0.331 0.303 0.267 0.234 0.217] QK stable rank 2.99 QK symmetric fraction 0.763 OV top [4.305 4.046 2.493 2.078 1.8   1.083] OV trace/nuclear -0.082
+L0H4 Q/K/V/O norms [3.971 4.995 5.208 5.587] QK top [0.753 0.255 0.135 0.07  0.054 0.043 0.04  0.038] QK stable rank 1.2 QK symmetric fraction 0.763 OV top [4.879 3.236 2.548 2.083 1.635 1.358] OV trace/nuclear -0.038
+L0H5 Q/K/V/O norms [3.19  3.802 6.143 7.162] QK top [0.274 0.068 0.049 0.041 0.037 0.037 0.034 0.032] QK stable rank 1.39 QK symmetric fraction 0.729 OV top [10.314  5.468  3.148  2.935  2.314  1.682] OV trace/nuclear -0.002
+L1H0 Q/K/V/O norms [10.716  9.827 11.156  9.984] QK top [1.577 1.462 1.035 0.877 0.653 0.522 0.481 0.451] QK stable rank 3.52 QK symmetric fraction 0.735 OV top [8.099 7.58  6.398 6.202 5.966 5.738] OV trace/nuclear -0.203
+L1H1 Q/K/V/O norms [13.292 12.068 11.72  11.303] QK top [2.456 2.132 1.344 1.193 0.918 0.869 0.803 0.733] QK stable rank 3.27 QK symmetric fraction 0.742 OV top [6.583 6.009 5.739 5.681 5.394 5.09 ] OV trace/nuclear -0.223
+L1H2 Q/K/V/O norms [14.476 13.092 10.668 10.272] QK top [2.923 2.292 1.508 1.402 1.191 1.074 1.041 0.966] QK stable rank 3.19 QK symmetric fraction 0.745 OV top [6.135 5.788 5.252 4.987 4.903 4.7  ] OV trace/nuclear -0.207
+L1H3 Q/K/V/O norms [13.358 12.153 10.904  9.928] QK top [2.638 2.173 1.454 1.142 1.062 0.813 0.779 0.759] QK stable rank 3.05 QK symmetric fraction 0.74 OV top [7.767 6.864 6.527 6.06  5.814 5.543] OV trace/nuclear -0.195
+L1H4 Q/K/V/O norms [13.518 12.129 11.148 10.794] QK top [2.87  2.178 1.43  1.085 0.911 0.776 0.754 0.713] QK stable rank 2.65 QK symmetric fraction 0.737 OV top [6.498 6.253 5.897 5.784 5.494 5.388] OV trace/nuclear -0.228
+L1H5 Q/K/V/O norms [13.486 12.132 11.376 11.136] QK top [2.618 2.293 1.294 1.053 0.925 0.835 0.779 0.717] QK stable rank 2.99 QK symmetric fraction 0.73 OV top [6.208 6.019 5.803 5.645 5.415 5.359] OV trace/nuclear -0.238
+L2H0 Q/K/V/O norms [16.822 16.208 13.115 12.942] QK top [1.457 1.249 1.141 1.088 1.043 0.997 0.945 0.921] QK stable rank 10.95 QK symmetric fraction 0.702 OV top [4.898 4.628 4.553 4.4   4.363 4.218] OV trace/nuclear -0.324
+L2H1 Q/K/V/O norms [15.963 15.287 13.768 13.525] QK top [1.155 0.893 0.881 0.867 0.816 0.794 0.778 0.749] QK stable rank 12.85 QK symmetric fraction 0.713 OV top [5.468 5.157 4.968 4.755 4.704 4.624] OV trace/nuclear -0.272
+L2H2 Q/K/V/O norms [13.97  13.239 14.567 14.24 ] QK top [1.11  0.945 0.773 0.625 0.589 0.579 0.563 0.54 ] QK stable rank 8.07 QK symmetric fraction 0.711 OV top [7.863 7.18  6.901 5.989 5.921 5.632] OV trace/nuclear -0.228
+L2H3 Q/K/V/O norms [16.121 15.554 13.498 13.391] QK top [1.066 0.993 0.907 0.877 0.822 0.797 0.764 0.743] QK stable rank 14.81 QK symmetric fraction 0.706 OV top [6.18  5.8   5.539 4.932 4.673 4.575] OV trace/nuclear -0.278
+L2H4 Q/K/V/O norms [16.876 16.188 13.241 13.143] QK top [1.188 1.105 1.077 1.014 0.915 0.895 0.882 0.849] QK stable rank 15.02 QK symmetric fraction 0.704 OV top [5.07  4.774 4.66  4.505 4.372 4.29 ] OV trace/nuclear -0.265
+L2H5 Q/K/V/O norms [16.445 15.839 13.339 13.161] QK top [1.201 1.063 0.969 0.943 0.934 0.905 0.845 0.835] QK stable rank 13.55 QK symmetric fraction 0.704 OV top [4.84  4.693 4.49  4.483 4.358 4.288] OV trace/nuclear -0.292
+L3H0 Q/K/V/O norms [15.747 15.258 14.874 14.87 ] QK top [0.79  0.738 0.734 0.707 0.695 0.688 0.673 0.667] QK stable rank 24.41 QK symmetric fraction 0.725 OV top [8.384 7.583 6.42  6.247 5.851 5.639] OV trace/nuclear -0.338
+L3H1 Q/K/V/O norms [14.22  14.197 17.885 18.331] QK top [0.571 0.554 0.552 0.536 0.53  0.525 0.522 0.514] QK stable rank 31.82 QK symmetric fraction 0.778 OV top [13.854 13.612 13.378 12.359 12.256 12.167] OV trace/nuclear -0.217
+L3H2 Q/K/V/O norms [12.743 12.446 15.523 15.585] QK top [0.808 0.724 0.627 0.583 0.54  0.503 0.472 0.46 ] QK stable rank 10.6 QK symmetric fraction 0.707 OV top [11.891  9.927  8.462  8.285  7.981  7.753] OV trace/nuclear -0.19
+L3H3 Q/K/V/O norms [13.283 13.057 15.732 16.118] QK top [0.856 0.707 0.587 0.539 0.517 0.511 0.503 0.473] QK stable rank 10.64 QK symmetric fraction 0.702 OV top [12.434 10.397  9.009  8.061  7.769  7.575] OV trace/nuclear -0.21
+L3H4 Q/K/V/O norms [14.356 13.874 15.175 15.3  ] QK top [0.919 0.738 0.695 0.661 0.629 0.593 0.577 0.566] QK stable rank 12.5 QK symmetric fraction 0.707 OV top [9.526 8.963 7.011 6.951 6.494 6.106] OV trace/nuclear -0.195
+L3H5 Q/K/V/O norms [ 9.514  9.231 17.993 18.512] QK top [0.483 0.419 0.374 0.349 0.336 0.292 0.263 0.254] QK stable rank 9.4 QK symmetric fraction 0.716 OV top [21.979 19.201 17.421 16.747 16.065 15.831] OV trace/nuclear -0.182
+
+```</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><div class="event"><h3>Codex reply</h3><pre>```python
+import numpy as np
+from scipy.linalg import svd, svdvals, eigvals
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=3, suppress=True, linewidth=180)
+
+with threadpool_limits(limits=4):
+    print(&quot;L0 GAIN DISTRIBUTIONS&quot;)
+    for name in [&quot;ln1_w.0&quot;, &quot;ln2_w.0&quot;]:
+        a = W[name]
+        print(name, &quot;quantiles&quot;, np.quantile(a, [0,.1,.25,.5,.75,.9,.95,1]))
+        ids = np.argsort(a)[-45:][::-1]
+        print(&quot;largest coordinates&quot;, list(zip(ids.tolist(), np.round(a[ids],3).tolist())))
+    print(&quot;\nL0 SINGULAR VALUES&quot;)
+    for name in [&quot;W_q.0&quot;,&quot;W_k.0&quot;,&quot;W_v.0&quot;,&quot;W_o.0&quot;,&quot;W_fc.0&quot;,&quot;W_proj.0&quot;]:
+        s = svdvals(W[name])
+        print(name, &quot;top 40&quot;, s[:40], &quot;tail quantiles&quot;, np.quantile(s, [.1,.25,.5,.75]))
+    print(&quot;\nGAIN-WEIGHTED HEAD PRODUCTS (weight algebra only)&quot;)
+    for l in range(4):
+        g, b = W[f&quot;ln1_w.{l}&quot;], W[f&quot;ln1_b.{l}&quot;]
+        for j in range(6):
+            s = slice(64*j,64*(j+1))
+            q, k = W[f&quot;W_q.{l}&quot;][s], W[f&quot;W_k.{l}&quot;][s]
+            a = (q*g).T @ (k*g) / 8
+            a = a-a.mean(0,keepdims=True)-a.mean(1,keepdims=True)+a.mean()
+            sv = svdvals(a)
+            e = eigvals(a)
+            e = e[np.argsort(np.abs(e))[::-1]]
+            key_bias = (k*g).T @ (q@b)/8
+            query_bias = (q*g).T @ (k@b)/8
+            print(f&quot;L{l}H{j}&quot;, &quot;norm&quot;, round(float(np.linalg.norm(a)),3),
+                  &quot;top sv&quot;, sv[:6], &quot;rank&quot;, round(float((sv@sv)/sv[0]**2),2),
+                  &quot;bias key/query norms&quot;, np.round([np.linalg.norm(key_bias),np.linalg.norm(query_bias)],3),
+                  &quot;eigenvalues&quot;, e[:6])
+    print(&quot;\nL0 QK COORDINATE CONCENTRATION&quot;)
+    for j in range(6):
+        s=slice(64*j,64*(j+1))
+        q,k=W[&quot;W_q.0&quot;][s],W[&quot;W_k.0&quot;][s]
+        energy=(q*q).sum(0)+(k*k).sum(0)
+        ids=np.argsort(energy)[-24:][::-1]
+        print(&quot;H&quot;,j,&quot;top coordinates&quot;,ids, &quot;energy&quot;,energy[ids],
+              &quot;ln1&quot;,W[&quot;ln1_w.0&quot;][ids],&quot;ln2&quot;,W[&quot;ln2_w.0&quot;][ids])
+```
+</pre></div><details class="harness"><summary>Permitted experiment harness: python — full request and result</summary><pre>{
+  &quot;t&quot;: 1792713337.4931185,
+  &quot;s&quot;: 4.24,
+  &quot;code&quot;: &quot;import numpy as np\nfrom scipy.linalg import svd, svdvals, eigvals\nfrom threadpoolctl import threadpool_limits\nnp.set_printoptions(precision=3, suppress=True, linewidth=180)\n\nwith threadpool_limits(limits=4):\n    print(\&quot;L0 GAIN DISTRIBUTIONS\&quot;)\n    for name in [\&quot;ln1_w.0\&quot;, \&quot;ln2_w.0\&quot;]:\n        a = W[name]\n        print(name, \&quot;quantiles\&quot;, np.quantile(a, [0,.1,.25,.5,.75,.9,.95,1]))\n        ids = np.argsort(a)[-45:][::-1]\n        print(\&quot;largest coordinates\&quot;, list(zip(ids.tolist(), np.round(a[ids],3).tolist())))\n    print(\&quot;\\nL0 SINGULAR VALUES\&quot;)\n    for name in [\&quot;W_q.0\&quot;,\&quot;W_k.0\&quot;,\&quot;W_v.0\&quot;,\&quot;W_o.0\&quot;,\&quot;W_fc.0\&quot;,\&quot;W_proj.0\&quot;]:\n        s = svdvals(W[name])\n        print(name, \&quot;top 40\&quot;, s[:40], \&quot;tail quantiles\&quot;, np.quantile(s, [.1,.25,.5,.75]))\n    print(\&quot;\\nGAIN-WEIGHTED HEAD PRODUCTS (weight algebra only)\&quot;)\n    for l in range(4):\n        g, b = W[f\&quot;ln1_w.{l}\&quot;], W[f\&quot;ln1_b.{l}\&quot;]\n        for j in range(6):\n            s = slice(64*j,64*(j+1))\n            q, k = W[f\&quot;W_q.{l}\&quot;][s], W[f\&quot;W_k.{l}\&quot;][s]\n            a = (q*g).T @ (k*g) / 8\n            a = a-a.mean(0,keepdims=True)-a.mean(1,keepdims=True)+a.mean()\n            sv = svdvals(a)\n            e = eigvals(a)\n            e = e[np.argsort(np.abs(e))[::-1]]\n            key_bias = (k*g).T @ (q@b)/8\n            query_bias = (q*g).T @ (k@b)/8\n            print(f\&quot;L{l}H{j}\&quot;, \&quot;norm\&quot;, round(float(np.linalg.norm(a)),3),\n                  \&quot;top sv\&quot;, sv[:6], \&quot;rank\&quot;, round(float((sv@sv)/sv[0]**2),2),\n                  \&quot;bias key/query norms\&quot;, np.round([np.linalg.norm(key_bias),np.linalg.norm(query_bias)],3),\n                  \&quot;eigenvalues\&quot;, e[:6])\n    print(\&quot;\\nL0 QK COORDINATE CONCENTRATION\&quot;)\n    for j in range(6):\n        s=slice(64*j,64*(j+1))\n        q,k=W[\&quot;W_q.0\&quot;][s],W[\&quot;W_k.0\&quot;][s]\n        energy=(q*q).sum(0)+(k*k).sum(0)\n        ids=np.argsort(energy)[-24:][::-1]\n        print(\&quot;H\&quot;,j,\&quot;top coordinates\&quot;,ids, \&quot;energy\&quot;,energy[ids],\n              \&quot;ln1\&quot;,W[\&quot;ln1_w.0\&quot;][ids],\&quot;ln2\&quot;,W[\&quot;ln2_w.0\&quot;][ids])\n&quot;,
+  &quot;out&quot;: &quot;L0 GAIN DISTRIBUTIONS\nln1_w.0 quantiles [-0.001  0.039  0.08   0.142  0.321  0.715  0.835  1.034]\nlargest coordinates [(162, 1.034000039100647), (60, 0.984000027179718), (223, 0.9800000190734863), (311, 0.9440000057220459), (239, 0.9380000233650208), (300, 0.9369999766349792), (35, 0.9369999766349792), (180, 0.9290000200271606), (136, 0.8960000276565552), (59, 0.8949999809265137), (178, 0.8899999856948853), (246, 0.8820000290870667), (4, 0.8679999709129333), (105, 0.8600000143051147), (99, 0.8560000061988831), (114, 0.8500000238418579), (228, 0.8450000286102295), (184, 0.8450000286102295), (152, 0.8429999947547913), (222, 0.8360000252723694), (158, 0.8299999833106995), (65, 0.8240000009536743), (360, 0.8199999928474426), (356, 0.800000011920929), (319, 0.7929999828338623), (351, 0.7860000133514404), (301, 0.7799999713897705), (273, 0.7799999713897705), (54, 0.7789999842643738), (79, 0.7770000100135803), (240, 0.7720000147819519), (143, 0.7580000162124634), (127, 0.75), (320, 0.7379999756813049), (39, 0.7269999980926514), (102, 0.7260000109672546), (235, 0.7260000109672546), (266, 0.7200000286102295), (78, 0.718999981880188), (72, 0.7059999704360962), (279, 0.6520000100135803), (358, 0.6309999823570251), (263, 0.6110000014305115), (40, 0.6060000061988831), (93, 0.6050000190734863)]\nln2_w.0 quantiles [0.004 0.341 0.554 0.788 1.043 1.268 1.313 1.507]\nlargest coordinates [(161, 1.5069999694824219), (164, 1.50600004196167), (155, 1.4539999961853027), (348, 1.4190000295639038), (376, 1.4049999713897705), (200, 1.4040000438690186), (23, 1.3960000276565552), (379, 1.3839999437332153), (220, 1.38100004196167), (292, 1.3739999532699585), (309, 1.371000051498413), (31, 1.3630000352859497), (118, 1.3539999723434448), (55, 1.3420000076293945), (375, 1.3380000591278076), (66, 1.3309999704360962), (261, 1.3279999494552612), (131, 1.3259999752044678), (117, 1.3200000524520874), (346, 1.312999963760376), (291, 1.312999963760376), (212, 1.312000036239624), (221, 1.309999942779541), (241, 1.3049999475479126), (262, 1.3040000200271606), (63, 1.3040000200271606), (150, 1.3040000200271606), (361, 1.3020000457763672), (315, 1.2990000247955322), (5, 1.2960000038146973), (18, 1.2949999570846558), (84, 1.2869999408721924), (364, 1.2829999923706055), (367, 1.2760000228881836), (37, 1.274999976158142), (306, 1.2740000486373901), (357, 1.2719999551773071), (365, 1.2710000276565552), (328, 1.2690000534057617), (123, 1.2669999599456787), (176, 1.2649999856948853), (248, 1.2610000371932983), (186, 1.2589999437332153), (338, 1.2569999694824219), (194, 1.2519999742507935)]\n\nL0 SINGULAR VALUES\nW_q.0 top 40 [8.252 8.223 7.963 7.819 7.68  7.642 7.519 7.205 6.948 6.819 6.388 6.165 5.801 5.555 5.13  4.947 4.854 4.52  4.268 3.951 3.591 3.527 3.285 3.125 3.026 2.928 2.707 2.511 2.471\n 2.336 2.249 2.136 2.089 2.058 1.914 1.792 1.755 1.679 1.536 1.513] tail quantiles [0.054 0.141 0.304 0.563]\nW_k.0 top 40 [7.646 7.436 7.33  6.912 6.829 6.672 6.472 6.446 6.393 6.118 6.009 5.943 5.629 5.505 4.99  4.901 4.699 4.293 4.066 4.018 3.708 3.529 3.343 3.068 2.987 2.874 2.696 2.586 2.412\n 2.262 2.216 2.11  2.032 1.876 1.744 1.733 1.697 1.666 1.547 1.514] tail quantiles [0.067 0.167 0.352 0.641]\nW_v.0 top 40 [4.339 3.529 3.27  3.166 2.982 2.647 2.589 2.552 2.436 2.381 2.256 2.162 2.13  2.103 2.042 2.017 2.003 1.973 1.928 1.897 1.843 1.787 1.711 1.665 1.628 1.564 1.558 1.441 1.4\n 1.377 1.347 1.267 1.222 1.159 1.086 1.046 1.016 0.999 0.945 0.918] tail quantiles [0.059 0.15  0.308 0.522]\nW_o.0 top 40 [7.103 6.607 4.268 2.77  2.503 2.285 2.264 2.218 2.151 2.139 2.105 2.08  2.059 2.026 2.003 1.987 1.928 1.89  1.836 1.825 1.804 1.731 1.72  1.694 1.685 1.581 1.543 1.518 1.507\n 1.428 1.4   1.349 1.31  1.299 1.248 1.223 1.202 1.187 1.17  1.163] tail quantiles [0.022 0.062 0.159 0.391]\nW_fc.0 top 40 [18.176 11.018  8.737  7.452  7.212  7.062  7.011  6.62   6.57   6.42   6.343  6.29   6.137  6.043  5.974  5.918  5.807  5.779  5.583  5.513  5.5    5.36   5.16   5.12   5.086\n  5.032  4.899  4.&quot;
+}</pre></details></details><details id="t003"><summary>t003 · harness: python</summary><p class="small"><a href="../raw/exp3/english_r0/original/turns/t003/prompt.txt">Recorded prompt</a> · <a href="../raw/exp3/english_r0/original/turns/t003/events.jsonl">Raw CLI events</a> · <a href="../raw/exp3/english_r0/original/turns/t003/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 12,963 characters</summary><pre>OUTPUT of run 2 of at most 100:
+```
+L0 GAIN DISTRIBUTIONS
+ln1_w.0 quantiles [-0.001  0.039  0.08   0.142  0.321  0.715  0.835  1.034]
+largest coordinates [(162, 1.034000039100647), (60, 0.984000027179718), (223, 0.9800000190734863), (311, 0.9440000057220459), (239, 0.9380000233650208), (300, 0.9369999766349792), (35, 0.9369999766349792), (180, 0.9290000200271606), (136, 0.8960000276565552), (59, 0.8949999809265137), (178, 0.8899999856948853), (246, 0.8820000290870667), (4, 0.8679999709129333), (105, 0.8600000143051147), (99, 0.8560000061988831), (114, 0.8500000238418579), (228, 0.8450000286102295), (184, 0.8450000286102295), (152, 0.8429999947547913), (222, 0.8360000252723694), (158, 0.8299999833106995), (65, 0.8240000009536743), (360, 0.8199999928474426), (356, 0.800000011920929), (319, 0.7929999828338623), (351, 0.7860000133514404), (301, 0.7799999713897705), (273, 0.7799999713897705), (54, 0.7789999842643738), (79, 0.7770000100135803), (240, 0.7720000147819519), (143, 0.7580000162124634), (127, 0.75), (320, 0.7379999756813049), (39, 0.7269999980926514), (102, 0.7260000109672546), (235, 0.7260000109672546), (266, 0.7200000286102295), (78, 0.718999981880188), (72, 0.7059999704360962), (279, 0.6520000100135803), (358, 0.6309999823570251), (263, 0.6110000014305115), (40, 0.6060000061988831), (93, 0.6050000190734863)]
+ln2_w.0 quantiles [0.004 0.341 0.554 0.788 1.043 1.268 1.313 1.507]
+largest coordinates [(161, 1.5069999694824219), (164, 1.50600004196167), (155, 1.4539999961853027), (348, 1.4190000295639038), (376, 1.4049999713897705), (200, 1.4040000438690186), (23, 1.3960000276565552), (379, 1.3839999437332153), (220, 1.38100004196167), (292, 1.3739999532699585), (309, 1.371000051498413), (31, 1.3630000352859497), (118, 1.3539999723434448), (55, 1.3420000076293945), (375, 1.3380000591278076), (66, 1.3309999704360962), (261, 1.3279999494552612), (131, 1.3259999752044678), (117, 1.3200000524520874), (346, 1.312999963760376), (291, 1.312999963760376), (212, 1.312000036239624), (221, 1.309999942779541), (241, 1.3049999475479126), (262, 1.3040000200271606), (63, 1.3040000200271606), (150, 1.3040000200271606), (361, 1.3020000457763672), (315, 1.2990000247955322), (5, 1.2960000038146973), (18, 1.2949999570846558), (84, 1.2869999408721924), (364, 1.2829999923706055), (367, 1.2760000228881836), (37, 1.274999976158142), (306, 1.2740000486373901), (357, 1.2719999551773071), (365, 1.2710000276565552), (328, 1.2690000534057617), (123, 1.2669999599456787), (176, 1.2649999856948853), (248, 1.2610000371932983), (186, 1.2589999437332153), (338, 1.2569999694824219), (194, 1.2519999742507935)]
+
+L0 SINGULAR VALUES
+W_q.0 top 40 [8.252 8.223 7.963 7.819 7.68  7.642 7.519 7.205 6.948 6.819 6.388 6.165 5.801 5.555 5.13  4.947 4.854 4.52  4.268 3.951 3.591 3.527 3.285 3.125 3.026 2.928 2.707 2.511 2.471
+ 2.336 2.249 2.136 2.089 2.058 1.914 1.792 1.755 1.679 1.536 1.513] tail quantiles [0.054 0.141 0.304 0.563]
+W_k.0 top 40 [7.646 7.436 7.33  6.912 6.829 6.672 6.472 6.446 6.393 6.118 6.009 5.943 5.629 5.505 4.99  4.901 4.699 4.293 4.066 4.018 3.708 3.529 3.343 3.068 2.987 2.874 2.696 2.586 2.412
+ 2.262 2.216 2.11  2.032 1.876 1.744 1.733 1.697 1.666 1.547 1.514] tail quantiles [0.067 0.167 0.352 0.641]
+W_v.0 top 40 [4.339 3.529 3.27  3.166 2.982 2.647 2.589 2.552 2.436 2.381 2.256 2.162 2.13  2.103 2.042 2.017 2.003 1.973 1.928 1.897 1.843 1.787 1.711 1.665 1.628 1.564 1.558 1.441 1.4
+ 1.377 1.347 1.267 1.222 1.159 1.086 1.046 1.016 0.999 0.945 0.918] tail quantiles [0.059 0.15  0.308 0.522]
+W_o.0 top 40 [7.103 6.607 4.268 2.77  2.503 2.285 2.264 2.218 2.151 2.139 2.105 2.08  2.059 2.026 2.003 1.987 1.928 1.89  1.836 1.825 1.804 1.731 1.72  1.694 1.685 1.581 1.543 1.518 1.507
+ 1.428 1.4   1.349 1.31  1.299 1.248 1.223 1.202 1.187 1.17  1.163] tail quantiles [0.022 0.062 0.159 0.391]
+W_fc.0 top 40 [18.176 11.018  8.737  7.452  7.212  7.062  7.011  6.62   6.57   6.42   6.343  6.29   6.137  6.043  5.974  5.918  5.807  5.779  5.583  5.513  5.5    5.36   5.16   5.12   5.086
+  5.032  4.899  4.879  4.819  4.732  4.601  4.533  4.479  4.441  4.268  4.198  4.031  3.974  3.869  3.824] tail quantiles [0.509 0.621 0.835 1.311]
+W_proj.0 top 40 [9.826 7.351 6.265 5.869 5.797 5.657 5.516 5.45  5.333 5.242 5.197 5.094 4.98  4.904 4.863 4.819 4.793 4.689 4.627 4.595 4.557 4.523 4.411 4.378 4.283 4.216 4.143 4.125 4.048
+ 4.025 3.894 3.847 3.808 3.792 3.764 3.711 3.685 3.636 3.595 3.525] tail quantiles [0.278 0.367 0.65  1.853]
+
+GAIN-WEIGHTED HEAD PRODUCTS (weight algebra only)
+L0H0 norm 0.055 top sv [0.051 0.011 0.007 0.005 0.004 0.004] rank 1.13 bias key/query norms [0.014 0.021] eigenvalues [ 0.007+0.j    -0.004+0.j    -0.002+0.j    -0.   -0.001j -0.   +0.001j  0.   -0.001j]
+L0H1 norm 0.03 top sv [0.025 0.01  0.005 0.004 0.003 0.003] rank 1.4 bias key/query norms [0.003 0.001] eigenvalues [-0.004+0.001j -0.004-0.001j  0.002+0.j    -0.001-0.001j -0.001+0.001j -0.001+0.j   ]
+L0H2 norm 4.069 top sv [1.408 1.272 1.213 1.199 1.158 1.09 ] rank 8.35 bias key/query norms [0.143 0.189] eigenvalues [ 0.632+0.813j  0.632-0.813j -0.231+0.927j -0.231-0.927j  0.332+0.871j  0.332-0.871j]
+L0H3 norm 0.395 top sv [0.359 0.119 0.078 0.042 0.033 0.027] rank 1.21 bias key/query norms [0.054 0.04 ] eigenvalues [ 0.262+0.j     0.078+0.j     0.01 -0.031j  0.01 +0.031j -0.017-0.005j -0.017+0.005j]
+L0H4 norm 0.106 top sv [0.089 0.054 0.016 0.006 0.005 0.004] rank 1.42 bias key/query norms [0.011 0.01 ] eigenvalues [-0.028+0.028j -0.028-0.028j -0.008+0.j    -0.002+0.j    -0.001+0.001j -0.001-0.001j]
+L0H5 norm 0.078 top sv [0.076 0.011 0.005 0.004 0.003 0.003] rank 1.04 bias key/query norms [0.016 0.025] eigenvalues [-0.031+0.j     0.001-0.002j  0.001+0.002j -0.001-0.j    -0.001+0.j    -0.001-0.001j]
+L1H0 norm 0.886 top sv [0.597 0.482 0.248 0.194 0.132 0.112] rank 2.2 bias key/query norms [1.357 1.648] eigenvalues [ 0.028+0.106j  0.028-0.106j -0.078+0.j    -0.066-0.028j -0.066+0.028j -0.055-0.007j]
+L1H1 norm 1.315 top sv [0.881 0.665 0.411 0.267 0.203 0.179] rank 2.23 bias key/query norms [2.285 2.331] eigenvalues [ 0.07 -0.191j  0.07 +0.191j -0.153+0.j    -0.107-0.024j -0.107+0.024j -0.108-0.006j]
+L1H2 norm 1.549 top sv [0.994 0.857 0.383 0.325 0.264 0.227] rank 2.43 bias key/query norms [2.588 2.982] eigenvalues [ 0.097+0.246j  0.097-0.246j -0.168+0.j    -0.141-0.064j -0.141+0.064j -0.135-0.009j]
+L1H3 norm 1.374 top sv [0.919 0.737 0.407 0.254 0.22  0.172] rank 2.24 bias key/query norms [2.351 2.347] eigenvalues [ 0.094-0.203j  0.094+0.203j -0.175+0.j    -0.113-0.008j -0.113+0.008j -0.107+0.j   ]
+L1H4 norm 1.45 top sv [0.948 0.867 0.36  0.259 0.193 0.173] rank 2.34 bias key/query norms [2.29  2.948] eigenvalues [ 0.062-0.214j  0.062+0.214j -0.135-0.01j  -0.135+0.01j  -0.127+0.j    -0.099+0.j   ]
+L1H5 norm 1.336 top sv [0.893 0.737 0.372 0.229 0.204 0.185] rank 2.24 bias key/query norms [1.753 2.461] eigenvalues [ 0.088+0.221j  0.088-0.221j -0.121+0.012j -0.121-0.012j -0.1  -0.004j -0.1  +0.004j]
+L2H0 norm 2.438 top sv [0.694 0.629 0.602 0.563 0.53  0.506] rank 12.33 bias key/query norms [1.699 1.626] eigenvalues [0.053-0.306j 0.053+0.306j 0.036-0.183j 0.036+0.183j 0.118-0.08j  0.118+0.08j ]
+L2H1 norm 2.068 top sv [0.527 0.449 0.432 0.417 0.41  0.395] rank 15.41 bias key/query norms [0.745 0.937] eigenvalues [0.027-0.144j 0.027+0.144j 0.126+0.011j 0.126-0.011j 0.109+0.037j 0.109-0.037j]
+L2H2 norm 1.613 top sv [0.607 0.503 0.401 0.317 0.298 0.287] rank 7.06 bias key/query norms [0.756 1.564] eigenvalues [ 0.037+0.175j  0.037-0.175j -0.106+0.j     0.067+0.055j  0.067-0.055j -0.084-0.015j]
+L2H3 norm 2.086 top sv [0.562 0.526 0.49  0.44  0.412 0.394] rank 13.8 bias key/query norms [1.463 1.378] eigenvalues [ 0.072-0.307j  0.072+0.307j -0.076-0.084j -0.076+0.084j -0.102+0.042j -0.102-0.042j]
+L2H4 norm 2.344 top sv [0.628 0.604 0.532 0.508 0.467 0.451] rank 13.94 bias key/query norms [1.578 1.638] eigenvalues [ 0.061-0.303j  0.061+0.303j  0.077-0.102j  0.077+0.102j -0.081-0.091j -0.081+0.091j]
+L2H5 norm 2.25 top sv [0.637 0.539 0.494 0.476 0.468 0.452] rank 12.46 bias key/query norms [1.509 1.454] eigenvalues [ 0.046-0.302j  0.046+0.302j -0.141+0.j    -0.071-0.108j -0.071+0.108j -0.119+0.037j]
+L3H0 norm 2.232 top sv [0.451 0.42  0.418 0.405 0.401 0.395] rank 24.45 bias key/query norms [0.258 0.261] eigenvalues [0.182+0.j    0.141-0.078j 0.141+0.078j 0.158-0.019j 0.158+0.019j 0.143-0.056j]
+L3H1 norm 1.829 top sv [0.328 0.317 0.309 0.306 0.301 0.298] rank 31.2 bias key/query norms [0.242 0.137] eigenvalues [0.174-0.06j  0.174+0.06j  0.171+0.067j 0.171-0.067j 0.149+0.082j 0.149-0.082j]
+L3H2 norm 1.505 top sv [0.47  0.411 0.355 0.332 0.309 0.29 ] rank 10.24 bias key/query norms [0.29  0.277] eigenvalues [ 0.03 +0.134j  0.03 -0.134j  0.081-0.038j  0.081+0.038j -0.035-0.082j -0.035+0.082j]
+L3H3 norm 1.599 top sv [0.497 0.402 0.336 0.304 0.296 0.295] rank 10.33 bias key/query norms [0.36  0.306] eigenvalues [ 0.023-0.159j  0.023+0.159j  0.099+0.j    -0.023+0.095j -0.023-0.095j  0.076-0.036j]
+L3H4 norm 1.856 top sv [0.529 0.412 0.398 0.374 0.36  0.336] rank 12.32 bias key/query norms [0.307 0.261] eigenvalues [0.068+0.092j 0.068-0.092j 0.002+0.108j 0.002-0.108j 0.098-0.04j  0.098+0.04j ]
+L3H5 norm 0.834 top sv [0.259 0.235 0.212 0.196 0.19  0.159] rank 10.36 bias key/query norms [0.165 0.089] eigenvalues [0.075-0.035j 0.075+0.035j 0.078+0.j    0.02 -0.048j 0.02 +0.048j 0.023-0.036j]
+
+L0 QK COORDINATE CONCENTRATION
+H 0 top coordinates [ 72  78 331 268 141 239  80 232 311 147 265  21 222 218  91 195 108 223 275  97 201 224 254 300] energy [0.234 0.227 0.179 0.178 0.175 0.173 0.172 0.167 0.155 0.154 0.152 0.148 0.148 0.147 0.143 0.14  0.138 0.136 0.135 0.133 0.132 0.131 0.129 0.129] ln1 [ 0.706  0.719 -0.001  0.     0.001  0.938  0.004 -0.001  0.944  0.001 -0.     0.021  0.836  0.001  0.03   0.069  0.074  0.98   0.065  0.002  0.145  0.153  0.331  0.937] ln2 [0.251 0.105 0.971 0.715 1.077 0.97  0.484 0.934 0.524 0.776 0.916 0.341 0.053 1.045 1.046 0.349 0.887 0.688 0.23  0.432 0.263 0.342 0.499 0.462]
+H 1 top coordinates [ 78  72 141 254  80  58 195   6 232  21  95 268 187 218 265 275 331  25 147 222 149 219 334 286] energy [0.315 0.304 0.224 0.163 0.152 0.152 0.148 0.147 0.146 0.146 0.141 0.138 0.136 0.136 0.131 0.129 0.129 0.129 0.127 0.125 0.122 0.118 0.117 0.116] ln1 [ 0.719  0.706  0.001  0.331  0.004 -0.001  0.069  0.198 -0.001  0.021  0.1    0.     0.265  0.001 -0.     0.065 -0.001  0.356  0.001  0.836 -0.     0.028  0.001  0.002] ln2 [0.105 0.251 1.077 0.499 0.484 1.252 0.349 0.296 0.934 0.341 0.231 0.715 0.246 1.045 0.916 0.23  0.971 0.588 0.776 0.053 0.77  0.53  0.844 0.602]
+H 2 top coordinates [170 162 299  93 358 283 366 342 128 209 153  60  16 101  35 372 204  69 382 374   6 353 110 373] energy [12.67  12.623 12.502 12.433 12.423 12.198 11.904 11.749 11.737 11.671 11.534 11.461 11.178 11.17  11.126 11.092 11.081 10.976 10.888 10.869 10.732 10.709 10.67  10.663] ln1 [0.539 1.034 0.411 0.605 0.631 0.371 0.384 0.495 0.336 0.455 0.341 0.984 0.493 0.295 0.937 0.205 0.254 0.421 0.264 0.404 0.198 0.371 0.334 0.419] ln2 [0.302 0.443 0.425 0.461 0.336 0.358 0.146 0.322 0.158 0.206 0.35  0.495 0.45  0.341 0.684 0.281 0.533 0.644 0.3   0.458 0.296 0.351 0.522 0.333]
+H 3 top coordinates [ 78  72 222 311 173 208 254 178 223 195 360  60 132 239 162 300 205   4 273 340 246 356  25 224] energy [1.2   1.027 0.936 0.846 0.82  0.817 0.778 0.647 0.623 0.607 0.606 0.594 0.593 0.581 0.578 0.568 0.532 0.511 0.495 0.494 0.482 0.481 0.475 0.466] ln1 [0.719 0.706 0.836 0.944 0.132 0.062 0.331 0.89  0.98  0.069 0.82  0.984 0.127 0.938 1.034 0.937 0.122 0.868 0.78  0.04  0.882 0.8   0.356 0.153] ln2 [0.105 0.251 0.053 0.524 0.614 0.463 0.499 0.379 0.688 0.349 0.463 0.495 0.653 0.97  0.443 0.462 0.503 0.476 0.301 0.581 0.573 0.693 0.588 0.342]
+H 4 top coordinates [ 78  64  72 368  42 356 222 138 365  35 275 306 122 131 146 258  19 183  25 215 254 331 280 273] energy [0.736 0.603 0.597 0.421 0.374 0.353 0.325 0.317 0.293 0.287 0.251 0.24  0.24  0.235 0.234 0.216 0.215 0.208 0.208 0.208 0.207 0.204 0.202 0.198] ln1 [ 0.719  0.133  0.706  0.154  0.047  0.8    0.836  0.093  0.125  0.937  0.065  0.055  0.049  0.067  0.055  0.087  0.165  0.161  0.356  0.072  0.331 -0.001  0.127  0.78 ] ln2 [0.105 1.062 0.251 1.166 1.021 0.693 0.053 0.614 1.271 0.684 0.23  1.274 0.735 1.326 0.611 0.607 0.414 0.177 0.588 1.152 0.499 0.971 1.005 0.301]
+H 5 top coordinates [ 78  72 222 268 147  21 141 232 195  80 331 254 224  25 265 273 356 149 341  58 334 239  35 218] energy [0.354 0.324 0.211 0.207 0.186 0.185 0.17  0.166 0.164 0.164 0.164 0.159 0.14  0.136 0.135 0.135 0.126 0.124 0.124 0.122 0.118 0.117 0.117 0.116] ln1 [ 0.719  0.706  0.836  0.     0.001  0.021  0.001 -0.001  0.069  0.004 -0.001  0.331  0.153  0.356 -0.     0.78   0.8   -0.     0.161 -0.001  0.001  0.938  0.937  0.001] ln2 [0.105 0.251 0.053 0.715 0.776 0.341 1.077 0.934 0.349 0.484 0.971 0.499 0.342 0.588 0.916 0.301 0.693 0.77  0.781 1.252 0.844 0.97  0.684 1.045]
+
+```</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><div class="event"><h3>Codex reply</h3><pre>```python
+import numpy as np
+from scipy.linalg import svd, svdvals, eigvals
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=3, suppress=True, linewidth=180)
+
+def center_columns(a):
+    return a-a.mean(axis=1,keepdims=True)
+def center_output(a):
+    return a-a.mean(axis=0,keepdims=True)
+
+with threadpool_limits(limits=4):
+    A, B = {}, {}
+    for l in range(4):
+        g=W[f&quot;ln1_w.{l}&quot;]
+        for j in range(6):
+            s=slice(j*64,(j+1)*64)
+            q=center_columns(W[f&quot;W_q.{l}&quot;][s]*g)
+            k=center_columns(W[f&quot;W_k.{l}&quot;][s]*g)
+            v=center_columns(W[f&quot;W_v.{l}&quot;][s]*g)
+            o=center_output(W[f&quot;W_o.{l}&quot;][:,s])
+            A[l,j]=q.T@k/8
+            B[l,j]=o@v
+    s=slice(128,192)
+    pos_basis=svd(np.vstack([center_columns(W[&quot;W_q.0&quot;][s]*W[&quot;ln1_w.0&quot;]),
+                            center_columns(W[&quot;W_k.0&quot;][s]*W[&quot;ln1_w.0&quot;])]),full_matrices=False)[2].T
+    vmat=center_columns(W[&quot;W_v.0&quot;][s]*W[&quot;ln1_w.0&quot;])
+    char_basis=svd(vmat,full_matrices=False)[2].T[:,:28]
+    print(&quot;L0H2 gain-weighted V spectrum&quot;,svdvals(vmat)[:40])
+    print(&quot;POSITION-CANDIDATE OVERLAP WITH V0H2 TOP28:&quot;,
+          [(r,round(float(np.linalg.norm(pos_basis[:,:r].T@char_basis)**2/28),3)) for r in [16,24,32,40,48,64]])
+    p=pos_basis[:,:32]
+    print(&quot;\nHEAD PRODUCT ENERGY IN CANDIDATE POSITION SPACE&quot;)
+    for l in range(4):
+        for j in range(6):
+            a=A[l,j]
+            den=np.linalg.norm(a)**2
+            print(f&quot;L{l}H{j}&quot;, &quot;query&quot;,round(float(np.linalg.norm(p.T@a)**2/den),3),
+                  &quot;key&quot;,round(float(np.linalg.norm(a@p)**2/den),3),
+                  &quot;both&quot;,round(float(np.linalg.norm(p.T@a@p)**2/den),3))
+    print(&quot;\nCOMPOSITION WITH EACH L0 OV: tr(A @ B) / (||A||F ||B||F)&quot;)
+    for l in range(1,4):
+        for j in range(6):
+            a=A[l,j]
+            scores=[np.trace(a@B[0,k])/(np.linalg.norm(a)*np.linalg.norm(B[0,k])) for k in range(6)]
+            scores_rev=[np.trace(a.T@B[0,k])/(np.linalg.norm(a)*np.linalg.norm(B[0,k])) for k in range(6)]
+            print(f&quot;L{l}H{j}&quot;, &quot;key-path&quot;,np.array(scores),&quot;query-path&quot;,np.array(scores_rev))
+    print(&quot;\nCOMPOSITION SPECTRA WITH L0H2 OV&quot;)
+    for l in range(1,4):
+        for j in range(6):
+            c=A[l,j]@B[0,2]
+            ss=svdvals(c)
+            cc=char_basis.T@c@char_basis
+            sc=svdvals(cc)
+            es=eigvals(cc)
+            print(f&quot;L{l}H{j}&quot;,
+                  &quot;trace&quot;,round(float(np.trace(c)),3),
+                  &quot;trace/nuclear&quot;,round(float(np.trace(c)/ss.sum()),3),
+                  &quot;char trace/nuclear&quot;,round(float(np.trace(cc)/sc.sum()),3),
+                  &quot;char positive-real eig&quot;,int(np.sum(es.real&gt;0)), &quot;char eig top&quot;,es[np.argsort(abs(es))[-5:][::-1]])
+```
+</pre></div><details class="harness"><summary>Permitted experiment harness: python — full request and result</summary><pre>{
+  &quot;t&quot;: 1792713384.2867055,
+  &quot;s&quot;: 2.96,
+  &quot;code&quot;: &quot;import numpy as np\nfrom scipy.linalg import svd, svdvals, eigvals\nfrom threadpoolctl import threadpool_limits\nnp.set_printoptions(precision=3, suppress=True, linewidth=180)\n\ndef center_columns(a):\n    return a-a.mean(axis=1,keepdims=True)\ndef center_output(a):\n    return a-a.mean(axis=0,keepdims=True)\n\nwith threadpool_limits(limits=4):\n    A, B = {}, {}\n    for l in range(4):\n        g=W[f\&quot;ln1_w.{l}\&quot;]\n        for j in range(6):\n            s=slice(j*64,(j+1)*64)\n            q=center_columns(W[f\&quot;W_q.{l}\&quot;][s]*g)\n            k=center_columns(W[f\&quot;W_k.{l}\&quot;][s]*g)\n            v=center_columns(W[f\&quot;W_v.{l}\&quot;][s]*g)\n            o=center_output(W[f\&quot;W_o.{l}\&quot;][:,s])\n            A[l,j]=q.T@k/8\n            B[l,j]=o@v\n    s=slice(128,192)\n    pos_basis=svd(np.vstack([center_columns(W[\&quot;W_q.0\&quot;][s]*W[\&quot;ln1_w.0\&quot;]),\n                            center_columns(W[\&quot;W_k.0\&quot;][s]*W[\&quot;ln1_w.0\&quot;])]),full_matrices=False)[2].T\n    vmat=center_columns(W[\&quot;W_v.0\&quot;][s]*W[\&quot;ln1_w.0\&quot;])\n    char_basis=svd(vmat,full_matrices=False)[2].T[:,:28]\n    print(\&quot;L0H2 gain-weighted V spectrum\&quot;,svdvals(vmat)[:40])\n    print(\&quot;POSITION-CANDIDATE OVERLAP WITH V0H2 TOP28:\&quot;,\n          [(r,round(float(np.linalg.norm(pos_basis[:,:r].T@char_basis)**2/28),3)) for r in [16,24,32,40,48,64]])\n    p=pos_basis[:,:32]\n    print(\&quot;\\nHEAD PRODUCT ENERGY IN CANDIDATE POSITION SPACE\&quot;)\n    for l in range(4):\n        for j in range(6):\n            a=A[l,j]\n            den=np.linalg.norm(a)**2\n            print(f\&quot;L{l}H{j}\&quot;, \&quot;query\&quot;,round(float(np.linalg.norm(p.T@a)**2/den),3),\n                  \&quot;key\&quot;,round(float(np.linalg.norm(a@p)**2/den),3),\n                  \&quot;both\&quot;,round(float(np.linalg.norm(p.T@a@p)**2/den),3))\n    print(\&quot;\\nCOMPOSITION WITH EACH L0 OV: tr(A @ B) / (||A||F ||B||F)\&quot;)\n    for l in range(1,4):\n        for j in range(6):\n            a=A[l,j]\n            scores=[np.trace(a@B[0,k])/(np.linalg.norm(a)*np.linalg.norm(B[0,k])) for k in range(6)]\n            scores_rev=[np.trace(a.T@B[0,k])/(np.linalg.norm(a)*np.linalg.norm(B[0,k])) for k in range(6)]\n            print(f\&quot;L{l}H{j}\&quot;, \&quot;key-path\&quot;,np.array(scores),\&quot;query-path\&quot;,np.array(scores_rev))\n    print(\&quot;\\nCOMPOSITION SPECTRA WITH L0H2 OV\&quot;)\n    for l in range(1,4):\n        for j in range(6):\n            c=A[l,j]@B[0,2]\n            ss=svdvals(c)\n            cc=char_basis.T@c@char_basis\n            sc=svdvals(cc)\n            es=eigvals(cc)\n            print(f\&quot;L{l}H{j}\&quot;,\n                  \&quot;trace\&quot;,round(float(np.trace(c)),3),\n                  \&quot;trace/nuclear\&quot;,round(float(np.trace(c)/ss.sum()),3),\n                  \&quot;char trace/nuclear\&quot;,round(float(np.trace(cc)/sc.sum()),3),\n                  \&quot;char positive-real eig\&quot;,int(np.sum(es.real&gt;0)), \&quot;char eig top\&quot;,es[np.argsort(abs(es))[-5:][::-1]])\n&quot;,
+  &quot;out&quot;: &quot;L0H2 gain-weighted V spectrum [0.431 0.416 0.384 0.37  0.362 0.348 0.328 0.315 0.309 0.302 0.3   0.296 0.292 0.274 0.265 0.264 0.26  0.253 0.247 0.245 0.235 0.232 0.23  0.224 0.216 0.213 0.206 0.198 0.191\n 0.188 0.185 0.181 0.173 0.161 0.158 0.152 0.151 0.137 0.127 0.123]\nPOSITION-CANDIDATE OVERLAP WITH V0H2 TOP28: [(16, 0.196), (24, 0.248), (32, 0.292), (40, 0.351), (48, 0.419), (64, 0.523)]\n\nHEAD PRODUCT ENERGY IN CANDIDATE POSITION SPACE\nL0H0 query 0.832 key 0.287 both 0.239\nL0H1 query 0.609 key 0.397 both 0.257\nL0H2 query 0.985 key 0.992 both 0.977\nL0H3 query 0.833 key 0.879 both 0.756\nL0H4 query 0.538 key 0.412 both 0.233\nL0H5 query 0.842 key 0.493 both 0.413\nL1H0 query 0.105 key 0.294 both 0.031\nL1H1 query 0.115 key 0.255 both 0.032\nL1H2 query 0.123 key 0.262 both 0.037\nL1H3 query 0.12 key 0.281 both 0.037\nL1H4 query 0.123 key 0.294 both 0.039\nL1H5 query 0.126 key 0.268 both 0.037\nL2H0 query 0.083 key 0.108 both 0.012\nL2H1 query 0.071 key 0.089 both 0.008\nL2H2 query 0.086 key 0.142 both 0.014\nL2H3 query 0.08 key 0.111 both 0.012\nL2H4 query 0.085 key 0.11 both 0.012\nL2H5 query 0.081 key 0.107 both 0.012\nL3H0 query 0.077 key 0.081 both 0.007\nL3H1 query 0.067 key 0.082 both 0.008\nL3H2 query 0.08 key 0.103 both 0.009\nL3H3 query 0.083 key 0.097 both 0.01\nL3H4 query 0.08 key 0.089 both 0.008\nL3H5 query 0.078 key 0.089 both 0.007\n\nCOMPOSITION WITH EACH L0 OV: tr(A @ B) / (||A||F ||B||F)\nL1H0 key-path [ 0.04   0.017 -0.005 -0.019  0.032  0.004] query-path [-0.006 -0.014 -0.046  0.012 -0.008 -0.026]\nL1H1 key-path [ 0.046  0.033 -0.    -0.014  0.05   0.019] query-path [-0.006 -0.009 -0.022  0.011 -0.004 -0.024]\nL1H2 key-path [ 0.051  0.042  0.015 -0.006  0.054  0.022] query-path [-0.004 -0.007  0.017  0.016 -0.001 -0.02 ]\nL1H3 key-path [ 0.059  0.047  0.015 -0.01   0.06   0.028] query-path [-0.003 -0.004  0.022  0.012  0.002 -0.019]\nL1H4 key-path [ 0.08   0.071  0.013 -0.004  0.084  0.046] query-path [-0.004 -0.007 -0.011  0.007 -0.003 -0.021]\nL1H5 key-path [ 0.039  0.018  0.006 -0.014  0.037 -0.011] query-path [-0.007 -0.01  -0.026 -0.003 -0.005 -0.025]\nL2H0 key-path [ 0.016  0.013 -0.005 -0.018  0.018  0.016] query-path [-0.006 -0.004  0.001  0.005 -0.003 -0.014]\nL2H1 key-path [ 0.01   0.007 -0.006 -0.01   0.01   0.012] query-path [-0.005 -0.004  0.024  0.007 -0.004 -0.008]\nL2H2 key-path [ 0.03   0.024  0.001 -0.017  0.036  0.01 ] query-path [-0.006 -0.005 -0.006  0.01  -0.004 -0.012]\nL2H3 key-path [ 0.023  0.017  0.003 -0.012  0.023  0.022] query-path [-0.006 -0.005  0.008  0.007 -0.004 -0.014]\nL2H4 key-path [ 0.029  0.022 -0.008 -0.017  0.03   0.021] query-path [-0.007 -0.007 -0.002  0.006 -0.005 -0.015]\nL2H5 key-path [ 0.022  0.015  0.    -0.017  0.021  0.017] query-path [-0.005 -0.003  0.005  0.008 -0.004 -0.013]\nL3H0 key-path [ 0.005  0.005 -0.002 -0.003  0.007  0.007] query-path [-0.001 -0.001  0.018  0.002  0.    -0.002]\nL3H1 key-path [-0.002 -0.004  0.095  0.001 -0.005 -0.003] query-path [-0.001 -0.002 -0.022 -0.011 -0.002 -0.001]\nL3H2 key-path [ 0.016  0.011  0.003 -0.006  0.014  0.022] query-path [-0.008 -0.007  0.002  0.005 -0.008 -0.013]\nL3H3 key-path [ 0.011  0.005  0.001 -0.002  0.009  0.014] query-path [-0.008 -0.007  0.004  0.003 -0.008 -0.013]\nL3H4 key-path [ 0.02   0.021 -0.005 -0.001  0.023  0.028] query-path [-0.005 -0.006  0.002  0.    -0.005 -0.008]\nL3H5 key-path [-0.005 -0.005  0.003 -0.004 -0.004 -0.003] query-path [-0.001 -0.     0.001  0.012 -0.002 -0.001]\n\nCOMPOSITION SPECTRA WITH L0H2 OV\nL1H0 trace -0.012 trace/nuclear -0.038 char trace/nuclear -0.115 char positive-real eig 14 char eig top [-0.009+0.j     0.002-0.005j  0.002+0.005j -0.004+0.j    -0.003+0.j   ]\nL1H1 trace -0.001 trace/nuclear -0.001 char trace/nuclear -0.008 char positive-real eig 16 char eig top [-0.028+0.j     0.013-0.002j  0.013+0.002j -0.01 +0.j    -0.007+0.j   ]\nL1H2 trace 0.057 trace/nuclear 0.077 char trace/nuclear 0.18 char positive-real eig 13 char eig top [ 0.017-0.013j  0.017+0.013j  0.021+0.j    -0.009-0.011j -0.009+0.011j]&quot;
+}</pre></details></details><details id="t004"><summary>t004 · harness: python</summary><p class="small"><a href="../raw/exp3/english_r0/original/turns/t004/prompt.txt">Recorded prompt</a> · <a href="../raw/exp3/english_r0/original/turns/t004/events.jsonl">Raw CLI events</a> · <a href="../raw/exp3/english_r0/original/turns/t004/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 6,636 characters</summary><pre>OUTPUT of run 3 of at most 100:
+```
+L0H2 gain-weighted V spectrum [0.431 0.416 0.384 0.37  0.362 0.348 0.328 0.315 0.309 0.302 0.3   0.296 0.292 0.274 0.265 0.264 0.26  0.253 0.247 0.245 0.235 0.232 0.23  0.224 0.216 0.213 0.206 0.198 0.191
+ 0.188 0.185 0.181 0.173 0.161 0.158 0.152 0.151 0.137 0.127 0.123]
+POSITION-CANDIDATE OVERLAP WITH V0H2 TOP28: [(16, 0.196), (24, 0.248), (32, 0.292), (40, 0.351), (48, 0.419), (64, 0.523)]
+
+HEAD PRODUCT ENERGY IN CANDIDATE POSITION SPACE
+L0H0 query 0.832 key 0.287 both 0.239
+L0H1 query 0.609 key 0.397 both 0.257
+L0H2 query 0.985 key 0.992 both 0.977
+L0H3 query 0.833 key 0.879 both 0.756
+L0H4 query 0.538 key 0.412 both 0.233
+L0H5 query 0.842 key 0.493 both 0.413
+L1H0 query 0.105 key 0.294 both 0.031
+L1H1 query 0.115 key 0.255 both 0.032
+L1H2 query 0.123 key 0.262 both 0.037
+L1H3 query 0.12 key 0.281 both 0.037
+L1H4 query 0.123 key 0.294 both 0.039
+L1H5 query 0.126 key 0.268 both 0.037
+L2H0 query 0.083 key 0.108 both 0.012
+L2H1 query 0.071 key 0.089 both 0.008
+L2H2 query 0.086 key 0.142 both 0.014
+L2H3 query 0.08 key 0.111 both 0.012
+L2H4 query 0.085 key 0.11 both 0.012
+L2H5 query 0.081 key 0.107 both 0.012
+L3H0 query 0.077 key 0.081 both 0.007
+L3H1 query 0.067 key 0.082 both 0.008
+L3H2 query 0.08 key 0.103 both 0.009
+L3H3 query 0.083 key 0.097 both 0.01
+L3H4 query 0.08 key 0.089 both 0.008
+L3H5 query 0.078 key 0.089 both 0.007
+
+COMPOSITION WITH EACH L0 OV: tr(A @ B) / (||A||F ||B||F)
+L1H0 key-path [ 0.04   0.017 -0.005 -0.019  0.032  0.004] query-path [-0.006 -0.014 -0.046  0.012 -0.008 -0.026]
+L1H1 key-path [ 0.046  0.033 -0.    -0.014  0.05   0.019] query-path [-0.006 -0.009 -0.022  0.011 -0.004 -0.024]
+L1H2 key-path [ 0.051  0.042  0.015 -0.006  0.054  0.022] query-path [-0.004 -0.007  0.017  0.016 -0.001 -0.02 ]
+L1H3 key-path [ 0.059  0.047  0.015 -0.01   0.06   0.028] query-path [-0.003 -0.004  0.022  0.012  0.002 -0.019]
+L1H4 key-path [ 0.08   0.071  0.013 -0.004  0.084  0.046] query-path [-0.004 -0.007 -0.011  0.007 -0.003 -0.021]
+L1H5 key-path [ 0.039  0.018  0.006 -0.014  0.037 -0.011] query-path [-0.007 -0.01  -0.026 -0.003 -0.005 -0.025]
+L2H0 key-path [ 0.016  0.013 -0.005 -0.018  0.018  0.016] query-path [-0.006 -0.004  0.001  0.005 -0.003 -0.014]
+L2H1 key-path [ 0.01   0.007 -0.006 -0.01   0.01   0.012] query-path [-0.005 -0.004  0.024  0.007 -0.004 -0.008]
+L2H2 key-path [ 0.03   0.024  0.001 -0.017  0.036  0.01 ] query-path [-0.006 -0.005 -0.006  0.01  -0.004 -0.012]
+L2H3 key-path [ 0.023  0.017  0.003 -0.012  0.023  0.022] query-path [-0.006 -0.005  0.008  0.007 -0.004 -0.014]
+L2H4 key-path [ 0.029  0.022 -0.008 -0.017  0.03   0.021] query-path [-0.007 -0.007 -0.002  0.006 -0.005 -0.015]
+L2H5 key-path [ 0.022  0.015  0.    -0.017  0.021  0.017] query-path [-0.005 -0.003  0.005  0.008 -0.004 -0.013]
+L3H0 key-path [ 0.005  0.005 -0.002 -0.003  0.007  0.007] query-path [-0.001 -0.001  0.018  0.002  0.    -0.002]
+L3H1 key-path [-0.002 -0.004  0.095  0.001 -0.005 -0.003] query-path [-0.001 -0.002 -0.022 -0.011 -0.002 -0.001]
+L3H2 key-path [ 0.016  0.011  0.003 -0.006  0.014  0.022] query-path [-0.008 -0.007  0.002  0.005 -0.008 -0.013]
+L3H3 key-path [ 0.011  0.005  0.001 -0.002  0.009  0.014] query-path [-0.008 -0.007  0.004  0.003 -0.008 -0.013]
+L3H4 key-path [ 0.02   0.021 -0.005 -0.001  0.023  0.028] query-path [-0.005 -0.006  0.002  0.    -0.005 -0.008]
+L3H5 key-path [-0.005 -0.005  0.003 -0.004 -0.004 -0.003] query-path [-0.001 -0.     0.001  0.012 -0.002 -0.001]
+
+COMPOSITION SPECTRA WITH L0H2 OV
+L1H0 trace -0.012 trace/nuclear -0.038 char trace/nuclear -0.115 char positive-real eig 14 char eig top [-0.009+0.j     0.002-0.005j  0.002+0.005j -0.004+0.j    -0.003+0.j   ]
+L1H1 trace -0.001 trace/nuclear -0.001 char trace/nuclear -0.008 char positive-real eig 16 char eig top [-0.028+0.j     0.013-0.002j  0.013+0.002j -0.01 +0.j    -0.007+0.j   ]
+L1H2 trace 0.057 trace/nuclear 0.077 char trace/nuclear 0.18 char positive-real eig 13 char eig top [ 0.017-0.013j  0.017+0.013j  0.021+0.j    -0.009-0.011j -0.009+0.011j]
+L1H3 trace 0.051 trace/nuclear 0.071 char trace/nuclear 0.222 char positive-real eig 16 char eig top [ 0.022+0.j     0.008-0.008j  0.008+0.008j -0.005-0.01j  -0.005+0.01j ]
+L1H4 trace 0.049 trace/nuclear 0.077 char trace/nuclear 0.222 char positive-real eig 18 char eig top [0.018+0.j    0.005-0.01j  0.005+0.01j  0.008-0.007j 0.008+0.007j]
+L1H5 trace 0.02 trace/nuclear 0.027 char trace/nuclear 0.068 char positive-real eig 15 char eig top [ 0.018+0.j     0.007-0.008j  0.007+0.008j -0.007-0.008j -0.007+0.008j]
+L2H0 trace -0.031 trace/nuclear -0.018 char trace/nuclear -0.083 char positive-real eig 13 char eig top [-0.019+0.j    -0.01 -0.013j -0.01 +0.013j -0.005-0.014j -0.005+0.014j]
+L2H1 trace -0.03 trace/nuclear -0.021 char trace/nuclear -0.107 char positive-real eig 14 char eig top [-0.021+0.j    -0.012-0.005j -0.012+0.005j  0.001-0.013j  0.001+0.013j]
+L2H2 trace 0.004 trace/nuclear 0.004 char trace/nuclear 0.028 char positive-real eig 17 char eig top [ 0.004-0.009j  0.004+0.009j  0.008-0.003j  0.008+0.003j -0.008+0.004j]
+L2H3 trace 0.015 trace/nuclear 0.012 char trace/nuclear 0.053 char positive-real eig 15 char eig top [ 0.015+0.j    -0.009-0.011j -0.009+0.011j  0.013+0.j     0.002-0.012j]
+L2H4 trace -0.047 trace/nuclear -0.031 char trace/nuclear -0.132 char positive-real eig 13 char eig top [-0.014+0.009j -0.014-0.009j -0.   +0.016j -0.   -0.016j -0.014+0.j   ]
+L2H5 trace 0.002 trace/nuclear 0.001 char trace/nuclear -0.005 char positive-real eig 16 char eig top [ 0.005-0.013j  0.005+0.013j -0.008-0.01j  -0.008+0.01j   0.01 +0.006j]
+L3H0 trace -0.013 trace/nuclear -0.009 char trace/nuclear -0.04 char positive-real eig 12 char eig top [-0.016+0.j     0.002-0.015j  0.002+0.015j  0.01 -0.011j  0.01 +0.011j]
+L3H1 trace 0.441 trace/nuclear 0.25 char trace/nuclear 0.767 char positive-real eig 24 char eig top [0.05 -0.013j 0.05 +0.013j 0.042+0.j    0.036-0.01j  0.036+0.01j ]
+L3H2 trace 0.011 trace/nuclear 0.013 char trace/nuclear 0.059 char positive-real eig 14 char eig top [ 0.008-0.003j  0.008+0.003j -0.005-0.006j -0.005+0.006j -0.007+0.j   ]
+L3H3 trace 0.005 trace/nuclear 0.005 char trace/nuclear 0.003 char positive-real eig 14 char eig top [ 0.004-0.008j  0.004+0.008j -0.002-0.008j -0.002+0.008j  0.007+0.j   ]
+L3H4 trace -0.023 trace/nuclear -0.019 char trace/nuclear -0.083 char positive-real eig 13 char eig top [-0.014+0.j    -0.011-0.005j -0.011+0.005j  0.008-0.008j  0.008+0.008j]
+L3H5 trace 0.005 trace/nuclear 0.01 char trace/nuclear 0.05 char positive-real eig 14 char eig top [-0.005+0.j     0.004-0.001j  0.004+0.001j  0.003+0.003j  0.003-0.003j]
+
+```</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><div class="event"><h3>Codex reply</h3><pre>```python
+import numpy as np
+from scipy.linalg import svd, svdvals
+from sklearn.cluster import KMeans
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=3, suppress=True, linewidth=180)
+
+with threadpool_limits(limits=4):
+    print(&quot;L0H2 FACTOR SPECTRA&quot;)
+    for name, a in [
+        (&quot;Q&quot;,W[&quot;W_q.0&quot;][128:192]),(&quot;K&quot;,W[&quot;W_k.0&quot;][128:192]),
+        (&quot;V&quot;,W[&quot;W_v.0&quot;][128:192]),(&quot;O&quot;,W[&quot;W_o.0&quot;][:,128:192])
+    ]:
+        print(name,svdvals(a))
+    print(&quot;\nLATE PROJECTION SPECTRA&quot;)
+    for l in range(4):
+        a=W[f&quot;W_proj.{l}&quot;]
+        ss=svdvals(a)
+        print(&quot;layer&quot;,l,&quot;top 50&quot;,ss[:50],
+              &quot;energy top 16/24/28/32/64/128&quot;,
+              np.array([np.sum(ss[:r]**2)/np.sum(ss**2) for r in [16,24,28,32,64,128]]))
+    print(&quot;\nL0 EFFECTIVE MLP INPUT VS EARLY VALUE SUBSPACES&quot;)
+    f=W[&quot;W_fc.0&quot;]*W[&quot;ln2_w.0&quot;]
+    f=f-f.mean(1,keepdims=True)
+    b=(W[&quot;W_o.0&quot;][:,128:192]@W[&quot;W_v.0&quot;][128:192])*W[&quot;ln1_w.0&quot;]
+    b=b-b.mean(0,keepdims=True)-b.mean(1,keepdims=True)+b.mean()
+    print(&quot;F spectrum&quot;,svdvals(f)[:50])
+    print(&quot;F @ B02 spectrum&quot;,svdvals(f@b)[:50])
+    print(&quot;\nL0 MLP ROW COSINE CLUSTERING (weight directions, not activations)&quot;)
+    for label, a in [(&quot;F&quot;,f),(&quot;F_B02&quot;,f@b)]:
+        u,ss,vh=svd(a,full_matrices=False)
+        z=u[:,:32]*ss[:32]
+        norms=np.linalg.norm(z,axis=1)
+        z=z/np.maximum(norms[:,None],1e-10)
+        sim=z@z.T
+        np.fill_diagonal(sim,-2)
+        print(label, &quot;nearest cosine quantiles&quot;,np.quantile(sim.max(1),[0,.1,.25,.5,.75,.9,1]))
+        for n in [16,20,24,28,32]:
+            km=KMeans(n_clusters=n,n_init=5,random_state=0,max_iter=200).fit(z)
+            counts=np.bincount(km.labels_,minlength=n)
+            print(label,&quot;clusters&quot;,n,&quot;inertia&quot;,round(km.inertia_,2),&quot;counts&quot;,np.sort(counts)[::-1])
+    print(&quot;\nSHARED LOW-RANK L1 QK STRUCTURE&quot;)
+    mats=[]
+    kb=[]
+    for j in range(6):
+        s=slice(64*j,64*(j+1))
+        q,k=W[&quot;W_q.1&quot;][s]*W[&quot;ln1_w.1&quot;],W[&quot;W_k.1&quot;][s]*W[&quot;ln1_w.1&quot;]
+        q=q-q.mean(1,keepdims=True)
+        k=k-k.mean(1,keepdims=True)
+        mats.append(q.T@k/8)
+        kb.append(k.T@(W[&quot;W_q.1&quot;][s]@W[&quot;ln1_b.1&quot;])/8)
+    def cos_table(a):
+        a=np.array([x.ravel() for x in a])
+        a=a/np.linalg.norm(a,axis=1,keepdims=True)
+        return a@a.T
+    print(&quot;QK cosines\n&quot;,cos_table(mats))
+    print(&quot;key-bias cosines\n&quot;,cos_table(kb))
+```
+</pre></div><details class="harness"><summary>Permitted experiment harness: python — full request and result</summary><pre>{
+  &quot;t&quot;: 1792713474.0515177,
+  &quot;s&quot;: 11.78,
+  &quot;code&quot;: &quot;import numpy as np\nfrom scipy.linalg import svd, svdvals\nfrom sklearn.cluster import KMeans\nfrom threadpoolctl import threadpool_limits\nnp.set_printoptions(precision=3, suppress=True, linewidth=180)\n\nwith threadpool_limits(limits=4):\n    print(\&quot;L0H2 FACTOR SPECTRA\&quot;)\n    for name, a in [\n        (\&quot;Q\&quot;,W[\&quot;W_q.0\&quot;][128:192]),(\&quot;K\&quot;,W[\&quot;W_k.0\&quot;][128:192]),\n        (\&quot;V\&quot;,W[\&quot;W_v.0\&quot;][128:192]),(\&quot;O\&quot;,W[\&quot;W_o.0\&quot;][:,128:192])\n    ]:\n        print(name,svdvals(a))\n    print(\&quot;\\nLATE PROJECTION SPECTRA\&quot;)\n    for l in range(4):\n        a=W[f\&quot;W_proj.{l}\&quot;]\n        ss=svdvals(a)\n        print(\&quot;layer\&quot;,l,\&quot;top 50\&quot;,ss[:50],\n              \&quot;energy top 16/24/28/32/64/128\&quot;,\n              np.array([np.sum(ss[:r]**2)/np.sum(ss**2) for r in [16,24,28,32,64,128]]))\n    print(\&quot;\\nL0 EFFECTIVE MLP INPUT VS EARLY VALUE SUBSPACES\&quot;)\n    f=W[\&quot;W_fc.0\&quot;]*W[\&quot;ln2_w.0\&quot;]\n    f=f-f.mean(1,keepdims=True)\n    b=(W[\&quot;W_o.0\&quot;][:,128:192]@W[\&quot;W_v.0\&quot;][128:192])*W[\&quot;ln1_w.0\&quot;]\n    b=b-b.mean(0,keepdims=True)-b.mean(1,keepdims=True)+b.mean()\n    print(\&quot;F spectrum\&quot;,svdvals(f)[:50])\n    print(\&quot;F @ B02 spectrum\&quot;,svdvals(f@b)[:50])\n    print(\&quot;\\nL0 MLP ROW COSINE CLUSTERING (weight directions, not activations)\&quot;)\n    for label, a in [(\&quot;F\&quot;,f),(\&quot;F_B02\&quot;,f@b)]:\n        u,ss,vh=svd(a,full_matrices=False)\n        z=u[:,:32]*ss[:32]\n        norms=np.linalg.norm(z,axis=1)\n        z=z/np.maximum(norms[:,None],1e-10)\n        sim=z@z.T\n        np.fill_diagonal(sim,-2)\n        print(label, \&quot;nearest cosine quantiles\&quot;,np.quantile(sim.max(1),[0,.1,.25,.5,.75,.9,1]))\n        for n in [16,20,24,28,32]:\n            km=KMeans(n_clusters=n,n_init=5,random_state=0,max_iter=200).fit(z)\n            counts=np.bincount(km.labels_,minlength=n)\n            print(label,\&quot;clusters\&quot;,n,\&quot;inertia\&quot;,round(km.inertia_,2),\&quot;counts\&quot;,np.sort(counts)[::-1])\n    print(\&quot;\\nSHARED LOW-RANK L1 QK STRUCTURE\&quot;)\n    mats=[]\n    kb=[]\n    for j in range(6):\n        s=slice(64*j,64*(j+1))\n        q,k=W[\&quot;W_q.1\&quot;][s]*W[\&quot;ln1_w.1\&quot;],W[\&quot;W_k.1\&quot;][s]*W[\&quot;ln1_w.1\&quot;]\n        q=q-q.mean(1,keepdims=True)\n        k=k-k.mean(1,keepdims=True)\n        mats.append(q.T@k/8)\n        kb.append(k.T@(W[\&quot;W_q.1\&quot;][s]@W[\&quot;ln1_b.1\&quot;])/8)\n    def cos_table(a):\n        a=np.array([x.ravel() for x in a])\n        a=a/np.linalg.norm(a,axis=1,keepdims=True)\n        return a@a.T\n    print(\&quot;QK cosines\\n\&quot;,cos_table(mats))\n    print(\&quot;key-bias cosines\\n\&quot;,cos_table(kb))\n&quot;,
+  &quot;out&quot;: &quot;L0H2 FACTOR SPECTRA\nQ [8.233 8.202 7.942 7.801 7.664 7.624 7.489 7.183 6.92  6.786 6.365 6.104 5.744 5.495 5.092 4.824 4.8   4.416 3.958 3.7   3.402 3.191 3.136 3.04  2.845 2.643 2.306 2.161 2.018\n 2.01  1.859 1.738 1.662 1.565 1.498 1.468 1.326 1.293 1.284 1.201 1.14  1.108 1.061 0.98  0.931 0.898 0.865 0.834 0.826 0.754 0.729 0.708 0.691 0.67  0.625 0.587 0.565 0.544\n 0.517 0.508 0.481 0.464 0.45  0.396]\nK [7.599 7.397 7.284 6.871 6.777 6.611 6.43  6.399 6.334 6.079 5.956 5.883 5.427 5.25  4.905 4.723 4.603 4.177 3.971 3.88  3.538 3.233 2.909 2.851 2.638 2.418 2.12  2.106 1.957\n 1.688 1.636 1.586 1.53  1.456 1.341 1.202 1.147 1.128 1.094 1.028 0.997 0.962 0.916 0.868 0.827 0.786 0.772 0.749 0.711 0.668 0.627 0.608 0.597 0.567 0.544 0.526 0.507 0.494\n 0.479 0.451 0.438 0.391 0.389 0.364]\nV [1.954 1.879 1.847 1.804 1.772 1.733 1.721 1.67  1.648 1.571 1.554 1.52  1.517 1.481 1.442 1.331 1.263 1.231 1.051 0.993 0.938 0.908 0.843 0.811 0.778 0.71  0.695 0.645 0.637\n 0.599 0.575 0.565 0.548 0.534 0.526 0.505 0.488 0.477 0.456 0.435 0.427 0.409 0.395 0.382 0.371 0.362 0.35  0.344 0.334 0.323 0.319 0.314 0.302 0.298 0.296 0.284 0.281 0.272\n 0.265 0.26  0.259 0.25  0.236 0.23 ]\nO [2.254 2.161 2.127 2.101 2.052 2.007 1.972 1.96  1.893 1.855 1.8   1.782 1.708 1.668 1.631 1.542 1.509 1.402 1.263 1.209 1.127 1.112 1.04  1.015 0.957 0.941 0.873 0.844 0.819\n 0.748 0.702 0.684 0.646 0.626 0.581 0.515 0.471 0.464 0.414 0.405 0.38  0.351 0.333 0.304 0.287 0.267 0.262 0.23  0.213 0.192 0.186 0.176 0.166 0.151 0.142 0.14  0.13  0.126\n 0.121 0.112 0.106 0.098 0.089 0.078]\n\nLATE PROJECTION SPECTRA\nlayer 0 top 50 [9.826 7.351 6.265 5.869 5.797 5.657 5.516 5.45  5.333 5.242 5.197 5.094 4.98  4.904 4.863 4.819 4.793 4.689 4.627 4.595 4.557 4.523 4.411 4.378 4.283 4.216 4.143 4.125 4.048\n 4.025 3.894 3.847 3.808 3.792 3.764 3.711 3.685 3.636 3.595 3.525 3.499 3.479 3.469 3.422 3.39  3.359 3.336 3.319 3.278 3.257] energy top 16/24/28/32/64/128 [0.359 0.467 0.513 0.553 0.781 0.944]\nlayer 1 top 50 [8.193 7.894 7.199 6.997 6.671 6.433 6.274 6.133 6.099 6.021 5.942 5.865 5.829 5.789 5.698 5.675 5.646 5.629 5.581 5.564 5.553 5.538 5.528 5.477 5.456 5.447 5.438 5.403 5.399\n 5.38  5.367 5.351 5.332 5.327 5.314 5.296 5.252 5.235 5.219 5.208 5.197 5.183 5.174 5.17  5.146 5.132 5.118 5.111 5.079 5.067] energy top 16/24/28/32/64/128 [0.117 0.16  0.18  0.201 0.346 0.576]\nlayer 2 top 50 [9.404 9.187 8.723 8.47  8.04  7.795 7.614 7.45  7.392 7.253 7.223 7.148 7.082 6.972 6.829 6.733 6.637 6.547 6.46  6.404 6.374 6.307 6.209 6.181 6.12  6.091 5.989 5.9   5.88\n 5.833 5.758 5.703 5.685 5.645 5.588 5.559 5.491 5.478 5.467 5.429 5.406 5.4   5.378 5.351 5.335 5.295 5.246 5.234 5.196 5.194] energy top 16/24/28/32/64/128 [0.163 0.218 0.243 0.265 0.415 0.632]\nlayer 3 top 50 [26.309 20.685 19.699 19.261 18.594 18.197 17.862 17.667 17.044 16.749 16.039 15.151 14.756 14.326 14.05  13.5   13.293 12.531 12.401 11.958 11.74  11.594 10.367  8.351  8.064\n  7.914  7.461  7.166  5.833  4.072  3.221  3.139  2.842  2.8    2.687  2.571  2.403  2.328  2.244  2.185  2.181  2.116  2.081  2.053  1.996  1.976  1.93   1.918  1.865  1.838] energy top 16/24/28/32/64/128 [0.743 0.903 0.937 0.948 0.967 0.983]\n\nL0 EFFECTIVE MLP INPUT VS EARLY VALUE SUBSPACES\nF spectrum [17.903 10.353  7.602  7.51   7.11   6.834  6.74   6.432  6.363  6.22   6.139  6.05   6.015  5.936  5.794  5.626  5.575  5.499  5.421  5.309  5.301  5.117  5.076  4.966  4.945\n  4.84   4.814  4.73   4.562  4.559  4.484  4.346  4.149  4.084  4.052  3.912  3.822  3.766  3.706  3.527  3.476  3.411  3.338  3.291  3.237  3.206  3.058  2.967  2.94   2.816]\nF @ B02 spectrum [3.742 2.715 2.602 2.407 2.33  1.984 1.953 1.904 1.774 1.624 1.61  1.404 1.328 1.291 1.192 1.158 1.063 0.888 0.697 0.486 0.41  0.374 0.35  0.304 0.264 0.243 0.226 0.199 0.191\n 0.181 0.156 0.144 0.129 0.114 0.106 0.093 0.083 0.071 0.063 0.055 0.049 0.047 0.04  0.034 0.031 0.028 0.027 0.021 0.019 0.018]\n\nL0 MLP ROW COSINE CLUSTERING (weight directions, not activations)\nF &quot;
+}</pre></details></details><details id="t005"><summary>t005 · harness: python</summary><p class="small"><a href="../raw/exp3/english_r0/original/turns/t005/prompt.txt">Recorded prompt</a> · <a href="../raw/exp3/english_r0/original/turns/t005/events.jsonl">Raw CLI events</a> · <a href="../raw/exp3/english_r0/original/turns/t005/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 6,017 characters</summary><pre>OUTPUT of run 4 of at most 100:
+```
+L0H2 FACTOR SPECTRA
+Q [8.233 8.202 7.942 7.801 7.664 7.624 7.489 7.183 6.92  6.786 6.365 6.104 5.744 5.495 5.092 4.824 4.8   4.416 3.958 3.7   3.402 3.191 3.136 3.04  2.845 2.643 2.306 2.161 2.018
+ 2.01  1.859 1.738 1.662 1.565 1.498 1.468 1.326 1.293 1.284 1.201 1.14  1.108 1.061 0.98  0.931 0.898 0.865 0.834 0.826 0.754 0.729 0.708 0.691 0.67  0.625 0.587 0.565 0.544
+ 0.517 0.508 0.481 0.464 0.45  0.396]
+K [7.599 7.397 7.284 6.871 6.777 6.611 6.43  6.399 6.334 6.079 5.956 5.883 5.427 5.25  4.905 4.723 4.603 4.177 3.971 3.88  3.538 3.233 2.909 2.851 2.638 2.418 2.12  2.106 1.957
+ 1.688 1.636 1.586 1.53  1.456 1.341 1.202 1.147 1.128 1.094 1.028 0.997 0.962 0.916 0.868 0.827 0.786 0.772 0.749 0.711 0.668 0.627 0.608 0.597 0.567 0.544 0.526 0.507 0.494
+ 0.479 0.451 0.438 0.391 0.389 0.364]
+V [1.954 1.879 1.847 1.804 1.772 1.733 1.721 1.67  1.648 1.571 1.554 1.52  1.517 1.481 1.442 1.331 1.263 1.231 1.051 0.993 0.938 0.908 0.843 0.811 0.778 0.71  0.695 0.645 0.637
+ 0.599 0.575 0.565 0.548 0.534 0.526 0.505 0.488 0.477 0.456 0.435 0.427 0.409 0.395 0.382 0.371 0.362 0.35  0.344 0.334 0.323 0.319 0.314 0.302 0.298 0.296 0.284 0.281 0.272
+ 0.265 0.26  0.259 0.25  0.236 0.23 ]
+O [2.254 2.161 2.127 2.101 2.052 2.007 1.972 1.96  1.893 1.855 1.8   1.782 1.708 1.668 1.631 1.542 1.509 1.402 1.263 1.209 1.127 1.112 1.04  1.015 0.957 0.941 0.873 0.844 0.819
+ 0.748 0.702 0.684 0.646 0.626 0.581 0.515 0.471 0.464 0.414 0.405 0.38  0.351 0.333 0.304 0.287 0.267 0.262 0.23  0.213 0.192 0.186 0.176 0.166 0.151 0.142 0.14  0.13  0.126
+ 0.121 0.112 0.106 0.098 0.089 0.078]
+
+LATE PROJECTION SPECTRA
+layer 0 top 50 [9.826 7.351 6.265 5.869 5.797 5.657 5.516 5.45  5.333 5.242 5.197 5.094 4.98  4.904 4.863 4.819 4.793 4.689 4.627 4.595 4.557 4.523 4.411 4.378 4.283 4.216 4.143 4.125 4.048
+ 4.025 3.894 3.847 3.808 3.792 3.764 3.711 3.685 3.636 3.595 3.525 3.499 3.479 3.469 3.422 3.39  3.359 3.336 3.319 3.278 3.257] energy top 16/24/28/32/64/128 [0.359 0.467 0.513 0.553 0.781 0.944]
+layer 1 top 50 [8.193 7.894 7.199 6.997 6.671 6.433 6.274 6.133 6.099 6.021 5.942 5.865 5.829 5.789 5.698 5.675 5.646 5.629 5.581 5.564 5.553 5.538 5.528 5.477 5.456 5.447 5.438 5.403 5.399
+ 5.38  5.367 5.351 5.332 5.327 5.314 5.296 5.252 5.235 5.219 5.208 5.197 5.183 5.174 5.17  5.146 5.132 5.118 5.111 5.079 5.067] energy top 16/24/28/32/64/128 [0.117 0.16  0.18  0.201 0.346 0.576]
+layer 2 top 50 [9.404 9.187 8.723 8.47  8.04  7.795 7.614 7.45  7.392 7.253 7.223 7.148 7.082 6.972 6.829 6.733 6.637 6.547 6.46  6.404 6.374 6.307 6.209 6.181 6.12  6.091 5.989 5.9   5.88
+ 5.833 5.758 5.703 5.685 5.645 5.588 5.559 5.491 5.478 5.467 5.429 5.406 5.4   5.378 5.351 5.335 5.295 5.246 5.234 5.196 5.194] energy top 16/24/28/32/64/128 [0.163 0.218 0.243 0.265 0.415 0.632]
+layer 3 top 50 [26.309 20.685 19.699 19.261 18.594 18.197 17.862 17.667 17.044 16.749 16.039 15.151 14.756 14.326 14.05  13.5   13.293 12.531 12.401 11.958 11.74  11.594 10.367  8.351  8.064
+  7.914  7.461  7.166  5.833  4.072  3.221  3.139  2.842  2.8    2.687  2.571  2.403  2.328  2.244  2.185  2.181  2.116  2.081  2.053  1.996  1.976  1.93   1.918  1.865  1.838] energy top 16/24/28/32/64/128 [0.743 0.903 0.937 0.948 0.967 0.983]
+
+L0 EFFECTIVE MLP INPUT VS EARLY VALUE SUBSPACES
+F spectrum [17.903 10.353  7.602  7.51   7.11   6.834  6.74   6.432  6.363  6.22   6.139  6.05   6.015  5.936  5.794  5.626  5.575  5.499  5.421  5.309  5.301  5.117  5.076  4.966  4.945
+  4.84   4.814  4.73   4.562  4.559  4.484  4.346  4.149  4.084  4.052  3.912  3.822  3.766  3.706  3.527  3.476  3.411  3.338  3.291  3.237  3.206  3.058  2.967  2.94   2.816]
+F @ B02 spectrum [3.742 2.715 2.602 2.407 2.33  1.984 1.953 1.904 1.774 1.624 1.61  1.404 1.328 1.291 1.192 1.158 1.063 0.888 0.697 0.486 0.41  0.374 0.35  0.304 0.264 0.243 0.226 0.199 0.191
+ 0.181 0.156 0.144 0.129 0.114 0.106 0.093 0.083 0.071 0.063 0.055 0.049 0.047 0.04  0.034 0.031 0.028 0.027 0.021 0.019 0.018]
+
+L0 MLP ROW COSINE CLUSTERING (weight directions, not activations)
+F nearest cosine quantiles [0.448 0.785 0.831 0.862 0.887 0.923 0.999]
+F clusters 16 inertia 610.18 counts [273 241 239 203 192  70  62  56  40  37  29  21  21  19  18  15]
+F clusters 20 inertia 592.89 counts [179 176 175 169 135 116 113  99  90  48  44  38  32  31  21  17  16  13  13  11]
+F clusters 24 inertia 574.21 counts [151 141 138 138 132 132 118 118  82  75  63  62  31  23  21  17  15  13  13  12  11  11  10   9]
+F clusters 28 inertia 549.29 counts [158 139 130 128 127 122 118 114 106  76  38  31  26  24  23  20  18  16  15  14  14  14  13  12  11  11   9   9]
+F clusters 32 inertia 534.21 counts [121 120 118 117 110 108 101  98  91  83  78  77  41  28  25  23  19  19  17  15  15  14  14  12  11  11  11   9   9   7   7   7]
+F_B02 nearest cosine quantiles [0.5   0.648 0.691 0.743 0.789 0.853 0.993]
+F_B02 clusters 16 inertia 977.39 counts [118 112 111 106 104 103  97  97  97  96  94  90  89  77  75  70]
+F_B02 clusters 20 inertia 948.65 counts [109 107 106  99  97  97  87  82  76  76  73  70  69  65  62  54  54  53  52  48]
+F_B02 clusters 24 inertia 920.92 counts [107 103  91  90  82  73  64  64  63  63  61  61  60  59  57  56  53  52  51  50  47  47  42  40]
+F_B02 clusters 28 inertia 900.91 counts [93 87 74 70 68 67 64 63 62 61 58 55 54 53 52 51 51 51 49 49 46 43 40 38 37 35 34 31]
+F_B02 clusters 32 inertia 884.99 counts [74 66 66 64 62 55 55 54 53 52 52 52 50 49 49 49 48 48 45 43 42 42 42 41 40 39 38 37 35 35 33 26]
+
+SHARED LOW-RANK L1 QK STRUCTURE
+QK cosines
+ [[1.    0.578 0.416 0.448 0.455 0.464]
+ [0.578 1.    0.55  0.488 0.556 0.528]
+ [0.416 0.55  1.    0.608 0.667 0.564]
+ [0.448 0.488 0.608 1.    0.644 0.563]
+ [0.455 0.556 0.667 0.644 1.    0.577]
+ [0.464 0.528 0.564 0.563 0.577 1.   ]]
+key-bias cosines
+ [[1.    0.967 0.961 0.961 0.945 0.959]
+ [0.967 1.    0.976 0.963 0.967 0.962]
+ [0.961 0.976 1.    0.969 0.971 0.966]
+ [0.961 0.963 0.969 1.    0.964 0.967]
+ [0.945 0.967 0.971 0.964 1.    0.972]
+ [0.959 0.962 0.966 0.967 0.972 1.   ]]
+
+```</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><div class="event"><h3>Codex reply</h3><pre>```python
+import numpy as np
+from scipy.linalg import svd, svdvals
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4, suppress=True, linewidth=180)
+
+with threadpool_limits(limits=4):
+    A,B={},{}
+    for l in range(4):
+        g=W[f&quot;ln1_w.{l}&quot;]
+        for j in range(6):
+            s=slice(64*j,64*(j+1))
+            q=W[f&quot;W_q.{l}&quot;][s]*g
+            k=W[f&quot;W_k.{l}&quot;][s]*g
+            v=W[f&quot;W_v.{l}&quot;][s]*g
+            o=W[f&quot;W_o.{l}&quot;][:,s]
+            q=q-q.mean(1,keepdims=True)
+            k=k-k.mean(1,keepdims=True)
+            v=v-v.mean(1,keepdims=True)
+            o=o-o.mean(0,keepdims=True)
+            A[l,j]=q.T@k/8
+            B[l,j]=o@v
+    print(&quot;STRONGEST EARLIER-HEAD KEY-SIDE COMPOSITIONS&quot;)
+    for l in range(1,4):
+        for j in range(6):
+            a=A[l,j]
+            vals=[]
+            for m in range(l):
+                for k in range(6):
+                    b=B[m,k]
+                    val=np.trace(a@b)/(np.linalg.norm(a)*np.linalg.norm(b))
+                    vals.append((float(val),f&quot;L{m}H{k}&quot;))
+            print(f&quot;L{l}H{j}&quot;,sorted(vals,reverse=True)[:5])
+
+    print(&quot;\nL3H0 AND L3H1 COMPOSITION DETAILS&quot;)
+    for j in [0,1]:
+        for m in range(3):
+            for k in range(6):
+                c=A[3,j]@B[m,k]
+                ss=svdvals(c)
+                print(f&quot;L3H{j} &lt;- L{m}H{k}&quot;,
+                      &quot;trace/nuclear&quot;,round(float(np.trace(c)/ss.sum()),4),
+                      &quot;trace&quot;,round(float(np.trace(c)),4))
+
+    print(&quot;\nL0 OV OUTPUT COORDINATE CONCENTRATION&quot;)
+    for j in range(6):
+        b=B[0,j]
+        en=(b*b).sum(1)
+        ids=np.argsort(en)[-10:][::-1]
+        print(f&quot;L0H{j}&quot;,&quot;top coords&quot;,ids,&quot;energy fractions&quot;,en[ids]/en.sum())
+
+    print(&quot;\nBIAS-DERIVED KEY DIRECTIONS: TOP COORDINATES&quot;)
+    for l in range(1,4):
+        for j in range(6):
+            s=slice(64*j,64*(j+1))
+            g=W[f&quot;ln1_w.{l}&quot;]
+            kb=(W[f&quot;W_k.{l}&quot;][s]*g).T@(W[f&quot;W_q.{l}&quot;][s]@W[f&quot;ln1_b.{l}&quot;])/8
+            kb-=kb.mean()
+            ids=np.argsort(abs(kb))[-5:][::-1]
+            print(f&quot;L{l}H{j}&quot;,list(zip(ids.tolist(),np.round(kb[ids],4).tolist())),
+                  &quot;top5 energy&quot;,round(float(np.sum(kb[ids]**2)/np.sum(kb**2)),3))
+```
+</pre></div><details class="harness"><summary>Permitted experiment harness: python — full request and result</summary><pre>{
+  &quot;t&quot;: 1792713569.0078912,
+  &quot;s&quot;: 4.92,
+  &quot;code&quot;: &quot;import numpy as np\nfrom scipy.linalg import svd, svdvals\nfrom threadpoolctl import threadpool_limits\nnp.set_printoptions(precision=4, suppress=True, linewidth=180)\n\nwith threadpool_limits(limits=4):\n    A,B={},{}\n    for l in range(4):\n        g=W[f\&quot;ln1_w.{l}\&quot;]\n        for j in range(6):\n            s=slice(64*j,64*(j+1))\n            q=W[f\&quot;W_q.{l}\&quot;][s]*g\n            k=W[f\&quot;W_k.{l}\&quot;][s]*g\n            v=W[f\&quot;W_v.{l}\&quot;][s]*g\n            o=W[f\&quot;W_o.{l}\&quot;][:,s]\n            q=q-q.mean(1,keepdims=True)\n            k=k-k.mean(1,keepdims=True)\n            v=v-v.mean(1,keepdims=True)\n            o=o-o.mean(0,keepdims=True)\n            A[l,j]=q.T@k/8\n            B[l,j]=o@v\n    print(\&quot;STRONGEST EARLIER-HEAD KEY-SIDE COMPOSITIONS\&quot;)\n    for l in range(1,4):\n        for j in range(6):\n            a=A[l,j]\n            vals=[]\n            for m in range(l):\n                for k in range(6):\n                    b=B[m,k]\n                    val=np.trace(a@b)/(np.linalg.norm(a)*np.linalg.norm(b))\n                    vals.append((float(val),f\&quot;L{m}H{k}\&quot;))\n            print(f\&quot;L{l}H{j}\&quot;,sorted(vals,reverse=True)[:5])\n\n    print(\&quot;\\nL3H0 AND L3H1 COMPOSITION DETAILS\&quot;)\n    for j in [0,1]:\n        for m in range(3):\n            for k in range(6):\n                c=A[3,j]@B[m,k]\n                ss=svdvals(c)\n                print(f\&quot;L3H{j} &lt;- L{m}H{k}\&quot;,\n                      \&quot;trace/nuclear\&quot;,round(float(np.trace(c)/ss.sum()),4),\n                      \&quot;trace\&quot;,round(float(np.trace(c)),4))\n\n    print(\&quot;\\nL0 OV OUTPUT COORDINATE CONCENTRATION\&quot;)\n    for j in range(6):\n        b=B[0,j]\n        en=(b*b).sum(1)\n        ids=np.argsort(en)[-10:][::-1]\n        print(f\&quot;L0H{j}\&quot;,\&quot;top coords\&quot;,ids,\&quot;energy fractions\&quot;,en[ids]/en.sum())\n\n    print(\&quot;\\nBIAS-DERIVED KEY DIRECTIONS: TOP COORDINATES\&quot;)\n    for l in range(1,4):\n        for j in range(6):\n            s=slice(64*j,64*(j+1))\n            g=W[f\&quot;ln1_w.{l}\&quot;]\n            kb=(W[f\&quot;W_k.{l}\&quot;][s]*g).T@(W[f\&quot;W_q.{l}\&quot;][s]@W[f\&quot;ln1_b.{l}\&quot;])/8\n            kb-=kb.mean()\n            ids=np.argsort(abs(kb))[-5:][::-1]\n            print(f\&quot;L{l}H{j}\&quot;,list(zip(ids.tolist(),np.round(kb[ids],4).tolist())),\n                  \&quot;top5 energy\&quot;,round(float(np.sum(kb[ids]**2)/np.sum(kb**2)),3))\n&quot;,
+  &quot;out&quot;: &quot;STRONGEST EARLIER-HEAD KEY-SIDE COMPOSITIONS\nL1H0 [(0.03955800086259842, &#x27;L0H0&#x27;), (0.032195739448070526, &#x27;L0H4&#x27;), (0.01705174893140793, &#x27;L0H1&#x27;), (0.003977159038186073, &#x27;L0H5&#x27;), (-0.005399932619184256, &#x27;L0H2&#x27;)]\nL1H1 [(0.049728553742170334, &#x27;L0H4&#x27;), (0.04620948061347008, &#x27;L0H0&#x27;), (0.033427558839321136, &#x27;L0H1&#x27;), (0.018561488017439842, &#x27;L0H5&#x27;), (-0.00017083740385714918, &#x27;L0H2&#x27;)]\nL1H2 [(0.05433925613760948, &#x27;L0H4&#x27;), (0.050573159009218216, &#x27;L0H0&#x27;), (0.042333509773015976, &#x27;L0H1&#x27;), (0.022135281935334206, &#x27;L0H5&#x27;), (0.014582145027816296, &#x27;L0H2&#x27;)]\nL1H3 [(0.060354024171829224, &#x27;L0H4&#x27;), (0.059133730828762054, &#x27;L0H0&#x27;), (0.047461796551942825, &#x27;L0H1&#x27;), (0.028002765029668808, &#x27;L0H5&#x27;), (0.014678321778774261, &#x27;L0H2&#x27;)]\nL1H4 [(0.08423406630754471, &#x27;L0H4&#x27;), (0.08026526868343353, &#x27;L0H0&#x27;), (0.07128146290779114, &#x27;L0H1&#x27;), (0.0459645539522171, &#x27;L0H5&#x27;), (0.013364800252020359, &#x27;L0H2&#x27;)]\nL1H5 [(0.03945087268948555, &#x27;L0H0&#x27;), (0.036620356142520905, &#x27;L0H4&#x27;), (0.018292004242539406, &#x27;L0H1&#x27;), (0.006031267810612917, &#x27;L0H2&#x27;), (-0.011130708269774914, &#x27;L0H5&#x27;)]\nL2H0 [(0.018335040658712387, &#x27;L0H4&#x27;), (0.015807166695594788, &#x27;L0H5&#x27;), (0.01578846015036106, &#x27;L0H0&#x27;), (0.012559381313621998, &#x27;L0H1&#x27;), (-0.004353513475507498, &#x27;L1H1&#x27;)]\nL2H1 [(0.011552429758012295, &#x27;L0H5&#x27;), (0.010412916541099548, &#x27;L0H4&#x27;), (0.009854266420006752, &#x27;L0H0&#x27;), (0.006558287888765335, &#x27;L0H1&#x27;), (0.003068508580327034, &#x27;L1H3&#x27;)]\nL2H2 [(0.03569836542010307, &#x27;L0H4&#x27;), (0.029828304424881935, &#x27;L0H0&#x27;), (0.02412988804280758, &#x27;L0H1&#x27;), (0.01012241281569004, &#x27;L0H5&#x27;), (0.007758615538477898, &#x27;L1H4&#x27;)]\nL2H3 [(0.02318262681365013, &#x27;L0H4&#x27;), (0.0229625441133976, &#x27;L0H0&#x27;), (0.02175748348236084, &#x27;L0H5&#x27;), (0.01653883047401905, &#x27;L0H1&#x27;), (0.002890190575271845, &#x27;L0H2&#x27;)]\nL2H4 [(0.029940370470285416, &#x27;L0H4&#x27;), (0.029452353715896606, &#x27;L0H0&#x27;), (0.0221280287951231, &#x27;L0H1&#x27;), (0.02104029431939125, &#x27;L0H5&#x27;), (-0.0029856073670089245, &#x27;L1H3&#x27;)]\nL2H5 [(0.022380538284778595, &#x27;L0H0&#x27;), (0.021420946344733238, &#x27;L0H4&#x27;), (0.016774877905845642, &#x27;L0H5&#x27;), (0.01476210169494152, &#x27;L0H1&#x27;), (0.00037749100010842085, &#x27;L0H2&#x27;)]\nL3H0 [(0.0070648398250341415, &#x27;L0H4&#x27;), (0.006909861695021391, &#x27;L0H5&#x27;), (0.004880262538790703, &#x27;L0H1&#x27;), (0.004695577081292868, &#x27;L0H0&#x27;), (-0.0023075633216649294, &#x27;L0H2&#x27;)]\nL3H1 [(0.0950537845492363, &#x27;L0H2&#x27;), (0.0811980739235878, &#x27;L2H1&#x27;), (0.056843023747205734, &#x27;L1H3&#x27;), (0.05553252249956131, &#x27;L1H2&#x27;), (0.03620229288935661, &#x27;L1H1&#x27;)]\nL3H2 [(0.02193048782646656, &#x27;L0H5&#x27;), (0.01625622808933258, &#x27;L0H0&#x27;), (0.014132487587630749, &#x27;L0H4&#x27;), (0.01050521805882454, &#x27;L0H1&#x27;), (0.002961926395073533, &#x27;L0H2&#x27;)]\nL3H3 [(0.014481084421277046, &#x27;L0H5&#x27;), (0.010690891183912754, &#x27;L0H0&#x27;), (0.008561262860894203, &#x27;L0H4&#x27;), (0.005224825348705053, &#x27;L0H1&#x27;), (0.0011657862924039364, &#x27;L0H2&#x27;)]\nL3H4 [(0.02821427769958973, &#x27;L0H5&#x27;), (0.0227760411798954, &#x27;L0H4&#x27;), (0.020646613091230392, &#x27;L0H1&#x27;), (0.019726116210222244, &#x27;L0H0&#x27;), (0.0007090906146913767, &#x27;L2H0&#x27;)]\nL3H5 [(0.016841942444443703, &#x27;L2H3&#x27;), (0.01152708474546671, &#x27;L2H1&#x27;), (0.011158084496855736, &#x27;L2H4&#x27;), (0.011150664649903774, &#x27;L1H0&#x27;), (0.01015748456120491, &#x27;L2H2&#x27;)]\n\nL3H0 AND L3H1 COMPOSITION DETAILS\nL3H0 &lt;- L0H0 trace/nuclear 0.0371 trace 0.0947\nL3H0 &lt;- L0H1 trace/nuclear 0.0371 trace 0.0759\nL3H0 &lt;- L0H2 trace/nuclear -0.0086 trace -0.0131\nL3H0 &lt;- L0H3 trace/nuclear -0.0179 trace -0.0122\nL3H0 &lt;- L0H4 trace/nuclear 0.0463 trace 0.0636\nL3H0 &lt;- L0H5 trace/nuclear 0.0513 trace 0.1436\nL3H0 &lt;- L1H0 trace/nuclear -0.0477 trace -0.2494\nL3H0 &lt;- L1H1 trace/nuclear -0.0697 trace -0.43\nL3H0 &lt;- L1H2 trace/nuclear -0.0551 trace -0.2788\nL3H0 &lt;- L1H3 trace/nuclear -0.0627 trace -0.3347\nL3H0 &lt;- L1H4 trace/nuclear -0.0774 trace -0.4668\nL3H0 &lt;- L1H5 trace/nuclear -0.064 trace -0.4092\nL3H0 &lt;- L2H0 trace/nuclear -0.0574 trace -0.6474\nL3H0 &lt;- L2H1 trace/nuclear -0.0605 trace -0.7121\nL3H0 &lt;- L2H2 trace/nuclear -0.0479 trace -0.6607\nL3H0 &lt;- L2H3 trace/nuclear -0.0562 trace -0.6718\nL3H0 &lt;- L2H4 trace/nuclear -0.0599 trace -0.6795\nL3H0 &lt;- L2H5 trace/nuclear -0.0398 trace -0.4591\nL3H1 &lt;- L0H0 trace/nuclear -0.0298 trace -0.0379\nL3H1 &lt;- L0H1 trace/nuclear -0.0462&quot;
+}</pre></details></details><details id="t006"><summary>t006 · harness: python</summary><p class="small"><a href="../raw/exp3/english_r0/original/turns/t006/prompt.txt">Recorded prompt</a> · <a href="../raw/exp3/english_r0/original/turns/t006/events.jsonl">Raw CLI events</a> · <a href="../raw/exp3/english_r0/original/turns/t006/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 8,672 characters</summary><pre>OUTPUT of run 5 of at most 100:
+```
+STRONGEST EARLIER-HEAD KEY-SIDE COMPOSITIONS
+L1H0 [(0.03955800086259842, &#x27;L0H0&#x27;), (0.032195739448070526, &#x27;L0H4&#x27;), (0.01705174893140793, &#x27;L0H1&#x27;), (0.003977159038186073, &#x27;L0H5&#x27;), (-0.005399932619184256, &#x27;L0H2&#x27;)]
+L1H1 [(0.049728553742170334, &#x27;L0H4&#x27;), (0.04620948061347008, &#x27;L0H0&#x27;), (0.033427558839321136, &#x27;L0H1&#x27;), (0.018561488017439842, &#x27;L0H5&#x27;), (-0.00017083740385714918, &#x27;L0H2&#x27;)]
+L1H2 [(0.05433925613760948, &#x27;L0H4&#x27;), (0.050573159009218216, &#x27;L0H0&#x27;), (0.042333509773015976, &#x27;L0H1&#x27;), (0.022135281935334206, &#x27;L0H5&#x27;), (0.014582145027816296, &#x27;L0H2&#x27;)]
+L1H3 [(0.060354024171829224, &#x27;L0H4&#x27;), (0.059133730828762054, &#x27;L0H0&#x27;), (0.047461796551942825, &#x27;L0H1&#x27;), (0.028002765029668808, &#x27;L0H5&#x27;), (0.014678321778774261, &#x27;L0H2&#x27;)]
+L1H4 [(0.08423406630754471, &#x27;L0H4&#x27;), (0.08026526868343353, &#x27;L0H0&#x27;), (0.07128146290779114, &#x27;L0H1&#x27;), (0.0459645539522171, &#x27;L0H5&#x27;), (0.013364800252020359, &#x27;L0H2&#x27;)]
+L1H5 [(0.03945087268948555, &#x27;L0H0&#x27;), (0.036620356142520905, &#x27;L0H4&#x27;), (0.018292004242539406, &#x27;L0H1&#x27;), (0.006031267810612917, &#x27;L0H2&#x27;), (-0.011130708269774914, &#x27;L0H5&#x27;)]
+L2H0 [(0.018335040658712387, &#x27;L0H4&#x27;), (0.015807166695594788, &#x27;L0H5&#x27;), (0.01578846015036106, &#x27;L0H0&#x27;), (0.012559381313621998, &#x27;L0H1&#x27;), (-0.004353513475507498, &#x27;L1H1&#x27;)]
+L2H1 [(0.011552429758012295, &#x27;L0H5&#x27;), (0.010412916541099548, &#x27;L0H4&#x27;), (0.009854266420006752, &#x27;L0H0&#x27;), (0.006558287888765335, &#x27;L0H1&#x27;), (0.003068508580327034, &#x27;L1H3&#x27;)]
+L2H2 [(0.03569836542010307, &#x27;L0H4&#x27;), (0.029828304424881935, &#x27;L0H0&#x27;), (0.02412988804280758, &#x27;L0H1&#x27;), (0.01012241281569004, &#x27;L0H5&#x27;), (0.007758615538477898, &#x27;L1H4&#x27;)]
+L2H3 [(0.02318262681365013, &#x27;L0H4&#x27;), (0.0229625441133976, &#x27;L0H0&#x27;), (0.02175748348236084, &#x27;L0H5&#x27;), (0.01653883047401905, &#x27;L0H1&#x27;), (0.002890190575271845, &#x27;L0H2&#x27;)]
+L2H4 [(0.029940370470285416, &#x27;L0H4&#x27;), (0.029452353715896606, &#x27;L0H0&#x27;), (0.0221280287951231, &#x27;L0H1&#x27;), (0.02104029431939125, &#x27;L0H5&#x27;), (-0.0029856073670089245, &#x27;L1H3&#x27;)]
+L2H5 [(0.022380538284778595, &#x27;L0H0&#x27;), (0.021420946344733238, &#x27;L0H4&#x27;), (0.016774877905845642, &#x27;L0H5&#x27;), (0.01476210169494152, &#x27;L0H1&#x27;), (0.00037749100010842085, &#x27;L0H2&#x27;)]
+L3H0 [(0.0070648398250341415, &#x27;L0H4&#x27;), (0.006909861695021391, &#x27;L0H5&#x27;), (0.004880262538790703, &#x27;L0H1&#x27;), (0.004695577081292868, &#x27;L0H0&#x27;), (-0.0023075633216649294, &#x27;L0H2&#x27;)]
+L3H1 [(0.0950537845492363, &#x27;L0H2&#x27;), (0.0811980739235878, &#x27;L2H1&#x27;), (0.056843023747205734, &#x27;L1H3&#x27;), (0.05553252249956131, &#x27;L1H2&#x27;), (0.03620229288935661, &#x27;L1H1&#x27;)]
+L3H2 [(0.02193048782646656, &#x27;L0H5&#x27;), (0.01625622808933258, &#x27;L0H0&#x27;), (0.014132487587630749, &#x27;L0H4&#x27;), (0.01050521805882454, &#x27;L0H1&#x27;), (0.002961926395073533, &#x27;L0H2&#x27;)]
+L3H3 [(0.014481084421277046, &#x27;L0H5&#x27;), (0.010690891183912754, &#x27;L0H0&#x27;), (0.008561262860894203, &#x27;L0H4&#x27;), (0.005224825348705053, &#x27;L0H1&#x27;), (0.0011657862924039364, &#x27;L0H2&#x27;)]
+L3H4 [(0.02821427769958973, &#x27;L0H5&#x27;), (0.0227760411798954, &#x27;L0H4&#x27;), (0.020646613091230392, &#x27;L0H1&#x27;), (0.019726116210222244, &#x27;L0H0&#x27;), (0.0007090906146913767, &#x27;L2H0&#x27;)]
+L3H5 [(0.016841942444443703, &#x27;L2H3&#x27;), (0.01152708474546671, &#x27;L2H1&#x27;), (0.011158084496855736, &#x27;L2H4&#x27;), (0.011150664649903774, &#x27;L1H0&#x27;), (0.01015748456120491, &#x27;L2H2&#x27;)]
+
+L3H0 AND L3H1 COMPOSITION DETAILS
+L3H0 &lt;- L0H0 trace/nuclear 0.0371 trace 0.0947
+L3H0 &lt;- L0H1 trace/nuclear 0.0371 trace 0.0759
+L3H0 &lt;- L0H2 trace/nuclear -0.0086 trace -0.0131
+L3H0 &lt;- L0H3 trace/nuclear -0.0179 trace -0.0122
+L3H0 &lt;- L0H4 trace/nuclear 0.0463 trace 0.0636
+L3H0 &lt;- L0H5 trace/nuclear 0.0513 trace 0.1436
+L3H0 &lt;- L1H0 trace/nuclear -0.0477 trace -0.2494
+L3H0 &lt;- L1H1 trace/nuclear -0.0697 trace -0.43
+L3H0 &lt;- L1H2 trace/nuclear -0.0551 trace -0.2788
+L3H0 &lt;- L1H3 trace/nuclear -0.0627 trace -0.3347
+L3H0 &lt;- L1H4 trace/nuclear -0.0774 trace -0.4668
+L3H0 &lt;- L1H5 trace/nuclear -0.064 trace -0.4092
+L3H0 &lt;- L2H0 trace/nuclear -0.0574 trace -0.6474
+L3H0 &lt;- L2H1 trace/nuclear -0.0605 trace -0.7121
+L3H0 &lt;- L2H2 trace/nuclear -0.0479 trace -0.6607
+L3H0 &lt;- L2H3 trace/nuclear -0.0562 trace -0.6718
+L3H0 &lt;- L2H4 trace/nuclear -0.0599 trace -0.6795
+L3H0 &lt;- L2H5 trace/nuclear -0.0398 trace -0.4591
+L3H1 &lt;- L0H0 trace/nuclear -0.0298 trace -0.0379
+L3H1 &lt;- L0H1 trace/nuclear -0.0462 trace -0.045
+L3H1 &lt;- L0H2 trace/nuclear 0.2504 trace 0.4413
+L3H1 &lt;- L0H3 trace/nuclear 0.0045 trace 0.0026
+L3H1 &lt;- L0H4 trace/nuclear -0.0507 trace -0.0382
+L3H1 &lt;- L0H5 trace/nuclear -0.0391 trace -0.0484
+L3H1 &lt;- L1H0 trace/nuclear 0.0402 trace 0.2082
+L3H1 &lt;- L1H1 trace/nuclear 0.1176 trace 0.6842
+L3H1 &lt;- L1H2 trace/nuclear 0.178 trace 0.9325
+L3H1 &lt;- L1H3 trace/nuclear 0.1759 trace 1.0451
+L3H1 &lt;- L1H4 trace/nuclear 0.0857 trace 0.4925
+L3H1 &lt;- L1H5 trace/nuclear 0.0074 trace 0.0392
+L3H1 &lt;- L2H0 trace/nuclear 0.0613 trace 0.5924
+L3H1 &lt;- L2H1 trace/nuclear 0.1963 trace 2.6322
+L3H1 &lt;- L2H2 trace/nuclear 0.0826 trace 1.1961
+L3H1 &lt;- L2H3 trace/nuclear 0.0787 trace 1.0633
+L3H1 &lt;- L2H4 trace/nuclear 0.0334 trace 0.3534
+L3H1 &lt;- L2H5 trace/nuclear 0.0481 trace 0.5011
+
+L0 OV OUTPUT COORDINATE CONCENTRATION
+L0H0 top coords [222 360  78 103  72 254  25 197 273 136] energy fractions [0.6861 0.0908 0.0726 0.0272 0.0207 0.0194 0.0111 0.0068 0.0052 0.0021]
+L0H1 top coords [222  78 360  72 103 254  25 197 273 136] energy fractions [0.5185 0.1903 0.1196 0.0443 0.0328 0.0244 0.0151 0.0067 0.0058 0.0033]
+L0H2 top coords [302 210  98 134 153 330 360  49  39 103] energy fractions [0.0106 0.0105 0.0089 0.0079 0.0064 0.0061 0.006  0.0058 0.0058 0.0058]
+L0H3 top coords [360  78 103 222 187 180 147 254 339 197] energy fractions [0.1504 0.0694 0.0521 0.0344 0.0134 0.0097 0.0085 0.0082 0.0076 0.0074]
+L0H4 top coords [222 360  78 103  72 254  25 273 197 136] energy fractions [0.5742 0.1181 0.1103 0.0414 0.0365 0.0163 0.0078 0.0053 0.0043 0.0018]
+L0H5 top coords [222  78  72 360 103 254  25 273 197 307] energy fractions [0.4137 0.3589 0.0933 0.0482 0.0138 0.0087 0.0082 0.0073 0.0029 0.0016]
+
+BIAS-DERIVED KEY DIRECTIONS: TOP COORDINATES
+L1H0 [(72, -0.8822000026702881), (78, 0.7182999849319458), (222, 0.6395000219345093), (273, -0.14180000126361847), (25, -0.10459999740123749)] top5 energy 0.941
+L1H1 [(72, -1.3916000127792358), (78, 1.230299949645996), (222, 1.215999960899353), (273, -0.2671000063419342), (254, 0.1574999988079071)] top5 energy 0.963
+L1H2 [(72, -1.5963000059127808), (78, 1.3848999738693237), (222, 1.3825000524520874), (273, -0.3125), (254, 0.164900004863739)] top5 energy 0.971
+L1H3 [(72, -1.4771000146865845), (78, 1.284999966621399), (222, 1.1722999811172485), (273, -0.25780001282691956), (25, -0.16979999840259552)] top5 energy 0.959
+L1H4 [(72, -1.3476999998092651), (222, 1.323199987411499), (78, 1.1787999868392944), (273, -0.33309999108314514), (254, 0.1446000039577484)] top5 energy 0.97
+L1H5 [(72, -1.0893000364303589), (78, 0.9269000291824341), (222, 0.8819000124931335), (273, -0.32739999890327454), (254, 0.10869999974966049)] top5 energy 0.958
+L2H0 [(78, 1.2416000366210938), (222, 0.9868000149726868), (72, -0.2558000087738037), (360, 0.0812000036239624), (19, -0.07689999788999557)] top5 energy 0.898
+L2H1 [(78, 0.46970000863075256), (222, 0.45170000195503235), (72, -0.12630000710487366), (22, 0.04560000076889992), (114, 0.04529999941587448)] top5 energy 0.802
+L2H2 [(78, 0.5684000253677368), (222, 0.3847000002861023), (72, -0.11540000140666962), (103, -0.05180000141263008), (360, 0.047200001776218414)] top5 energy 0.857
+L2H3 [(78, 1.038699984550476), (222, 0.9103000164031982), (72, -0.20600000023841858), (254, 0.09200000017881393), (25, -0.07240000367164612)] top5 energy 0.918
+L2H4 [(78, 1.1097999811172485), (222, 0.9890000224113464), (72, -0.20329999923706055), (25, -0.07020000368356705), (118, -0.066600002348423)] top5 energy 0.908
+L2H5 [(78, 1.05239999294281), (222, 0.920799970626831), (72, -0.24959999322891235), (66, -0.08079999685287476), (133, 0.07670000195503235)] top5 energy 0.892
+L3H0 [(78, 0.07000000029802322), (222, 0.06800000369548798), (157, 0.042399998754262924), (66, 0.03519999980926514), (57, 0.03500000014901161)] top5 energy 0.207
+L3H1 [(103, -0.04969999939203262), (302, 0.04320000112056732), (303, 0.041099999099969864), (222, -0.03849999979138374), (127, -0.03530000150203705)] top5 energy 0.151
+L3H2 [(78, 0.1891999989748001), (222, 0.14100000262260437), (103, -0.03009999915957451), (15, -0.027699999511241913), (232, -0.02419999986886978)] top5 energy 0.691
+L3H3 [(78, 0.227400004863739), (222, 0.2084999978542328), (106, -0.026200000196695328), (262, -0.02590000070631504), (240, 0.02459999918937683)] top5 energy 0.748
+L3H4 [(78, 0.16760000586509705), (222, 0.15199999511241913), (349, 0.034699998795986176), (314, -0.03099999949336052), (8, 0.028599999845027924)] top5 energy 0.574
+L3H5 [(222, 0.026200000196695328), (187, -0.026000000536441803), (302, -0.024800000712275505), (67, -0.02319999970495701), (20, 0.021900000050663948)] top5 energy 0.111
+
+```</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><div class="event"><h3>Codex reply</h3><pre>```python
+import numpy as np
+from scipy.linalg import svd, svdvals, eigvalsh
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4, suppress=True, linewidth=180)
+
+def cent(a):
+    return a-a.mean(0,keepdims=True)-a.mean(1,keepdims=True)+a.mean()
+
+with threadpool_limits(limits=4):
+    print(&quot;DIRECT POSITION-REGISTER WEIGHTS&quot;)
+    for name in [&quot;ln1_w.0&quot;,&quot;ln2_w.0&quot;,&quot;ln1_w.1&quot;,&quot;ln1_b.1&quot;,&quot;ln1_w.2&quot;,&quot;ln1_b.2&quot;,&quot;ln1_w.3&quot;,&quot;ln1_b.3&quot;]:
+        print(name, {i:round(float(W[name][i]),5) for i in [72,78,103,222,360]})
+
+    print(&quot;\nCOPY-CIRCUIT ROBUSTNESS TO ALGEBRAIC CONVENTIONS&quot;)
+    for gains in [False,True]:
+        g0=W[&quot;ln1_w.0&quot;] if gains else np.ones(384)
+        g3=W[&quot;ln1_w.3&quot;] if gains else np.ones(384)
+        b=cent((W[&quot;W_o.0&quot;][:,128:192]@W[&quot;W_v.0&quot;][128:192])*g0)
+        value_read=W[&quot;W_v.0&quot;][128:192]*g0
+        value_read-=value_read.mean(1,keepdims=True)
+        basis=svd(value_read,full_matrices=False)[2].T
+        for j in [0,1,2,3,4,5]:
+            s=slice(64*j,64*(j+1))
+            a=cent((W[&quot;W_q.3&quot;][s]*g3).T@(W[&quot;W_k.3&quot;][s]*g3)/8)
+            c=a@b
+            vals=[]
+            for rank in [16,20,24,28,32]:
+                u=basis[:,:rank]
+                cr=u.T@c@u
+                vals.append(float(np.trace(cr)/svdvals(cr).sum()))
+            print(&quot;gains&quot;,gains,f&quot;L3H{j}&quot;,&quot;restricted trace/nuclear at ranks16,20,24,28,32&quot;,np.round(vals,4))
+
+    print(&quot;\nLATE CONTENT-SPACE DIMENSION CHECK&quot;)
+    for name,mat in [
+        (&quot;W_proj.3&quot;,W[&quot;W_proj.3&quot;]),
+        (&quot;L3H1 W_o&quot;,W[&quot;W_o.3&quot;][:,64:128]),
+        (&quot;L3H5 W_o&quot;,W[&quot;W_o.3&quot;][:,320:384])
+    ]:
+        ss=svdvals(mat)
+        print(name,&quot;singular values 19..36&quot;,ss[18:36])
+
+    print(&quot;\nHEAD READ/WRITE ALIGNMENT WITH THREE SHARED REGISTERS&quot;)
+    for l in range(4):
+        g=W[f&quot;ln1_w.{l}&quot;]
+        for j in range(6):
+            s=slice(64*j,64*(j+1))
+            q=W[f&quot;W_q.{l}&quot;][s]*g
+            k=W[f&quot;W_k.{l}&quot;][s]*g
+            a=cent(q.T@k/8)
+            qb=W[f&quot;W_q.{l}&quot;][s]@W[f&quot;ln1_b.{l}&quot;]
+            kb=k.T@qb/8
+            kb-=kb.mean()
+            reg=[72,78,222]
+            print(f&quot;L{l}H{j}&quot;,
+                  &quot;QK key-register fraction&quot;,round(float(np.sum(a[:,reg]**2)/np.sum(a*a)),3),
+                  &quot;bias key-register fraction&quot;,round(float(np.sum(kb[reg]**2)/np.sum(kb*kb)),3),
+                  &quot;key bias norm&quot;,round(float(np.linalg.norm(kb)),3))
+```
+</pre></div><details class="harness"><summary>Permitted experiment harness: python — full request and result</summary><pre>{
+  &quot;t&quot;: 1792713673.2736373,
+  &quot;s&quot;: 2.67,
+  &quot;code&quot;: &quot;import numpy as np\nfrom scipy.linalg import svd, svdvals, eigvalsh\nfrom threadpoolctl import threadpool_limits\nnp.set_printoptions(precision=4, suppress=True, linewidth=180)\n\ndef cent(a):\n    return a-a.mean(0,keepdims=True)-a.mean(1,keepdims=True)+a.mean()\n\nwith threadpool_limits(limits=4):\n    print(\&quot;DIRECT POSITION-REGISTER WEIGHTS\&quot;)\n    for name in [\&quot;ln1_w.0\&quot;,\&quot;ln2_w.0\&quot;,\&quot;ln1_w.1\&quot;,\&quot;ln1_b.1\&quot;,\&quot;ln1_w.2\&quot;,\&quot;ln1_b.2\&quot;,\&quot;ln1_w.3\&quot;,\&quot;ln1_b.3\&quot;]:\n        print(name, {i:round(float(W[name][i]),5) for i in [72,78,103,222,360]})\n\n    print(\&quot;\\nCOPY-CIRCUIT ROBUSTNESS TO ALGEBRAIC CONVENTIONS\&quot;)\n    for gains in [False,True]:\n        g0=W[\&quot;ln1_w.0\&quot;] if gains else np.ones(384)\n        g3=W[\&quot;ln1_w.3\&quot;] if gains else np.ones(384)\n        b=cent((W[\&quot;W_o.0\&quot;][:,128:192]@W[\&quot;W_v.0\&quot;][128:192])*g0)\n        value_read=W[\&quot;W_v.0\&quot;][128:192]*g0\n        value_read-=value_read.mean(1,keepdims=True)\n        basis=svd(value_read,full_matrices=False)[2].T\n        for j in [0,1,2,3,4,5]:\n            s=slice(64*j,64*(j+1))\n            a=cent((W[\&quot;W_q.3\&quot;][s]*g3).T@(W[\&quot;W_k.3\&quot;][s]*g3)/8)\n            c=a@b\n            vals=[]\n            for rank in [16,20,24,28,32]:\n                u=basis[:,:rank]\n                cr=u.T@c@u\n                vals.append(float(np.trace(cr)/svdvals(cr).sum()))\n            print(\&quot;gains\&quot;,gains,f\&quot;L3H{j}\&quot;,\&quot;restricted trace/nuclear at ranks16,20,24,28,32\&quot;,np.round(vals,4))\n\n    print(\&quot;\\nLATE CONTENT-SPACE DIMENSION CHECK\&quot;)\n    for name,mat in [\n        (\&quot;W_proj.3\&quot;,W[\&quot;W_proj.3\&quot;]),\n        (\&quot;L3H1 W_o\&quot;,W[\&quot;W_o.3\&quot;][:,64:128]),\n        (\&quot;L3H5 W_o\&quot;,W[\&quot;W_o.3\&quot;][:,320:384])\n    ]:\n        ss=svdvals(mat)\n        print(name,\&quot;singular values 19..36\&quot;,ss[18:36])\n\n    print(\&quot;\\nHEAD READ/WRITE ALIGNMENT WITH THREE SHARED REGISTERS\&quot;)\n    for l in range(4):\n        g=W[f\&quot;ln1_w.{l}\&quot;]\n        for j in range(6):\n            s=slice(64*j,64*(j+1))\n            q=W[f\&quot;W_q.{l}\&quot;][s]*g\n            k=W[f\&quot;W_k.{l}\&quot;][s]*g\n            a=cent(q.T@k/8)\n            qb=W[f\&quot;W_q.{l}\&quot;][s]@W[f\&quot;ln1_b.{l}\&quot;]\n            kb=k.T@qb/8\n            kb-=kb.mean()\n            reg=[72,78,222]\n            print(f\&quot;L{l}H{j}\&quot;,\n                  \&quot;QK key-register fraction\&quot;,round(float(np.sum(a[:,reg]**2)/np.sum(a*a)),3),\n                  \&quot;bias key-register fraction\&quot;,round(float(np.sum(kb[reg]**2)/np.sum(kb*kb)),3),\n                  \&quot;key bias norm\&quot;,round(float(np.linalg.norm(kb)),3))\n&quot;,
+  &quot;out&quot;: &quot;DIRECT POSITION-REGISTER WEIGHTS\nln1_w.0 {72: 0.70624, 78: 0.71854, 103: 0.42608, 222: 0.83616, 360: 0.82004}\nln2_w.0 {72: 0.25055, 78: 0.10517, 103: 0.75663, 222: 0.05277, 360: 0.4628}\nln1_w.1 {72: 0.79948, 78: 0.78106, 103: 0.23871, 222: 1.1239, 360: 0.13611}\nln1_b.1 {72: -0.767, 78: 0.8661, 103: -0.50698, 222: -1.47125, 360: 1.15442}\nln1_w.2 {72: 0.38629, 78: 0.90574, 103: 0.30339, 222: 1.01444, 360: 0.20781}\nln1_b.2 {72: -0.50749, 78: 0.97425, 103: -0.61322, 222: -1.3819, 360: 1.05267}\nln1_w.3 {72: 0.50111, 78: 0.76259, 103: 0.59345, 222: 0.82711, 360: 0.29439}\nln1_b.3 {72: -0.21987, 78: 0.54871, 103: -0.24884, 222: -0.60691, 360: 0.65015}\n\nCOPY-CIRCUIT ROBUSTNESS TO ALGEBRAIC CONVENTIONS\ngains False L3H0 restricted trace/nuclear at ranks16,20,24,28,32 [-0.0835 -0.0734 -0.047  -0.0429 -0.0362]\ngains False L3H1 restricted trace/nuclear at ranks16,20,24,28,32 [0.9384 0.9032 0.872  0.8306 0.792 ]\ngains False L3H2 restricted trace/nuclear at ranks16,20,24,28,32 [0.1021 0.0698 0.056  0.0421 0.0393]\ngains False L3H3 restricted trace/nuclear at ranks16,20,24,28,32 [-0.09   -0.0544 -0.0239 -0.0091  0.0001]\ngains False L3H4 restricted trace/nuclear at ranks16,20,24,28,32 [-0.101  -0.1044 -0.0893 -0.0874 -0.0758]\ngains False L3H5 restricted trace/nuclear at ranks16,20,24,28,32 [0.1866 0.1225 0.1289 0.1072 0.0964]\ngains True L3H0 restricted trace/nuclear at ranks16,20,24,28,32 [-0.0853 -0.0503 -0.0344 -0.0404 -0.0329]\ngains True L3H1 restricted trace/nuclear at ranks16,20,24,28,32 [0.8737 0.8243 0.7936 0.7669 0.7327]\ngains True L3H2 restricted trace/nuclear at ranks16,20,24,28,32 [0.1199 0.0718 0.0685 0.0587 0.0514]\ngains True L3H3 restricted trace/nuclear at ranks16,20,24,28,32 [ 0.0309  0.0111 -0.0042  0.003   0.0196]\ngains True L3H4 restricted trace/nuclear at ranks16,20,24,28,32 [-0.119  -0.1131 -0.0788 -0.0827 -0.0805]\ngains True L3H5 restricted trace/nuclear at ranks16,20,24,28,32 [0.0881 0.0897 0.077  0.0502 0.0454]\n\nLATE CONTENT-SPACE DIMENSION CHECK\nW_proj.3 singular values 19..36 [12.4015 11.9578 11.7405 11.5943 10.3667  8.3505  8.0636  7.9141  7.461   7.1656  5.8331  4.0718  3.2206  3.1387  2.8415  2.8001  2.6874  2.5707]\nL3H1 W_o singular values 19..36 [2.8872 2.8346 2.7267 2.6749 2.6459 2.6122 2.3869 2.3748 2.2979 2.1353 2.1027 1.9627 1.8154 1.7891 1.7212 1.5923 1.5699 1.559 ]\nL3H5 W_o singular values 19..36 [2.4788 2.4154 2.2674 2.2442 2.1603 2.0801 2.0233 1.976  1.9274 1.828  1.8155 1.7774 1.7145 1.6506 1.6347 1.6003 1.5938 1.504 ]\n\nHEAD READ/WRITE ALIGNMENT WITH THREE SHARED REGISTERS\nL0H0 QK key-register fraction 0.028 bias key-register fraction 0.02 key bias norm 0.014\nL0H1 QK key-register fraction 0.072 bias key-register fraction 0.208 key bias norm 0.003\nL0H2 QK key-register fraction 0.035 bias key-register fraction 0.071 key bias norm 0.143\nL0H3 QK key-register fraction 0.014 bias key-register fraction 0.016 key bias norm 0.054\nL0H4 QK key-register fraction 0.042 bias key-register fraction 0.026 key bias norm 0.011\nL0H5 QK key-register fraction 0.171 bias key-register fraction 0.185 key bias norm 0.016\nL1H0 QK key-register fraction 0.658 bias key-register fraction 0.925 key bias norm 1.357\nL1H1 QK key-register fraction 0.619 bias key-register fraction 0.944 key bias norm 2.285\nL1H2 QK key-register fraction 0.656 bias key-register fraction 0.952 key bias norm 2.588\nL1H3 QK key-register fraction 0.658 bias key-register fraction 0.942 key bias norm 2.351\nL1H4 QK key-register fraction 0.707 bias key-register fraction 0.945 key bias norm 2.29\nL1H5 QK key-register fraction 0.64 bias key-register fraction 0.919 key bias norm 1.753\nL2H0 QK key-register fraction 0.108 bias key-register fraction 0.894 key bias norm 1.699\nL2H1 QK key-register fraction 0.05 bias key-register fraction 0.795 key bias norm 0.745\nL2H2 QK key-register fraction 0.21 bias key-register fraction 0.849 key bias norm 0.755\nL2H3 QK key-register fraction 0.109 bias key-register fraction 0.912 key bias norm 1.462\nL2H4 QK key-register fraction 0.113 bias k&quot;
+}</pre></details></details><details id="t007"><summary>t007 · harness: python</summary><p class="small"><a href="../raw/exp3/english_r0/original/turns/t007/prompt.txt">Recorded prompt</a> · <a href="../raw/exp3/english_r0/original/turns/t007/events.jsonl">Raw CLI events</a> · <a href="../raw/exp3/english_r0/original/turns/t007/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 4,707 characters</summary><pre>OUTPUT of run 6 of at most 100:
+```
+DIRECT POSITION-REGISTER WEIGHTS
+ln1_w.0 {72: 0.70624, 78: 0.71854, 103: 0.42608, 222: 0.83616, 360: 0.82004}
+ln2_w.0 {72: 0.25055, 78: 0.10517, 103: 0.75663, 222: 0.05277, 360: 0.4628}
+ln1_w.1 {72: 0.79948, 78: 0.78106, 103: 0.23871, 222: 1.1239, 360: 0.13611}
+ln1_b.1 {72: -0.767, 78: 0.8661, 103: -0.50698, 222: -1.47125, 360: 1.15442}
+ln1_w.2 {72: 0.38629, 78: 0.90574, 103: 0.30339, 222: 1.01444, 360: 0.20781}
+ln1_b.2 {72: -0.50749, 78: 0.97425, 103: -0.61322, 222: -1.3819, 360: 1.05267}
+ln1_w.3 {72: 0.50111, 78: 0.76259, 103: 0.59345, 222: 0.82711, 360: 0.29439}
+ln1_b.3 {72: -0.21987, 78: 0.54871, 103: -0.24884, 222: -0.60691, 360: 0.65015}
+
+COPY-CIRCUIT ROBUSTNESS TO ALGEBRAIC CONVENTIONS
+gains False L3H0 restricted trace/nuclear at ranks16,20,24,28,32 [-0.0835 -0.0734 -0.047  -0.0429 -0.0362]
+gains False L3H1 restricted trace/nuclear at ranks16,20,24,28,32 [0.9384 0.9032 0.872  0.8306 0.792 ]
+gains False L3H2 restricted trace/nuclear at ranks16,20,24,28,32 [0.1021 0.0698 0.056  0.0421 0.0393]
+gains False L3H3 restricted trace/nuclear at ranks16,20,24,28,32 [-0.09   -0.0544 -0.0239 -0.0091  0.0001]
+gains False L3H4 restricted trace/nuclear at ranks16,20,24,28,32 [-0.101  -0.1044 -0.0893 -0.0874 -0.0758]
+gains False L3H5 restricted trace/nuclear at ranks16,20,24,28,32 [0.1866 0.1225 0.1289 0.1072 0.0964]
+gains True L3H0 restricted trace/nuclear at ranks16,20,24,28,32 [-0.0853 -0.0503 -0.0344 -0.0404 -0.0329]
+gains True L3H1 restricted trace/nuclear at ranks16,20,24,28,32 [0.8737 0.8243 0.7936 0.7669 0.7327]
+gains True L3H2 restricted trace/nuclear at ranks16,20,24,28,32 [0.1199 0.0718 0.0685 0.0587 0.0514]
+gains True L3H3 restricted trace/nuclear at ranks16,20,24,28,32 [ 0.0309  0.0111 -0.0042  0.003   0.0196]
+gains True L3H4 restricted trace/nuclear at ranks16,20,24,28,32 [-0.119  -0.1131 -0.0788 -0.0827 -0.0805]
+gains True L3H5 restricted trace/nuclear at ranks16,20,24,28,32 [0.0881 0.0897 0.077  0.0502 0.0454]
+
+LATE CONTENT-SPACE DIMENSION CHECK
+W_proj.3 singular values 19..36 [12.4015 11.9578 11.7405 11.5943 10.3667  8.3505  8.0636  7.9141  7.461   7.1656  5.8331  4.0718  3.2206  3.1387  2.8415  2.8001  2.6874  2.5707]
+L3H1 W_o singular values 19..36 [2.8872 2.8346 2.7267 2.6749 2.6459 2.6122 2.3869 2.3748 2.2979 2.1353 2.1027 1.9627 1.8154 1.7891 1.7212 1.5923 1.5699 1.559 ]
+L3H5 W_o singular values 19..36 [2.4788 2.4154 2.2674 2.2442 2.1603 2.0801 2.0233 1.976  1.9274 1.828  1.8155 1.7774 1.7145 1.6506 1.6347 1.6003 1.5938 1.504 ]
+
+HEAD READ/WRITE ALIGNMENT WITH THREE SHARED REGISTERS
+L0H0 QK key-register fraction 0.028 bias key-register fraction 0.02 key bias norm 0.014
+L0H1 QK key-register fraction 0.072 bias key-register fraction 0.208 key bias norm 0.003
+L0H2 QK key-register fraction 0.035 bias key-register fraction 0.071 key bias norm 0.143
+L0H3 QK key-register fraction 0.014 bias key-register fraction 0.016 key bias norm 0.054
+L0H4 QK key-register fraction 0.042 bias key-register fraction 0.026 key bias norm 0.011
+L0H5 QK key-register fraction 0.171 bias key-register fraction 0.185 key bias norm 0.016
+L1H0 QK key-register fraction 0.658 bias key-register fraction 0.925 key bias norm 1.357
+L1H1 QK key-register fraction 0.619 bias key-register fraction 0.944 key bias norm 2.285
+L1H2 QK key-register fraction 0.656 bias key-register fraction 0.952 key bias norm 2.588
+L1H3 QK key-register fraction 0.658 bias key-register fraction 0.942 key bias norm 2.351
+L1H4 QK key-register fraction 0.707 bias key-register fraction 0.945 key bias norm 2.29
+L1H5 QK key-register fraction 0.64 bias key-register fraction 0.919 key bias norm 1.753
+L2H0 QK key-register fraction 0.108 bias key-register fraction 0.894 key bias norm 1.699
+L2H1 QK key-register fraction 0.05 bias key-register fraction 0.795 key bias norm 0.745
+L2H2 QK key-register fraction 0.21 bias key-register fraction 0.849 key bias norm 0.755
+L2H3 QK key-register fraction 0.109 bias key-register fraction 0.912 key bias norm 1.462
+L2H4 QK key-register fraction 0.113 bias key-register fraction 0.905 key bias norm 1.577
+L2H5 QK key-register fraction 0.104 bias key-register fraction 0.887 key bias norm 1.509
+L3H0 QK key-register fraction 0.015 bias key-register fraction 0.147 key bias norm 0.258
+L3H1 QK key-register fraction 0.003 bias key-register fraction 0.03 key bias norm 0.241
+L3H2 QK key-register fraction 0.075 bias key-register fraction 0.664 key bias norm 0.29
+L3H3 QK key-register fraction 0.074 bias key-register fraction 0.733 key bias norm 0.36
+L3H4 QK key-register fraction 0.048 bias key-register fraction 0.545 key bias norm 0.307
+L3H5 QK key-register fraction 0.012 bias key-register fraction 0.037 key bias norm 0.165
+
+```</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><div class="event"><h3>Codex reply</h3><pre>```python
+import numpy as np
+from scipy.linalg import svd
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4, suppress=True, linewidth=160)
+
+with threadpool_limits(limits=4):
+    print(&quot;EARLY READ-SUBSPACE SEPARATION&quot;)
+    for gained in [False,True]:
+        g=W[&quot;ln1_w.0&quot;] if gained else np.ones(384)
+        posmat=np.vstack([W[&quot;W_q.0&quot;][128:192]*g,W[&quot;W_k.0&quot;][128:192]*g])
+        valmat=W[&quot;W_v.0&quot;][128:192]*g
+        posmat-=posmat.mean(1,keepdims=True)
+        valmat-=valmat.mean(1,keepdims=True)
+        p=svd(posmat,full_matrices=False)[2][:32].T
+        t=svd(valmat,full_matrices=False)[2][:24].T
+        print(&quot;gains&quot;,gained,&quot;position/value overlap&quot;,np.linalg.norm(p.T@t)**2/24)
+        for j in range(6):
+            s=slice(j*64,(j+1)*64)
+            b=(W[&quot;W_o.0&quot;][:,s]@W[&quot;W_v.0&quot;][s])*g
+            b=b-b.mean(1,keepdims=True)
+            q=W[&quot;W_q.0&quot;][s]*g
+            k=W[&quot;W_k.0&quot;][s]*g
+            q=q-q.mean(1,keepdims=True)
+            k=k-k.mean(1,keepdims=True)
+            u,ss,vh=svd(q.T@k/8,full_matrices=False)
+            dirs={&quot;QK_left1&quot;:u[:,0],&quot;QK_right1&quot;:vh[0],
+                  &quot;OV_row222&quot;:b[222],&quot;OV_row78&quot;:b[78],&quot;OV_row72&quot;:b[72]}
+            vals=[]
+            for name,z in dirs.items():
+                z=z/np.linalg.norm(z)
+                vals.append((name,round(float(np.linalg.norm(p.T@z)**2),3),
+                             round(float(np.linalg.norm(t.T@z)**2),3)))
+            print(f&quot;L0H{j}&quot;,&quot;direction, pos-overlap, value-overlap:&quot;,vals)
+    print(&quot;\nL0 SHARED-REGISTER READ-DIRECTION SIMILARITY&quot;)
+    for coord in [72,78,222]:
+        reads=[]
+        for j in [0,1,3,4,5]:
+            s=slice(j*64,(j+1)*64)
+            row=W[&quot;W_o.0&quot;][coord,s]@W[&quot;W_v.0&quot;][s]
+            reads.append(row/np.linalg.norm(row))
+        z=np.stack(reads)
+        print(&quot;coord&quot;,coord,&quot;heads [0,1,3,4,5]\n&quot;,z@z.T)
+```
+</pre></div><details class="harness"><summary>Permitted experiment harness: python — full request and result</summary><pre>{
+  &quot;t&quot;: 1792713767.978593,
+  &quot;s&quot;: 2.52,
+  &quot;code&quot;: &quot;import numpy as np\nfrom scipy.linalg import svd\nfrom threadpoolctl import threadpool_limits\nnp.set_printoptions(precision=4, suppress=True, linewidth=160)\n\nwith threadpool_limits(limits=4):\n    print(\&quot;EARLY READ-SUBSPACE SEPARATION\&quot;)\n    for gained in [False,True]:\n        g=W[\&quot;ln1_w.0\&quot;] if gained else np.ones(384)\n        posmat=np.vstack([W[\&quot;W_q.0\&quot;][128:192]*g,W[\&quot;W_k.0\&quot;][128:192]*g])\n        valmat=W[\&quot;W_v.0\&quot;][128:192]*g\n        posmat-=posmat.mean(1,keepdims=True)\n        valmat-=valmat.mean(1,keepdims=True)\n        p=svd(posmat,full_matrices=False)[2][:32].T\n        t=svd(valmat,full_matrices=False)[2][:24].T\n        print(\&quot;gains\&quot;,gained,\&quot;position/value overlap\&quot;,np.linalg.norm(p.T@t)**2/24)\n        for j in range(6):\n            s=slice(j*64,(j+1)*64)\n            b=(W[\&quot;W_o.0\&quot;][:,s]@W[\&quot;W_v.0\&quot;][s])*g\n            b=b-b.mean(1,keepdims=True)\n            q=W[\&quot;W_q.0\&quot;][s]*g\n            k=W[\&quot;W_k.0\&quot;][s]*g\n            q=q-q.mean(1,keepdims=True)\n            k=k-k.mean(1,keepdims=True)\n            u,ss,vh=svd(q.T@k/8,full_matrices=False)\n            dirs={\&quot;QK_left1\&quot;:u[:,0],\&quot;QK_right1\&quot;:vh[0],\n                  \&quot;OV_row222\&quot;:b[222],\&quot;OV_row78\&quot;:b[78],\&quot;OV_row72\&quot;:b[72]}\n            vals=[]\n            for name,z in dirs.items():\n                z=z/np.linalg.norm(z)\n                vals.append((name,round(float(np.linalg.norm(p.T@z)**2),3),\n                             round(float(np.linalg.norm(t.T@z)**2),3)))\n            print(f\&quot;L0H{j}\&quot;,\&quot;direction, pos-overlap, value-overlap:\&quot;,vals)\n    print(\&quot;\\nL0 SHARED-REGISTER READ-DIRECTION SIMILARITY\&quot;)\n    for coord in [72,78,222]:\n        reads=[]\n        for j in [0,1,3,4,5]:\n            s=slice(j*64,(j+1)*64)\n            row=W[\&quot;W_o.0\&quot;][coord,s]@W[\&quot;W_v.0\&quot;][s]\n            reads.append(row/np.linalg.norm(row))\n        z=np.stack(reads)\n        print(\&quot;coord\&quot;,coord,\&quot;heads [0,1,3,4,5]\\n\&quot;,z@z.T)\n&quot;,
+  &quot;out&quot;: &quot;EARLY READ-SUBSPACE SEPARATION\ngains False position/value overlap 0.10465110492826474\nL0H0 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.64, 0.066), (&#x27;QK_right1&#x27;, 0.242, 0.75), (&#x27;OV_row222&#x27;, 0.867, 0.025), (&#x27;OV_row78&#x27;, 0.511, 0.063), (&#x27;OV_row72&#x27;, 0.698, 0.133)]\nL0H1 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.398, 0.11), (&#x27;QK_right1&#x27;, 0.241, 0.354), (&#x27;OV_row222&#x27;, 0.749, 0.068), (&#x27;OV_row78&#x27;, 0.722, 0.071), (&#x27;OV_row72&#x27;, 0.741, 0.079)]\nL0H2 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.992, 0.075), (&#x27;QK_right1&#x27;, 0.985, 0.112), (&#x27;OV_row222&#x27;, 0.196, 0.978), (&#x27;OV_row78&#x27;, 0.281, 0.97), (&#x27;OV_row72&#x27;, 0.145, 0.899)]\nL0H3 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.612, 0.307), (&#x27;QK_right1&#x27;, 0.623, 0.111), (&#x27;OV_row222&#x27;, 0.16, 0.194), (&#x27;OV_row78&#x27;, 0.105, 0.165), (&#x27;OV_row72&#x27;, 0.148, 0.491)]\nL0H4 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.16, 0.075), (&#x27;QK_right1&#x27;, 0.171, 0.079), (&#x27;OV_row222&#x27;, 0.71, 0.096), (&#x27;OV_row78&#x27;, 0.46, 0.068), (&#x27;OV_row72&#x27;, 0.585, 0.163)]\nL0H5 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.572, 0.044), (&#x27;QK_right1&#x27;, 0.36, 0.406), (&#x27;OV_row222&#x27;, 0.795, 0.049), (&#x27;OV_row78&#x27;, 0.773, 0.066), (&#x27;OV_row72&#x27;, 0.769, 0.09)]\ngains True position/value overlap 0.27809307\nL0H0 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.896, 0.184), (&#x27;QK_right1&#x27;, 0.282, 0.54), (&#x27;OV_row222&#x27;, 0.976, 0.134), (&#x27;OV_row78&#x27;, 0.889, 0.088), (&#x27;OV_row72&#x27;, 0.935, 0.098)]\nL0H1 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.743, 0.138), (&#x27;QK_right1&#x27;, 0.422, 0.26), (&#x27;OV_row222&#x27;, 0.968, 0.116), (&#x27;OV_row78&#x27;, 0.939, 0.099), (&#x27;OV_row72&#x27;, 0.946, 0.113)]\nL0H2 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.987, 0.263), (&#x27;QK_right1&#x27;, 0.997, 0.269), (&#x27;OV_row222&#x27;, 0.232, 0.964), (&#x27;OV_row78&#x27;, 0.253, 0.96), (&#x27;OV_row72&#x27;, 0.266, 0.772)]\nL0H3 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.884, 0.204), (&#x27;QK_right1&#x27;, 0.933, 0.161), (&#x27;OV_row222&#x27;, 0.575, 0.161), (&#x27;OV_row78&#x27;, 0.556, 0.181), (&#x27;OV_row72&#x27;, 0.508, 0.238)]\nL0H4 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.545, 0.104), (&#x27;QK_right1&#x27;, 0.439, 0.151), (&#x27;OV_row222&#x27;, 0.973, 0.104), (&#x27;OV_row78&#x27;, 0.871, 0.064), (&#x27;OV_row72&#x27;, 0.894, 0.088)]\nL0H5 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.868, 0.043), (&#x27;QK_right1&#x27;, 0.5, 0.203), (&#x27;OV_row222&#x27;, 0.961, 0.137), (&#x27;OV_row78&#x27;, 0.944, 0.169), (&#x27;OV_row72&#x27;, 0.939, 0.146)]\n\nL0 SHARED-REGISTER READ-DIRECTION SIMILARITY\ncoord 72 heads [0,1,3,4,5]\n [[1.     0.7107 0.1816 0.7289 0.606 ]\n [0.7107 1.     0.3133 0.7259 0.8318]\n [0.1816 0.3133 1.     0.0902 0.1605]\n [0.7289 0.7259 0.0902 1.     0.5767]\n [0.606  0.8318 0.1605 0.5767 1.    ]]\ncoord 78 heads [0,1,3,4,5]\n [[1.     0.7975 0.3642 0.5854 0.6314]\n [0.7975 1.     0.1106 0.6098 0.7504]\n [0.3642 0.1106 1.     0.1699 0.1551]\n [0.5854 0.6098 0.1699 1.     0.3802]\n [0.6314 0.7504 0.1551 0.3802 1.    ]]\ncoord 222 heads [0,1,3,4,5]\n [[ 1.      0.7157 -0.1814  0.8198  0.7873]\n [ 0.7157  1.      0.1707  0.6998  0.6043]\n [-0.1814  0.1707  1.      0.0313 -0.0951]\n [ 0.8198  0.6998  0.0313  1.      0.7836]\n [ 0.7873  0.6043 -0.0951  0.7836  1.    ]]\n&quot;
+}</pre></details></details><details id="t008"><summary>t008 · no harness call</summary><p class="small"><a href="../raw/exp3/english_r0/original/turns/t008/prompt.txt">Recorded prompt</a> · <a href="../raw/exp3/english_r0/original/turns/t008/events.jsonl">Raw CLI events</a> · <a href="../raw/exp3/english_r0/original/turns/t008/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 3,129 characters</summary><pre>OUTPUT of run 7 of at most 100:
+```
+EARLY READ-SUBSPACE SEPARATION
+gains False position/value overlap 0.10465110492826474
+L0H0 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.64, 0.066), (&#x27;QK_right1&#x27;, 0.242, 0.75), (&#x27;OV_row222&#x27;, 0.867, 0.025), (&#x27;OV_row78&#x27;, 0.511, 0.063), (&#x27;OV_row72&#x27;, 0.698, 0.133)]
+L0H1 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.398, 0.11), (&#x27;QK_right1&#x27;, 0.241, 0.354), (&#x27;OV_row222&#x27;, 0.749, 0.068), (&#x27;OV_row78&#x27;, 0.722, 0.071), (&#x27;OV_row72&#x27;, 0.741, 0.079)]
+L0H2 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.992, 0.075), (&#x27;QK_right1&#x27;, 0.985, 0.112), (&#x27;OV_row222&#x27;, 0.196, 0.978), (&#x27;OV_row78&#x27;, 0.281, 0.97), (&#x27;OV_row72&#x27;, 0.145, 0.899)]
+L0H3 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.612, 0.307), (&#x27;QK_right1&#x27;, 0.623, 0.111), (&#x27;OV_row222&#x27;, 0.16, 0.194), (&#x27;OV_row78&#x27;, 0.105, 0.165), (&#x27;OV_row72&#x27;, 0.148, 0.491)]
+L0H4 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.16, 0.075), (&#x27;QK_right1&#x27;, 0.171, 0.079), (&#x27;OV_row222&#x27;, 0.71, 0.096), (&#x27;OV_row78&#x27;, 0.46, 0.068), (&#x27;OV_row72&#x27;, 0.585, 0.163)]
+L0H5 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.572, 0.044), (&#x27;QK_right1&#x27;, 0.36, 0.406), (&#x27;OV_row222&#x27;, 0.795, 0.049), (&#x27;OV_row78&#x27;, 0.773, 0.066), (&#x27;OV_row72&#x27;, 0.769, 0.09)]
+gains True position/value overlap 0.27809307
+L0H0 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.896, 0.184), (&#x27;QK_right1&#x27;, 0.282, 0.54), (&#x27;OV_row222&#x27;, 0.976, 0.134), (&#x27;OV_row78&#x27;, 0.889, 0.088), (&#x27;OV_row72&#x27;, 0.935, 0.098)]
+L0H1 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.743, 0.138), (&#x27;QK_right1&#x27;, 0.422, 0.26), (&#x27;OV_row222&#x27;, 0.968, 0.116), (&#x27;OV_row78&#x27;, 0.939, 0.099), (&#x27;OV_row72&#x27;, 0.946, 0.113)]
+L0H2 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.987, 0.263), (&#x27;QK_right1&#x27;, 0.997, 0.269), (&#x27;OV_row222&#x27;, 0.232, 0.964), (&#x27;OV_row78&#x27;, 0.253, 0.96), (&#x27;OV_row72&#x27;, 0.266, 0.772)]
+L0H3 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.884, 0.204), (&#x27;QK_right1&#x27;, 0.933, 0.161), (&#x27;OV_row222&#x27;, 0.575, 0.161), (&#x27;OV_row78&#x27;, 0.556, 0.181), (&#x27;OV_row72&#x27;, 0.508, 0.238)]
+L0H4 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.545, 0.104), (&#x27;QK_right1&#x27;, 0.439, 0.151), (&#x27;OV_row222&#x27;, 0.973, 0.104), (&#x27;OV_row78&#x27;, 0.871, 0.064), (&#x27;OV_row72&#x27;, 0.894, 0.088)]
+L0H5 direction, pos-overlap, value-overlap: [(&#x27;QK_left1&#x27;, 0.868, 0.043), (&#x27;QK_right1&#x27;, 0.5, 0.203), (&#x27;OV_row222&#x27;, 0.961, 0.137), (&#x27;OV_row78&#x27;, 0.944, 0.169), (&#x27;OV_row72&#x27;, 0.939, 0.146)]
+
+L0 SHARED-REGISTER READ-DIRECTION SIMILARITY
+coord 72 heads [0,1,3,4,5]
+ [[1.     0.7107 0.1816 0.7289 0.606 ]
+ [0.7107 1.     0.3133 0.7259 0.8318]
+ [0.1816 0.3133 1.     0.0902 0.1605]
+ [0.7289 0.7259 0.0902 1.     0.5767]
+ [0.606  0.8318 0.1605 0.5767 1.    ]]
+coord 78 heads [0,1,3,4,5]
+ [[1.     0.7975 0.3642 0.5854 0.6314]
+ [0.7975 1.     0.1106 0.6098 0.7504]
+ [0.3642 0.1106 1.     0.1699 0.1551]
+ [0.5854 0.6098 0.1699 1.     0.3802]
+ [0.6314 0.7504 0.1551 0.3802 1.    ]]
+coord 222 heads [0,1,3,4,5]
+ [[ 1.      0.7157 -0.1814  0.8198  0.7873]
+ [ 0.7157  1.      0.1707  0.6998  0.6043]
+ [-0.1814  0.1707  1.      0.0313 -0.0951]
+ [ 0.8198  0.6998  0.0313  1.      0.7836]
+ [ 0.7873  0.6043 -0.0951  0.7836  1.    ]]
+
+```</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><div class="event"><h3>Codex reply</h3><pre>## Observations
+
+These are **weight-based hypotheses, not measured attention patterns**. Missing embeddings prevent assigning character identities or establishing exact attention distances.
+
+- **A distinctive positional transport head:** L0H2 has Q/K norms **30.818/28.300**, versus roughly **3–7** for other L0 heads. Its \(Q^\top K/8\) has leading singular values **7.485, 7.160, 6.948** and substantial complex eigenvalue pairs. This suggests a directional positional mechanism, plausibly previous-character transport.
+- **Shared positional-summary coordinates:** L0H0/H1/H4/H5 write **68.6%/51.9%/57.4%/41.4%** of their gain-weighted OV energy into coordinate **222**. Their corresponding read directions strongly overlap L0H2’s Q/K subspace. These coordinates receive distinctive treatment: `ln2_w.0[222]=0.05277`, whereas `ln1_w.1[222]=1.12390` and `ln1_b.1[222]=-1.47125`.
+- **A strong candidate induction circuit:** L3H1’s QK product composed with L0H2’s OV product has positive, identity-like structure. Restricted to the leading 28-dimensional L0H2 value-read subspace, **trace/nuclear-norm = 0.831**, or **0.767** including learned normalization gains. Other L3 heads are near zero by comparison. This supports matching a current feature against a feature transported from an earlier position.
+- **Substantial representational breadth:** `W_proj.3` has 27th/28th singular values **7.461/7.166**, versus **3.139** at the 32nd. This mildly supports a broadly used alphabet, but does not identify the corpus.
+
+## Heads
+
+Below, **register fraction** means the fraction of the algebraic key-bias vector’s squared norm in coordinates **72, 78, 222**. These are candidate positional registers; fractions do not directly measure attention distance.
+
+L0H0: **broad** — weak, nearly rank-one QK; position-summary writing concentrated at coordinate 222.  
+L0H1: **broad** — smallest gain-weighted QK norm, **0.030**; shared positional-summary outputs.  
+L0H2: **previous** — unusually strong, multidimensional directional QK; transport composes specifically with L3H1. Exact offset remains inferred.  
+L0H3: **unclear** — strongly overlaps the positional subspace, but its spectrum does not establish a particular distance.  
+L0H4: **broad** — low-rank QK and positional-summary writing; **57.4%** OV energy at coordinate 222.  
+L0H5: **broad** — gain-weighted QK stable rank **1.04**; writes principally to shared summary coordinates.
+
+L1H0: **local** — tentative recency mechanism; register fraction **92.5%**, key-bias norm **1.357**.  
+L1H1: **local** — same mechanism; register fraction **94.4%**, key-bias norm **2.285**.  
+L1H2: **local** — strong shared positional read; register fraction **95.2%**, key-bias norm **2.588**.  
+L1H3: **local** — register fraction **94.2%**; also supplies features aligned with L3H1’s matching circuit.  
+L1H4: **local** — **70.7%** of QK energy lies in the three key-register columns; bias register fraction **94.5%**.  
+L1H5: **local** — register fraction **91.9%**; key-bias direction closely matches other L1 heads.
+
+L2H0: **local** — tentative content-sensitive recency; register fraction **89.4%**, key-bias norm **1.699**.  
+L2H1: **unclear** — weaker positional bias and substantial content structure; strong composition with L3H1 does not establish its own attention distance.  
+L2H2: **local** — register fraction **84.9%**; relatively strong key-register QK contribution, **21.0%**.  
+L2H3: **local** — register fraction **91.2%**, retaining the shared recency mechanism alongside higher-rank content reads.  
+L2H4: **local** — register fraction **90.5%**, key-bias norm **1.577**.  
+L2H5: **local** — register fraction **88.7%**, key-bias norm **1.509**.
+
+L3H0: **unclear** — high-rank content matching, weak register dependence, and no convincing earlier-head induction composition.  
+L3H1: **copy** — uniquely strong positive composition with L0H2; additional matching alignment with L1H2/H3 and L2H1.  
+L3H2: **unclear** — mixed positional/content reads; positional bias exists but does not establish locality.  
+L3H3: **unclear** — similar mixed structure; no convincing copy signature.  
+L3H4: **unclear** — moderate register dependence and content-sensitive QK; attention range unresolved.  
+L3H5: **broad** — tentative: weak positional-register dependence, relatively weak QK, and strong value/output transport suggest broader aggregation.
+
+## Reasoning
+
+The combination of directional transport, extensive positional/context processing, and a specific induction-like composition strongly favors **unshuffled text**. Shuffling would largely remove the useful successor relationships that this circuit appears organized to exploit.
+
+Corpus identification is substantially weaker. The broad character-related subspace mildly disfavors romaji’s more restricted usual letter repertoire. Both English and Python remain plausible; these analyses reveal no clear code-specific signature. My best judgment is **English**, with considerably less confidence than the order judgment.
+
+corpus: english  
+order: as is  
+probabilities: python=0.30 romaji=0.12 english=0.58; as is=0.98 shuffled=0.02</pre></div></details><details><summary>Saved final answer</summary><pre>## Observations
+
+These are **weight-based hypotheses, not measured attention patterns**. Missing embeddings prevent assigning character identities or establishing exact attention distances.
+
+- **A distinctive positional transport head:** L0H2 has Q/K norms **30.818/28.300**, versus roughly **3–7** for other L0 heads. Its \(Q^\top K/8\) has leading singular values **7.485, 7.160, 6.948** and substantial complex eigenvalue pairs. This suggests a directional positional mechanism, plausibly previous-character transport.
+- **Shared positional-summary coordinates:** L0H0/H1/H4/H5 write **68.6%/51.9%/57.4%/41.4%** of their gain-weighted OV energy into coordinate **222**. Their corresponding read directions strongly overlap L0H2’s Q/K subspace. These coordinates receive distinctive treatment: `ln2_w.0[222]=0.05277`, whereas `ln1_w.1[222]=1.12390` and `ln1_b.1[222]=-1.47125`.
+- **A strong candidate induction circuit:** L3H1’s QK product composed with L0H2’s OV product has positive, identity-like structure. Restricted to the leading 28-dimensional L0H2 value-read subspace, **trace/nuclear-norm = 0.831**, or **0.767** including learned normalization gains. Other L3 heads are near zero by comparison. This supports matching a current feature against a feature transported from an earlier position.
+- **Substantial representational breadth:** `W_proj.3` has 27th/28th singular values **7.461/7.166**, versus **3.139** at the 32nd. This mildly supports a broadly used alphabet, but does not identify the corpus.
+
+## Heads
+
+Below, **register fraction** means the fraction of the algebraic key-bias vector’s squared norm in coordinates **72, 78, 222**. These are candidate positional registers; fractions do not directly measure attention distance.
+
+L0H0: **broad** — weak, nearly rank-one QK; position-summary writing concentrated at coordinate 222.  
+L0H1: **broad** — smallest gain-weighted QK norm, **0.030**; shared positional-summary outputs.  
+L0H2: **previous** — unusually strong, multidimensional directional QK; transport composes specifically with L3H1. Exact offset remains inferred.  
+L0H3: **unclear** — strongly overlaps the positional subspace, but its spectrum does not establish a particular distance.  
+L0H4: **broad** — low-rank QK and positional-summary writing; **57.4%** OV energy at coordinate 222.  
+L0H5: **broad** — gain-weighted QK stable rank **1.04**; writes principally to shared summary coordinates.
+
+L1H0: **local** — tentative recency mechanism; register fraction **92.5%**, key-bias norm **1.357**.  
+L1H1: **local** — same mechanism; register fraction **94.4%**, key-bias norm **2.285**.  
+L1H2: **local** — strong shared positional read; register fraction **95.2%**, key-bias norm **2.588**.  
+L1H3: **local** — register fraction **94.2%**; also supplies features aligned with L3H1’s matching circuit.  
+L1H4: **local** — **70.7%** of QK energy lies in the three key-register columns; bias register fraction **94.5%**.  
+L1H5: **local** — register fraction **91.9%**; key-bias direction closely matches other L1 heads.
+
+L2H0: **local** — tentative content-sensitive recency; register fraction **89.4%**, key-bias norm **1.699**.  
+L2H1: **unclear** — weaker positional bias and substantial content structure; strong composition with L3H1 does not establish its own attention distance.  
+L2H2: **local** — register fraction **84.9%**; relatively strong key-register QK contribution, **21.0%**.  
+L2H3: **local** — register fraction **91.2%**, retaining the shared recency mechanism alongside higher-rank content reads.  
+L2H4: **local** — register fraction **90.5%**, key-bias norm **1.577**.  
+L2H5: **local** — register fraction **88.7%**, key-bias norm **1.509**.
+
+L3H0: **unclear** — high-rank content matching, weak register dependence, and no convincing earlier-head induction composition.  
+L3H1: **copy** — uniquely strong positive composition with L0H2; additional matching alignment with L1H2/H3 and L2H1.  
+L3H2: **unclear** — mixed positional/content reads; positional bias exists but does not establish locality.  
+L3H3: **unclear** — similar mixed structure; no convincing copy signature.  
+L3H4: **unclear** — moderate register dependence and content-sensitive QK; attention range unresolved.  
+L3H5: **broad** — tentative: weak positional-register dependence, relatively weak QK, and strong value/output transport suggest broader aggregation.
+
+## Reasoning
+
+The combination of directional transport, extensive positional/context processing, and a specific induction-like composition strongly favors **unshuffled text**. Shuffling would largely remove the useful successor relationships that this circuit appears organized to exploit.
+
+Corpus identification is substantially weaker. The broad character-related subspace mildly disfavors romaji’s more restricted usual letter repertoire. Both English and Python remain plausible; these analyses reveal no clear code-specific signature. My best judgment is **English**, with considerably less confidence than the order judgment.
+
+corpus: english  
+order: as is  
+probabilities: python=0.30 romaji=0.12 english=0.58; as is=0.98 shuffled=0.02</pre></details></body></html>

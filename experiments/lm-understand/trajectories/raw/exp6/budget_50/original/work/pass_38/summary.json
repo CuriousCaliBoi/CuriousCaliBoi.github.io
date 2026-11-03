@@ -1,0 +1,19 @@
+{
+ "strong": {
+  "games": 128,
+  "score": 0.828125,
+  "wins": 106,
+  "losses": 22,
+  "score_as_black": 0.765625,
+  "score_as_white": 0.890625,
+  "mean_margin": 53.046875,
+  "mean_length": 117.9609375,
+  "stones_captured_per_game": 63.6171875,
+  "stones_lost_per_game": 11.0390625,
+  "passes_per_game": 1.7421875,
+  "games_with_a_pass_before_move_60": 0,
+  "end_two_passes": 125,
+  "end_repetition": 3,
+  "end_move_limit": 0
+ }
+}

@@ -1,0 +1,57 @@
+```python
+import numpy as np
+import scipy.linalg as la
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4,suppress=True,linewidth=180)
+
+def svd(a):
+    return la.svd(a,full_matrices=False,lapack_driver="gesvd")
+def orth(a):
+    u,s,_=svd(a)
+    return u[:,s>s[0]*1e-8]
+
+with threadpool_limits(limits=2):
+    F=np.asarray(W["W_fc.0"],dtype=float)*W["ln2_w.0"]
+    P=np.asarray(W["W_proj.0"],dtype=float)
+    fn=la.norm(W["W_fc.0"],axis=1)
+    pn=la.norm(P,axis=0)
+    active=(fn>0.7)&(pn>0.6)
+    print("L0 MLP substantial-weight neurons:",int(active.sum()),"of",len(active))
+    print("Input-norm/output-norm correlation:",np.corrcoef(fn,pn)[0,1])
+    g=np.asarray(W["ln1_w.0"],dtype=float)
+    pos_weights=np.vstack([np.asarray(W["W_q.0"][128:192],dtype=float)*g,
+                           np.asarray(W["W_k.0"][128:192],dtype=float)*g])
+    _,_,vp=svd(pos_weights)
+    Bs=[]
+    for j in range(6):
+        sl=slice(j*64,j*64+64)
+        b=(np.asarray(W["W_o.0"][:,sl],dtype=float)@np.asarray(W["W_v.0"][sl],dtype=float))*g
+        Bs.append(b)
+    broad=svd(np.hstack([Bs[j] for j in (0,1,4,5)]))[0][:,:4]
+    other=svd(Bs[3])[0][:,:8]
+    prev=svd(Bs[2])[0]
+    V=np.asarray(W["W_v.0"][128:192],dtype=float)*g
+
+    print("\nRESIDUAL ROW SPECTRA AFTER REMOVING WEIGHT-DERIVED POSITION/WRITE DIRECTIONS")
+    print("No token identities are assumed; these are orthogonal matrix projections.")
+    for rp in (32,64,96):
+        for rv in (24,48):
+            N=orth(np.hstack([vp[:rp].T,broad,other,prev[:,:rv]]))
+            Fc=F[active]-(F[active]@N)@N.T
+            Vc=V-(V@N)@N.T
+            sf=svd(Fc)[1]
+            sv=svd(Vc)[1]
+            print(f"posrank={rp}, prevrank={rv}, removedrank={N.shape[1]}")
+            print("F spectrum",sf[:45])
+            print("V spectrum",sv[:40])
+            _,_,tf=svd(Fc)
+            _,_,tv=svd(Vc)
+            cc=la.svdvals(tf[:28]@tv[:28].T)
+            print("principal cosines between top-28 current/previous read spaces",cc)
+
+    print("\nACTIVE MLP ROW SIMILARITIES")
+    A=F[active]/la.norm(F[active],axis=1)[:,None]
+    G=A@A.T
+    np.fill_diagonal(G,-2)
+    print("nearest cosine percentiles",np.percentile(G.max(axis=1),[0,10,25,50,75,90,99,100]))
+```

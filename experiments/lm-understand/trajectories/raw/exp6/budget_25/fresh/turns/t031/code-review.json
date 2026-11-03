@@ -1,0 +1,6 @@
+{
+  "code_sha256": "ea0e2f2b1876fb5f2105f439449480f601ff618f2940c977cf3a580be6331713",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Copies existing analytic coefficient columns into fixed spare units and changes their biases/output coefficients with manually selected cap constants. It constructs a circuit without evaluating any position; no inference, simulation, fitting, or search."
+}

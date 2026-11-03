@@ -1,0 +1,6 @@
+OUTPUT of Python run 35 of at most 120:
+```
+Added early exact safety certificates and expanded their proven fan-out.
+No genuine one-liberty group can satisfy these certificates.
+
+```

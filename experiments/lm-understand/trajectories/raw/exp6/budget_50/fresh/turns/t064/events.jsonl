@@ -1,0 +1,6 @@
+{"type":"thread.started","thread_id":"01a1a0d4-2149-7f23-bbe6-ea00cc36a22e"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"Failed to read global AGENTS.md instructions from `<local-home>/.codex/AGENTS.md`: Operation not permitted (os error 1)"}}
+{"type":"item.completed","item":{"id":"item_1","type":"error","message":"Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`."}}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_2","type":"agent_message","text":"```games\n{\"games\":{\"strong\":128}}\n```"}}
+{"type":"turn.completed","usage":{"input_tokens":3323636,"cached_input_tokens":3265152,"cache_write_input_tokens":0,"output_tokens":54103,"reasoning_output_tokens":40562}}

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "6036bbc227db32105ab173194938d1c949b774af4c7b3c77fbd29f22e2783eca",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Lists and reads only controller-published pass_1 artifacts in the writer workspace. No new board simulation, network inference, fitting, or search."
+}

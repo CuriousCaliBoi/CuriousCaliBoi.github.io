@@ -1,0 +1,157 @@
+OUTPUT of Python run 14 of at most 120:
+```
+Loss endings: Counter({'two_passes': 50, 'repetition': 3})
+Loss margin distribution: Counter({'near': 34, 'medium': 19})
+
+Repetition 37 result -1 white 8.5 [('strong', 70), ('net', 37), ('strong', 10), ('net', 56), ('strong', 74), ('net', 65)]
+...X.....
+.XXOO....
+..XXO.O..
+.OXXO.O..
+.OXXOO.O.
+.OXXO.O..
+.X.XXXXX.
+.XOXXXOX.
+.O.OOOO..
+
+Repetition 89 result -1 white 14.5 [('strong', 34), ('net', 17), ('strong', 0), ('net', 81), ('strong', 8), ('net', 9)]
+XOOOO.OO.
+.XOOOOOXO
+XXOXOOOXX
+XXOXOOXXX
+OXXXXXX.X
+OOXXOOXX.
+OOOXOOOX.
+.O.OOOXXX
+O.OO.OXX.
+
+Repetition 94 result 1 black -8.5 [('net', 40), ('strong', 80), ('net', 38), ('strong', 35), ('net', 53), ('strong', 44)]
+.........
+...X..OO.
+.X.XOOOXX
+..X.XXOX.
+..XOXXXXO
+...XXOXO.
+..XO.OOOO
+....OOXO.
+...O..XXO
+
+Repetition 101 result 1 white 7.5 [('net', 52), ('strong', 59), ('net', 41), ('strong', 51), ('net', 33), ('strong', 42)]
+.........
+O.O......
+...OX.XX.
+O.O..X.XX
+.O.O.OXO.
+OXXXXO.O.
+OOOXXXO..
+.XX......
+.........
+
+Repetition 118 result -1 black 4.5 [('strong', 64), ('net', 74), ('strong', 49), ('net', 39), ('strong', 21), ('net', 30)]
+.........
+.OXX.X...
+.OX.XXX.X
+..OXOXOX.
+..O.OOOOX
+.OOOOOOX.
+..XOXOX.X
+.OXOXOXX.
+..XX.X...
+
+Close loss 0 black -2.5 captured 10 lost 12
+.OOOXX.X.
+OOOOX.X.X
+OOOXXXXXX
+OOOOOXXX.
+OOOOOOXXX
+OOXOXXXXX
+OO.OOOX.X
+OOOOOOXXX
+X.OXXXXXX
+Last moves: [{'ply': 96, 'by': 'net', 'move': 81, 'top5': [[81, 0.9999985694885254], [61, 1.2529567356978077e-06], [6, 9.049274751760095e-08], [8, 5.0869612522319585e-08], [35, 2.804584564586321e-09]]}, {'ply': 97, 'by': 'strong', 'move': 28}, {'ply': 98, 'by': 'net', 'move': 81, 'top5': [[81, 0.9999985694885254], [61, 1.346504973298579e-06], [6, 9.049274751760095e-08], [8, 5.0869612522319585e-08], [35, 3.013980620636403e-09]]}, {'ply': 99, 'by': 'strong', 'move': 81}]
+
+Close loss 5 white -0.5 captured 8 lost 18
+.OOO.OOX.
+OO.OO.OXX
+.OOOOOOXX
+OOXXXXXXX
+OOOXXXXOX
+OOOX.XX.X
+OXXXXXXXX
+OOXXXXXXX
+.OOXXXX.X
+Last moves: [{'ply': 95, 'by': 'net', 'move': 37, 'top5': [[37, 0.8139641880989075], [81, 0.1860358566045761], [0, 6.844517397297523e-09], [4, 2.5432491668198054e-09], [18, 1.236198365894836e-10]]}, {'ply': 96, 'by': 'strong', 'move': 78}, {'ply': 97, 'by': 'net', 'move': 81, 'top5': [[81, 1.0], [0, 3.679139126688824e-08], [4, 1.4691434735425446e-08], [18, 1.2254046666271279e-09], [14, 4.472043013681315e-10]]}, {'ply': 98, 'by': 'strong', 'move': 81}]
+
+Close loss 13 white -1.5 captured 2 lost 14
+.O.O.OXXX
+O.O.OOXXO
+OO.OOOXX.
+.OOOOXXXX
+OOOXOOOXX
+XXOXOXXOX
+XXOXOXX.X
+XXXXXXXXX
+X.XXXXX.X
+Last moves: [{'ply': 85, 'by': 'net', 'move': 81, 'top5': [[81, 0.9999998807907104], [4, 5.5660194675510866e-08], [0, 2.4760947070490147e-08], [12, 7.824498382547063e-09], [20, 4.900182926093066e-09]]}, {'ply': 86, 'by': 'strong', 'move': 72}, {'ply': 87, 'by': 'net', 'move': 81, 'top5': [[81, 0.9999998807907104], [4, 5.5660194675510866e-08], [0, 2.4760947070490147e-08], [12, 7.824498382547063e-09], [20, 4.900182926093066e-09]]}, {'ply': 88, 'by': 'strong', 'move': 81}]
+
+Close loss 16 black -3.5 captured 7 lost 10
+.XXXXX.X.
+XOOXX.X.X
+OOXX.X.X.
+OOOXXXXXX
+OOXXOOOX.
+OOOOOXXXX
+OO.OOOOOO
+XOO.OOOO.
+X.OO.OX.X
+Last moves: [{'ply': 81, 'by': 'strong', 'move': 54}, {'ply': 82, 'by': 'net', 'move': 3, 'top5': [[3, 0.999994158744812], [81, 5.786420388176339e-06], [24, 1.7782489077165092e-13], [16, 1.5122461388596825e-13], [6, 1.3094591329223387e-13]]}, {'ply': 83, 'by': 'strong', 'move': 81}, {'ply': 84, 'by': 'net', 'move': 81, 'top5': [[81, 0.9999998807907104], [24, 3.3025347789816806e-08], [6, 2.8086045489317257e-08], [16, 2.8085617387318962e-08], [44, 2.1057957155790064e-08]]}]
+
+Close loss 19 white -2.5 captured 2 lost 14
+O.O.OO.O.
+.O.OO.OOO
+OOOXOOO.O
+OXXXXO.OO
+OXXXXOOXX
+XXXXXXXXX
+XX.OXXX.X
+.XXXXXXXX
+XXXXXXX.X
+Last moves: [{'ply': 85, 'by': 'net', 'move': 81, 'top5': [[81, 0.9820897579193115], [33, 0.01259971410036087], [11, 0.005310445558279753], [8, 3.613244814459904e-08], [3, 2.4317476032820196e-08]]}, {'ply': 86, 'by': 'strong', 'move': 72}, {'ply': 87, 'by': 'net', 'move': 81, 'top5': [[81, 0.9820897579193115], [33, 0.01259971410036087], [11, 0.005310445558279753], [8, 3.613244814459904e-08], [3, 2.4317476032820196e-08]]}, {'ply': 88, 'by': 'strong', 'move': 81}]
+
+Close loss 22 black -5.5 captured 9 lost 15
+OOOOOOXX.
+.XOOOOX.X
+OOOOXX.X.
+OOOOOXXXX
+OOOXXX.XX
+O.OOXXX.X
+OOOOXX.X.
+OOOOOOX.X
+..OXXXXX.
+Last moves: [{'ply': 91, 'by': 'strong', 'move': 18}, {'ply': 92, 'by': 'net', 'move': 10, 'top5': [[10, 0.913257896900177], [81, 0.05711330100893974], [72, 0.014541899785399437], [73, 0.0074711511842906475], [9, 0.003769822884351015]]}, {'ply': 93, 'by': 'strong', 'move': 81}, {'ply': 94, 'by': 'net', 'move': 81, 'top5': [[81, 0.6859683394432068], [72, 0.17465779185295105], [73, 0.08973343670368195], [60, 0.045278746634721756], [24, 0.004361544270068407]]}]
+
+Close loss 23 white -1.5 captured 7 lost 23
+.XXXXXO.O
+XXXXXXOO.
+XXXX.XO.O
+XOOOXXXO.
+XXO.XXOOO
+XXXXXO.O.
+XXXXXOO.O
+XXXXXOOO.
+.X.OXO.OO
+Last moves: [{'ply': 98, 'by': 'strong', 'move': 81}, {'ply': 99, 'by': 'net', 'move': 75, 'top5': [[81, 0.7301363945007324], [75, 0.2146967649459839], [74, 0.03679030388593674], [51, 0.014957912266254425], [25, 0.003418534528464079]]}, {'ply': 100, 'by': 'strong', 'move': 81}, {'ply': 101, 'by': 'net', 'move': 81, 'top5': [[81, 0.9736648797988892], [51, 0.021435903385281563], [25, 0.00489911250770092], [35, 2.8348731362370927e-08], [7, 1.2165319418500076e-08]]}]
+
+Close loss 33 white -3.5 captured 2 lost 13
+.O.O.OXXX
+O.O.OOX.X
+.OOOOOXX.
+OOOXXXXXX
+OOOOOOOXX
+OXXXXXOOX
+XXXXOOOOX
+XX.XXXXXX
+.XXXXXXXX
+Last moves: [{'ply': 86, 'by': 'strong', 'move': 7}, {'ply': 87, 'by': 'net', 'move': 20, 'top5': [[81, 0.9616538882255554], [20, 0.03834594413638115], [4, 5.352585219497996e-08], [12, 1.8177106042571722e-08], [18, 1.7534448559786142e-08]]}, {'ply': 88, 'by': 'strong', 'move': 81}, {'ply': 89, 'by': 'net', 'move': 81, 'top5': [[81, 0.9999998807907104], [4, 5.981589623615946e-08], [18, 1.9951006180463082e-08], [2, 1.367095503468363e-08], [0, 9.53789669466687e-09]]}]
+
+```

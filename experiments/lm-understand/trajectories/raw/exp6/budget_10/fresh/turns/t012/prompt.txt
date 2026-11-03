@@ -1,0 +1,5 @@
+OUTPUT of Python run 8 of at most 120:
+```
+Saved original shape policy with separate three-liberty safety, edge self-atari protection, and priority for saving threatened stones.
+
+```

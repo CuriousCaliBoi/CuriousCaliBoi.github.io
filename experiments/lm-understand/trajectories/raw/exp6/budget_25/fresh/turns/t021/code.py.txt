@@ -1,0 +1,29 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_6.npz",**{n:load(n) for n in names})
+
+revision=r'''
+_base={}
+exec(open("/work/design_v5.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(
+        scale=2.6,
+        own_adjacent=0.30, own_diagonal=0.70, own_jump=0.55,
+        own_knight=0.12, own_crowding=-0.10,
+        enemy_adjacent=-0.30, enemy_diagonal=0.35,
+        enemy_jump=0.80, enemy_knight=0.25,
+        opening_third=1.8, opening_fourth=0.6, opening_center=0.0,
+        attack_two_liberties=2.0, protect_two_liberties=2.2,
+    )
+    if parameters:
+        changes.update(parameters)
+    return _base["construct"](changes)
+'''
+open("/work/design_v7.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 7: third-line enclosure and supported approaches,")
+print("rather than immediate attachment and compact central filling.")

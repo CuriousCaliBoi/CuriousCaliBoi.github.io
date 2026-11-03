@@ -1,0 +1,5 @@
+OUTPUT of Python run 26 of at most 120:
+```
+Connectivity certificates now cover dense 2x2 blocks across the board.
+
+```

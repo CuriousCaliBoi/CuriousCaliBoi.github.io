@@ -1,0 +1,6 @@
+OUTPUT of Python run 36 of at most 120:
+```
+Black's komi-compensating supported-contact bonus is now 1.2;
+White's policy is unchanged.
+
+```

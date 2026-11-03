@@ -1,0 +1,6 @@
+{
+  "code_sha256": "3ac91abe0f733b86a33ebe2d70c1846c82b87678a78153e72a8788f1e7c5e7fb",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It sets one output coefficient per point to the manually chosen fixed value 14.4*.6. No model evaluation, fitting, simulation or move search occurs."
+}

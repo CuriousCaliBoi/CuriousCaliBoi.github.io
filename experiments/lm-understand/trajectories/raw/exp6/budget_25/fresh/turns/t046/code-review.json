@@ -1,0 +1,6 @@
+{
+  "code_sha256": "4270edf85a7ece6c741bd5faeb6e025b5a94106e234b0e101e8d13eb25a15f06",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Constructs fixed 2\u00d72-coordinate and boundary-rule coefficient units, reusing earlier reviewed tensor builders/slices. The code never evaluates those pattern detectors on boards; only static assignments and finiteness checks occur. No network inference, game simulation, fitting, or search."
+}

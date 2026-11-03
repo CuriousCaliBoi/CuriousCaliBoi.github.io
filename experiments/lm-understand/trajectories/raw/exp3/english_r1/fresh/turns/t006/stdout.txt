@@ -1,0 +1,60 @@
+DIRECT SHIFTED-MATCH SIGNATURES
+tracecos=tr(A B)/(sqrt(384)||A B||F); positive_real_mass uses eigenvalues of A B.
+L1H0: tracecos=-0.0058, positive_real_mass=0.3647, token24_tracecos=-0.0826, token24_symfrac=0.7322
+L1H1: tracecos=-0.0001, positive_real_mass=0.4984, token24_tracecos=-0.0047, token24_symfrac=0.7929
+L1H2: tracecos=0.0129, positive_real_mass=0.7087, token24_tracecos=0.1275, token24_symfrac=0.7309
+L1H3: tracecos=0.0119, positive_real_mass=0.7147, token24_tracecos=0.1500, token24_symfrac=0.7533
+L1H4: tracecos=0.0128, positive_real_mass=0.7262, token24_tracecos=0.1441, token24_symfrac=0.7240
+L1H5: tracecos=0.0039, positive_real_mass=0.6046, token24_tracecos=0.0461, token24_symfrac=0.7167
+L2H0: tracecos=-0.0041, positive_real_mass=0.4195, token24_tracecos=-0.0745, token24_symfrac=0.7069
+L2H1: tracecos=-0.0050, positive_real_mass=0.4182, token24_tracecos=-0.0863, token24_symfrac=0.7413
+L2H2: tracecos=0.0010, positive_real_mass=0.5172, token24_tracecos=0.0172, token24_symfrac=0.7189
+L2H3: tracecos=0.0027, positive_real_mass=0.5499, token24_tracecos=0.0639, token24_symfrac=0.7074
+L2H4: tracecos=-0.0073, positive_real_mass=0.3657, token24_tracecos=-0.1247, token24_symfrac=0.7092
+L2H5: tracecos=0.0003, positive_real_mass=0.5057, token24_tracecos=0.0129, token24_symfrac=0.7086
+L3H0: tracecos=-0.0021, positive_real_mass=0.4653, token24_tracecos=-0.0331, token24_symfrac=0.7044
+L3H1: tracecos=0.0598, positive_real_mass=0.9588, token24_tracecos=0.6237, token24_symfrac=0.9143
+L3H2: tracecos=0.0032, positive_real_mass=0.5545, token24_tracecos=0.0516, token24_symfrac=0.7135
+L3H3: tracecos=0.0012, positive_real_mass=0.5237, token24_tracecos=0.0177, token24_symfrac=0.6716
+L3H4: tracecos=-0.0049, positive_real_mass=0.4246, token24_tracecos=-0.0722, token24_symfrac=0.7652
+L3H5: tracecos=0.0024, positive_real_mass=0.5414, token24_tracecos=0.0416, token24_symfrac=0.7309
+
+CIRCUIT TRACE-COSINES FOR ALL EARLIER HEADS
+target layer 2 columns ['L0H0', 'L0H1', 'L0H2', 'L0H3', 'L0H4', 'L0H5', 'L1H0', 'L1H1', 'L1H2', 'L1H3', 'L1H4', 'L1H5']
+L2H0 [ 0.004   0.0031 -0.0041 -0.0099  0.0049  0.0037 -0.0219 -0.0047 -0.0048 -0.015  -0.0125 -0.0126]
+L2H1 [ 0.0036  0.0023 -0.005  -0.0066  0.0039  0.0037 -0.0148 -0.0207 -0.0087  0.0032 -0.0216 -0.0158]
+L2H2 [ 0.0056  0.0044  0.001  -0.0064  0.0069  0.0017 -0.0035 -0.0005  0.0026  0.0046  0.0089  0.0027]
+L2H3 [ 0.0056  0.004   0.0027 -0.0066  0.0059  0.005  -0.0092 -0.0072 -0.0081  0.0017 -0.0103 -0.0143]
+L2H4 [ 0.0073  0.0055 -0.0073 -0.0087  0.0077  0.0051 -0.0109 -0.0067 -0.0052 -0.003  -0.0092 -0.0147]
+L2H5 [ 0.0056  0.0037  0.0003 -0.0095  0.0056  0.004  -0.011  -0.0045  0.0004 -0.0145 -0.0063 -0.0197]
+target layer 3 columns ['L0H0', 'L0H1', 'L0H2', 'L0H3', 'L0H4', 'L0H5', 'L1H0', 'L1H1', 'L1H2', 'L1H3', 'L1H4', 'L1H5', 'L2H0', 'L2H1', 'L2H2', 'L2H3', 'L2H4', 'L2H5']
+L3H0 [ 0.0028  0.003  -0.0021 -0.003   0.0044  0.004  -0.0108 -0.0184 -0.0138 -0.0144 -0.0189 -0.0161 -0.0182 -0.0196 -0.0147 -0.0178 -0.0193 -0.0129]
+L3H1 [-0.003  -0.0047  0.0598  0.0009 -0.0066 -0.0045  0.0091  0.0321  0.0449  0.0392  0.0211  0.0019  0.02    0.0638  0.0243  0.0248  0.0108  0.0158]
+L3H2 [ 0.0044  0.0029  0.0032 -0.0042  0.0041  0.0052  0.0015  0.0003 -0.0034 -0.0011 -0.0017 -0.0019  0.0014 -0.0027 -0.0065 -0.0027 -0.0034 -0.0031]
+L3H3 [ 0.003   0.0014  0.0012 -0.0013  0.0025  0.0035 -0.0018 -0.0045 -0.0038 -0.0011 -0.0018 -0.      0.0009 -0.0024 -0.0036 -0.0039 -0.0031 -0.0008]
+L3H4 [ 0.0068  0.0072 -0.0049 -0.001   0.0082  0.0084 -0.0027 -0.0063 -0.0039 -0.0041 -0.0099 -0.0042  0.0008 -0.0029 -0.0047 -0.0032 -0.008  -0.0002]
+L3H5 [-0.0035 -0.0036  0.0024 -0.0029 -0.0033 -0.0022  0.0095  0.0049  0.0075  0.0045  0.0028  0.0063  0.0082  0.0111  0.0086  0.0162  0.0116  0.0101]
+
+HEAD VALUE-PATH ALIGNMENTS
+Cosines among final-layer OV products:
+[[ 1.      0.0175 -0.0156 -0.0127  0.0179  0.0153]
+ [ 0.0175  1.      0.0026  0.008   0.0062  0.0088]
+ [-0.0156  0.0026  1.      0.0439  0.022   0.0461]
+ [-0.0127  0.008   0.0439  1.      0.0177  0.1167]
+ [ 0.0179  0.0062  0.022   0.0177  1.      0.0413]
+ [ 0.0153  0.0088  0.0461  0.1167  0.0413  1.    ]]
+Earlier OV products most aligned with each final-layer OV (direct tensor cosine):
+L3H0 [('L2H1', np.float64(0.0264)), ('L2H3', np.float64(0.0152)), ('L2H5', np.float64(0.012)), ('L2H0', np.float64(0.0115))]
+L3H1 [('L2H5', np.float64(0.0111)), ('L2H2', np.float64(0.0081)), ('L2H3', np.float64(0.0068)), ('L0H3', np.float64(0.0036))]
+L3H2 [('L2H5', np.float64(0.0124)), ('L0H3', np.float64(0.0118)), ('L1H0', np.float64(0.0077)), ('L2H1', np.float64(0.0075))]
+L3H3 [('L0H4', np.float64(0.0197)), ('L0H0', np.float64(0.0166)), ('L0H1', np.float64(0.0163)), ('L0H5', np.float64(0.0148))]
+L3H4 [('L2H0', np.float64(0.0099)), ('L2H1', np.float64(0.008)), ('L1H1', np.float64(0.0079)), ('L1H5', np.float64(0.0077))]
+L3H5 [('L1H0', np.float64(0.0125)), ('L2H4', np.float64(0.0095)), ('L1H1', np.float64(0.0093)), ('L2H0', np.float64(0.0086))]
+
+POSITIONAL-CANDIDATE QK GEOMETRY OF L0 HEADS
+L0H0: fraction_in_QK32=0.2391; cosine_to_H2=-0.0156
+L0H1: fraction_in_QK32=0.2564; cosine_to_H2=-0.0039
+L0H2: fraction_in_QK32=0.9772; cosine_to_H2=1.0000
+L0H3: fraction_in_QK32=0.7562; cosine_to_H2=0.2393
+L0H4: fraction_in_QK32=0.2328; cosine_to_H2=-0.0061
+L0H5: fraction_in_QK32=0.4134; cosine_to_H2=-0.0256

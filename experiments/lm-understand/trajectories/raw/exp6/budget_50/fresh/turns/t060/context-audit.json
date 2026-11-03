@@ -1,0 +1,811 @@
+{
+  "valid": true,
+  "expected_user_messages": 60,
+  "actual_user_messages": 60,
+  "user_messages_exact_and_ordered": true,
+  "unexpected_context": [],
+  "settings": [
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    }
+  ],
+  "message_hashes": [
+    {
+      "role": "developer",
+      "characters": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "role": "developer",
+      "characters": 26,
+      "sha256": "b8a5d51f11d62576e43005a35c4db74c365ace7db42076e7bf4e03c7d949076c"
+    },
+    {
+      "role": "developer",
+      "characters": 1398,
+      "sha256": "e1ec47a3ec231ef78c1e1d61f66f07017c0effb2e1b8c90b123450b5058b070b"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "ef4753c37dfd9ea688a83097c59de875912046e885329e0269b56a50a9464f18"
+    },
+    {
+      "role": "user",
+      "characters": 6610,
+      "sha256": "079ee2731d3f3c57f2b77a372c7f10230b7b501c3624e047b8197c16bf95f99f"
+    },
+    {
+      "role": "user",
+      "characters": 256,
+      "sha256": "570af6ed5e67a9350b111c89d9d7a1f6d08ef8bb280474c4e2e863935237958d"
+    },
+    {
+      "role": "user",
+      "characters": 1491,
+      "sha256": "497195dd17001bcafedbb2db8f6fbb079b82e55560732a35deb0c477e3fce520"
+    },
+    {
+      "role": "user",
+      "characters": 7351,
+      "sha256": "050c4da1a3079bbfd43148b6b78c1d918d4e6d84a3e434e9a549df0447c3d1b7"
+    },
+    {
+      "role": "user",
+      "characters": 12594,
+      "sha256": "0dbbb919fbbef0eabb3acda3e2084f9ee9fcd3fa0961d642e15b3543b04582aa"
+    },
+    {
+      "role": "user",
+      "characters": 72,
+      "sha256": "ee4bfa89513e561c4f91e17e7cb8792e3a60c70fd51070f4148f9ef69935d005"
+    },
+    {
+      "role": "user",
+      "characters": 592,
+      "sha256": "7c9978c451a00f48e1c512934f00236f61f3db7f8b7b7496d623d859cdc27780"
+    },
+    {
+      "role": "user",
+      "characters": 120,
+      "sha256": "496451094dc1ae0ae8d1719aeb0205110280182c93fcd26f6650b3714b1a77c5"
+    },
+    {
+      "role": "user",
+      "characters": 596,
+      "sha256": "22645b33f5a759807df1f91ab280c43e475797fec60a9f254bd9dcaa67635824"
+    },
+    {
+      "role": "user",
+      "characters": 1001,
+      "sha256": "2f4e5f15cc6d65a34a05f3af4d3b5b424781991aaac8c11d7022d8b2b6973592"
+    },
+    {
+      "role": "user",
+      "characters": 596,
+      "sha256": "f998ea4c8a6eed1e193669c8b79672239a09484093db8d083ae03e27b0d7a43a"
+    },
+    {
+      "role": "user",
+      "characters": 4784,
+      "sha256": "13e8570c5a905d279b2519771c150141be4ce511186231cfa2ae7f900836e8c0"
+    },
+    {
+      "role": "user",
+      "characters": 122,
+      "sha256": "2a58380be2d310a498067f84d6e93af6135e8198d55c3fdf45c46a7ee66549da"
+    },
+    {
+      "role": "user",
+      "characters": 599,
+      "sha256": "bb5a4bf85ed56e8157c9d3c04b074af4bb8e4260fca9bd19026cf781eeaedea7"
+    },
+    {
+      "role": "user",
+      "characters": 117,
+      "sha256": "dbab4cd9d6615b2ba90690e9ec380a5570cb98a99307c9b1d8dee37b9973403e"
+    },
+    {
+      "role": "user",
+      "characters": 596,
+      "sha256": "0e54bda6d094970f41393684a3944f5fb328e12af814f6b5319c26dca146a3dd"
+    },
+    {
+      "role": "user",
+      "characters": 2578,
+      "sha256": "d1847adff589bd8ebc9791d38146f0a2f161288f0084c4e64b317902e87d9fdd"
+    },
+    {
+      "role": "user",
+      "characters": 118,
+      "sha256": "75955934b4d0509a7586d63f2ec24bb4308a774c08dd9be42ea13b12d92de169"
+    },
+    {
+      "role": "user",
+      "characters": 591,
+      "sha256": "37c29456f85d805e4a2a07c55b49b9b1444252d49c0535b7393ca172a27c5938"
+    },
+    {
+      "role": "user",
+      "characters": 126,
+      "sha256": "450268c74d0199a19cf566f7661ed3a058b803409d9d3bf5f1a959428a6a0ffa"
+    },
+    {
+      "role": "user",
+      "characters": 597,
+      "sha256": "d8e98a4fe6850083176580017a84bb810d62f9476b4f2b5f81e96aae668ecb0d"
+    },
+    {
+      "role": "user",
+      "characters": 1558,
+      "sha256": "bd8512d2d3e4e2ac06bdb9a82b9693e5640481721c89f0c29146443c5ad6ddf5"
+    },
+    {
+      "role": "user",
+      "characters": 1031,
+      "sha256": "f41a7b02324ee66a16324deed559b478b494d241e3ad292ee73d712d3ab05cc9"
+    },
+    {
+      "role": "user",
+      "characters": 842,
+      "sha256": "2309cec7842d0871640149306c7b50c032987f3d2a8f0a6f922bcc8d9961e054"
+    },
+    {
+      "role": "user",
+      "characters": 604,
+      "sha256": "a2219e7750188cbe0015b86cae0137106a44d25fd40d5c7a60ca4f392bd42561"
+    },
+    {
+      "role": "user",
+      "characters": 110,
+      "sha256": "142bd67ecdd27f2cd3b9fdfe72f0d4e1c5623f9628a2a386fc75404d53d2d94c"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "fc728b084ee6164f33c2a1d76eed4c215b856b251322afcde6eb6844fd51b0bd"
+    },
+    {
+      "role": "user",
+      "characters": 181,
+      "sha256": "dcb8ef5282cbd68a2178f5c731923a3223206f1a51343676598d9c9cb342e4ad"
+    },
+    {
+      "role": "user",
+      "characters": 598,
+      "sha256": "a534a3fbf3b81deaf2218886c0ce10eb5450f1821c3307b40e00f7940abbdf76"
+    },
+    {
+      "role": "user",
+      "characters": 122,
+      "sha256": "16722bf5f43fadf1be937d62f290d0ec02e83ee7f3dbed5330b82077d330ef57"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "8cc0be35a14eec5c8896b1c9775152dcf37e6df343f47b13d3b9d02186b36f0c"
+    },
+    {
+      "role": "user",
+      "characters": 1488,
+      "sha256": "a1c8e928755f1ac5d61f5b5c0f2e399be37ab0211a02112a870392b23f793d06"
+    },
+    {
+      "role": "user",
+      "characters": 119,
+      "sha256": "1a1c36b5238e0d05aea53609914a8becfd260cdba0ef53eb1b7518598efd90cf"
+    },
+    {
+      "role": "user",
+      "characters": 603,
+      "sha256": "d067cea5df95da147de7d911b7f814c883093da8e6d7af1c7cfb761df00d835b"
+    },
+    {
+      "role": "user",
+      "characters": 117,
+      "sha256": "56eef1b75e733c29c67ea1ff4a7c168dac0594ce8539fc31ed75e2e8d333e0cd"
+    },
+    {
+      "role": "user",
+      "characters": 601,
+      "sha256": "ac40b72b106a758be9ea3e845857e8e71a84f6264471610906c6cab699ac5deb"
+    },
+    {
+      "role": "user",
+      "characters": 3427,
+      "sha256": "d27e452a5c73d06523696173915b4a49a23906dcb718edb060f11266bef80cb0"
+    },
+    {
+      "role": "user",
+      "characters": 122,
+      "sha256": "23e86205b53c4a11d94e9577ce5e7a42681e8f973b19a9d4a404fa0467e691e2"
+    },
+    {
+      "role": "user",
+      "characters": 599,
+      "sha256": "4466294aad487bc7c0d4d65d72d683c9d989cf4b8b7c45845ec4caa69922081c"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "a1ebf36157132870f25b7f126691fd6f1b876076aa15ee97708e1ebe75fa8ebe"
+    },
+    {
+      "role": "user",
+      "characters": 116,
+      "sha256": "bf37aacb77d2303b03ed54d648dd0f0aa2622a8eb24e1647f2f9000f25444833"
+    },
+    {
+      "role": "user",
+      "characters": 603,
+      "sha256": "c5d8120f3ca4165c780ec10e49e1c607d7c4f6e705a9c476a95b242b39f793d3"
+    },
+    {
+      "role": "user",
+      "characters": 153,
+      "sha256": "dcce7aa465bedbefdd468899bd238e49232e5c96b87c2e135728bb3435aa5e5a"
+    },
+    {
+      "role": "user",
+      "characters": 605,
+      "sha256": "47d3dbe947e798259cbd86c0f9e17aab283ee1984884dc0e01480cfe4e2e79ba"
+    },
+    {
+      "role": "user",
+      "characters": 121,
+      "sha256": "900198409d6623d33f72e41e96716e12a69141172671ff177e4f66783f5b72ec"
+    },
+    {
+      "role": "user",
+      "characters": 600,
+      "sha256": "027254c24d2205d6d44b1887e70b05bf222b7ef3159aae15de9cf184fa0baa16"
+    },
+    {
+      "role": "user",
+      "characters": 117,
+      "sha256": "a739c28484ce4918ade2655f24ce36af93b8938e9cbbd44d681a4beebf06b047"
+    },
+    {
+      "role": "user",
+      "characters": 596,
+      "sha256": "2db022974c1f8bde667621e9af8fc245fee7da04a5db79865658964972e9ea00"
+    },
+    {
+      "role": "user",
+      "characters": 156,
+      "sha256": "631fb6364b2f526237f4f145a6fb8df0ef74aacfa51c6a69f99eaa71d49ce1b6"
+    },
+    {
+      "role": "user",
+      "characters": 598,
+      "sha256": "87a5c69b4c6943c0ee9c98d3da3f6925a3db9be8df46af316f12d7be4a4fb2f3"
+    },
+    {
+      "role": "user",
+      "characters": 117,
+      "sha256": "30c6ef8c1a626bdb284f73abb8a26b79cd07303a47ec913d6b79022dd99520e8"
+    },
+    {
+      "role": "user",
+      "characters": 608,
+      "sha256": "c8a940af6d91a7cba04ca605ca77588a51c2489973d22cef0266a93bd2ed26aa"
+    },
+    {
+      "role": "user",
+      "characters": 104,
+      "sha256": "f665b1baaa72fadbbb0494bf45ad87c282c7eb678799f8ee8f249add8ecd8ed3"
+    },
+    {
+      "role": "user",
+      "characters": 605,
+      "sha256": "95ed4324a1dc2587391c1a4a39e7b08a8f0ef30a429e98170268b1c552588607"
+    },
+    {
+      "role": "user",
+      "characters": 108,
+      "sha256": "421db23d4c5b9e9b0bae656e828415215b65e89cf8875b74685ae665b728a093"
+    },
+    {
+      "role": "user",
+      "characters": 599,
+      "sha256": "016d6299fb3006aeea9b2bffb1babaa45d90b3362141e1b983f0a7f80222204f"
+    },
+    {
+      "role": "user",
+      "characters": 126,
+      "sha256": "4610b91daa1b1004cb5cd66bddc687d61b5d758430d293ae15589b2368700033"
+    },
+    {
+      "role": "user",
+      "characters": 605,
+      "sha256": "15d2e47d77eaf7149845a984231b0ec3103366a7985129b534f014f2096c4358"
+    },
+    {
+      "role": "user",
+      "characters": 117,
+      "sha256": "4bf546a725a182b0238dd4980b8ac48e95d695d630118b8cb732e6e5ea1209ca"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "435c8224d4fc36df2c51eb53c5cee13563a907a9ac02d32eeeaf248d3311b968"
+    }
+  ]
+}

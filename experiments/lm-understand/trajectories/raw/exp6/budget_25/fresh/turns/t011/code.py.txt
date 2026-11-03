@@ -1,0 +1,74 @@
+import json, numpy as np
+from collections import Counter
+
+utility=r'''
+import numpy as np
+def neighbors(i):
+    r,c=divmod(int(i),9)
+    return [rr*9+cc for rr,cc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+            if 0<=rr<9 and 0<=cc<9]
+def groups(board):
+    unseen=set(map(int,np.flatnonzero(board)))
+    result=[]
+    while unseen:
+        seed=next(iter(unseen))
+        colour=int(board[seed]); stones={seed}; todo=[seed]; liberties=set()
+        unseen.remove(seed)
+        while todo:
+            for j in neighbors(todo.pop()):
+                if board[j]==0:
+                    liberties.add(j)
+                elif board[j]==colour and j in unseen:
+                    unseen.remove(j); stones.add(j); todo.append(j)
+        result.append((colour,stones,liberties))
+    return result
+def board_strings(board):
+    return ["".join({0:".",1:"X",-1:"O"}[int(x)] for x in row)
+            for row in np.asarray(board).reshape(9,9)]
+'''
+open("/work/rules_analysis.py","w").write(utility)
+exec(utility)
+
+for pass_number in (2,3):
+    games=json.load(open(f"/work/pass_{pass_number}/games.json"))
+    boards=np.load(f"/work/pass_{pass_number}/boards.npy")
+    stats=Counter(); events=[]
+    for gi,g in enumerate(games):
+        if g["opponent"]!="strong":
+            continue
+        colour=1 if g["net_color"]=="black" else -1
+        for m in g["moves"]:
+            ply=m["ply"]
+            if m["by"]!="net" or m["move"]==81:
+                continue
+            before=boards[gi,ply-1] if ply else np.zeros(81,dtype=np.int8)
+            after=boards[gi,ply]
+            gs=groups(before)
+            stats["placements"]+=1
+            for co,stones,libs in groups(after):
+                if co==colour and m["move"] in stones and len(libs)==1:
+                    stats["self_atari"]+=1
+                    stats["self_atari_stones"]+=len(stones)
+            if m["top5"][0][1]>.95:
+                top=m["top5"][0][0]
+                urgent=[(co,len(s),len(l)) for co,s,l in gs
+                        if len(l)<=2 and top in l]
+                stats["confident_top_move"]+=1
+                if not any(nlib==1 for co,size,nlib in urgent):
+                    stats["confident_without_true_atari"]+=1
+            if ply+1<len(g["moves"]):
+                lost=int(np.sum((after==colour)&(boards[gi,ply+1]!=colour)))
+                if lost>=3:
+                    threatened=[(len(s),sorted(l)) for co,s,l in gs
+                                if co==colour and len(l)<=2]
+                    events.append((lost,gi,ply,m,threatened,before.copy()))
+    print("PASS",pass_number,dict(stats))
+    if pass_number==3:
+        events.sort(key=lambda e:e[0],reverse=True)
+        for lost,gi,ply,m,threatened,board in events[:6]:
+            print("\nLOSS EVENT",lost,"game",gi,"net",games[gi]["net_color"],
+                  "ply",ply,"result",games[gi]["result"])
+            print("Board:",json.dumps(board_strings(board)))
+            print("Net move:",m)
+            print("Then opponent:",games[gi]["moves"][ply+1])
+            print("Own groups with <=2 liberties:",threatened)

@@ -1,0 +1,9 @@
+OUTPUT of Python run 32 of at most 120:
+```
+Counter({('strong', 'two passes', 1): 80, ('weak', 'two passes', 1): 32, ('strong', 'two passes', -1): 12, ('strong', 'repetition', 1): 2, ('strong', 'repetition', -1): 2})
+26 black 1 53.5 [{'ply': 104, 'by': 'net', 'move': 67, 'top5': [[67, 1.0], [77, 0.0], [72, 0.0], [81, 0.0], [55, 0.0]]}, {'ply': 105, 'by': 'opponent', 'move': 77}, {'ply': 106, 'by': 'net', 'move': 75, 'top5': [[75, 1.0], [72, 0.0], [69, 0.0], [81, 0.0], [0, 0.0]]}, {'ply': 107, 'by': 'opponent', 'move': 76}]
+44 black -1 -5.5 [{'ply': 87, 'by': 'opponent', 'move': 81}, {'ply': 88, 'by': 'net', 'move': 0, 'top5': [[0, 1.0], [5, 0.0], [81, 0.0], [6, 0.0], [75, 0.0]]}, {'ply': 89, 'by': 'opponent', 'move': 27}, {'ply': 90, 'by': 'net', 'move': 9, 'top5': [[9, 1.0], [5, 0.0], [81, 0.0], [0, 0.0], [6, 0.0]]}]
+55 white 1 20.5 [{'ply': 69, 'by': 'net', 'move': 62, 'top5': [[26, 0.4909], [54, 0.2762], [62, 0.1655], [1, 0.0326], [9, 0.0241]]}, {'ply': 70, 'by': 'opponent', 'move': 54}, {'ply': 71, 'by': 'net', 'move': 72, 'top5': [[72, 1.0], [26, 0.0], [1, 0.0], [71, 0.0], [9, 0.0]]}, {'ply': 72, 'by': 'opponent', 'move': 63}]
+84 white -1 -6.5 [{'ply': 108, 'by': 'opponent', 'move': 81}, {'ply': 109, 'by': 'net', 'move': 6, 'top5': [[6, 1.0], [81, 0.0], [46, 0.0], [60, 0.0], [8, 0.0]]}, {'ply': 110, 'by': 'opponent', 'move': 8}, {'ply': 111, 'by': 'net', 'move': 7, 'top5': [[7, 0.9999], [16, 0.0001], [81, 0.0], [46, 0.0], [17, 0.0]]}]
+
+```

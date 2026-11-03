@@ -1,0 +1,6 @@
+{
+  "code_sha256": "78e63a967a155f7aeb20b6de6daf251ffe48596f69d39374d6bcbcfdd506db99",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It writes fixed straight-chain feature coefficients into selected spare units, using only board geometry and tensor indexing. The claimed features are represented as weights and are not evaluated on boards; no fitting, inference, gameplay or search occurs."
+}

@@ -1,0 +1,5 @@
+OUTPUT of Python run 19 of at most 120:
+```
+Added exact straight-string liberty and connectivity certificates.
+
+```

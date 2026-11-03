@@ -1,0 +1,80 @@
+{
+  "request_sha256": "8329cd0f2644221c05ff62b2c7882f82814f52a9b7a7434a580bec25a84cddbf",
+  "request": {
+    "kind": "games",
+    "case_id": "a68c3c49ed7b4219bc75bafadd071956",
+    "pass": 14,
+    "request": {
+      "games": {
+        "strong": 64,
+        "weak": 32,
+        "random": 32
+      }
+    }
+  },
+  "result": {
+    "ok": true,
+    "pass": 14,
+    "kind": "games",
+    "per_opponent": {
+      "random": {
+        "games": 32,
+        "score": 1.0,
+        "wins": 32,
+        "losses": 0,
+        "score_as_black": 1.0,
+        "score_as_white": 1.0,
+        "mean_margin": 78.25,
+        "mean_length": 114.53125,
+        "stones_captured_per_game": 49.84375,
+        "stones_lost_per_game": 0.3125,
+        "network_passes_per_game": 1.0,
+        "all_player_passes_per_game": 6.96875,
+        "games_with_network_pass_before_move_60": 0,
+        "games_with_any_pass_before_move_60": 14,
+        "end_repetition": 0,
+        "end_two_passes": 32,
+        "end_move_limit": 0
+      },
+      "weak": {
+        "games": 32,
+        "score": 1.0,
+        "wins": 32,
+        "losses": 0,
+        "score_as_black": 1.0,
+        "score_as_white": 1.0,
+        "mean_margin": 76.875,
+        "mean_length": 117.375,
+        "stones_captured_per_game": 51.75,
+        "stones_lost_per_game": 1.09375,
+        "network_passes_per_game": 1.21875,
+        "all_player_passes_per_game": 6.0,
+        "games_with_network_pass_before_move_60": 0,
+        "games_with_any_pass_before_move_60": 11,
+        "end_repetition": 0,
+        "end_two_passes": 32,
+        "end_move_limit": 0
+      },
+      "strong": {
+        "games": 64,
+        "score": 0.765625,
+        "wins": 49,
+        "losses": 15,
+        "score_as_black": 0.65625,
+        "score_as_white": 0.875,
+        "mean_margin": 59.390625,
+        "mean_length": 114.828125,
+        "stones_captured_per_game": 44.28125,
+        "stones_lost_per_game": 4.96875,
+        "network_passes_per_game": 1.328125,
+        "all_player_passes_per_game": 4.765625,
+        "games_with_network_pass_before_move_60": 0,
+        "games_with_any_pass_before_move_60": 2,
+        "end_repetition": 2,
+        "end_two_passes": 62,
+        "end_move_limit": 0
+      }
+    },
+    "files": "/work/pass_14/"
+  }
+}

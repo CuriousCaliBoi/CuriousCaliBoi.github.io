@@ -1,0 +1,5 @@
+OUTPUT of Python run 10 of at most 120:
+```
+Added an empty-board-only tengen opening gate.
+
+```

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "6fa4ced7ba259926fa64dea27d3889903ebe6db0d6e2561f0f997f7bacf2b679",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Analyzes MLP tensor row/column norms and cosine geometry, clusters and decomposes output-weight columns with KMeans/FastICA, and eigendecomposes weight-only QK/OV circuit products. Fitting applies to supplied weight vectors, not task examples or network behavior; no model layer is run on inputs and no search occurs."
+}

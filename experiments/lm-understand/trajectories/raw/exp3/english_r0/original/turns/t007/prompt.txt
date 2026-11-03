@@ -1,0 +1,58 @@
+OUTPUT of run 6 of at most 100:
+```
+DIRECT POSITION-REGISTER WEIGHTS
+ln1_w.0 {72: 0.70624, 78: 0.71854, 103: 0.42608, 222: 0.83616, 360: 0.82004}
+ln2_w.0 {72: 0.25055, 78: 0.10517, 103: 0.75663, 222: 0.05277, 360: 0.4628}
+ln1_w.1 {72: 0.79948, 78: 0.78106, 103: 0.23871, 222: 1.1239, 360: 0.13611}
+ln1_b.1 {72: -0.767, 78: 0.8661, 103: -0.50698, 222: -1.47125, 360: 1.15442}
+ln1_w.2 {72: 0.38629, 78: 0.90574, 103: 0.30339, 222: 1.01444, 360: 0.20781}
+ln1_b.2 {72: -0.50749, 78: 0.97425, 103: -0.61322, 222: -1.3819, 360: 1.05267}
+ln1_w.3 {72: 0.50111, 78: 0.76259, 103: 0.59345, 222: 0.82711, 360: 0.29439}
+ln1_b.3 {72: -0.21987, 78: 0.54871, 103: -0.24884, 222: -0.60691, 360: 0.65015}
+
+COPY-CIRCUIT ROBUSTNESS TO ALGEBRAIC CONVENTIONS
+gains False L3H0 restricted trace/nuclear at ranks16,20,24,28,32 [-0.0835 -0.0734 -0.047  -0.0429 -0.0362]
+gains False L3H1 restricted trace/nuclear at ranks16,20,24,28,32 [0.9384 0.9032 0.872  0.8306 0.792 ]
+gains False L3H2 restricted trace/nuclear at ranks16,20,24,28,32 [0.1021 0.0698 0.056  0.0421 0.0393]
+gains False L3H3 restricted trace/nuclear at ranks16,20,24,28,32 [-0.09   -0.0544 -0.0239 -0.0091  0.0001]
+gains False L3H4 restricted trace/nuclear at ranks16,20,24,28,32 [-0.101  -0.1044 -0.0893 -0.0874 -0.0758]
+gains False L3H5 restricted trace/nuclear at ranks16,20,24,28,32 [0.1866 0.1225 0.1289 0.1072 0.0964]
+gains True L3H0 restricted trace/nuclear at ranks16,20,24,28,32 [-0.0853 -0.0503 -0.0344 -0.0404 -0.0329]
+gains True L3H1 restricted trace/nuclear at ranks16,20,24,28,32 [0.8737 0.8243 0.7936 0.7669 0.7327]
+gains True L3H2 restricted trace/nuclear at ranks16,20,24,28,32 [0.1199 0.0718 0.0685 0.0587 0.0514]
+gains True L3H3 restricted trace/nuclear at ranks16,20,24,28,32 [ 0.0309  0.0111 -0.0042  0.003   0.0196]
+gains True L3H4 restricted trace/nuclear at ranks16,20,24,28,32 [-0.119  -0.1131 -0.0788 -0.0827 -0.0805]
+gains True L3H5 restricted trace/nuclear at ranks16,20,24,28,32 [0.0881 0.0897 0.077  0.0502 0.0454]
+
+LATE CONTENT-SPACE DIMENSION CHECK
+W_proj.3 singular values 19..36 [12.4015 11.9578 11.7405 11.5943 10.3667  8.3505  8.0636  7.9141  7.461   7.1656  5.8331  4.0718  3.2206  3.1387  2.8415  2.8001  2.6874  2.5707]
+L3H1 W_o singular values 19..36 [2.8872 2.8346 2.7267 2.6749 2.6459 2.6122 2.3869 2.3748 2.2979 2.1353 2.1027 1.9627 1.8154 1.7891 1.7212 1.5923 1.5699 1.559 ]
+L3H5 W_o singular values 19..36 [2.4788 2.4154 2.2674 2.2442 2.1603 2.0801 2.0233 1.976  1.9274 1.828  1.8155 1.7774 1.7145 1.6506 1.6347 1.6003 1.5938 1.504 ]
+
+HEAD READ/WRITE ALIGNMENT WITH THREE SHARED REGISTERS
+L0H0 QK key-register fraction 0.028 bias key-register fraction 0.02 key bias norm 0.014
+L0H1 QK key-register fraction 0.072 bias key-register fraction 0.208 key bias norm 0.003
+L0H2 QK key-register fraction 0.035 bias key-register fraction 0.071 key bias norm 0.143
+L0H3 QK key-register fraction 0.014 bias key-register fraction 0.016 key bias norm 0.054
+L0H4 QK key-register fraction 0.042 bias key-register fraction 0.026 key bias norm 0.011
+L0H5 QK key-register fraction 0.171 bias key-register fraction 0.185 key bias norm 0.016
+L1H0 QK key-register fraction 0.658 bias key-register fraction 0.925 key bias norm 1.357
+L1H1 QK key-register fraction 0.619 bias key-register fraction 0.944 key bias norm 2.285
+L1H2 QK key-register fraction 0.656 bias key-register fraction 0.952 key bias norm 2.588
+L1H3 QK key-register fraction 0.658 bias key-register fraction 0.942 key bias norm 2.351
+L1H4 QK key-register fraction 0.707 bias key-register fraction 0.945 key bias norm 2.29
+L1H5 QK key-register fraction 0.64 bias key-register fraction 0.919 key bias norm 1.753
+L2H0 QK key-register fraction 0.108 bias key-register fraction 0.894 key bias norm 1.699
+L2H1 QK key-register fraction 0.05 bias key-register fraction 0.795 key bias norm 0.745
+L2H2 QK key-register fraction 0.21 bias key-register fraction 0.849 key bias norm 0.755
+L2H3 QK key-register fraction 0.109 bias key-register fraction 0.912 key bias norm 1.462
+L2H4 QK key-register fraction 0.113 bias key-register fraction 0.905 key bias norm 1.577
+L2H5 QK key-register fraction 0.104 bias key-register fraction 0.887 key bias norm 1.509
+L3H0 QK key-register fraction 0.015 bias key-register fraction 0.147 key bias norm 0.258
+L3H1 QK key-register fraction 0.003 bias key-register fraction 0.03 key bias norm 0.241
+L3H2 QK key-register fraction 0.075 bias key-register fraction 0.664 key bias norm 0.29
+L3H3 QK key-register fraction 0.074 bias key-register fraction 0.733 key bias norm 0.36
+L3H4 QK key-register fraction 0.048 bias key-register fraction 0.545 key bias norm 0.307
+L3H5 QK key-register fraction 0.012 bias key-register fraction 0.037 key bias norm 0.165
+
+```

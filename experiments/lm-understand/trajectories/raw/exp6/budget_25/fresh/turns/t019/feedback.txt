@@ -1,0 +1,5 @@
+OUTPUT of Python run 13 of at most 120:
+```
+Saved revision 6: solid local connections and central contact resolution.
+
+```

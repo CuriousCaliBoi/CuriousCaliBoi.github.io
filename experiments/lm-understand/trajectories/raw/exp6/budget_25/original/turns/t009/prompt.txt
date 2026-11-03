@@ -1,0 +1,5 @@
+OUTPUT of Python run 6 of at most 120:
+```
+{'capture': 7.0, 'rescue': 6.0, 'self_atari': 9.0, 'eye': 11.0, 'crowd': 2.0, 'pass_bias': -2.0, 'friend_adj': 1.4, 'enemy_adj': 0.5, 'friend_diag': 0.6, 'enemy_diag': 0.1, 'friend_jump': 0.25, 'enemy_jump': 0.15, 'friend_knight': 0.1, 'enemy_knight': 0.05, 'seed_shared_liberty': 1.0, 'positional_scale': 2.0, 'low_liberty': 1.5}
+
+```

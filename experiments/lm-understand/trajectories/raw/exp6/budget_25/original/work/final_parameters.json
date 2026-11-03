@@ -1,0 +1,11 @@
+{
+  "friend_adj": 1.4,
+  "enemy_adj": 0.5,
+  "friend_diag": 0.6,
+  "friend_jump": 0.25,
+  "friend_knight": 0.1,
+  "crowd": 2.0,
+  "rescue": 6.0,
+  "self_atari": 16.0,
+  "low_liberty": 0.5
+}

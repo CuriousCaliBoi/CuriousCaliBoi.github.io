@@ -1,0 +1,12 @@
+```python
+w=load("L5.W")
+for p in range(81):
+    r,c=divmod(p,9)
+    for rr,cc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):
+        if 0<=rr<9 and 0<=cc<9:
+            w[81+rr*9+cc,p]=1.2
+    w[5*81+p,p]=-1.0
+save("L5.W",w)
+print("Increased supported contact pressure while retaining the penalty")
+print("for attacking without friendly support.")
+```

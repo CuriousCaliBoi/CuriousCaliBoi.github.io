@@ -1,0 +1,6 @@
+{
+  "code_sha256": "f9b6e1c7d6c931c9f6969f0223f45e4c8da9846473c6547d5197280fb350df59",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Makes a manually selected constant adjustment to an analytic bias slice via reviewed tensor constructors, then saves parameters. No position evaluation, simulation, training/fitting, or search."
+}

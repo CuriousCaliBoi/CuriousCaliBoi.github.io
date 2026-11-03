@@ -1,0 +1,4 @@
+import numpy as np
+for name in ("out.W","out.b"):
+    save(name,load(name)*np.float32(1.5))
+print("Score scale 10.8; all decisions remain softmax-sampled.")

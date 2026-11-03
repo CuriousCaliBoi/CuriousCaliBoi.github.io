@@ -1,0 +1,6 @@
+{
+  "code_sha256": "5e32b52c813e47ac7e7b094d38f06918a9321ed59a0aaa5c600fb72d5a7cf3d8",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Reuses the previously reviewed analytic design.py builder, archives tensors, and directly edits coefficients using fixed coordinate neighborhoods and manually selected circuit constants. No board data is passed through network layers, no simulated games or action search, and no fitting routine."
+}

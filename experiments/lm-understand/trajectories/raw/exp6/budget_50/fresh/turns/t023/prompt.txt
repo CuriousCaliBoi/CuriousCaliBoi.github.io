@@ -1,0 +1,19 @@
+OUTPUT of Python run 13 of at most 120:
+```
+Position files: ['legal.npy', 'probs.npy', 'inputs.npy', 'summary.json', 'act_L3.npy', 'logits.npy', 'act_L4.npy', 'act_L5.npy', 'README.txt', 'act_L1.npy', 'act_L2.npy', 'act_L6.npy']
+legal.npy (6, 82)
+probs.npy (6, 82)
+inputs.npy (6, 243)
+act_L3.npy (6, 512)
+logits.npy (6, 82)
+act_L4.npy (6, 512)
+act_L5.npy (6, 512)
+inputs.npy (P,243); legal.npy (P,82); logits.npy and probs.npy (P,82); requested act_L1.npy through act_L6.npy are post-ReLU hidden activations. Board requests mask only occupied points; move sequences use exact Go legality.
+
+act_L1.npy (6, 512)
+act_L2.npy (6, 512)
+act_L6.npy (6, 512)
+Loss margins: [-32.5, -30.5, -25.5, -25.5, -25.5, -22.5, -17.5, -17.5, -16.5, -16.5, -15.5, -13.5, -12.5, -12.5, -12.5, -11.5, -11.5, -10.5, -10.5, -10.5, -10.5, -8.5, -8.5, -7.5, -6.5, -6.5, -6.5, -6.5, -5.5, -4.5, -3.5, -3.5, -3.5, -2.5, -2.5, -1.5, -0.5, -0.5, 4.5, 8.5, 13.5, 14.5, 23.5, 26.5, 39.5]
+Loss endings: [('move_limit', 0), ('repetition', 8), ('two_passes', 37)]
+
+```

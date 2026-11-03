@@ -1,0 +1,6 @@
+{
+  "code_sha256": "2143a71d313da37b11d57acbf23d8e1b1b70c7a9b1e4503a4e14f047606627e1",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "SVD/eigenspaces, ICA and clustering operate directly on learned weight rows/columns and their projections. Experiment3 explicitly permits clustering/fitting weights. No layer evaluation on inputs, nonlinear activation or search."
+}

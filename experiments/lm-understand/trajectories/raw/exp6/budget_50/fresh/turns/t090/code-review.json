@@ -1,0 +1,6 @@
+{
+  "code_sha256": "9a7c94e7be3a8ed3e1bb1f77c3916174c55b3569cc27a1767778e81c993542d0",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It aggregates already returned practice summaries and checks tensor counts, dtype, finiteness, saved names and selected zero entries. No weights are fitted or changed and no forward evaluation, gameplay or search occurs."
+}

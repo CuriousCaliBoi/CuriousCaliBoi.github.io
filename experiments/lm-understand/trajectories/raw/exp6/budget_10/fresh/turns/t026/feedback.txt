@@ -1,0 +1,8 @@
+OUTPUT of Python run 17 of at most 120:
+```
+All tensors saved: 14 of 14
+Total parameters: 1480274
+Nonzero parameters: 20976
+Final design: bounded connected-liberty certificates for both colours; capture and rescue priorities; two-liberty attack/defence; eye, self-atari and edge-cycle protection; phase-aware shape; colour-aware symmetric opening priors; selective passing.
+
+```

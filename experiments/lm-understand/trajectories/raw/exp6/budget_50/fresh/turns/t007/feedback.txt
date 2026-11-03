@@ -1,0 +1,5 @@
+OUTPUT of Python run 5 of at most 120:
+```
+Expansion-oriented shape: stronger crowding avoidance and wider support.
+
+```

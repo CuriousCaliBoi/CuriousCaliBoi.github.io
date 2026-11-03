@@ -1,0 +1,5 @@
+OUTPUT of Python run 25 of at most 120:
+```
+Saved v20: broader territorial influence discourages redundant interior moves.
+
+```

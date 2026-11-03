@@ -1,0 +1,9 @@
+OUTPUT of Python run 29 of at most 120:
+```
+90-degree rotation: passed weight-only equivariance audit
+reflection: passed weight-only equivariance audit
+Final policy saved; all 14 tensors verified.
+Nonzero parameters: 22485
+No inference, training, or search was performed in this audit.
+
+```

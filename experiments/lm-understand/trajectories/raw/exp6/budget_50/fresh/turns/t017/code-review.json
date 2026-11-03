@@ -1,0 +1,6 @@
+{
+  "code_sha256": "a6c07db51730ed2651ad92e05df76ac043871a3f092af35d93360468dfe88567",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It analytically writes fixed tensor coefficients for checkerboard-liberty propagation, local shape features and output scores using board geometry alone. Circuit descriptions in comments are not executed: there are no board inputs, layer activations, fitting loops, hypothetical moves or search."
+}

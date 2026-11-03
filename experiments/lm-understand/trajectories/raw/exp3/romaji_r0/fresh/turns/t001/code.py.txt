@@ -1,0 +1,49 @@
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=4, suppress=True)
+
+def summary(a):
+    a = np.asarray(a, dtype=np.float64)
+    return (f"mean={a.mean():.5f} sd={a.std():.5f} "
+            f"min={a.min():.5f} max={a.max():.5f} norm={np.linalg.norm(a):.4f}")
+
+print("KEYS:", sorted(W))
+for l in range(4):
+    print(f"\nLAYER {l}")
+    for name in ["ln1_w", "ln1_b", "ln2_w", "ln2_b"]:
+        print(name, summary(W[f"{name}.{l}"]))
+    for name in ["W_q", "W_k", "W_v", "W_o", "W_fc", "W_proj"]:
+        a = W[f"{name}.{l}"].astype(np.float64)
+        s = np.linalg.svd(a, compute_uv=False)
+        er = (s @ s)**2 / np.sum(s**4)
+        print(name, f"F={np.linalg.norm(a):.4f}",
+              "singular_top8=", np.round(s[:8], 4),
+              f"smedian={np.median(s):.4f} effective_rank={er:.2f}")
+
+print("\nHEADS: QK=(Wq D)^T(Wk D)/8; OV=Wo Wv D; D=diag(ln1_w)")
+print("tr/F is signed trace divided by Frobenius norm; sym is symmetric-part norm/F.")
+for l in range(4):
+    d = W[f"ln1_w.{l}"].astype(np.float64)
+    for j in range(6):
+        sl = slice(64*j, 64*(j+1))
+        q = W[f"W_q.{l}"][sl].astype(np.float64) * d
+        k = W[f"W_k.{l}"][sl].astype(np.float64) * d
+        v = W[f"W_v.{l}"][sl].astype(np.float64) * d
+        o = W[f"W_o.{l}"][:, sl].astype(np.float64)
+        a = q.T @ k / 8
+        b = o @ v
+        sa = np.linalg.svd(a, compute_uv=False)[:64]
+        sb = np.linalg.svd(b, compute_uv=False)[:64]
+        ea = np.linalg.eigvalsh((a+a.T)/2)
+        eb = np.linalg.eigvals(v @ o)
+        leadb = eb[np.argsort(np.abs(eb))[-4:][::-1]]
+        print(f"L{l}H{j}",
+              f"QK_F={np.linalg.norm(a):.3f} tr/F={np.trace(a)/np.linalg.norm(a):.3f}",
+              f"sym={np.linalg.norm((a+a.T)/2)/np.linalg.norm(a):.3f}",
+              f"QK_ER={(sa@sa)**2/np.sum(sa**4):.2f}",
+              "QK_s1-4=", np.round(sa[:4],3),
+              "QK_sym_extremes=", np.round(ea[[0,1,-2,-1]],3),
+              f"OV_F={np.linalg.norm(b):.3f} tr/F={np.trace(b)/np.linalg.norm(b):.3f}",
+              f"OV_ER={(sb@sb)**2/np.sum(sb**4):.2f}",
+              "OV_eig=", np.round(leadb,3))

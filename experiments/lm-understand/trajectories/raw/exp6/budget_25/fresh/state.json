@@ -1,0 +1,10 @@
+{
+  "case_id": "31ee2660bc034a25809a195ac07cb8b1",
+  "budget": 25,
+  "status": "completed",
+  "turn": 55,
+  "python_runs": 29,
+  "passes": 25,
+  "thread_id": "01a1a091-e58a-7650-9045-af4c403bfcaa",
+  "final_answer_sha256": "d45d07576a17176b32bbe6af086d168f9a9d453df28b6284b0b3a7d0bacc5c65"
+}

@@ -1,0 +1,30 @@
+{
+  "compiled_utc": "2026-11-03T18:22:25.118591+00:00",
+  "notice": "Public export: private machine paths and host identifiers are replaced with placeholders. Recorded results and numerical weights are unchanged. Embedded source hashes identify the original files; PUBLICATION-MANIFEST.json identifies these public copies.",
+  "downloads": [
+    {
+      "path": "downloads/trajectories-1-through-6-public.zip",
+      "bytes": 9866431,
+      "sha256": "68e4ebeafddbc740cbac8fabd19d209e585945a215937a846712687a0a5d44c8",
+      "members": 4191
+    },
+    {
+      "path": "downloads/reproduction-source-public.zip",
+      "bytes": 778653,
+      "sha256": "2f2928daa8117fbf33d46c43fbd8d3e2b58a469d63a2057411c45213832254d7",
+      "members": 241
+    },
+    {
+      "path": "downloads/evaluation-records-public.zip",
+      "bytes": 8446948,
+      "sha256": "a5eb0580a94d06b9ad7dd2288103ec2d9c079a3ade75cbfab3732066ac146e1e",
+      "members": 213
+    },
+    {
+      "path": "downloads/experiments-7-8-recorded-conversations-public.zip",
+      "bytes": 6570937,
+      "sha256": "73a703717ae5faacb0ccfecd03f1b752ba1e7f98f3d457e01c2b9d296cc05dc8",
+      "members": 2936
+    }
+  ]
+}

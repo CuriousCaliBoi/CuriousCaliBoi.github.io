@@ -1,0 +1,4 @@
+import numpy as np
+for name in ("out.W","out.b"):
+    save(name,load(name)*np.float32(1.5))
+print("Policy score scale is now 5.4, retaining the same hand-written decisions.")

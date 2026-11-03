@@ -1,0 +1,7 @@
+OUTPUT of Python run 1 of at most 120:
+```
+Saved all 14 tensors. Hand-built liberty, capture, rescue, eye, and shape policy.
+Parameters: {'capture': 7.0, 'rescue': 4.5, 'self_atari': 10.0, 'eye': 11.0, 'crowd': 2.5, 'pass_bias': -2.0, 'friend_adj': 0.15, 'enemy_adj': 0.35, 'friend_diag': 0.35, 'enemy_diag': 0.1, 'friend_jump': 0.65, 'enemy_jump': 0.15, 'friend_knight': 0.25, 'enemy_knight': 0.05, 'seed_shared_liberty': 1.0}
+Saved tensors: ['L1.W', 'L1.b', 'L2.W', 'L2.b', 'L3.W', 'L3.b', 'L4.W', 'L4.b', 'L5.W', 'L5.b', 'L6.W', 'L6.b', 'out.W', 'out.b']
+
+```

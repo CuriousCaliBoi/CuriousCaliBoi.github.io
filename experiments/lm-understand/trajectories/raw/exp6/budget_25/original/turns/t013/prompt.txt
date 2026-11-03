@@ -1,0 +1,5 @@
+OUTPUT of Python run 8 of at most 120:
+```
+Increased policy decisiveness, with unchanged move ranking.
+
+```

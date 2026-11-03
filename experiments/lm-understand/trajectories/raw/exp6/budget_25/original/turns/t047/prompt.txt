@@ -1,0 +1,5 @@
+OUTPUT of Python run 27 of at most 120:
+```
+Staggered safety certificates cover every 2x2 block.
+
+```

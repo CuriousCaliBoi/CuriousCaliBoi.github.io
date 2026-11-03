@@ -1,0 +1,74 @@
+import numpy as np
+from scipy.linalg import svd, eigh
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from threadpoolctl import threadpool_limits
+
+def unitrows(x):
+    return x/(np.linalg.norm(x,axis=1,keepdims=True)+1e-12)
+
+with threadpool_limits(limits=2):
+    g=W["ln1_w.0"].astype(float)
+    q=W["W_q.0"][192:256].astype(float)*g
+    k=W["W_k.0"][192:256].astype(float)*g
+    v=W["W_v.0"][192:256].astype(float)*g
+    for m in [q,k,v]: m-=m.mean(1,keepdims=True)
+    B=W["W_o.0"][:,192:256].astype(float)@v
+    ui,si,vi=svd(B,full_matrices=False)
+    uq,sq,vq=svd(q.T@k,full_matrices=False)
+    f=W["W_fc.0"].astype(float)*W["ln2_w.0"]
+    f-=f.mean(1,keepdims=True)
+
+    # All rows below are weight directions or linear products of weights.
+    # No inputs, layer execution, activation functions, or attention distributions.
+    nuisance=np.concatenate([ui[:,:28],uq[:,:24],vq[:24].T,
+                              np.ones((384,1))/np.sqrt(384)],axis=1)
+    un,sn,_=svd(nuisance,full_matrices=False)
+    N=un[:,sn>1e-8]
+    candidates=vi[:28].T
+    candidates-=N@(N.T@candidates)
+    X,_,_=svd(candidates,full_matrices=False)
+    X=X[:,:28]
+    C0=f@X
+    C1=f@B@X
+    C0-=C0.mean(0); C1-=C1.mean(0)
+    C0/=np.linalg.norm(C0)
+    C1/=np.linalg.norm(C1)
+    covariance=(C0.T@C0+C1.T@C1)/2
+    ev,U=eigh(covariance)
+    whitening=(U/np.sqrt(np.maximum(ev,ev[-1]*.015)))@U.T
+    D0=C0@whitening
+    D1=C1@whitening
+    cross=(D0.T@D1+D1.T@D0)/2
+    print("Symmetric, whitened FC/FC-OV direction covariance eigenvalues:")
+    print(np.round(eigh(cross,eigvals_only=True),3))
+
+    Z=np.concatenate([unitrows(D0),unitrows(D1)])
+    print("\nShared clustering of current/OV-composed FC weight directions")
+    for nc in [20,24,28,32]:
+        km=KMeans(n_clusters=nc,n_init=10,random_state=42).fit(Z)
+        labels=km.labels_
+        cent=unitrows(km.cluster_centers_)
+        confidence=np.sum(Z*cent[labels],axis=1)
+        pairs=np.zeros((nc,nc))
+        for i in range(1536):
+            pairs[labels[i],labels[i+1536]]+=confidence[i]*confidence[i+1536]
+        pairs=(pairs+pairs.T)/2
+        degree=pairs.sum(1)
+        norm=pairs/np.sqrt(degree[:,None]*degree[None,:]+1e-12)
+        eig=eigh(norm,eigvals_only=True)
+        print("k",nc,"silhouette",
+              round(silhouette_score(Z,labels,sample_size=1500,random_state=42),3),
+              "confidence median",round(float(np.median(confidence)),3),
+              "pair-graph bottom eigenvalues",np.round(eig[:5],3),
+              "cluster counts",sorted(np.bincount(labels).tolist(),reverse=True))
+
+    print("\nFinal MLP output-weight clustering")
+    p=W["W_proj.3"].astype(float).T
+    _,s,vt=svd(p,full_matrices=False)
+    Z=unitrows(p@vt[:28].T)
+    for nc in [20,24,28,32]:
+        km=KMeans(n_clusters=nc,n_init=10,random_state=42).fit(Z)
+        print("k",nc,"silhouette",
+              round(silhouette_score(Z,km.labels_,sample_size=1500,random_state=42),3),
+              "counts",sorted(np.bincount(km.labels_).tolist(),reverse=True))

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "f0ba733eb49742a82933445e8a247da16265721a811d102b8beccbe11bfea86e",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Weight-only QK/OV/MLP matrix contractions, spectral/subspace comparisons and coordinate-sign scrambling of weight connections for null statistics. No nonlinear activation, attention softmax, LayerNorm applied to inputs or search."
+}

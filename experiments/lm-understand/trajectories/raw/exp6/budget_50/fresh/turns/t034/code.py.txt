@@ -1,0 +1,17 @@
+w=load("L5.W")
+for p in range(81):
+    r,c=divmod(p,9)
+    for dr,dc in ((-1,0),(1,0),(0,-1),(0,1)):
+        rr,cc=r+dr,c+dc
+        if 0<=rr<9 and 0<=cc<9:
+            q=rr*9+cc
+            w[q,p]=.25
+            w[81+q,p]=.90
+    for dr in (-1,1):
+        for dc in (-1,1):
+            rr,cc=r+dr,c+dc
+            if 0<=rr<9 and 0<=cc<9:
+                w[rr*9+cc,p]=.60
+    w[4*81+p,p]=-2
+save("L5.W",w)
+print("Restored wider spacing; increased pressure at the opposing boundary.")

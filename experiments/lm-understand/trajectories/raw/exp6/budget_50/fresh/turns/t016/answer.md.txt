@@ -1,0 +1,56 @@
+```python
+import json,numpy as np,collections
+gs=json.load(open("/work/pass_6/games.json"))
+bs=np.load("/work/pass_6/boards.npy")
+adj=[]
+for p in range(81):
+    r,c=divmod(p,9)
+    adj.append([rr*9+cc for rr,cc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+                if 0<=rr<9 and 0<=cc<9])
+
+def groups(b):
+    seen=set(); out=[]
+    for p in range(81):
+        if not b[p] or p in seen: continue
+        color=int(b[p]); stack=[p]; stones={p}; libs=set(); seen.add(p)
+        while stack:
+            q=stack.pop()
+            for v in adj[q]:
+                if b[v]==0: libs.add(v)
+                elif b[v]==color and v not in seen:
+                    seen.add(v);stones.add(v);stack.append(v)
+        out.append((color,stones,libs))
+    return out
+
+events=[]; stats=collections.Counter()
+for i,g in enumerate(gs):
+    own=1 if g["net_color"]=="black" else -1
+    for j,m in enumerate(g["moves"]):
+        if m["by"]!="net": continue
+        before=np.zeros(81,dtype=int) if j==0 else bs[i,j-1]
+        after=bs[i,j]
+        captures=sum(before==-own)-sum(after==-own)
+        enemy_atari=[(len(st),next(iter(li))) for co,st,li in groups(before)
+                     if co==-own and len(li)==1]
+        friendly_atari=[(len(st),next(iter(li))) for co,st,li in groups(before)
+                        if co==own and len(li)==1]
+        if enemy_atari:
+            stats["turns_with_capture"]+=1
+            if m["move"] not in {p for _,p in enemy_atari}:
+                stats["capture_not_selected"]+=1
+        if m["move"]<81:
+            newgroup=next((st,li) for co,st,li in groups(after) if m["move"] in st)
+            if len(newgroup[1])==1 and captures==0:
+                stats["noncapturing_self_atari"]+=1
+                if g["result"]<0 and len(newgroup[0])>=2:
+                    events.append((len(newgroup[0]),i,j,m,enemy_atari,friendly_atari))
+print(dict(stats))
+for size,i,j,m,ea,fa in sorted(events,reverse=True,key=lambda x:x[0])[:6]:
+    g=gs[i]
+    print("\nGAME",i,"color",g["net_color"],"margin",g["margin"],
+          "ply",j,"self-atari group size",size)
+    print("move/top5",m,"enemy atari",ea,"own atari",fa)
+    before=bs[i,j-1]
+    print(["".join({1:"X",-1:"O",0:"."}[int(x)] for x in row)
+           for row in before.reshape(9,9)])
+```

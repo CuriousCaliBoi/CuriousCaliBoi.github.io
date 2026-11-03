@@ -1,0 +1,6 @@
+{
+  "code_sha256": "510ebf4ae08b4651012cda6965af8055600af838918231173777bbb2f1b8f254",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Uses weight statistics, SVD/eigenvalues and QK/OV matrix products only; no network or layer applied to external input and no search. Absorbing LayerNorm learned scaling and mean-zero projection into weight matrices, and multiplying matrices by learned bias vectors, remain linear algebra on weights; no input-dependent normalization or attention softmax."
+}

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "04fa1ff1719276a31f85f24ddf1d38b50a02ae7ea143a679213df5bb490c4363",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Only learned weight/bias contractions, singular/eigen spectra, row/vector cosine similarities and weight-derived subspace comparisons. No external-input forward computation, activation nonlinearity, attention softmax or search."
+}

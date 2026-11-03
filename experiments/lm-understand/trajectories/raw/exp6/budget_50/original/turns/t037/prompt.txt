@@ -1,0 +1,5 @@
+OUTPUT of Python run 20 of at most 120:
+```
+Saved v15: opening geometry transitions to uniform point value in the endgame.
+
+```

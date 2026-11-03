@@ -1,0 +1,4 @@
+Games pass 6 of 50 done.
+```
+{"ok": true, "pass": 6, "kind": "games", "per_opponent": {"strong": {"games": 128, "score": 0.734375, "wins": 94, "losses": 34, "score_as_black": 0.625, "score_as_white": 0.84375, "mean_margin": 27.6953125, "mean_length": 99.34375, "stones_captured_per_game": 23.421875, "stones_lost_per_game": 7.7890625, "network_passes_per_game": 1.6640625, "all_player_passes_per_game": 3.8671875, "games_with_network_pass_before_move_60": 0, "games_with_any_pass_before_move_60": 1, "end_repetition": 4, "end_two_passes": 124, "end_move_limit": 0}}, "files": "/work/pass_6/"}
+```

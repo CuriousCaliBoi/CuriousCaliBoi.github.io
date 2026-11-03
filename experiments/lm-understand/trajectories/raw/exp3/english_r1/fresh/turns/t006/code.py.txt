@@ -1,0 +1,67 @@
+import numpy as np
+import scipy.linalg as la
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4, suppress=True, linewidth=180)
+
+def svd(a):
+    return la.svd(a,full_matrices=False,lapack_driver="gesvd")
+def cos(a,b):
+    return np.sum(a*b)/(la.norm(a)*la.norm(b)+1e-30)
+
+with threadpool_limits(limits=2):
+    A,B={},{}
+    for l in range(4):
+        g=np.asarray(W[f"ln1_w.{l}"],dtype=float)
+        for h in range(6):
+            sl=slice(h*64,h*64+64)
+            q=np.asarray(W[f"W_q.{l}"][sl],dtype=float)*g
+            k=np.asarray(W[f"W_k.{l}"][sl],dtype=float)*g
+            A[l,h]=q.T@k/8
+            B[l,h]=(np.asarray(W[f"W_o.{l}"][:,sl],dtype=float)@np.asarray(W[f"W_v.{l}"][sl],dtype=float))*g
+
+    prev=B[0,2]
+    _,_,vt=svd(prev)
+    T=vt[:24].T
+    U=prev@T
+    print("DIRECT SHIFTED-MATCH SIGNATURES")
+    print("tracecos=tr(A B)/(sqrt(384)||A B||F); positive_real_mass uses eigenvalues of A B.")
+    for l in range(1,4):
+        for h in range(6):
+            a=A[l,h]
+            c=a@prev
+            e=la.eigvals(c)
+            real_mass=np.maximum(e.real,0).sum()/(abs(e.real).sum()+1e-30)
+            r=T.T@a@U
+            match=np.trace(r)/(np.sqrt(24)*la.norm(r)+1e-30)
+            print(f"L{l}H{h}: tracecos={np.trace(c)/(np.sqrt(384)*la.norm(c)):.4f}, "
+                  f"positive_real_mass={real_mass:.4f}, "
+                  f"token24_tracecos={match:.4f}, token24_symfrac={la.norm((r+r.T)/2)/(la.norm(r)+1e-30):.4f}")
+
+    print("\nCIRCUIT TRACE-COSINES FOR ALL EARLIER HEADS")
+    for l in (2,3):
+        print("target layer",l,"columns", [f"L{m}H{h}" for m in range(l) for h in range(6)])
+        for j in range(6):
+            vals=[]
+            for m in range(l):
+                for h in range(6):
+                    c=A[l,j]@B[m,h]
+                    vals.append(np.trace(c)/(np.sqrt(384)*la.norm(c)+1e-30))
+            print(f"L{l}H{j}",np.round(vals,4))
+
+    print("\nHEAD VALUE-PATH ALIGNMENTS")
+    print("Cosines among final-layer OV products:")
+    print(np.array([[cos(B[3,i],B[3,j]) for j in range(6)] for i in range(6)]))
+    print("Earlier OV products most aligned with each final-layer OV (direct tensor cosine):")
+    for j in range(6):
+        vals=sorted([(cos(B[3,j],B[l,h]),l,h) for l in range(3) for h in range(6)],reverse=True)
+        print(f"L3H{j}",[(f"L{l}H{h}",round(v,4)) for v,l,h in vals[:4]])
+
+    print("\nPOSITIONAL-CANDIDATE QK GEOMETRY OF L0 HEADS")
+    _,_,v=svd(np.vstack([
+        np.asarray(W["W_q.0"][128:192],dtype=float)*W["ln1_w.0"],
+        np.asarray(W["W_k.0"][128:192],dtype=float)*W["ln1_w.0"]]))
+    P=v[:32].T
+    for j in range(6):
+        a=A[0,j]
+        print(f"L0H{j}: fraction_in_QK32={la.norm(P.T@a@P)**2/la.norm(a)**2:.4f}; "
+              f"cosine_to_H2={cos(a,A[0,2]):.4f}")

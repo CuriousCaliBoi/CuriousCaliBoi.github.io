@@ -1,0 +1,6 @@
+{
+  "code_sha256": "e230ea4752210a7fad01eeef827e82ad879a5d85ceb73270da9e438770c80aae",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Reads published pass_1 game summaries and saved board arrays, reports shapes and selected completed game fields. No network inference, new game simulation, search, or fitting."
+}

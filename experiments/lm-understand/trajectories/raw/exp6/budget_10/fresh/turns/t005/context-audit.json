@@ -1,0 +1,101 @@
+{
+  "valid": true,
+  "expected_user_messages": 5,
+  "actual_user_messages": 5,
+  "user_messages_exact_and_ordered": true,
+  "unexpected_context": [],
+  "settings": [
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    }
+  ],
+  "message_hashes": [
+    {
+      "role": "developer",
+      "characters": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "role": "developer",
+      "characters": 26,
+      "sha256": "b8a5d51f11d62576e43005a35c4db74c365ace7db42076e7bf4e03c7d949076c"
+    },
+    {
+      "role": "developer",
+      "characters": 1398,
+      "sha256": "e1ec47a3ec231ef78c1e1d61f66f07017c0effb2e1b8c90b123450b5058b070b"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "baf6d51f435a7026f20957ef5a6e178ac2b12db7a2046fc4835ba6e7d0c955a2"
+    },
+    {
+      "role": "user",
+      "characters": 6610,
+      "sha256": "67ca084cbcadfc0d81ac1aae4ba761bba115be479001bf8ddc8191fec2953ba5"
+    },
+    {
+      "role": "user",
+      "characters": 463,
+      "sha256": "7fde9f0b97c8f67e68b5d886f1697f9baf2db69f4bbc104137abaa8f734642ee"
+    },
+    {
+      "role": "user",
+      "characters": 491,
+      "sha256": "c2941b6fbcad705e5e494bb9d10ee6f35b7673258218ef4331ae6538397a3121"
+    },
+    {
+      "role": "user",
+      "characters": 206,
+      "sha256": "e0b1a82f6c413211f2bdae181c3fb378c879050f81cba98525d0aa34dd41022c"
+    },
+    {
+      "role": "user",
+      "characters": 1497,
+      "sha256": "c3ff5fb83a3f9b4f2222de8387f24432763cc01c2b6219c8b87846cb14973b45"
+    },
+    {
+      "role": "user",
+      "characters": 5488,
+      "sha256": "e12ad12a19e9b9f95e5ba4d2a366e3fcf96c0c7f3bc5056105c95acf113afa8a"
+    }
+  ]
+}

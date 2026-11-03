@@ -1,0 +1,6 @@
+{
+  "code_sha256": "0ddc5f5538edcce60103f0067e1f381bdaa057e2a28a3c1f83326d5c0d7e23df",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Reuses the previously reviewed analytic builder, combines nonnegative-rule coefficient columns algebraically, and assigns fixed-neighborhood eye-preservation weights with manually chosen parameters. No actual activations or logits are computed; no game simulation, training/fitting, or search."
+}

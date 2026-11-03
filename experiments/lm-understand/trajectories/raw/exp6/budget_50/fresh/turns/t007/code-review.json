@@ -1,0 +1,6 @@
+{
+  "code_sha256": "25c17432905d856f95c3d48edd60173a93d227eccea684ab42c69a36fe6175ad",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It changes fixed layer-five coefficients indexed by board-neighbor offsets and rescales output tensors. All operations are analytic weight edits; no network execution on boards, fitting, gameplay or lookahead."
+}

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "e15d90ef0c82334ba8e897b929bfaff5c7d08d762cb27b0b37ebb5d6489bb0ba",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Counts and displays moves already recorded in permitted pass_8 feedback. No opponent weights are accessed and no simulation, network inference, fitting, or action search occurs."
+}

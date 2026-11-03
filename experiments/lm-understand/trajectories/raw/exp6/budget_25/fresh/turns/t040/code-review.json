@@ -1,0 +1,6 @@
+{
+  "code_sha256": "ebe9618e298d2e04838241906e3f3358d3749cd8c63ea313d8dc005bfa2af17f",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Constructs a complementary passing-gate circuit by algebraically copying/negating parameter columns and manually assigning constants. No circuit is evaluated on inputs; no game-tree search, simulation, training, or fitting."
+}

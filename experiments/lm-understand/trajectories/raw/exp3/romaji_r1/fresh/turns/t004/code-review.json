@@ -1,0 +1,6 @@
+{
+  "code_sha256": "ca8f9e74acd6181531e8d0b500bcbecd0523e0832651c5f25a62d76afadc7348",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Weight-only SVD, QK/OV/bias products and subspace projections. Random permutations shuffle weight-channel pairings for null statistics; matrix powers concern a weight-derived rotation. No inputs are run through nonlinear layers, attention softmax or LayerNorm; no search."
+}

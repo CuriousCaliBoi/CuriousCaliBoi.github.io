@@ -1,0 +1,5 @@
+OUTPUT of Python run 40 of at most 120:
+```
+Black-only contact bonus restored to 0.6; all other weights unchanged.
+
+```

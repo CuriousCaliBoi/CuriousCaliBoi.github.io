@@ -1,0 +1,13 @@
+Saved all 14 tensors, with 25,959 nonzero parameters.
+
+The hand-built ReLU circuit combines:
+- Approximate group-liberty propagation and 60 exact local safety tests.
+- Capture and rescue priorities.
+- Self-atari and eye-filling penalties.
+- Expansion, connection, opening, and komi-aware heuristics.
+
+It aims to win through efficient territory development and fewer tactical mistakes—without training or search.
+
+**Final fixed-policy validation:** 1,038/1,216 wins against strong practice (85.4%), 31/32 against weak, and 32/32 against random.
+
+Performance against held-out seeds 0 and 2 remains unmeasured.

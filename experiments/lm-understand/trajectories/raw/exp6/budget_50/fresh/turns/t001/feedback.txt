@@ -1,0 +1,9 @@
+OUTPUT of Python run 1 of at most 120:
+```
+Saved all 14 tensors.
+Parameters: 1480274
+Nonzero parameters: 22500
+Design: local liberty support, two safety-propagation steps,
+capture/rescue tactics, self-atari and eye avoidance, shape and opening priors.
+
+```

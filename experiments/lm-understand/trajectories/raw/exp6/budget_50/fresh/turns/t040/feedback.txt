@@ -1,0 +1,5 @@
+OUTPUT of Python run 22 of at most 120:
+```
+Score scale 7.2; the strategic and tactical circuitry is unchanged.
+
+```

@@ -1,0 +1,125 @@
+OUTPUT of Python run 17 of at most 120:
+```
+
+ {'ply': 89, 'by': 'net', 'move': 63, 'top5': [[63, 1.0], [65, 0.0], [81, 0.0], [73, 0.0], [59, 0.0]]}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OO.XXXXXX
+X.XXXXXX.
+
+ {'ply': 90, 'by': 'opponent', 'move': 81}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OO.XXXXXX
+X.XXXXXX.
+
+ {'ply': 91, 'by': 'net', 'move': 73, 'top5': [[73, 1.0], [65, 0.0], [81, 0.0], [59, 0.0], [60, 0.0]]}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OO.XXXXXX
+.OXXXXXX.
+
+ {'ply': 92, 'by': 'opponent', 'move': 65}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OOXXXXXXX
+.OXXXXXX.
+
+ {'ply': 93, 'by': 'net', 'move': 81, 'top5': [[81, 0.996], [59, 0.004], [60, 0.0], [11, 0.0], [1, 0.0]]}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OOXXXXXXX
+.OXXXXXX.
+
+ {'ply': 94, 'by': 'opponent', 'move': 72}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+..XXXXXXX
+X.XXXXXX.
+
+ {'ply': 95, 'by': 'net', 'move': 64, 'top5': [[64, 0.9999], [81, 0.0001], [59, 0.0], [60, 0.0], [63, 0.0]]}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+.OXXXXXXX
+X.XXXXXX.
+
+ {'ply': 96, 'by': 'opponent', 'move': 81}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+.OXXXXXXX
+X.XXXXXX.
+
+ {'ply': 97, 'by': 'net', 'move': 63, 'top5': [[63, 0.5], [73, 0.5], [81, 0.0], [59, 0.0], [60, 0.0]]}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OOXXXXXXX
+X.XXXXXX.
+
+ {'ply': 98, 'by': 'opponent', 'move': 81}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OOXXXXXXX
+X.XXXXXX.
+
+ {'ply': 99, 'by': 'net', 'move': 73, 'top5': [[73, 1.0], [81, 0.0], [59, 0.0], [60, 0.0], [11, 0.0]]}
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OOXXXXXXX
+.OXXXXXX.
+
+```

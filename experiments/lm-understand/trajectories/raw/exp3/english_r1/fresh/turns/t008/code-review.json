@@ -1,0 +1,6 @@
+{
+  "code_sha256": "a90e05c656436e0a504eb5f40a7aaf31936d488df1aeab69f7734ca125b19543",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Selects MLP neurons by parameter norms, then computes weight-derived orthogonal projections, residual singular spectra, principal angles, and weight-row cosines. No token or other input data, no nonlinear model-layer execution, and no search."
+}

@@ -1,0 +1,69 @@
+import numpy as np
+import scipy.linalg as la
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import connected_components
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4,suppress=True,linewidth=180)
+
+def svd(a):
+    return la.svd(a,full_matrices=False,lapack_driver="gesvd")
+def unit(v):
+    return v/(la.norm(v)+1e-30)
+
+with threadpool_limits(limits=2):
+    g=np.asarray(W["ln1_w.0"],dtype=float)
+    q2=np.asarray(W["W_q.0"][128:192],dtype=float)*g
+    k2=np.asarray(W["W_k.0"][128:192],dtype=float)*g
+    P=svd(np.vstack([q2,k2]))[2][:32].T
+    left,right=[],[]
+    Bs=[]
+    print("L0 DOMINANT QK FACTORS")
+    for j in range(6):
+        sl=slice(j*64,j*64+64)
+        q=np.asarray(W["W_q.0"][sl],dtype=float)*g
+        k=np.asarray(W["W_k.0"][sl],dtype=float)*g
+        a=q.T@k/8
+        u,s,vt=svd(a)
+        left.append(u[:,0]); right.append(vt[0])
+        b=(np.asarray(W["W_o.0"][:,sl],dtype=float)@np.asarray(W["W_v.0"][sl],dtype=float))*g
+        Bs.append(b)
+        print(f"H{j}: top-mode energy={s[0]**2/sum(s*s):.4f}, "
+              f"query-pos32={la.norm(P.T@u[:,0])**2:.4f}, "
+              f"key-pos32={la.norm(P.T@vt[0])**2:.4f}")
+    print("absolute cosines of leading query directions")
+    print(abs(np.array(left)@np.array(left).T))
+    print("absolute cosines of leading key directions")
+    print(abs(np.array(right)@np.array(right).T))
+
+    R=svd(np.hstack([Bs[j] for j in (0,1,4,5)]))[0][:,:3]
+    print("\nPOSITION-SUBSPACE AND AFFINE WEIGHT COEFFICIENTS")
+    print("query-pos32 fraction; key-linear norm / QK norm; key-linear fraction in common 3D writes")
+    for l in range(1,4):
+        g1=np.asarray(W[f"ln1_w.{l}"],dtype=float)
+        b1=np.asarray(W[f"ln1_b.{l}"],dtype=float)
+        for j in range(6):
+            sl=slice(j*64,j*64+64)
+            raw=np.asarray(W[f"W_q.{l}"][sl],dtype=float).T@np.asarray(W[f"W_k.{l}"][sl],dtype=float)/8
+            a=g1[:,None]*raw*g1
+            c=(b1@raw)*g1
+            print(f"L{l}H{j}",
+                  np.round([la.norm(P.T@a)**2/la.norm(a)**2,
+                            la.norm(c)/la.norm(a),
+                            la.norm(c@R)**2/(la.norm(c)**2+1e-30)],4))
+
+    F=np.asarray(W["W_fc.0"],dtype=float)*W["ln2_w.0"]
+    proj=np.asarray(W["W_proj.0"],dtype=float)
+    active=(la.norm(W["W_fc.0"],axis=1)>0.7)&(la.norm(proj,axis=0)>0.6)
+    F=F[active]
+    Z=F/la.norm(F,axis=1)[:,None]
+    G=Z@Z.T
+    print("\nACTIVE L0 MLP WEIGHT-ROW CLUSTERS")
+    for threshold in (0.8,0.9,0.95,0.98):
+        n,labels=connected_components(csr_matrix(G>threshold),directed=False)
+        sizes=np.sort(np.bincount(labels))[::-1]
+        print(f"cosine>{threshold}: components={n}, non-singleton neurons={sizes[sizes>1].sum()}, largest sizes={sizes[:30]}")
+    U=svd(Bs[2])[0][:,:24]
+    fr_prev=la.norm(F@U,axis=1)**2/la.norm(F,axis=1)**2
+    fr_pos=la.norm(F@P,axis=1)**2/la.norm(F,axis=1)**2
+    print("Previous-write top24 read-energy fraction quantiles",np.percentile(fr_prev,[0,10,25,50,75,90,100]))
+    print("Position top32 read-energy fraction quantiles",np.percentile(fr_pos,[0,10,25,50,75,90,100]))

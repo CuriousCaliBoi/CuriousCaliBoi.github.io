@@ -1,0 +1,79 @@
+import numpy as np
+from scipy.linalg import svd, eigvals
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+rs=[]
+for h in [1,5]:
+    _,_,r=svd(np.asarray(W["W_v.0"][64*h:64*(h+1)],float)@P,full_matrices=False)
+    rs.append(r[:28])
+ee,U=np.linalg.eigh(sum(r.T@r for r in rs))
+U=U[:,np.argsort(ee)[::-1][:28]]
+R=P-U@U.T
+q5=np.asarray(W["W_q.0"][320:384],float)@R
+k5=np.asarray(W["W_k.0"][320:384],float)@R
+gg=(q5.T@q5+k5.T@k5)/2
+ee,V=np.linalg.eigh(gg)
+ix=np.argsort(ee)[::-1]
+ee,V=ee[ix],V[:,ix]
+T=V[:,:24]/np.sqrt(ee[:24])[None,:]
+a5=T.T@(q5.T@k5)@T
+left,_,right=svd(a5)
+rot=left@right
+powers=list(range(-3,9))
+
+print("L0 position-subspace bilinear forms versus powers of the H5 polar factor")
+print("Power columns:",powers)
+for h in range(6):
+    s=slice(64*h,64*(h+1))
+    q,k=[np.asarray(W[f"W_{n}.0"][s],float)@R for n in ["q","k"]]
+    a=T.T@(q.T@k)@T
+    sims=[]
+    for p in powers:
+        rp=np.linalg.matrix_power(rot,p)
+        sims.append(np.sum(a*rp)/(np.linalg.norm(a)*np.linalg.norm(rp)))
+    print(f"L0H{h}",np.round(sims,3))
+
+A={};B={}
+for l in range(4):
+    scale=np.asarray(W[f"ln1_w.{l}"],float)
+    for h in range(6):
+        s=slice(64*h,64*(h+1))
+        q,k,v=[np.asarray(W[f"W_{n}.{l}"][s],float) for n in ["q","k","v"]]
+        A[l,h]=P@(scale[:,None]*(q.T@k)*scale[None,:])@P
+        B[l,h]=np.asarray(W[f"W_o.{l}"][:,s],float)@(v*scale[None,:])@P
+
+print("\nMatching geometry restricted to initial shared value-reading subspace")
+print("For U.T QK_l OV_0H5 U: trace/Frobenius, trace/nuclear, symmetric fraction, largest eigenvalues")
+for l in range(1,4):
+    for h in range(6):
+        c=U.T@A[l,h]@B[0,5]@U
+        ss=np.linalg.svd(c,compute_uv=False)
+        ev=eigvals(c)
+        ev=ev[np.argsort(np.abs(ev))[::-1]][:4]
+        print(f"L{l}H{h}",
+              round(np.trace(c)/np.linalg.norm(c),3),
+              round(np.trace(c)/ss.sum(),3),
+              round(np.linalg.norm((c+c.T)/2)**2/np.linalg.norm(c)**2,3),
+              np.round(ev,3))
+
+print("\nQK affinity of L1 heads: pairwise Frobenius cosines")
+print(np.round([[np.sum(A[1,h]*A[1,k])/
+                 (np.linalg.norm(A[1,h])*np.linalg.norm(A[1,k]))
+                 for k in range(6)] for h in range(6)],3))
+
+print("\nDirect positional-weight overlap at later layers")
+# This tests only an unchanged residual-coordinate subspace, not layer outputs.
+for l in range(1,4):
+    for h in range(6):
+        c=T.T@A[l,h]@T
+        sims=[]
+        for p in powers:
+            rp=np.linalg.matrix_power(rot,p)
+            sims.append(np.sum(c*rp)/(np.linalg.norm(c)*np.linalg.norm(rp)))
+        k=int(np.argmax(sims))
+        print(f"L{l}H{h}","best polar power",powers[k],
+              "cosine",round(sims[k],3),
+              "at powers 0,1,2",np.round(sims[3:6],3))

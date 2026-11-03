@@ -1,0 +1,6 @@
+Public export: private machine paths and host identifiers are replaced with placeholders. Recorded results and numerical weights are unchanged. Embedded source hashes identify the original files; PUBLICATION-MANIFEST.json identifies these public copies.
+
+This publication compiles pre-existing records. It adds no experimental execution or interpretation.
+Original records and code: RikiyaT/lm_understand-logs at 4d09ba6d6a7e891dd8063974dfe81b3d78e3494f.
+Original licenses: CC BY 4.0 for logs/data/networks; MIT for author scripts; MinAtar source retains GPL-3.0. See the included license files.
+Large source weights and original files are linked to the pinned upstream release. Live machine state, credentials, private connection files, gated datasets and large native language-model checkpoints are not part of this static publication.

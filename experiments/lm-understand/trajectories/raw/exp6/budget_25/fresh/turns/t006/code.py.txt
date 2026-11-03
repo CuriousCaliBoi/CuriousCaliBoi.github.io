@@ -1,0 +1,128 @@
+import json, numpy as np
+
+np.savez_compressed("/work/version_1.npz",
+                    **{name: load(name) for name in
+                       [f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]
+                       + ["out.W","out.b"]})
+
+revision = r'''
+import numpy as np
+_base_namespace = {}
+exec(open("/work/design.py").read(), _base_namespace)
+base_construct = _base_namespace["construct"]
+
+def construct(parameters=None):
+    changes = dict(
+        own_adjacent=0.65,
+        own_diagonal=0.50,
+        own_jump=0.38,
+        own_knight=0.10,
+        own_third=0.0,
+        own_crowding=-0.10,
+        enemy_adjacent=0.70,
+        enemy_diagonal=0.55,
+        enemy_jump=0.40,
+        enemy_knight=0.15,
+        danger=2.2,
+        temperature_scale=1.6,
+        quiet_fill=8.0,
+        atari_neighbor_weight=0.5,
+        capture_self_atari_exemption=1.5,
+    )
+    if parameters:
+        changes.update(parameters)
+    t, p = base_construct(changes)
+    W = [t[f"L{k}.W"] for k in range(1,7)]
+    b = [t[f"L{k}.b"] for k in range(1,7)]
+
+    def u(channel, point):
+        return 81*channel+point
+
+    def neighbors(i):
+        r,c=divmod(i,9)
+        return [rr*9+cc for rr,cc in
+                ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+                if 0<=rr<9 and 0<=cc<9]
+
+    ns=[neighbors(i) for i in range(81)]
+
+    # More conservative two-liberty seeds avoid counting a single
+    # shared liberty twice around a bend.
+    for colour in (0,1):
+        for i in range(81):
+            for j in ns[i]:
+                W[1][u(2+colour,j),u(2+colour,i)] = -p["atari_neighbor_weight"]
+            for j in [i]+ns[i]:
+                W[3][u(2+colour,j),u(2+colour,i)] = -2.0
+
+    # A separate three-liberty safety channel for self-atari prevention.
+    for i in range(81):
+        target=u(4,i)
+        W[1][:,target]=0
+        b[1][target]=0
+        W[1][u(0,i),target]=3.0
+        for j in [i]+ns[i]:
+            W[1][u(2,j),target]-=1.0
+
+        W[2][:,target]=0
+        b[2][target]=0
+        W[2][u(0,i),target]=1.0
+        W[2][u(4,i),target]=-1.0
+
+    # Relocate danger, freeing channel 4 for three-liberty propagation.
+    old_danger_W=W[3][:,324:405].copy()
+    old_danger_b=b[3][324:405].copy()
+    W[3][:,405:486]=old_danger_W
+    b[3][405:486]=old_danger_b
+    W[3][:,324:405]=0
+    b[3][324:405]=0
+    for i in range(81):
+        W[3][u(0,i),u(4,i)]=1.0
+        for j in [i]+ns[i]:
+            W[3][u(4,j),u(4,i)]-=1.0
+
+    # Move the strategic accumulator to channel 5.
+    strategy_W=W[4][:,324:405].copy()
+    strategy_b=b[4][324:405].copy()
+    strategy_W[405:486,:]=strategy_W[324:405,:]
+    strategy_W[324:405,:]=0
+    W[4][:,405:486]=strategy_W
+    b[4][405:486]=strategy_b
+    W[4][:,324:405]=0
+    b[4][324:405]=0
+    for i in range(81):
+        W[4][u(0,i),u(4,i)]=1.0
+        for j in [i]+ns[i]:
+            W[4][u(0,j),u(4,i)]-=1.0
+            W[4][u(4,j),u(4,i)]+=1.0
+
+    for i in range(81):
+        W[5][:,u(0,i)]=0
+        W[5][u(5,i),u(0,i)]=1.0
+
+        target=u(4,i)
+        W[5][:,target]=0
+        b[5][target]=2.0-len(ns[i])
+        for j in ns[i]:
+            # Start with 2 minus immediate liberties.
+            W[5][u(0,j),target]+=1.0
+            W[5][u(1,j),target]+=1.0
+            # A two-liberty group supplies only partial reassurance;
+            # a three-liberty group supplies full reassurance.
+            W[5][u(0,j),target]-=2.0
+            W[5][u(2,j),target]+=0.5
+            W[5][u(4,j),target]+=1.5
+            W[5][u(3,j),target]-=p["capture_self_atari_exemption"]
+    return t,p
+'''
+open("/work/design_v2.py","w").write(revision)
+namespace={}
+exec(revision,namespace)
+tensors,parameters=namespace["construct"]()
+for name,array in tensors.items():
+    assert np.isfinite(array).all()
+    save(name,array)
+json.dump(parameters,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 2: connected shape, contested-area development,")
+print("separate two/three-liberty safety, and guarded cramped captures.")
+print("No network inference or training performed.")

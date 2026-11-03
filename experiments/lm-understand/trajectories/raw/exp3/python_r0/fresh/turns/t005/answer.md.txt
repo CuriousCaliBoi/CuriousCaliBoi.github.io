@@ -1,0 +1,54 @@
+```python
+import numpy as np
+from scipy.linalg import svd
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+np.set_printoptions(precision=3, suppress=True, linewidth=160)
+
+g = W["ln1_w.0"].astype(float)
+sl = slice(320,384)
+v = W["W_v.0"][sl].astype(float)*g[None,:]
+v -= v.mean(axis=1,keepdims=True)
+o = W["W_o.0"][:,sl].astype(float)
+o -= o.mean(axis=0,keepdims=True)
+u,s,vt = svd(o@v,full_matrices=False,check_finite=False)
+T = vt[:27].T
+print("L0H5 effective OV first 40 singular values:",s[:40])
+
+f = W["W_fc.0"].astype(float)*W["ln2_w.0"][None,:]
+f -= f.mean(axis=1,keepdims=True)
+ft = f@T
+active = np.linalg.norm(W["W_fc.0"],axis=1)>1
+print("MLP0 active row count:",active.sum())
+print("MLP0 active rows restricted to value-read subspace: singular values:",
+      svd(ft[active],compute_uv=False,check_finite=False))
+print("Fraction of each active MLP0 row's energy in that subspace, quantiles:",
+      np.quantile(np.sum(ft[active]**2,axis=1)/np.sum(f[active]**2,axis=1),[0,.1,.25,.5,.75,.9,1]))
+
+# Cluster learned weight directions only.
+datasets = {
+    "MLP0 active token-read row directions": ft[active],
+    "MLP3 write-column directions": W["W_proj.3"].astype(float).T,
+}
+for name,z in datasets.items():
+    z=z/np.linalg.norm(z,axis=1,keepdims=True)
+    print("\n",name)
+    for k in [8,16,20,24,28,32]:
+        km=KMeans(n_clusters=k,n_init=5,max_iter=150,random_state=0).fit(z)
+        labels=km.labels_
+        counts=np.bincount(labels,minlength=k)
+        centers=km.cluster_centers_
+        centers/=np.linalg.norm(centers,axis=1,keepdims=True)
+        cohesion=np.array([np.mean(z[labels==j]@centers[j]) for j in range(k)])
+        sil=silhouette_score(z,labels,metric="cosine",sample_size=min(700,len(z)),random_state=0)
+        print("k",k,"silhouette",round(sil,3),"mean cohesion",round(float(cohesion.mean()),3),
+              "sizes",np.sort(counts)[::-1])
+        if k==28:
+            idx=np.argsort(-counts)
+            print("cohesion by descending cluster size:",np.round(cohesion[idx],3))
+            cc=centers@centers.T
+            np.fill_diagonal(cc,-1)
+            print("largest inter-center cosines:",np.sort(cc.max(axis=1))[::-1])
+```

@@ -1,0 +1,63 @@
+import numpy as np
+from scipy.linalg import svd, eigvals
+from threadpoolctl import threadpool_limits
+
+def cosine(a,b):
+    return np.sum(a*b)/(np.linalg.norm(a)*np.linalg.norm(b)+1e-30)
+
+with threadpool_limits(limits=2):
+    A=[]; B=[]; KB=[]
+    for l in range(4):
+        g=W[f"ln1_w.{l}"].astype(float); b=W[f"ln1_b.{l}"].astype(float)
+        for j in range(6):
+            sl=slice(64*j,64*j+64)
+            q=W[f"W_q.{l}"][sl].astype(float)
+            k=W[f"W_k.{l}"][sl].astype(float)
+            v=W[f"W_v.{l}"][sl].astype(float)
+            qg=q*g; kg=k*g; vg=v*g
+            for m in [qg,kg,vg]: m-=m.mean(1,keepdims=True)
+            A.append(qg.T@kg/8)
+            B.append(W[f"W_o.{l}"][:,sl].astype(float)@vg)
+            KB.append(kg.T@(q@b)/8)
+    print("L0H0 versus powers of L0H3 QK (weight products only)")
+    C=np.eye(384)
+    for power in range(1,7):
+        C=C@A[3]
+        C/=np.linalg.norm(C)
+        print(power,round(cosine(A[0],C),4),round(cosine(A[0],C.T),4))
+    u,s,vt=svd(A[3],full_matrices=False)
+    Z=np.concatenate([u[:,:24],vt[:24].T],axis=1)
+    z,sz,_=svd(Z,full_matrices=False)
+    for rank in [16,24,32,40]:
+        P=z[:,:rank]
+        C3=P.T@A[3]@P; C0=P.T@A[0]@P
+        print("QK subspace rank",rank,"H0/H3 captured energies",
+              np.round([np.linalg.norm(C0)**2/np.linalg.norm(A[0])**2,
+                        np.linalg.norm(C3)**2/np.linalg.norm(A[3])**2],3),
+              "H0 vs H3^2",round(cosine(C0,C3@C3),3),
+              "commutator relative",round(np.linalg.norm(C0@C3-C3@C0)/
+                  (np.linalg.norm(C0@C3)+np.linalg.norm(C3@C0)),3))
+    print("\nShared L0 low-rank output space")
+    T=np.concatenate([B[j] for j in [1,2,4,5]],axis=1)
+    U,ss,_=svd(T,full_matrices=False)
+    print("singular values",np.round(ss[:12],3))
+    C=U[:,:2]
+    for i in range(24):
+        a=A[i]; kb=KB[i]
+        print("L%dH%d"%(i//6,i%6),
+              "Q-side/K-side 2D energy",
+              np.round([np.linalg.norm(C.T@a)**2/np.linalg.norm(a)**2,
+                        np.linalg.norm(a@C)**2/np.linalg.norm(a)**2],3),
+              "key-bias fraction",round(np.linalg.norm(C.T@kb)**2/(np.linalg.norm(kb)**2),3),
+              "2x2",np.round(C.T@a@C,3).tolist(),
+              "key-bias",np.round(C.T@kb,3))
+    print("\nL0H3 value spectrum")
+    v=W["W_v.0"][192:256].astype(float)*W["ln1_w.0"]
+    v-=v.mean(1,keepdims=True)
+    u,s,vt=svd(v,full_matrices=False)
+    print(np.round(s,3))
+    for rank in [16,20,24,28,32]:
+        P=vt[:rank].T
+        print("Token-candidate subspace rank",rank,
+              "L3H3 QK@L0H3 OV trace/norm",
+              round(np.trace(P.T@A[21]@B[3]@P)/np.linalg.norm(P.T@A[21]@B[3]@P),3))

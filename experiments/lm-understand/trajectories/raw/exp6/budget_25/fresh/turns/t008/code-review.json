@@ -1,0 +1,6 @@
+{
+  "code_sha256": "74544877920aa5a9192ecbdf12bdaa972695690312a5081b9a57b20d01441a64",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Filters, summarizes, and displays already-recorded pass_2 results, boards, and move lists. No new board transitions, network inference, fitting, or search."
+}

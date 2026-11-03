@@ -1,0 +1,6 @@
+{
+  "code_sha256": "33226469aa86ca13638733b1cee3d980ebabb108fafd7ed72779fc08c4bb3e1e",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: MLP weight-row associations, covariance whitening, KMeans of weight-derived directions, assignment alignment and graph spectra. np.maximum only floors covariance eigenvalues and graph-degree denominators; it is not an MLP ReLU or hidden-state computation. No input sequence passes through model layers; no external search."
+}

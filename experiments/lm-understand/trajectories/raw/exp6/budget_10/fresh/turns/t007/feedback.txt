@@ -1,0 +1,5 @@
+OUTPUT of Python run 6 of at most 120:
+```
+Saved liberty-fingerprint policy: 17386 nonzero parameters.
+
+```

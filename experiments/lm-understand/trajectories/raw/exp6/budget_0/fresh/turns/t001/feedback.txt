@@ -1,0 +1,8 @@
+OUTPUT of Python run 1 of at most 120:
+```
+Saved all 14 tensors: 1,480,274 float32 values.
+Design: conservative string-liberty propagation, captures, viable saves,
+self-atari avoidance, eye preservation, territorial influence, and komi-aware passing.
+No training, network evaluation, or game search was performed.
+
+```

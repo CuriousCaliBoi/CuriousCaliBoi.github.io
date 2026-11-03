@@ -1,0 +1,6 @@
+{
+  "code_sha256": "38bc49ceb4136ff12942a42faa1e9eedde0a05fdf1c5a25c9b59c73671872dca",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Reuses reviewed analytic tensor constructors and assigns manually chosen connection/contact coefficients to fixed central coordinates. No network/layer execution on positions, new game simulation, training/fitting, or search."
+}

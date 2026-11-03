@@ -1,0 +1,89 @@
+{
+ "ok": false,
+ "limit": false,
+ "rc": 1,
+ "wall_s": 0.1,
+ "audit": {
+  "event_types": {},
+  "item_types": {},
+  "tool_items": {},
+  "tool_free": true,
+  "usage": null,
+  "thread_id": null,
+  "errors": [],
+  "turn_completed": false
+ },
+ "stderr_tail": "WARNING: proceeding, even though we could not create PATH aliases: CODEX_HOME points to \"<codex_home>\", but that path does not exist\nError finding codex home: CODEX_HOME points to \"<codex_home>\", but that path does not exist\n",
+ "cmd": [
+  "<codex>/bin/codex",
+  "exec",
+  "resume",
+  "--strict-config",
+  "--skip-git-repo-check",
+  "--json",
+  "-m",
+  "gpt-6-astra",
+  "-c",
+  "model_reasoning_effort=\"xhigh\"",
+  "-c",
+  "model_context_window=872000",
+  "-c",
+  "model_auto_compact_token_limit=1000000",
+  "-c",
+  "model_instructions_file=\"<data>/gohand/runs/v1_b50/instructions.md\"",
+  "-o",
+  "<data>/gohand/runs/v1_b50/turns/t063/answer.md",
+  "id-2ecb4c7a",
+  "-"
+ ],
+ "attempt": 5,
+ "waits": [
+  {
+   "attempt": 1,
+   "kind": "usage/rate limit",
+   "rc": 1,
+   "wait_s": 900,
+   "at": "2026-10-23T17:43:54-0400",
+   "errors": [],
+   "stderr_tail": "ead/resume: thread/resume failed: error resuming thread: Fatal error: Failed to initialize session: thread-store internal error: failed to open thread writer lock <codex_home>/thread-writer-locks/id-2ecb4c7a.lock: Quota exceeded (os error 122) (code -32603)\n"
+  },
+  {
+   "attempt": 2,
+   "kind": "usage/rate limit",
+   "rc": 1,
+   "wait_s": 1350.0,
+   "at": "2026-10-23T17:58:56-0400",
+   "errors": [],
+   "stderr_tail": "ead/resume: thread/resume failed: error resuming thread: Fatal error: Failed to initialize session: thread-store internal error: failed to open thread writer lock <codex_home>/thread-writer-locks/id-2ecb4c7a.lock: Quota exceeded (os error 122) (code -32603)\n"
+  },
+  {
+   "attempt": 3,
+   "kind": "usage/rate limit",
+   "rc": 1,
+   "wait_s": 2025.0,
+   "at": "2026-10-23T18:21:28-0400",
+   "errors": [],
+   "stderr_tail": "ead/resume: thread/resume failed: error resuming thread: Fatal error: Failed to initialize session: thread-store internal error: failed to open thread writer lock <codex_home>/thread-writer-locks/id-2ecb4c7a.lock: Quota exceeded (os error 122) (code -32603)\n"
+  },
+  {
+   "attempt": 4,
+   "kind": "usage/rate limit",
+   "rc": 1,
+   "wait_s": 3037.5,
+   "at": "2026-10-23T18:55:14-0400",
+   "errors": [],
+   "stderr_tail": "ead/resume: thread/resume failed: error resuming thread: Fatal error: Failed to initialize session: thread-store internal error: failed to open thread writer lock <codex_home>/thread-writer-locks/id-2ecb4c7a.lock: Quota exceeded (os error 122) (code -32603)\n"
+  },
+  {
+   "attempt": 5,
+   "kind": "failure",
+   "rc": 1,
+   "wait_s": 60,
+   "at": "2026-10-23T19:45:52-0400",
+   "errors": [],
+   "stderr_tail": "WARNING: proceeding, even though we could not create PATH aliases: CODEX_HOME points to \"<codex_home>\", but that path does not exist\nError finding codex home: CODEX_HOME points to \"<codex_home>\", but that path does not exist\n"
+  }
+ ],
+ "thread_in": "id-2ecb4c7a",
+ "end": "2026-10-23T19:45:52-0400"
+}

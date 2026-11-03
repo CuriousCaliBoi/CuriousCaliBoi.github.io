@@ -1,0 +1,6 @@
+OUTPUT of Python run 19 of at most 120:
+```
+Saved revision 12: diminishing returns for repeated tactical
+counts around the same central group.
+
+```

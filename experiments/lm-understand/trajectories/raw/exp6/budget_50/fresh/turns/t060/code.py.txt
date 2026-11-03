@@ -1,0 +1,7 @@
+import numpy as np
+w=load("L6.W")
+for q in range(81):w[3*81+q,q]=-5.0
+save("L6.W",w)
+for name in ("out.W","out.b"):
+    save(name,load(name)*np.float32(4/3))
+print("Balanced liberty-risk penalty (5.0), with score scale 14.4.")

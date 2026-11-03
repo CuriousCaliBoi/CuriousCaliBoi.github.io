@@ -1,0 +1,20 @@
+# On a small board the central opening maximizes access to all four sides.
+# This opening prior is exactly zero as soon as any stone is present.
+w=load("L1.W");b=load("L1.b")
+w[:,493]=0
+for r in range(9):
+    for c in range(9):
+        w[inp(r,c,0),493]=-1
+        w[inp(r,c,1),493]=-1
+b[493]=1
+save("L1.W",w);save("L1.b",b)
+for k in range(2,7):
+    w=load(f"L{k}.W")
+    w[:,493]=0;w[493,493]=1
+    save(f"L{k}.W",w)
+w=load("out.W")
+for q in range(81):
+    r,c=divmod(q,9)
+    w[493,q]=-3.6*(abs(r-4)+abs(c-4))
+save("out.W",w)
+print("Added a central opening prior, active only on an empty board.")

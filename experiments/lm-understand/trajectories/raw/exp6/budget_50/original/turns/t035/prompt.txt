@@ -1,0 +1,5 @@
+OUTPUT of Python run 19 of at most 120:
+```
+Saved v14: contest the opponent's boundary earlier instead of conceding central space.
+
+```

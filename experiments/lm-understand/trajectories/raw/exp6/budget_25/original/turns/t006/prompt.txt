@@ -1,0 +1,5 @@
+OUTPUT of Python run 4 of at most 120:
+```
+Corrected conservative group-safety logic; other coefficients unchanged.
+
+```

@@ -1,0 +1,6 @@
+OUTPUT of Python run 25 of at most 120:
+```
+Saved revision 17: a strong tengen opening prior, retaining
+the balanced tactical and shape design of revision 13.
+
+```

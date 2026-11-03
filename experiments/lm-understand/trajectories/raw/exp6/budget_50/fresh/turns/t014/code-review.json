@@ -1,0 +1,6 @@
+{
+  "code_sha256": "a984769ceb2f3445e48663e459af66840d568d9ce855003c0bee009f491496c8",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It multiplies output weights and biases by the manually chosen constant 1.5, an allowed tensor edit; no model execution, example fitting or search occurs."
+}

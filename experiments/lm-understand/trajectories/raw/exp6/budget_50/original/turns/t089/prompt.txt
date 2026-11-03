@@ -1,0 +1,69 @@
+OUTPUT of Python run 39 of at most 120:
+```
+{
+  "strong": {
+    "games": 2000,
+    "wins": 1667,
+    "win_rate": 0.8335,
+    "mean_margin": 52.811,
+    "wilson_95_percent": [
+      0.8165372993335623,
+      0.849184030129842
+    ],
+    "by_colour": {
+      "black": {
+        "games": 1000,
+        "wins": 787
+      },
+      "white": {
+        "games": 1000,
+        "wins": 880
+      }
+    }
+  },
+  "weak": {
+    "games": 176,
+    "wins": 175,
+    "win_rate": 0.9943181818181818,
+    "mean_margin": 69.61363636363636,
+    "wilson_95_percent": [
+      0.9685225276336739,
+      0.9989963144675896
+    ],
+    "by_colour": {
+      "black": {
+        "games": 88,
+        "wins": 87
+      },
+      "white": {
+        "games": 88,
+        "wins": 88
+      }
+    }
+  },
+  "random": {
+    "games": 128,
+    "wins": 128,
+    "win_rate": 1.0,
+    "mean_margin": 65.8515625,
+    "wilson_95_percent": [
+      0.9708630437264916,
+      1.0
+    ],
+    "by_colour": {
+      "black": {
+        "games": 64,
+        "wins": 64
+      },
+      "white": {
+        "games": 64,
+        "wins": 64
+      }
+    }
+  }
+}
+All 14 final tensors saved, unchanged from candidate A.
+SHA256: dc92ab2b220254b8a377493bfb892d5c03c6e6fa69c8c370053a8328a076ea54
+Final remaining pass will validate another 128 games against weak.
+
+```

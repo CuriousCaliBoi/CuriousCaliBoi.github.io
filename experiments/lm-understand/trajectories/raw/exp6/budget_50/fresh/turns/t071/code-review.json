@@ -1,0 +1,6 @@
+{
+  "code_sha256": "a3eb9fb702f0e5698e3b713a54270a575898eece77efd9ee72a4fd82f9df0e1e",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It computes distances between fixed board coordinates and assigns corresponding opening-prior output weights. This is analytic tensor construction without sample inputs, model execution, fitting or move search."
+}

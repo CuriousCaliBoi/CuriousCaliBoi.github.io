@@ -1,0 +1,31 @@
+OUTPUT of Python run 1 of at most 120:
+```
+Saved all 14 tensors.
+Nonzero parameters: 21080
+Design: analytic liberty propagation, captures, safe rescues,
+self-atari avoidance, connection, territory, eyes, and phase-aware passing.
+{
+  "capture": 9.0,
+  "rescue": 6.0,
+  "attack": 1.15,
+  "self_atari": 7.5,
+  "eye": 11.0,
+  "connection": 0.9,
+  "contact": 1.4,
+  "own_territory": 1.6,
+  "enemy_territory": 1.0,
+  "territory_threshold": 3.0,
+  "pass_base": -9.0,
+  "pass_per_stone": 0.1,
+  "pass_white": 0.35,
+  "own_adj": 0.25,
+  "own_diag": 0.65,
+  "own_two": 0.4,
+  "own_knight": 0.12,
+  "enemy_adj": 0.75,
+  "enemy_diag": 0.25,
+  "enemy_two": 0.12,
+  "temperature_scale": 1.0
+}
+
+```

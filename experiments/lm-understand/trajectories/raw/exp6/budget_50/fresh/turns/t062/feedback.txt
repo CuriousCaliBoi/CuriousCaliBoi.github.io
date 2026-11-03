@@ -1,0 +1,22 @@
+OUTPUT of Python run 33 of at most 120:
+```
+
+GAME 4 black margin 33.5 repeat [97]
+Last moves [{'ply': 95, 'by': 'strong', 'move': 30}, {'ply': 96, 'by': 'net', 'move': 31, 'top5': [[31, 1.0], [18, 1.7414299652158114e-15], [44, 2.6749826561160388e-17], [26, 1.1242293130799747e-19]]}, {'ply': 97, 'by': 'strong', 'move': 61}, {'ply': 98, 'by': 'net', 'move': 44, 'top5': [[44, 1.0]]}, {'ply': 99, 'by': 'strong', 'move': 26}, {'ply': 100, 'by': 'net', 'move': 35, 'top5': [[35, 1.0]]}]
+Before ply 96 ['O.OXX.X.X', 'OOOXXXXXX', '.OXXXXXX.', 'XXXO.XXOX', 'XXXXX.XO.', '.XX.XXXOO', 'XXXX.XO.O', '.X.XXXOOO', 'X.X.XXXO.']
+Before ply 98 ['O.OXX.X.X', 'OOOXXXXXX', '.OXXXXXX.', 'XXX.XXXOX', 'XXXXX.XO.', '.XX.XXXOO', 'XXXX.XOOO', '.X.XXXOOO', 'X.X.XXXO.']
+Before ply 100 ['O.OXX.X.X', 'OOOXXXXXX', '.OXXXXXXO', 'XXX.XXXO.', 'XXXXX.XO.', '.XX.XXXOO', 'XXXX.XOOO', '.X.XXXOOO', 'X.X.XXXO.']
+
+GAME 62 black margin 34.5 repeat [89]
+Last moves [{'ply': 87, 'by': 'strong', 'move': 54}, {'ply': 88, 'by': 'net', 'move': 63, 'top5': [[63, 1.0], [53, 1.2819515729457503e-28]]}, {'ply': 89, 'by': 'strong', 'move': 62}, {'ply': 90, 'by': 'net', 'move': 53, 'top5': [[53, 0.9997275471687317], [35, 0.0002723887446336448], [36, 4.1660688232525445e-09], [27, 1.3036014405767014e-16], [14, 8.438857835174775e-19]]}, {'ply': 91, 'by': 'strong', 'move': 35}, {'ply': 92, 'by': 'net', 'move': 44, 'top5': [[44, 1.0]]}]
+Before ply 88 ['.X.XXXX.X', 'X.XX...X.', 'XX.XXXXXX', '.XXX.X.X.', '.X.XXXXOX', 'X.X.X.XO.', 'OXXXXXXO.', '.XOOOOOOO', 'XOOO.O.O.']
+Before ply 90 ['.X.XXXX.X', 'X.XX...X.', 'XX.XXXXXX', '.XXX.X.X.', '.X.XXXXOX', 'X.X.X.XO.', '.XXXXXXOO', 'XXOOOOOOO', 'XOOO.O.O.']
+Before ply 92 ['.X.XXXX.X', 'X.XX...X.', 'XX.XXXXXX', '.XXX.X.XO', '.X.XXXXO.', 'X.X.X.XO.', '.XXXXXXOO', 'XXOOOOOOO', 'XOOO.O.O.']
+
+GAME 68 black margin -1.5 repeat [51]
+Last moves [{'ply': 49, 'by': 'strong', 'move': 2}, {'ply': 50, 'by': 'net', 'move': 1, 'top5': [[1, 1.0], [35, 4.073869013330821e-25], [26, 4.06816739787882e-26], [55, 1.484722043064266e-26], [70, 1.7098026878812079e-28]]}, {'ply': 51, 'by': 'strong', 'move': 9}, {'ply': 52, 'by': 'net', 'move': 0, 'top5': [[0, 1.0], [35, 9.776024143290607e-17], [26, 9.76234257595898e-18], [55, 3.562873279828722e-18], [70, 4.10299710713944e-20]]}, {'ply': 53, 'by': 'strong', 'move': 2}, {'ply': 54, 'by': 'net', 'move': 1, 'top5': [[1, 1.0], [35, 7.257336523442392e-24], [26, 7.247179840680058e-25], [55, 2.644937216450927e-25], [70, 3.04590404418109e-27]]}]
+Before ply 50 ['..OXXOOO.', '.OXX.XXXO', 'OOOXXXOX.', 'XOOOOOOO.', 'XXXXXXXO.', '..X.X.XOO', '...X..XO.', '.........', '.........']
+Before ply 52 ['.X.XXOOO.', 'OOXX.XXXO', 'OOOXXXOX.', 'XOOOOOOO.', 'XXXXXXXO.', '..X.X.XOO', '...X..XO.', '.........', '.........']
+Before ply 54 ['..OXXOOO.', 'OOXX.XXXO', 'OOOXXXOX.', 'XOOOOOOO.', 'XXXXXXXO.', '..X.X.XOO', '...X..XO.', '.........', '.........']
+
+```

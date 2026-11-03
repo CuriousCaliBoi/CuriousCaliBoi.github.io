@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<stdin>", line 34, in <module>
+  File "/env/lib/python3.12/site-packages/scipy/linalg/_decomp_svd.py", line 207, in svd
+    _format_emit_errors_warnings(err_lst, lapack_driver)
+  File "/env/lib/python3.12/site-packages/scipy/linalg/_decomp_svd.py", line 26, in _format_emit_errors_warnings
+    raise LinAlgError(f"SVD did not converge for slice = {num}.")
+numpy.linalg.LinAlgError: SVD did not converge for slice = 0.

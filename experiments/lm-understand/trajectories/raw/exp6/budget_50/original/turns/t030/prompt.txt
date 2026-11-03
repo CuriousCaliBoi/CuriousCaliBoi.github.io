@@ -1,0 +1,5 @@
+OUTPUT of Python run 17 of at most 120:
+```
+Saved v12: packed board representation permits deeper tactical propagation.
+
+```

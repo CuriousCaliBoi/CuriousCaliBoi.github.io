@@ -1,0 +1,91 @@
+{
+  "passed": true,
+  "budget": 10,
+  "case_id": "e549c4a0b7ab4aba89b6039f2708c842",
+  "cli_turns": 28,
+  "python_runs": 17,
+  "passes": 10,
+  "all_code_sha_bound_manual_approvals": true,
+  "pass_records": [
+    {
+      "turn": "t003",
+      "pass": 1,
+      "kind": "games",
+      "request_sha256": "b342c0d7ef3cac145b9266dc6689929b2008e5d45a6c0792188eb5b9e69ab57c"
+    },
+    {
+      "turn": "t008",
+      "pass": 2,
+      "kind": "games",
+      "request_sha256": "84da2a07b90954a011625933cc8fdedc8298795786461a3cc8599667ee417066"
+    },
+    {
+      "turn": "t010",
+      "pass": 3,
+      "kind": "games",
+      "request_sha256": "782267659807ddaded180be86ce2bc8fac40df672b5407b2c110aa84c95735e8"
+    },
+    {
+      "turn": "t012",
+      "pass": 4,
+      "kind": "games",
+      "request_sha256": "5084fdb422f091250c68137ece2e5b402aa827bb1e4dd4cf1a42bb4b5c057f7f"
+    },
+    {
+      "turn": "t014",
+      "pass": 5,
+      "kind": "games",
+      "request_sha256": "ab603493e960dc6280c3335f92624b88840b071379ef1542158033e73e612d46"
+    },
+    {
+      "turn": "t017",
+      "pass": 6,
+      "kind": "games",
+      "request_sha256": "ac2e277a1f70fc9ccd78a5143f01c41448583c23dfd1060781a6abe25a533a44"
+    },
+    {
+      "turn": "t019",
+      "pass": 7,
+      "kind": "games",
+      "request_sha256": "b48f8acb94f6a3f326ea22dce6206d94e6c997b7dc9feca04b09781b6a43bc17"
+    },
+    {
+      "turn": "t021",
+      "pass": 8,
+      "kind": "games",
+      "request_sha256": "8dbe8b7b15c0df02d26d1f81c8521337f712ccfa0d0ac6203e91eded93999086"
+    },
+    {
+      "turn": "t025",
+      "pass": 9,
+      "kind": "games",
+      "request_sha256": "df5eb55a8ae664637b618dd85fee3187947a2bbd472011b5d80e73a677afa7b9"
+    },
+    {
+      "turn": "t027",
+      "pass": 10,
+      "kind": "games",
+      "request_sha256": "536dc2183566a6a5c4f55f9e6abe89dbd967f429561bd1d21dba2fe0dd494c86"
+    }
+  ],
+  "failed_requests_or_python": [],
+  "tensor_sha256": {
+    "L1.W": "adcc64eaa1b99b50b58c2f461aebe123042479df8c87409038427944c02551e1",
+    "L1.b": "59b50635a3d389231f45eab22eacfa51ba98cc6eacbb2703479d56186b5ac298",
+    "L2.W": "6129070e942575aaf7caa302e87441a1c84ff0746dbf785f82cd9cff3a5240a6",
+    "L2.b": "af7c90d9e211e482cb79ed1477e04ec1e8bfaed60367c26a0b83e1e58c023867",
+    "L3.W": "804255699ed0c3c5a5bbb8494f38e7d70798c839814af4ede780fcd51298f1e6",
+    "L3.b": "085e5a58c0caeb21f33d04e625783090cfc35ab80a89ca512420a60181dcc494",
+    "L4.W": "0a28a07e36f25f2778ddafd6467b51891237cb65daa26e4b696f1eddd5140afa",
+    "L4.b": "085e5a58c0caeb21f33d04e625783090cfc35ab80a89ca512420a60181dcc494",
+    "L5.W": "de704de266b53a491710951d47c0ae697be8a54c8f32065ee96bf21b509d9e48",
+    "L5.b": "4d9f86b0e8950a00353cce6de0c63b5447d0059abe00fa58fb6a4abba55f0255",
+    "L6.W": "c475111654a253e6c1dd30e670023a9347c7815ab3481c825271786c0736db98",
+    "L6.b": "085e5a58c0caeb21f33d04e625783090cfc35ab80a89ca512420a60181dcc494",
+    "out.W": "3009c989e79a3c7f8182dd2ae8c44703bed1c279ce51f73f7b242c8b636761af",
+    "out.b": "4fb5e4190ce7cfbcb8a0a03a9d5963743b42680370be5df227bc5f0225a015c1"
+  },
+  "artifact_files_hashed": 659,
+  "artifact_hash_manifest_sha256": "0c07611da9c5bf67d6df9e5097a80e733f98f4e464eee9581447297283513055",
+  "scope": "Mechanical provenance and complete transcript/feedback verification. Full code protocol reviews are separately SHA-bound per turn. Local public workspace and private controller snapshots preserve actual practice artifacts; final tensor hashes match all three archived copies."
+}

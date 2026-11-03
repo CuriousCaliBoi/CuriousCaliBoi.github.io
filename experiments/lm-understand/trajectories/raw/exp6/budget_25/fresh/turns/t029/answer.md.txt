@@ -1,0 +1,77 @@
+```python
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_10.npz",**{n:load(n) for n in names})
+
+revision=r'''
+import numpy as np
+_base={}
+exec(open("/work/design_v9.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(pass_win_boost=5.0)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    # Unused first-layer channels estimate exclusively controlled empty points.
+    for i in range(81):
+        r,c=divmod(i,9)
+        ns=[rr*9+cc for rr,cc in
+            ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+            if 0<=rr<9 and 0<=cc<9]
+        degree=len(ns)
+        for colour in (0,1):
+            target=(4+colour)*81+i
+            t["L1.W"][:,target]=0
+            t["L1.b"][target]=0
+            t["L1.W"][3*i,target]=-1
+            t["L1.W"][3*i+1,target]=-1
+            for j in ns:
+                t["L1.W"][3*j+colour,target]+=1.0/degree
+                t["L1.W"][3*j+1-colour,target]-=1.0
+
+    # Global values: side to move, stone count, and a komi-aware area estimate.
+    white,count=487,488
+    t["L1.W"][2,white]=1
+    for i in range(81):
+        t["L1.W"][3*i,count]=1
+        t["L1.W"][3*i+1,count]=1
+
+    lead,late=487,488
+    t["L2.b"][lead]=-12.5  # -7.5 black komi, and require a 5-point cushion.
+    t["L2.W"][white,lead]=15.0
+    for i in range(81):
+        t["L2.W"][i,lead]+=1
+        t["L2.W"][81+i,lead]-=1
+        t["L2.W"][324+i,lead]+=1
+        t["L2.W"][405+i,lead]-=1
+    t["L2.W"][count,late]=1.0/20.0
+    t["L2.b"][late]=-45.0/20.0
+
+    # Clip both confidence and board completion to [0,1].
+    t["L3.W"][lead,487]=1.0/8.0
+    t["L3.W"][lead,488]=1.0/8.0
+    t["L3.b"][488]=-1
+    t["L3.W"][late,489]=1
+    t["L3.W"][late,490]=1
+    t["L3.b"][490]=-1
+
+    t["L4.W"][487,487]=1
+    t["L4.W"][488,487]=-1
+    t["L4.W"][489,487]=1
+    t["L4.W"][490,487]=-1
+    t["L4.b"][487]=-1
+
+    t["L5.W"][487,487]=1
+    t["L6.W"][487,486]=1
+    t["out.W"][486,81]=p["scale"]*p["pass_win_boost"]
+    return t,p
+'''
+open("/work/design_v11.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 11: komi-aware, late-game passing when the")
+print("analytic area estimate indicates a comfortable lead.")
+```

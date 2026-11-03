@@ -1,0 +1,67 @@
+import numpy as np
+from scipy.linalg import svd, eigvals
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+np.set_printoptions(precision=3, suppress=True)
+
+# These are weight contractions only, not evaluations on inputs.
+# Multiplying columns by gamma and removing their constant-coordinate component
+# expresses each matrix on the mean-zero residual subspace.
+def read_matrix(name, l, sl=None):
+    a = W[f"{name}.{l}"].astype(float)
+    if sl is not None:
+        a = a[sl]
+    a = a * W[f"ln1_w.{l}"][None, :]
+    return a - a.mean(axis=1, keepdims=True)
+
+A, B, Q, K, V = [], [], [], [], []
+for l in range(4):
+    for j in range(6):
+        sl = slice(64*j, 64*(j+1))
+        q, k, v = [read_matrix(n, l, sl) for n in ["W_q", "W_k", "W_v"]]
+        o = W[f"W_o.{l}"][:, sl].astype(float)
+        o = o - o.mean(axis=0, keepdims=True)
+        a, b = q.T @ k / 8, o @ v
+        A.append(a); B.append(b); Q.append(q); K.append(k); V.append(v)
+        sa = svd(a, compute_uv=False, check_finite=False)
+        ev = eigvals(a, check_finite=False)
+        ev = ev[np.argsort(-np.abs(ev))]
+        beta = W[f"ln1_b.{l}"].astype(float)
+        qb = W[f"W_q.{l}"][sl] @ beta
+        kb = W[f"W_k.{l}"][sl] @ beta
+        key_linear = k.T @ qb / 8
+        query_linear = q.T @ kb / 8
+        print("L%dH%d effective QK norm %.4f SV %s; eig %s; "
+              "key/query bias norms %.3f %.3f; effective OV norm %.3f trace %.3f" %
+              (l, j, np.linalg.norm(a), str(sa[:4]), str(ev[:6]),
+               np.linalg.norm(key_linear), np.linalg.norm(query_linear),
+               np.linalg.norm(b), np.trace(b)))
+
+print("\nNORMALIZED TRACE(QK_l @ OV_earlier), columns earlier heads")
+for l in range(1, 4):
+    for m in range(l):
+        scores = np.array([
+            [np.sum(A[6*l+j] * B[6*m+k].T) /
+             (np.linalg.norm(A[6*l+j])*np.linalg.norm(B[6*m+k]))
+             for k in range(6)] for j in range(6)])
+        print("QK layer", l, "OV layer", m)
+        print(scores)
+
+print("\nL0: overlap of top QK singular subspaces with top value-read subspace")
+vall = np.concatenate(V[:6], axis=0)
+_, sv, vt = svd(vall, full_matrices=False, check_finite=False)
+print("Combined effective V0 singular values:", sv[:45])
+for j in range(6):
+    u, s, vtq = svd(A[j], full_matrices=False, check_finite=False)
+    for r in [8, 24]:
+        rv = vt[:r].T
+        qe = np.linalg.norm(rv.T @ A[j])**2 / np.linalg.norm(A[j])**2
+        ke = np.linalg.norm(A[j] @ rv)**2 / np.linalg.norm(A[j])**2
+        print("L0H%d V-rank%d query/key energy %.3f %.3f" % (j, r, qe, ke))
+
+print("\nL0 QK pairwise Frobenius cosines")
+print(np.array([[np.sum(a*b)/(np.linalg.norm(a)*np.linalg.norm(b))
+                 for b in A[:6]] for a in A[:6]]))
+print("\nL0 V-head top-24 right-subspace overlaps (mean squared cosine)")
+bases = [svd(v, full_matrices=False, check_finite=False)[2][:24].T for v in V[:6]]
+print(np.array([[np.linalg.norm(a.T@b)**2/24 for b in bases] for a in bases]))

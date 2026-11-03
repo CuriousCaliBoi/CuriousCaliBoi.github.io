@@ -1,0 +1,5 @@
+OUTPUT of Python run 12 of at most 120:
+```
+Saturated tactical urgency; strongly reject non-capturing self-atari.
+
+```

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "482582c5f372ffd5de4ac0d46dd8f82ea9f097d8041f3156bdb16a442bbacee0",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: weight-only QK/OV cosines, SVD/eigenmode alignment, affine bias coefficient norms and cross-layer matrix compositions. All operations use weights and weight-derived directions; no sequence inputs, normalization of hidden states, nonlinear layers, model execution or external search."
+}

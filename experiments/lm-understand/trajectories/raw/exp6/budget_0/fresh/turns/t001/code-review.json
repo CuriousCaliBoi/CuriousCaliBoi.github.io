@@ -1,0 +1,6 @@
+{
+  "code_sha256": "2a95d04ba779027c39b27f5a28a52aa950f1d2038970766ebd5072725b120de4",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Entire block inspected. Constructs float32 tensor entries from fixed board-coordinate neighborhoods, analytic spatial kernels, explicit coefficients and relay connections. No boards/examples are evaluated through the network, no matrix-based forward validation, no target fitting/autograd/optimizer, no game-tree exploration, and no external search. np.exp computes static coordinate-distance kernels only. Final assertions inspect weight dtype/finiteness/shapes, and load is used only for tensor shape checks."
+}

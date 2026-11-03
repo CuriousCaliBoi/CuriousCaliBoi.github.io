@@ -1,0 +1,6 @@
+{
+  "code_sha256": "291748aed39367b4bacbc52b0fdc7a0d030d721934db94a271960a61fd0d514b",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: QK/OV and affine-bias cosine comparisons, weight singular spectra, bare MLP projection products, neuron weight-direction cosines and normalization-parameter statistics. No activation functions or model/partial-layer evaluation on inputs; no external search."
+}

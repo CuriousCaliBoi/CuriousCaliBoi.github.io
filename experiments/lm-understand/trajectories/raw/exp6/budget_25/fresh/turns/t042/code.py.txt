@@ -1,0 +1,21 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_16.npz",**{n:load(n) for n in names})
+
+revision=r'''
+_base={}
+exec(open("/work/design_v13.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(opening_center=3.5)
+    if parameters:
+        changes.update(parameters)
+    return _base["construct"](changes)
+'''
+open("/work/design_v17.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 17: a strong tengen opening prior, retaining")
+print("the balanced tactical and shape design of revision 13.")

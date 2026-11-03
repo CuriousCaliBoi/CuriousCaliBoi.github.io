@@ -1,0 +1,15 @@
+import json, numpy as np
+gs=json.load(open("/work/pass_5/games.json"))
+bs=np.load("/work/pass_5/boards.npy")
+def show(b):
+    print("\n".join("".join(".XO"[{0:0,1:1,-1:2}[int(x)]] for x in row)
+                    for row in b.reshape(9,9)))
+for i,g in enumerate(gs):
+    if g["end"]=="repetition":
+        print("\nGAME",i,g["net_color"],g["margin"],"last moves",
+              [(m["by"],m["move"]) for m in g["moves"][-7:]])
+        print("Before final three moves:")
+        show(bs[i,len(g["moves"])-4])
+        print("Final:")
+        show(bs[i,len(g["moves"])-1])
+        if i>=40: break

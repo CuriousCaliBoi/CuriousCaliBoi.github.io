@@ -1,0 +1,6 @@
+{
+  "code_sha256": "e916317d4e66f8b04024e042a9bbded66f2dc57ff1d51cba9b7e8f59b3b25710",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Weight matrices/products, SVD/eigenvalue statistics, coefficient whitening and KMeans fitted to weight-derived rows only. np.maximum floors covariance eigenvalues for whitening; it does not apply an MLP ReLU to inputs. No prohibited forward pass or search."
+}

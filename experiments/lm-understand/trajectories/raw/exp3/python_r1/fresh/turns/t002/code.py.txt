@@ -1,0 +1,64 @@
+import numpy as np
+from scipy.linalg import svd, svdvals, eigvals
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+
+D = 384
+P = np.eye(D) - np.ones((D, D))/D
+
+def eff(name, l, norm="ln1"):
+    # Linear weight geometry only: absorb learned coordinate scaling and
+    # project away the all-ones direction. No normalization or network evaluation.
+    return (np.asarray(W[f"{name}.{l}"], dtype=float)
+            * np.asarray(W[f"{norm}_w.{l}"], dtype=float)[None, :]) @ P
+
+QK, OV = {}, {}
+for l in range(4):
+    q, k, v = [eff("W_"+n, l) for n in ["q","k","v"]]
+    for j in range(6):
+        s = slice(64*j,64*(j+1))
+        QK[l,j] = q[s].T @ k[s]
+        OV[l,j] = np.asarray(W[f"W_o.{l}"][:,s],dtype=float) @ v[s]
+
+print("L0 ln1_w: largest 45 coordinates")
+a = W["ln1_w.0"]
+ix = np.argsort(a)[-45:][::-1]
+print([(int(i), round(float(a[i]),4)) for i in ix])
+
+print("\nEffective QK spectra and largest-magnitude eigenvalues")
+for l in range(4):
+    for j in range(6):
+        a = QK[l,j]
+        s = svdvals(a)
+        ev = eigvals(a)
+        ev = ev[np.argsort(np.abs(ev))[::-1]][:8]
+        print(f"L{l}H{j}", "norm", round(np.linalg.norm(a),3),
+              "SV", np.round(s[:8],3), "eig", np.round(ev,3),
+              "symfrac", round(np.linalg.norm((a+a.T)/2)**2/np.linalg.norm(a)**2,3))
+
+print("\nFull singular spectra at selected quantiles")
+for l in [0,3]:
+    for name in ["W_fc","W_proj"]:
+        a = np.asarray(W[f"{name}.{l}"],dtype=float)
+        s = svdvals(a)
+        idx = [0,1,2,3,4,5,9,14,19,24,25,26,27,28,29,31,39,49,63,79,99,127,191,255,319,383]
+        print(name,l,[(i+1,round(s[i],3)) for i in idx])
+
+print("\nL0 QK pairwise Frobenius cosine")
+print(np.round([[np.sum(QK[0,j]*QK[0,k])/
+                 (np.linalg.norm(QK[0,j])*np.linalg.norm(QK[0,k]))
+                 for k in range(6)] for j in range(6)],3))
+
+print("\nWeight-only key-composition enrichment")
+print("For later head B and earlier head A: ||QK_B OV_A||_F / (||QK_B||_F ||OV_A||_F/sqrt(384)).")
+for l in range(1,4):
+    for j in range(6):
+        vals = []
+        a = QK[l,j]
+        for m in range(l):
+            for k in range(6):
+                b = OV[m,k]
+                c = np.linalg.norm(a @ b)*np.sqrt(D)/(np.linalg.norm(a)*np.linalg.norm(b))
+                vals.append((c, f"L{m}H{k}"))
+        vals.sort(reverse=True)
+        print(f"L{l}H{j}", [(h,round(c,3)) for c,h in vals[:6]])

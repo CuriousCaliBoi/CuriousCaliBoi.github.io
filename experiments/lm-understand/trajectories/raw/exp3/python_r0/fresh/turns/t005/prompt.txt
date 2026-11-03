@@ -1,0 +1,77 @@
+OUTPUT of run 4 of at most 100:
+```
+L0H5 effective V singular values: [0.493 0.473 0.446 0.437 0.426 0.408 0.404 0.393 0.386 0.376 0.363 0.361 0.356 0.345 0.333 0.329 0.322 0.316 0.31  0.304 0.299 0.289 0.285 0.277 0.274 0.267
+ 0.252 0.245 0.241 0.235 0.233 0.221 0.216 0.212 0.208 0.203 0.199 0.194 0.188 0.179]
+
+L0 QK energy in L0H5 V-read top27; query / key
+0 0.06915506568490729 0.4005828987732276
+ raw QK largest eigenvalues: [-0.307+0.j    -0.065+0.j    -0.031+0.j    -0.018+0.005j -0.018-0.005j -0.01 +0.007j -0.01 -0.007j -0.012+0.j    -0.011+0.003j -0.011-0.003j -0.007-0.007j
+ -0.007+0.007j]
+1 0.14100247076637126 0.17875867300936604
+ raw QK largest eigenvalues: [-2.036+0.j    -0.868+1.059j -0.868-1.059j -0.64 +0.764j -0.64 -0.764j  0.382+0.574j  0.382-0.574j -0.221+0.286j -0.221-0.286j  0.178-0.217j  0.178+0.217j
+  0.002+0.28j ]
+2 0.1380088946278737 0.3036819626565164
+ raw QK largest eigenvalues: [-0.267+0.j    -0.188+0.035j -0.188-0.035j -0.173+0.j     0.118+0.066j  0.118-0.066j -0.097+0.053j -0.097-0.053j  0.103+0.j    -0.093+0.j     0.031+0.045j
+  0.031-0.045j]
+3 0.12867697668337996 0.26320291058948364
+ raw QK largest eigenvalues: [-0.32 +0.j    -0.184+0.047j -0.184-0.047j -0.058+0.104j -0.058-0.104j -0.109+0.j     0.084+0.j    -0.051+0.044j -0.051-0.044j -0.062+0.j    -0.052+0.j
+  0.004+0.045j]
+4 0.09665577096102634 0.11399456953990159
+ raw QK largest eigenvalues: [-0.012+0.007j -0.012-0.007j -0.011+0.j    -0.004+0.j    -0.004-0.j    -0.003+0.003j -0.003-0.003j -0.003+0.002j -0.003-0.002j -0.004+0.j     0.003-0.002j
+  0.003+0.002j]
+5 0.16163991771158023 0.18783951477136343
+ raw QK largest eigenvalues: [ 0.962+1.178j  0.962-1.178j  1.104+0.737j  1.104-0.737j  0.238+1.225j  0.238-1.225j  1.246+0.j     0.708+0.985j  0.708-0.985j -0.081-1.088j -0.081+1.088j
+ -0.378-0.994j]
+
+Projected composition trace / Frobenius norm on the L0H5 value-read subspace
+For each later head: best earlier OV head, trace/Frobenius, positive-eigenvalue mass of symmetric part / total absolute mass
+L1H0: ['L0H1 ratio 0.185 pos 0.532 norm 0.032', 'L0H3 ratio -0.012 pos 0.497 norm 0.013', 'L0H5 ratio -0.173 pos 0.470 norm 0.045']
+L1H1: ['L0H5 ratio 0.783 pos 0.640 norm 0.115', 'L0H1 ratio 0.512 pos 0.586 norm 0.053', 'L0H0 ratio 0.312 pos 0.623 norm 0.302']
+L1H2: ['L0H3 ratio 0.069 pos 0.519 norm 0.025', 'L0H1 ratio 0.044 pos 0.508 norm 0.041', 'L0H5 ratio -0.162 pos 0.473 norm 0.072']
+L1H3: ['L0H5 ratio 0.706 pos 0.622 norm 0.085', 'L0H3 ratio 0.214 pos 0.564 norm 0.031', 'L0H2 ratio 0.122 pos 0.532 norm 0.042']
+L1H4: ['L0H5 ratio 0.488 pos 0.588 norm 0.084', 'L0H1 ratio 0.414 pos 0.571 norm 0.039', 'L0H4 ratio 0.104 pos 0.541 norm 0.686']
+L1H5: ['L0H5 ratio 0.549 pos 0.604 norm 0.115', 'L0H4 ratio 0.299 pos 0.624 norm 1.103', 'L0H0 ratio 0.286 pos 0.616 norm 0.248']
+L2H0: ['L0H3 ratio 0.185 pos 0.535 norm 0.027', 'L1H2 ratio 0.144 pos 0.526 norm 0.162', 'L1H5 ratio 0.055 pos 0.510 norm 0.128']
+L2H1: ['L0H5 ratio 2.747 pos 0.922 norm 0.199', 'L1H4 ratio 1.740 pos 0.795 norm 0.169', 'L1H2 ratio 1.725 pos 0.789 norm 0.209']
+L2H2: ['L0H4 ratio 0.071 pos 0.524 norm 0.642', 'L0H3 ratio 0.017 pos 0.503 norm 0.038', 'L1H5 ratio -0.032 pos 0.495 norm 0.192']
+L2H3: ['L1H1 ratio 0.270 pos 0.548 norm 0.111', 'L0H1 ratio 0.215 pos 0.534 norm 0.073', 'L1H5 ratio 0.124 pos 0.520 norm 0.116']
+L2H4: ['L0H5 ratio 0.125 pos 0.521 norm 0.135', 'L0H3 ratio 0.121 pos 0.525 norm 0.034', 'L0H2 ratio 0.101 pos 0.524 norm 0.074']
+L2H5: ['L0H5 ratio 0.479 pos 0.578 norm 0.086', 'L1H2 ratio 0.468 pos 0.584 norm 0.119', 'L1H4 ratio 0.347 pos 0.562 norm 0.089']
+L3H0: ['L0H5 ratio 1.201 pos 0.700 norm 0.124', 'L2H2 ratio 0.883 pos 0.645 norm 0.160', 'L1H2 ratio 0.803 pos 0.640 norm 0.176']
+L3H1: ['L0H5 ratio 2.509 pos 0.886 norm 0.149', 'L2H2 ratio 2.169 pos 0.839 norm 0.181', 'L1H2 ratio 1.736 pos 0.788 norm 0.169']
+L3H2: ['L2H0 ratio 0.270 pos 0.546 norm 0.142', 'L0H2 ratio 0.229 pos 0.546 norm 0.046', 'L1H3 ratio 0.224 pos 0.539 norm 0.121']
+L3H3: ['L2H4 ratio 0.794 pos 0.639 norm 0.092', 'L0H2 ratio 0.591 pos 0.636 norm 0.025', 'L1H2 ratio 0.528 pos 0.589 norm 0.068']
+L3H4: ['L0H5 ratio 0.827 pos 0.637 norm 0.085', 'L2H2 ratio 0.513 pos 0.588 norm 0.123', 'L2H4 ratio 0.497 pos 0.584 norm 0.161']
+L3H5: ['L2H2 ratio 2.756 pos 0.919 norm 0.268', 'L0H5 ratio 2.637 pos 0.900 norm 0.209', 'L1H4 ratio 1.821 pos 0.806 norm 0.169']
+
+OV energy fractions: read L0H5-value top27 / write final-MLP top28
+L0H0 0.090 0.189
+L0H1 0.694 0.065
+L0H2 0.543 0.098
+L0H3 0.252 0.164
+L0H4 0.085 0.221
+L0H5 0.948 0.059
+L1H0 0.169 0.080
+L1H1 0.179 0.054
+L1H2 0.209 0.066
+L1H3 0.168 0.059
+L1H4 0.188 0.058
+L1H5 0.198 0.058
+L2H0 0.088 0.060
+L2H1 0.088 0.093
+L2H2 0.094 0.051
+L2H3 0.081 0.058
+L2H4 0.136 0.058
+L2H5 0.083 0.081
+L3H0 0.079 0.133
+L3H1 0.115 0.333
+L3H2 0.078 0.126
+L3H3 0.072 0.132
+L3H4 0.077 0.153
+L3H5 0.131 0.330
+MLP 0 row norm quantiles [0.33  0.371 0.394 0.437 1.766 2.393 4.287] rows norm>1: 518 norm>2: 286
+MLP 1 row norm quantiles [0.441 1.869 1.942 2.023 2.11  2.206 8.68 ] rows norm>1: 1532 norm>2: 887
+MLP 2 row norm quantiles [1.678 1.933 1.979 2.024 2.073 2.121 2.731] rows norm>1: 1536 norm>2: 963
+MLP 3 row norm quantiles [1.746 1.902 1.954 1.995 2.036 2.072 2.947] rows norm>1: 1536 norm>2: 715
+
+```

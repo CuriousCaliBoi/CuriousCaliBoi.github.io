@@ -1,0 +1,5 @@
+OUTPUT of Python run 11 of at most 120:
+```
+Saved v7: packed colour channel preserves weak-group attacks while avoiding ko/snapback traps.
+
+```

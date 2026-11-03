@@ -1,0 +1,73 @@
+```python
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=4,suppress=True,linewidth=180)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+A={}; B={}
+for l in range(4):
+    g=W[f"ln1_w.{l}"].astype(float)
+    for h in range(6):
+        sl=slice(64*h,64*(h+1))
+        q,k,v=[(W[f"W_{t}.{l}"][sl].astype(float)*g)@P for t in ["q","k","v"]]
+        A[l,h]=q.T@k/8
+        B[l,h]=P@W[f"W_o.{l}"][:,sl].astype(float)@v
+
+u,s,vt=np.linalg.svd(A[0,2])
+up,sp,_=np.linalg.svd(np.concatenate([u[:,:16],vt[:16].T],axis=1),full_matrices=False)
+T=up[:,:16]
+print("L0 OV input/output energy in candidate position space, dimension 16")
+for h in range(6):
+    b=B[0,h]
+    uu,ss,vv=np.linalg.svd(b)
+    print(h,"total input/output",np.round([
+        np.linalg.norm(b@T)**2/np.linalg.norm(b)**2,
+        np.linalg.norm(T.T@b)**2/np.linalg.norm(b)**2],4),
+        "top 5 input-vector overlaps",np.round(np.sum((vv[:5]@T)**2,axis=1),4),
+        "top 5 output-vector overlaps",np.round(np.sum((uu[:,:5].T@T)**2,axis=1),4))
+
+print("\nL0 head top QK and OV singular-direction pairwise alignments")
+# Directions, not input examples.
+Qdirs=[]; Kdirs=[]; Vdirs=[]
+for h in range(6):
+    u,s,vt=np.linalg.svd(A[0,h])
+    Qdirs.append(u[:,0]); Kdirs.append(vt[0])
+    u,s,vt=np.linalg.svd(B[0,h])
+    Vdirs.append(vt[0])
+for label,rows,cols in [("Q vs Q",Qdirs,Qdirs),("K vs K",Kdirs,Kdirs),
+                        ("V vs V",Vdirs,Vdirs),("K vs V",Kdirs,Vdirs)]:
+    print(label,"\n",np.round(np.array(rows)@np.array(cols).T,3))
+
+print("\nInduction-candidate symmetric composition eigenvalues")
+c=A[3,1]@B[0,2]
+ev,u=np.linalg.eigh((c+c.T)/2)
+idx=np.argsort(ev)[::-1]
+print("Largest 45",np.round(ev[idx[:45]],5))
+print("Smallest 15",np.round(ev[:15],5))
+Tc=u[:,idx[:24]]
+print("Positive composition-space overlap with position",np.round(np.sum((Tc.T@T)**2,axis=1),3))
+
+# Structural analysis of first-MLP read directions.
+f=(W["W_fc.0"].astype(float)*W["ln2_w.0"])@P
+o=P@W["W_proj.0"].astype(float)
+for label,m in [("current read",f@Tc),("previous-head read",f@B[0,2]@Tc)]:
+    sv=np.linalg.svd(m,compute_uv=False)
+    print(label,"SV",np.round(sv,3))
+    norms=np.linalg.norm(m,axis=1)
+    print(label,"row-norm quantiles",np.round(np.quantile(norms,[0,.1,.25,.5,.75,.9,.99,1]),3))
+
+# The size of nonlinear-layer weight products through the putative
+# previous-character channel, compared with the other five channels.
+print("\nFirst-MLP read composition strengths")
+for h in range(6):
+    m=f@B[0,h]
+    print(h,"F norm",round(np.linalg.norm(m),3),
+          "top SV",np.round(np.linalg.svd(m,compute_uv=False)[:12],3))
+
+print("\nFinal-MLP projection spectrum tail and consecutive ratios")
+sv=np.linalg.svd(W["W_proj.3"].astype(float),compute_uv=False)
+for j in range(15,40):
+    print(j+1,round(sv[j],4),round(sv[j]/sv[j+1],4))
+```

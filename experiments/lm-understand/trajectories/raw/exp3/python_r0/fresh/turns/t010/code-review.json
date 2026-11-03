@@ -1,0 +1,6 @@
+{
+  "code_sha256": "9327b43ddc6d887274c161f49ced2eadb975f257025853045fbb0de4026336e0",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: SVD subspaces and position-orthogonalized weight matrices, KMeans fit to normalized MLP weight rows, and cross-matrix covector alignments. The active mask selects weight rows by weight norm, not model activation. No sequence/example inputs, layer nonlinearities, model inference or external search."
+}

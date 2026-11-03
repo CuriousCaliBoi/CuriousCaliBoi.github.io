@@ -1,0 +1,63 @@
+```python
+import numpy as np
+from scipy.linalg import svd
+from sklearn.cluster import KMeans
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+np.set_printoptions(precision=3, suppress=True, linewidth=160)
+
+def ov0(j):
+    sl=slice(64*j,64*(j+1))
+    v=W["W_v.0"][sl].astype(float)*W["ln1_w.0"][None,:]
+    v-=v.mean(axis=1,keepdims=True)
+    o=W["W_o.0"][:,sl].astype(float)
+    o-=o.mean(axis=0,keepdims=True)
+    return o@v
+
+b=ov0(5)
+T=svd(b,full_matrices=False,check_finite=False)[2][:27].T
+f=W["W_fc.0"].astype(float)*W["ln2_w.0"][None,:]
+f-=f.mean(axis=1,keepdims=True)
+active=np.linalg.norm(W["W_fc.0"],axis=1)>1
+f=f[active]
+direct=f@T
+transported=f@b@T
+dn=np.linalg.norm(direct,axis=1)
+pn=np.linalg.norm(transported,axis=1)
+du=direct/dn[:,None]
+pu=transported/pn[:,None]
+
+# Cluster the two sets of MLP weight covectors jointly, without evaluating
+# any neuron or feeding a representation into the model.
+z=np.concatenate([du,pu])
+km=KMeans(n_clusters=28,n_init=20,max_iter=300,random_state=42).fit(z)
+centers=km.cluster_centers_
+centers/=np.linalg.norm(centers,axis=1,keepdims=True)
+dc=du@centers.T
+pc=pu@centers.T
+di=dc.argmax(axis=1); pi=pc.argmax(axis=1)
+ds=dc.max(axis=1); ps=pc.max(axis=1)
+print("Direct best-center cosine quantiles:",np.quantile(ds,[0,.1,.25,.5,.75,.9,1]))
+print("Transported best-center cosine quantiles:",np.quantile(ps,[0,.1,.25,.5,.75,.9,1]))
+print("Weight norm quantiles direct / transported:",np.quantile(dn,[.1,.5,.9]),np.quantile(pn,[.1,.5,.9]))
+print("Cluster: direct count, transported count, direct/transported mean best cosine")
+for c in range(28):
+    print(c,np.sum(di==c),np.sum(pi==c),
+          round(float(ds[di==c].mean()),3) if np.any(di==c) else None,
+          round(float(ps[pi==c].mean()),3) if np.any(pi==c) else None)
+
+for threshold in [.60,.75]:
+    good=(ds>threshold)&(ps>threshold)
+    counts=np.zeros((28,28),dtype=int)
+    np.add.at(counts,(pi[good],di[good]),1)
+    print("\nThreshold",threshold,"paired neurons",good.sum(),"nonzero directed pairs",np.count_nonzero(counts),
+          "diagonal count",np.trace(counts))
+    for c in range(28):
+        targets=np.argsort(-counts[c])[:5]
+        print(c,[(int(t),int(counts[c,t])) for t in targets if counts[c,t]])
+
+print("\nDirect versus transported directions of the SAME neuron, cosine quantiles:",
+      np.quantile(np.sum(du*pu,axis=1),[0,.1,.25,.5,.75,.9,1]))
+print("Cluster-center cosine matrix, rounded:")
+print(np.round(centers@centers.T,1))
+```

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "5981758017eac1d269fac444f0e5c2d71bb8315b7f4cb4806823c0908af7df29",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Summarizes existing pass_8 loss/end/margin fields and prints saved repetition and close-loss boards/moves. Only published feedback artifacts are inspected; no inference, game simulation, fitting, or search."
+}

@@ -1,0 +1,15 @@
+```python
+import json, collections
+gs=json.load(open("/work/pass_8/games.json"))
+for who in ["net","strong"]:
+    c=collections.Counter()
+    for g in gs:
+        first=next(m for m in g["moves"] if m["by"]==who)
+        c[first["move"]]+=1
+    print(who,"first-move counts:",c.most_common(20))
+print("First 12 plies of selected close losses:")
+for i in [0,5,13,16]:
+    print(i,gs[i]["net_color"],
+          [(m["by"],divmod(m["move"],9) if m["move"]<81 else "pass")
+           for m in gs[i]["moves"][:12]])
+```

@@ -1,0 +1,4 @@
+Positions pass 31 of 50 done.
+```
+{"ok": true, "pass": 31, "kind": "positions", "positions": 3, "top3": [[{"move": 44, "probability": 1.0, "logit": 132.33599853515625}, {"move": 0, "probability": 0.0, "logit": -57.88800048828125}, {"move": 58, "probability": 0.0, "logit": -159.33599853515625}], [{"move": 53, "probability": 0.8295804262161255, "logit": 14.2559814453125}, {"move": 76, "probability": 0.17019344866275787, "logit": 12.6719970703125}, {"move": 35, "probability": 0.0002260299661429599, "logit": 6.0479736328125}], [{"move": 0, "probability": 1.0, "logit": 81.93597412109375}, {"move": 35, "probability": 9.776024143290607e-17, "logit": 45.07196044921875}, {"move": 26, "probability": 9.76234257595898e-18, "logit": 42.767974853515625}]], "files": "/work/pass_31/"}
+```

@@ -1,0 +1,6 @@
+OUTPUT of Python run 23 of at most 120:
+```
+Saved revision 15: restore ordinary friendly safety,
+and prioritize forcing attacks against two-liberty groups.
+
+```

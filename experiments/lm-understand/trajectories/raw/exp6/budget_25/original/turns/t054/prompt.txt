@@ -1,0 +1,5 @@
+Positions pass 23 of 25 done.
+```
+{"ok": true, "pass": 23, "kind": "positions", "positions": 6, "top3_per_position": [[["(4,4)", 1.0], ["(2,6)", 0.0], ["(6,6)", 0.0]], [["(4,5)", 1.0], ["(3,3)", 0.0], ["(5,3)", 0.0]], [["(4,5)", 0.9996], ["(3,3)", 0.0001], ["(5,3)", 0.0001]], [["(4,5)", 1.0], ["(3,2)", 0.0], ["(5,2)", 0.0]], [["(3,3)", 0.2062], ["(5,5)", 0.2062], ["(5,3)", 0.2062]], [["pass", 1.0], ["(2,2)", 0.0], ["(6,6)", 0.0]]], "files": "/work/pass_23/", "readme": "inputs.npy (P, 243) the network inputs; legal.npy (P, 82) the legal moves (for 'board' positions: the empty points and pass; suicide and ko are not checked); logits.npy, probs.npy (P, 82); act_L1.npy .. act_L6.npy (P, 512) the hidden activations after ReLU."}
+```
+Passes left: 2.

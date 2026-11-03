@@ -1,0 +1,5 @@
+OUTPUT of Python run 23 of at most 120:
+```
+Local urgency now discounts healthy support, not endangered string-mates.
+
+```

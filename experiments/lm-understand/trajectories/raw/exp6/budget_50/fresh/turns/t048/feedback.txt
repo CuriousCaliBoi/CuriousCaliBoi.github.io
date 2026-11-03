@@ -1,0 +1,6 @@
+OUTPUT of Python run 26 of at most 120:
+```
+Connection urgency now depends on nearby enemy contact;
+quiet, redundant connections receive less emphasis.
+
+```

@@ -1,0 +1,6 @@
+```python
+import numpy as np
+for name in ("out.W","out.b"):
+    save(name,load(name)*np.float32(4/3))
+print("Score scale 7.2; the strategic and tactical circuitry is unchanged.")
+```

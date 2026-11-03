@@ -1,0 +1,56 @@
+```python
+import numpy as np
+from scipy.linalg import svd
+from scipy.stats import skew, kurtosis
+from sklearn.decomposition import FastICA
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+rs=[]
+for h in [1,5]:
+    _,_,r=svd(np.asarray(W["W_v.0"][64*h:64*(h+1)],float)@P,full_matrices=False)
+    rs.append(r[:28])
+G=sum(r.T@r for r in rs)
+e,u=np.linalg.eigh(G)
+u=u[:,np.argsort(e)[::-1][:28]]
+F=np.asarray(W["W_fc.0"],float)*W["ln2_w.0"][None,:]
+O=np.asarray(W["W_proj.0"],float)
+X=F@u
+ica=FastICA(n_components=28,whiten="unit-variance",random_state=17,
+            max_iter=4000,tol=.001)
+Z=ica.fit_transform(X)
+sg=np.where(skew(Z,axis=0)>=0,1.,-1.)
+Z*=sg
+mix=ica.mixing_*sg[None,:]
+print("ICA component: kurtosis, dominant row and its coefficient, top-five row indices, output-column norm")
+for k in range(28):
+    ix=np.argsort(np.abs(Z[:,k]))[-5:][::-1]
+    print(k,round(kurtosis(Z[:,k]),1),int(ix[0]),round(Z[ix[0],k],2),
+          ix.tolist(),round(np.linalg.norm(O[:,ix[0]]),3))
+
+print("\nLargest initial MLP input row norms: row, full norm, content-projection norm, output-column norm")
+ix=np.argsort(np.linalg.norm(F,axis=1))[-40:][::-1]
+for i in ix:
+    print(int(i),round(np.linalg.norm(F[i]),3),round(np.linalg.norm(X[i]),3),
+          round(np.linalg.norm(O[:,i]),3))
+
+print("\nCharacter-direction candidate geometry")
+dirs=u@mix
+dirs/=np.linalg.norm(dirs,axis=0,keepdims=True)
+gram=dirs.T@dirs
+print("Pairwise cosine quantiles:",np.round(np.quantile(gram[np.triu_indices(28,1)],[0,.1,.25,.5,.75,.9,1]),3))
+for k in range(28):
+    ix=np.argsort(gram[k])[-4:][::-1]
+    print(k,[(int(i),round(gram[k,i],3)) for i in ix if i!=k])
+
+print("\nContent-key geometry of L0H2, in the candidate direction basis")
+s=slice(128,192)
+a=np.asarray(W["W_q.0"][s],float).T@np.asarray(W["W_k.0"][s],float)
+g=dirs.T@a@dirs
+g/=np.linalg.norm(g)
+for k in range(28):
+    ix=np.argsort(g[k])[-3:][::-1]
+    print(k,[(int(i),round(g[k,i],3)) for i in ix])
+```

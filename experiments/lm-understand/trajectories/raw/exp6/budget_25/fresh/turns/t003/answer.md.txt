@@ -1,0 +1,12 @@
+```python
+import os, json
+root = "/work/pass_1"
+for directory, subdirs, files in os.walk(root):
+    print(directory, files[:12])
+    if files:
+        path = os.path.join(directory, files[0])
+        print("FIRST FILE:", path)
+        with open(path) as f:
+            print(f.read(14000))
+        break
+```

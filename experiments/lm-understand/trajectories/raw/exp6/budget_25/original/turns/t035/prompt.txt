@@ -1,0 +1,5 @@
+OUTPUT of Python run 21 of at most 120:
+```
+Extended enemy-string safety through intersecting certified segments.
+
+```

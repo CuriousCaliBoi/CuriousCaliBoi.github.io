@@ -1,0 +1,79 @@
+```python
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=3,suppress=True,linewidth=180)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+A={}; B={}; kb={}
+for l in range(4):
+    g=W[f"ln1_w.{l}"].astype(float)
+    b=W[f"ln1_b.{l}"].astype(float)
+    for h in range(6):
+        s=slice(64*h,64*(h+1))
+        q,k,v=[W[f"W_{t}.{l}"][s].astype(float) for t in ["q","k","v"]]
+        qg,kg,vg=[(m*g)@P for m in [q,k,v]]
+        A[l,h]=qg.T@kg/8
+        B[l,h]=P@W[f"W_o.{l}"][:,s].astype(float)@vg
+        kb[l,h]=kg.T@(q@b)/8
+
+r=sum(kb[1,h]/np.linalg.norm(kb[1,h]) for h in range(6))
+r/=np.linalg.norm(r)
+print("Common L1 key-selector direction: each head's cosine and bias/QK norm ratio")
+for l in range(4):
+    print(l,np.round([[kb[l,h]@r/np.linalg.norm(kb[l,h]),
+                       np.linalg.norm(kb[l,h])/np.linalg.norm(A[l,h])]
+                      for h in range(6)],3))
+
+ub,sb,_=np.linalg.svd(np.concatenate([B[0,h] for h in [0,1,4,5]],axis=1),full_matrices=False)
+Tb=ub[:,:4]
+print("Common selector fraction in top 2/4/8 broad-output dimensions",
+      [round(np.linalg.norm(ub[:,:k].T@r)**2,4) for k in [2,4,8]])
+print("Common selector composed with L0 OV heads: norms",
+      [round(np.linalg.norm(r@B[0,h]),4) for h in range(6)])
+
+u0,s0,_=np.linalg.svd(P@W["W_proj.0"].astype(float),full_matrices=False)
+u1,s1,_=np.linalg.svd(P@W["W_proj.1"].astype(float),full_matrices=False)
+_,_,v0=np.linalg.svd((W["W_v.0"][128:192].astype(float)*W["ln1_w.0"])@P,full_matrices=False)
+spaces={"V0H2-24":v0[:24].T,
+        "MLP0-32":u0[:,:32],
+        "MLP0-64":u0[:,:64],
+        "MLP1-64":u1[:,:64]}
+
+print("\nProjected key-composition scores: strongest earlier heads")
+print("tuple = (earlier head, trace/F, symmetry, norm)")
+for name,T in spaces.items():
+    print("\nSPACE",name)
+    for l in [2,3]:
+        for h in range(6):
+            results=[]
+            for j in range(l):
+                for k in range(6):
+                    c=T.T@A[l,h]@B[j,k]@T
+                    fn=np.linalg.norm(c)
+                    results.append((f"L{j}H{k}",np.trace(c)/fn,
+                                    np.sum(c*c.T)/(fn*fn),fn))
+            results.sort(key=lambda x:x[1],reverse=True)
+            print(f"L{l}H{h}",[(n,round(t,3),round(y,3),round(f,3))
+                               for n,t,y,f in results[:2]])
+
+print("\nDirect-match versus predecessor-match on V0H2's 24-dimensional read space")
+T=spaces["V0H2-24"]
+for l in [1,2,3]:
+    for h in range(6):
+        out=[]
+        for c in [T.T@A[l,h]@T,T.T@A[l,h]@B[0,2]@T,
+                  T.T@B[0,2].T@A[l,h]@T]:
+            fn=np.linalg.norm(c)
+            out.append([np.trace(c)/fn,np.sum(c*c.T)/(fn*fn),fn])
+        print(f"L{l}H{h}",np.round(out,3))
+
+print("\nMLP neuron weight-norm quantiles")
+for l in range(4):
+    a=np.linalg.norm(W[f"W_fc.{l}"],axis=1)
+    b=np.linalg.norm(W[f"W_proj.{l}"],axis=0)
+    print(l,"read",np.round(np.quantile(a,[.1,.25,.5,.75,.9]),3),
+          "write",np.round(np.quantile(b,[.1,.25,.5,.75,.9]),3),
+          "small-write fraction",round(float(np.mean(b<.4)),3))
+```

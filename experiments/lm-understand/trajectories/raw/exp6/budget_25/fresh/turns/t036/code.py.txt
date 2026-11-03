@@ -1,0 +1,25 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_13.npz",**{n:load(n) for n in names})
+
+revision=r'''
+_base={}
+exec(open("/work/design_v13.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(friendly_safety_reserve=1.0)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    # Treat a friendly group as robust only with an additional liberty
+    # reserve; this encourages escape and connection before actual atari.
+    t["L2.b"][324:405]-=p["friendly_safety_reserve"]
+    return t,p
+'''
+open("/work/design_v14.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 14: an extra friendly-liberty safety reserve")
+print("to protect groups before they become trapped.")

@@ -1,0 +1,108 @@
+OUTPUT of Python run 30 of at most 120:
+```
+
+REPEAT 65 white result -1 margin 32.5 ply 81 earlier [78]
+[{"ply": 74, "by": "opponent", "move": 7}, {"ply": 75, "by": "net", "move": 0, "top5": [[0, 1.0], [5, 0.0], [8, 0.0], [79, 0.0], [4, 0.0]]}, {"ply": 76, "by": "opponent", "move": 79}, {"ply": 77, "by": "net", "move": 5, "top5": [[5, 0.6106], [8, 0.3893], [4, 0.0001], [81, 0.0], [6, 0.0]]}, {"ply": 78, "by": "opponent", "move": 6}, {"ply": 79, "by": "net", "move": 8, "top5": [[8, 1.0], [81, 0.0], [26, 0.0], [30, 0.0], [65, 0.0]]}, {"ply": 80, "by": "opponent", "move": 26}, {"ply": 81, "by": "net", "move": 17, "top5": [[17, 0.8699], [81, 0.1301], [8, 0.0], [30, 0.0], [65, 0.0]]}]
+move (1, 8) adjacent [0, 1, 1] capturable [(1, [26], [17])]
+OOXX.OXX.
+.OXXXXXX.
+OOXOOOXOX
+O.O.O.OOO
+.OOO.OO.O
+O.O.OOOOO
+OOOOXXOXX
+.O.OXXXXX
+O.OX.X.X.
+
+REPEAT 73 white result 1 margin 15.5 ply 56 earlier [53]
+[{"ply": 49, "by": "net", "move": 16, "top5": [[16, 0.8155], [68, 0.0669], [6, 0.0591], [27, 0.0358], [60, 0.0153]]}, {"ply": 50, "by": "opponent", "move": 69}, {"ply": 51, "by": "net", "move": 6, "top5": [[6, 1.0], [60, 0.0], [68, 0.0], [27, 0.0], [18, 0.0]]}, {"ply": 52, "by": "opponent", "move": 17}, {"ply": 53, "by": "net", "move": 60, "top5": [[60, 0.9975], [68, 0.0019], [27, 0.0003], [26, 0.0002], [18, 0.0]]}, {"ply": 54, "by": "opponent", "move": 54}, {"ply": 55, "by": "net", "move": 72, "top5": [[72, 1.0], [68, 0.0], [27, 0.0], [26, 0.0], [18, 0.0]]}, {"ply": 56, "by": "opponent", "move": 63}]
+move (7, 0) adjacent [0, -1, -1] capturable [(1, [72], [63])]
+...X..O..
+.XOXXO.OX
+.XOOOOO..
+.XXXO.OO.
+OOOXXOO..
+O.OXXO...
+.OOOXOO..
+.OXXX.X..
+OX.......
+
+REPEAT 83 white result -1 margin 5.5 ply 107 earlier [102, 103]
+[{"ply": 100, "by": "opponent", "move": 72}, {"ply": 101, "by": "net", "move": 4, "top5": [[4, 1.0], [2, 0.0], [81, 0.0], [1, 0.0], [0, 0.0]]}, {"ply": 102, "by": "opponent", "move": 2}, {"ply": 103, "by": "net", "move": 81, "top5": [[81, 0.6457], [5, 0.3543], [32, 0.0], [52, 0.0], [44, 0.0]]}, {"ply": 104, "by": "opponent", "move": 5}, {"ply": 105, "by": "net", "move": 4, "top5": [[4, 0.9964], [81, 0.0036], [3, 0.0], [32, 0.0], [15, 0.0]]}, {"ply": 106, "by": "opponent", "move": 81}, {"ply": 107, "by": "net", "move": 3, "top5": [[3, 1.0], [81, 0.0], [5, 0.0], [32, 0.0], [0, 0.0]]}]
+move (0, 3) adjacent [1, 1, -1] capturable []
+X.X.O.OO.
+XXXXXO.OO
+XXXOOOOO.
+XXOOO.O.O
+XXOOXOOO.
+XXOXXXO.O
+XXXXXXOOO
+XXXO.XXXO
+XXXXXXXXO
+
+REPEAT 86 white result 1 margin 44.5 ply 102 earlier [99]
+[{"ply": 95, "by": "net", "move": 7, "top5": [[7, 0.9804], [78, 0.0196], [81, 0.0], [16, 0.0], [26, 0.0]]}, {"ply": 96, "by": "opponent", "move": 35}, {"ply": 97, "by": "net", "move": 16, "top5": [[16, 1.0], [78, 0.0], [8, 0.0], [81, 0.0], [36, 0.0]]}, {"ply": 98, "by": "opponent", "move": 5}, {"ply": 99, "by": "net", "move": 6, "top5": [[6, 1.0], [15, 0.0], [8, 0.0], [78, 0.0], [81, 0.0]]}, {"ply": 100, "by": "opponent", "move": 8}, {"ply": 101, "by": "net", "move": 26, "top5": [[26, 1.0], [78, 0.0], [81, 0.0], [36, 0.0], [80, 0.0]]}, {"ply": 102, "by": "opponent", "move": 17}]
+move (1, 8) adjacent [0, -1, -1] capturable [(1, [26], [17])]
+O.OOO.OO.
+.OOO.O.O.
+OO.OOOOXO
+OOOXXXXXX
+.XOXXOOXX
+XOOXOOOX.
+OOOOOO.OX
+.O.OO.OOO
+O.OO.O.X.
+
+REPEAT 91 white result -1 margin 22.5 ply 95 earlier [92]
+[{"ply": 88, "by": "opponent", "move": 8}, {"ply": 89, "by": "net", "move": 26, "top5": [[26, 0.7455], [3, 0.1838], [73, 0.0693], [72, 0.0008], [81, 0.0005]]}, {"ply": 90, "by": "opponent", "move": 17}, {"ply": 91, "by": "net", "move": 3, "top5": [[3, 0.7219], [73, 0.2723], [72, 0.003], [81, 0.0027], [74, 0.0002]]}, {"ply": 92, "by": "opponent", "move": 63}, {"ply": 93, "by": "net", "move": 4, "top5": [[4, 1.0], [73, 0.0], [81, 0.0], [74, 0.0], [72, 0.0]]}, {"ply": 94, "by": "opponent", "move": 2}, {"ply": 95, "by": "net", "move": 3, "top5": [[3, 0.696], [73, 0.2975], [81, 0.0033], [74, 0.0031], [4, 0.0]]}]
+move (0, 3) adjacent [1, 1, 0] capturable [(1, [2], [3])]
+OOX..X.OX
+.OOXXXXXX
+OOOXOOOX.
+O.OXXXOXX
+OOOOXOOOO
+OXOXOO.OO
+XXXXXOOO.
+XXXXO.O.O
+...XOOOOO
+
+REPEAT 108 white result -1 margin 37.5 ply 93 earlier [90]
+[{"ply": 86, "by": "opponent", "move": 44}, {"ply": 87, "by": "net", "move": 34, "top5": [[34, 0.9892], [3, 0.0073], [53, 0.0035], [1, 0.0], [10, 0.0]]}, {"ply": 88, "by": "opponent", "move": 77}, {"ply": 89, "by": "net", "move": 53, "top5": [[53, 1.0], [3, 0.0], [1, 0.0], [81, 0.0], [10, 0.0]]}, {"ply": 90, "by": "opponent", "move": 0}, {"ply": 91, "by": "net", "move": 3, "top5": [[3, 1.0], [10, 0.0], [81, 0.0], [1, 0.0], [5, 0.0]]}, {"ply": 92, "by": "opponent", "move": 5}, {"ply": 93, "by": "net", "move": 4, "top5": [[15, 0.7621], [4, 0.2353], [10, 0.0019], [81, 0.0007], [3, 0.0]]}]
+move (0, 4) adjacent [1, 0, 1] capturable [(1, [5], [4])]
+X.X..XOX.
+X.XXXO.OX
+XXXOOOOOX
+XOO.O.OOX
+O.OO.O.OX
+OO.OO.OOO
+O.OO.OO.O
+.OOOOXOOX
+O.OOXXXX.
+
+REPEAT 119 white result 1 margin 36.5 ply 96 earlier [90]
+[{"ply": 89, "by": "net", "move": 50, "top5": [[50, 1.0], [81, 0.0], [42, 0.0], [41, 0.0], [23, 0.0]]}, {"ply": 90, "by": "opponent", "move": 36}, {"ply": 91, "by": "net", "move": 27, "top5": [[18, 0.5245], [27, 0.4746], [81, 0.0009], [42, 0.0], [41, 0.0]]}, {"ply": 92, "by": "opponent", "move": 0}, {"ply": 93, "by": "net", "move": 18, "top5": [[18, 1.0], [0, 0.0], [1, 0.0], [2, 0.0], [3, 0.0]]}, {"ply": 94, "by": "opponent", "move": 1}, {"ply": 95, "by": "net", "move": 81, "top5": [[81, 0.9901], [0, 0.0097], [9, 0.0002], [42, 0.0], [41, 0.0]]}, {"ply": 96, "by": "opponent", "move": 9}]
+move (1, 0) adjacent [0, -1, -1] capturable [(2, [18, 27], [9])]
+.XO.OX.XO
+.OOO.OXOO
+OXO.O.OO.
+OXOO.OO.O
+XXO.O..OO
+XXOOOOO.O
+XXOOO.OOO
+XXXXOOO.O
+.X.XXO.OO
+
+REPEAT 123 white result -1 margin 37.5 ply 105 earlier [102]
+[{"ply": 98, "by": "opponent", "move": 4}, {"ply": 99, "by": "net", "move": 16, "top5": [[16, 1.0], [8, 0.0], [62, 0.0], [81, 0.0], [63, 0.0]]}, {"ply": 100, "by": "opponent", "move": 62}, {"ply": 101, "by": "net", "move": 53, "top5": [[53, 0.7493], [44, 0.2494], [81, 0.0013], [70, 0.0], [63, 0.0]]}, {"ply": 102, "by": "opponent", "move": 8}, {"ply": 103, "by": "net", "move": 44, "top5": [[44, 1.0], [81, 0.0], [17, 0.0], [16, 0.0], [62, 0.0]]}, {"ply": 104, "by": "opponent", "move": 62}, {"ply": 105, "by": "net", "move": 53, "top5": [[53, 0.9987], [81, 0.0013], [44, 0.0], [17, 0.0], [16, 0.0]]}]
+move (5, 8) adjacent [0, 1, 1] capturable [(1, [62], [53])]
+XXXXXXXXX
+XOOXX.X..
+OOOOOXXXX
+OO.OOXOXX
+.OO.OOOX.
+OOOO.OOX.
+O.OOOOOOX
+.O.OO.O.O
+O.OO.OOOO
+
+```

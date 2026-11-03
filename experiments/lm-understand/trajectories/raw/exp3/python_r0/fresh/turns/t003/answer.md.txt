@@ -1,0 +1,62 @@
+```python
+import numpy as np
+from scipy.linalg import svd
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+np.set_printoptions(precision=4, suppress=True, linewidth=150)
+
+for name in ["W_fc.0", "W_proj.0", "W_fc.1", "W_proj.1", "W_fc.2", "W_proj.2", "W_fc.3", "W_proj.3"]:
+    a = W[name].astype(float)
+    s = svd(a, compute_uv=False, check_finite=False)
+    print("\n", name, "first 48 singular values:\n", s[:48])
+    print("Energy fractions at ranks 16,20,22,24,26,28,32,64:",
+          [round(float(np.sum(s[:r]**2)/np.sum(s**2)), 4) for r in [16,20,22,24,26,28,32,64]])
+
+# First-layer MLP row geometry: no neuron is evaluated.
+f = W["W_fc.0"].astype(float) * W["ln2_w.0"][None, :]
+f -= f.mean(axis=1, keepdims=True)
+norms = np.linalg.norm(f, axis=1)
+unit = f / norms[:, None]
+cos = unit @ unit.T
+np.fill_diagonal(cos, -1)
+print("\nMLP0 effective row norm quantiles:", np.quantile(norms, [0,.1,.25,.5,.75,.9,1]))
+print("MLP0 largest off-diagonal row cosine quantiles:",
+      np.quantile(cos.max(axis=1), [0,.1,.25,.5,.75,.9,1]))
+
+# Shared affine coefficient geometry in layer 1.
+As, ks, qs = [], [], []
+for j in range(6):
+    sl = slice(64*j, 64*(j+1))
+    q0, k0 = W["W_q.1"][sl].astype(float), W["W_k.1"][sl].astype(float)
+    q = q0 * W["ln1_w.1"][None, :]
+    k = k0 * W["ln1_w.1"][None, :]
+    q -= q.mean(axis=1, keepdims=True)
+    k -= k.mean(axis=1, keepdims=True)
+    As.append(q.T @ k / 8)
+    ks.append(k.T @ (q0 @ W["ln1_b.1"]) / 8)
+    qs.append(q.T @ (k0 @ W["ln1_b.1"]) / 8)
+
+def cosines(xs):
+    z = np.stack([x.ravel() for x in xs])
+    z /= np.linalg.norm(z, axis=1, keepdims=True)
+    return z @ z.T
+
+print("\nL1 QK coefficient cosines:\n", cosines(As))
+print("L1 key-linear coefficient cosines:\n", cosines(ks))
+print("L1 query-linear coefficient cosines:\n", cosines(qs))
+print("L1 key-linear versus query-linear cosines:\n",
+      np.array([[np.dot(a,b)/np.linalg.norm(a)/np.linalg.norm(b) for b in qs] for a in ks]))
+
+# For each layer, singular spectrum of the six-head stack of bias-derived
+# key-only coefficient vectors; strong shared directions suggest common routing.
+for l in range(4):
+    coeff = []
+    for j in range(6):
+        sl = slice(64*j,64*(j+1))
+        q0, k0 = W[f"W_q.{l}"][sl].astype(float), W[f"W_k.{l}"][sl].astype(float)
+        k = k0 * W[f"ln1_w.{l}"][None,:]
+        k -= k.mean(axis=1, keepdims=True)
+        coeff.append(k.T @ (q0 @ W[f"ln1_b.{l}"]) / 8)
+    print("Layer", l, "key-only coefficient stack SV:",
+          svd(np.stack(coeff), compute_uv=False, check_finite=False))
+```

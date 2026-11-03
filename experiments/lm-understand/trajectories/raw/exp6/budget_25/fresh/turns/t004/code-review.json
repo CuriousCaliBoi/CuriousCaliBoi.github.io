@@ -1,0 +1,6 @@
+{
+  "code_sha256": "5fd1ee5e1762450de900f75f78d38faa7a028605fa7ce84638f12856bae0d89f",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Inspects saved pass_1 game summaries and board/valid arrays, computes descriptive counts and sorted margins, and prints existing moves. No model inference, new game simulation, fitting, or search."
+}

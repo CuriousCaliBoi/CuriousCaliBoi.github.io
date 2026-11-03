@@ -1,0 +1,78 @@
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=3, suppress=True, linewidth=180)
+D = 384
+A, B = {}, {}
+for l in range(4):
+    g = W[f"ln1_w.{l}"].astype(float)
+    for j in range(6):
+        s = slice(64*j,64*j+64)
+        q = W[f"W_q.{l}"][s].astype(float)
+        k = W[f"W_k.{l}"][s].astype(float)
+        v = W[f"W_v.{l}"][s].astype(float)
+        o = W[f"W_o.{l}"][:,s].astype(float)
+        A[l,j] = (q*g).T @ (k*g) / 8
+        B[l,j] = o @ (v*g)
+
+def cosine(x,y):
+    return np.sum(x*y)/(np.linalg.norm(x)*np.linalg.norm(y))
+
+print("WITHIN-LAYER QK COSINES, THEN OV COSINES")
+for l in range(4):
+    print("L",l,"QK")
+    print(np.array([[cosine(A[l,i],A[l,j]) for j in range(6)] for i in range(6)]))
+    print("OV")
+    print(np.array([[cosine(B[l,i],B[l,j]) for j in range(6)] for i in range(6)]))
+
+print("\nL0 WEIGHT-ONLY EIGENSPECTRA AND ALIGNMENTS")
+for j in range(6):
+    s = slice(64*j,64*j+64)
+    q = W["W_q.0"][s].astype(float)
+    k = W["W_k.0"][s].astype(float)
+    g = W["ln1_w.0"].astype(float)
+    for label,q1,k1 in [("raw",q,k),("gain",q*g,k*g)]:
+        ev = np.linalg.eigvals(k1 @ q1.T / 8)
+        ev = ev[np.argsort(abs(ev))[::-1]]
+        sv = np.linalg.svd(q1.T @ k1 / 8,compute_uv=False)
+        print(f"H{j} {label}: eig_top12={ev[:12]}, sv_top8={sv[:8]}")
+    u,sv,vt=np.linalg.svd(A[0,j],full_matrices=False)
+    print("top left/right cos",np.round(np.diag(vt[:5]@u[:,:5]),3))
+    print("top left/right coordinate concentration",
+          np.round(np.max(u[:,:5]**2,axis=0),3),
+          np.round(np.max(vt[:5]**2,axis=1),3))
+
+print("\nL0 QK TOP-DIRECTION COSINES (signed arbitrary; absolute values shown)")
+us,vs=[],[]
+for j in range(6):
+    u,s,vt=np.linalg.svd(A[0,j],full_matrices=False)
+    us.append(u[:,0]); vs.append(vt[0])
+print("left",np.abs(np.array(us)@np.array(us).T))
+print("right",np.abs(np.array(vs)@np.array(vs).T))
+
+print("\nATTENTION AFFINE PARAMETER NORMS (no activations)")
+for l in range(4):
+    g=W[f"ln1_w.{l}"].astype(float)
+    b=W[f"ln1_b.{l}"].astype(float)
+    for j in range(6):
+        s=slice(64*j,64*j+64)
+        q=W[f"W_q.{l}"][s].astype(float)
+        k=W[f"W_k.{l}"][s].astype(float)
+        qb=q@b; kb=k@b
+        key_linear=(k*g).T@qb/8
+        query_linear=(q*g).T@kb/8
+        print(f"L{l}H{j}: ||qD||={np.linalg.norm(q*g):.3f} ||kD||={np.linalg.norm(k*g):.3f}",
+              f"||qb||={np.linalg.norm(qb):.3f} ||kb||={np.linalg.norm(kb):.3f}",
+              f"||key_linear||={np.linalg.norm(key_linear):.3f} ||query_linear||={np.linalg.norm(query_linear):.3f}")
+
+print("\nKEY-SIDE COMPOSITION: trace(A_l B_earlier)/||A_l B_earlier||_F")
+print("These are matrix-path diagnostics, not observed attention or induction.")
+for l in range(1,4):
+    for j in range(6):
+        vals=[]
+        for m in range(l):
+            for h in range(6):
+                c=A[l,j]@B[m,h]
+                vals.append((np.trace(c)/np.linalg.norm(c),m,h,np.linalg.norm(c)))
+        vals.sort(reverse=True)
+        print(f"L{l}H{j}",[(round(v,3),f"L{m}H{h}",round(n,3)) for v,m,h,n in vals[:5]])

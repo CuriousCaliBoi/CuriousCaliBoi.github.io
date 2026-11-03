@@ -1,0 +1,123 @@
+OUTPUT of Python run 4 of at most 120:
+```
+
+GAME 64 net black
+Loss events: [(3, 69), (5, 77), (3, 79), (5, 81), (4, 91)]
+Lost 5 at ply 81
+  012345678
+0 .O.X.OXXX
+1 O.OOOOOOX
+2 OOOOOOOOX
+3 .OOOXXOX.
+4 O.OXX.X.X
+5 .OOOXXXX.
+6 OOOXX.X.X
+7 O.OOOX.X.
+8 ..OOX.X.X
+Previous net move: {'ply': 80, 'by': 'net', 'move': 2, 'top5': [[4, 0.43628573417663574], [2, 0.3505627512931824], [73, 0.20480307936668396], [81, 0.008348186500370502], [35, 1.3262848597150878e-07]]}
+Opponent move: {'ply': 81, 'by': 'strong', 'move': 35}
+Groups before net move: [(1, [np.int64(2), np.int64(4)]), (5, [np.int64(35)]), (1, [np.int64(35), np.int64(43)]), (1, [np.int64(35), np.int64(43), np.int64(53)]), (1, [np.int64(53), np.int64(61), np.int64(71)]), (1, [np.int64(59), np.int64(69), np.int64(77)]), (1, [np.int64(77)]), (1, [np.int64(69), np.int64(77), np.int64(79)]), (1, [np.int64(71), np.int64(79)])]
+Lost 5 at ply 77
+  012345678
+0 X.XX.OXXX
+1 OXOOOOOOX
+2 OOOOOOOOX
+3 .OOOXXOX.
+4 O.OXX.X.X
+5 .OOOXXXX.
+6 OOOXX.X.X
+7 OXOOOX.X.
+8 XX.OX.X.X
+Previous net move: {'ply': 76, 'by': 'net', 'move': 4, 'top5': [[4, 0.9831703305244446], [1, 0.011198461055755615], [81, 0.005630939267575741], [35, 8.945930574100203e-08], [77, 3.8717431039003714e-08]]}
+Opponent move: {'ply': 77, 'by': 'strong', 'move': 1}
+Groups before net move: [(1, [np.int64(1)]), (2, [np.int64(1), np.int64(4)]), (5, [np.int64(35)]), (1, [np.int64(1)]), (1, [np.int64(35), np.int64(43)]), (1, [np.int64(35), np.int64(43), np.int64(53)]), (1, [np.int64(53), np.int64(61), np.int64(71)]), (3, [np.int64(74)]), (1, [np.int64(59), np.int64(69), np.int64(77)]), (1, [np.int64(77)]), (1, [np.int64(69), np.int64(77), np.int64(79)]), (1, [np.int64(71), np.int64(79)])]
+
+GAME 65 net white
+Loss events: [(5, 68), (3, 92), (3, 98), (3, 112)]
+Lost 5 at ply 68
+  012345678
+0 ..X.XO.O.
+1 .X.XO.OX.
+2 ...XOOOXX
+3 .XXXXOXOO
+4 XOXOXXXXO
+5 O.O.OXX.O
+6 .O.OOXXXO
+7 O..O.OXXX
+8 ..O.O....
+Previous net move: {'ply': 67, 'by': 'net', 'move': 27, 'top5': [[27, 0.8790656328201294], [3, 0.11971520632505417], [78, 0.0005791826406493783], [65, 0.0001628557511139661], [18, 0.00013843127817381173]]}
+Opponent move: {'ply': 68, 'by': 'strong', 'move': 52}
+Groups before net move: [(1, [np.int64(6), np.int64(14)]), (1, [np.int64(6), np.int64(8)]), (6, [np.int64(6), np.int64(14)]), (5, [np.int64(52)]), (1, [np.int64(46)]), (1, [np.int64(48)]), (1, [np.int64(46), np.int64(54)]), (1, [np.int64(46), np.int64(48), np.int64(56)]), (1, [np.int64(54), np.int64(64), np.int64(72)]), (1, [np.int64(67), np.int64(77)]), (1, [np.int64(65), np.int64(73), np.int64(75)]), (1, [np.int64(67), np.int64(75), np.int64(77)])]
+Lost 3 at ply 112
+  012345678
+0 .O.O.O.OO
+1 .XOXO.OXX
+2 XX.XOOOXX
+3 XXXXXOXX.
+4 XXXXXXXX.
+5 XXOXOXXX.
+6 XOOOOXXXX
+7 O..O.OXXX
+8 .OO.O.OO.
+Previous net move: {'ply': 111, 'by': 'net', 'move': 80, 'top5': [[80, 0.8779871463775635], [44, 0.10420744121074677], [20, 0.009277911856770515], [81, 0.006703514605760574], [64, 0.001008918508887291]]}
+Opponent move: {'ply': 112, 'by': 'strong', 'move': 77}
+Groups before net move: [(1, [np.int64(0), np.int64(2)]), (1, [np.int64(2), np.int64(4)]), (1, [np.int64(4), np.int64(6), np.int64(14)]), (2, [np.int64(6)]), (1, [np.int64(2), np.int64(20)]), (6, [np.int64(4), np.int64(6), np.int64(14)]), (1, [np.int64(64), np.int64(72)]), (1, [np.int64(67), np.int64(77)]), (1, [np.int64(67), np.int64(75), np.int64(77)]), (2, [np.int64(77), np.int64(80)])]
+Before final move
+  012345678
+0 .O.O.O.OO
+1 .XOXO.OXX
+2 XX.XOOOXX
+3 XXXXXOXX.
+4 XXXXXXXX.
+5 XXOXOXXX.
+6 XOOOOXXXX
+7 O..O.OXXX
+8 .OO.O.O..
+After final move
+  012345678
+0 .O.O.O.OO
+1 .XOXO.OXX
+2 XX.XOOOXX
+3 XXXXXOXX.
+4 XXXXXXXX.
+5 XXOXOXXX.
+6 XOOOOXXXX
+7 O..O.OXXX
+8 .OO.O.OO.
+Matching earlier plies: [110]
+Final moves: [{'ply': 110, 'by': 'strong', 'move': 45}, {'ply': 111, 'by': 'net', 'move': 80, 'top5': [[80, 0.8779871463775635], [44, 0.10420744121074677], [20, 0.009277911856770515], [81, 0.006703514605760574], [64, 0.001008918508887291]]}, {'ply': 112, 'by': 'strong', 'move': 77}, {'ply': 113, 'by': 'net', 'move': 78, 'top5': [[78, 0.9999290704727173], [79, 4.238094334141351e-05], [44, 2.429929190839175e-05], [20, 2.1634416498272913e-06], [81, 1.56313865318225e-06]]}, {'ply': 114, 'by': 'strong', 'move': 81}, {'ply': 115, 'by': 'net', 'move': 79, 'top5': [[79, 0.857204258441925], [44, 0.12195739150047302], [20, 0.010858245193958282], [81, 0.007845343090593815], [64, 0.0011807703413069248]]}]
+
+GAME 66 net black
+Loss events: [(4, 53), (3, 75)]
+Lost 4 at ply 53
+  012345678
+0 .XOX.....
+1 .OO.O.X..
+2 XXOOOOX.X
+3 XOOO.X.X.
+4 OOOOO.X.X
+5 XXOOOX.X.
+6 .XXOX.X.X
+7 .OOOOX.X.
+8 ...OO.X.X
+Previous net move: {'ply': 52, 'by': 'net', 'move': 5, 'top5': [[63, 0.2477056086063385], [5, 0.23859085142612457], [16, 0.098839171230793], [14, 0.09639941155910492], [73, 0.09401844441890717]]}
+Opponent move: {'ply': 53, 'by': 'strong', 'move': 54}
+Groups before net move: [(1, [np.int64(0)]), (1, [np.int64(4), np.int64(12)]), (3, [np.int64(9)]), (1, [np.int64(17), np.int64(25), np.int64(35)]), (1, [np.int64(31), np.int64(33), np.int64(41)]), (1, [np.int64(35), np.int64(43), np.int64(53)]), (4, [np.int64(54)]), (1, [np.int64(41), np.int64(51), np.int64(59)]), (1, [np.int64(59)]), (1, [np.int64(53), np.int64(61), np.int64(71)]), (1, [np.int64(59), np.int64(69), np.int64(77)]), (1, [np.int64(69), np.int64(77), np.int64(79)]), (1, [np.int64(71), np.int64(79)])]
+Lost 3 at ply 75
+  012345678
+0 OOOXXXX.X
+1 .OOOOXXX.
+2 XXOOOOX.X
+3 XOOO.X.X.
+4 OOOOOXX.X
+5 OOOOOX.X.
+6 OX.OX.X.X
+7 .OOOOX.X.
+8 O.OOOXX.X
+Previous net move: {'ply': 74, 'by': 'net', 'move': 31, 'top5': [[31, 0.839830219745636], [81, 0.15730659663677216], [59, 0.0028632020112127066], [33, 1.4053635913422596e-13], [7, 1.7967534205323833e-21]]}
+Opponent move: {'ply': 75, 'by': 'strong', 'move': 9}
+Groups before net move: [(1, [np.int64(7), np.int64(17)]), (3, [np.int64(9)]), (1, [np.int64(17), np.int64(25), np.int64(35)]), (1, [np.int64(35), np.int64(43), np.int64(53)]), (1, [np.int64(56)]), (1, [np.int64(59)]), (1, [np.int64(53), np.int64(61), np.int64(71)]), (3, [np.int64(59), np.int64(69), np.int64(79)]), (1, [np.int64(71), np.int64(79)])]
+
+Recorded network move outcomes: Counter({('own_group_liberties', 4): 930, ('own_group_liberties', 3): 825, ('own_group_liberties', 2): 748, ('own_group_liberties', 1): 465, ('self_atari_group_size', 1): 286, ('self_atari_group_size', 2): 85, ('self_atari_group_size', 3): 45, ('self_atari_group_size', 4): 21, ('self_atari_group_size', 5): 16, ('self_atari_group_size', 6): 12})
+
+```

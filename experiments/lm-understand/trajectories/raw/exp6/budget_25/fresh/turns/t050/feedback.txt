@@ -1,0 +1,6 @@
+OUTPUT of Python run 28 of at most 120:
+```
+Restored the archived revision 13 for an independent confirmation batch.
+Its weights exactly match its analytic constructor.
+
+```

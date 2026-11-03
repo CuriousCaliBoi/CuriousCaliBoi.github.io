@@ -1,0 +1,6 @@
+{
+  "code_sha256": "a6ab76561562be9d70d748033b41bcefee92ca8215187711bf89142d85dc9fbf",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Restores previously generated parameter arrays and checks exact array equality against the earlier reviewed analytic constructor. This is parameter verification only; no board/network inference, game simulation, fitting, or search."
+}

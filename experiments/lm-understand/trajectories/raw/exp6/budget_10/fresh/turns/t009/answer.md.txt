@@ -1,0 +1,96 @@
+```python
+import numpy as np
+np.savez("/work/policy_v2.npz", **{name:load(name) for name in NAMES})
+
+# Rebuild the first policy, then revise its internal rule circuit.
+exec(open("/work/design.py").read())
+A=build_policy()
+
+def u(ch,p): return 81*ch+p
+def neigh(p, offsets):
+    r,c=divmod(p,9)
+    return [(r+dr)*9+c+dc for dr,dc in offsets
+            if 0<=r+dr<9 and 0<=c+dc<9]
+N=[neigh(p,[(-1,0),(1,0),(0,-1),(0,1)]) for p in range(81)]
+D=[neigh(p,[(-1,-1),(-1,1),(1,-1),(1,1)]) for p in range(81)]
+
+# L2-L3 now propagate separate certificates for two and three liberties.
+# Direct liberty counts need not be retained: a stone adjacent to a legal
+# candidate point necessarily has at least that one liberty.
+oldbase=A["L4.W"][:,405:486].copy()
+oldbasebias=A["L4.b"][405:486].copy()
+for k in (2,3,4):
+    A[f"L{k}.W"][:,:486]=0
+    A[f"L{k}.b"][:486]=0
+for k in (2,3,4):
+    for p in range(81):
+        for ch in (0,1):
+            A[f"L{k}.W"][u(ch,p),u(ch,p)]=1
+
+for p in range(81):
+    for color,ch in [(0,2),(1,3)]:
+        A["L2.b"][u(ch,p)]=-21
+        A["L2.W"][u(color,p),u(ch,p)]=20
+        A["L2.W"][u(4+color,p),u(ch,p)]=-1
+        for q in [p]+N[p]:
+            A["L2.W"][u(2+color,q),u(ch,p)]+=1
+    A["L2.b"][u(4,p)]=-44
+    A["L2.W"][u(0,p),u(4,p)]=40
+    A["L2.W"][u(2,p),u(4,p)]=2
+    for q in N[p]:
+        A["L2.W"][u(2,q),u(4,p)]+=1
+
+A["L2.W"][:,405:486]=oldbase
+A["L2.b"][405:486]=oldbasebias
+
+for p in range(81):
+    for ch,color in [(2,0),(3,1),(4,0)]:
+        A["L3.b"][u(ch,p)]=-256
+        A["L3.W"][u(color,p),u(ch,p)]=256
+        for q in [p]+N[p]:
+            A["L3.W"][u(ch,q),u(ch,p)]+=1
+    A["L3.W"][u(5,p),u(5,p)]=1
+    A["L4.W"][u(5,p),u(5,p)]=1
+
+    A["L4.b"][u(2,p)]=-2048
+    A["L4.W"][u(0,p),u(2,p)]=2048
+    for q in [p]+N[p]:
+        A["L4.W"][u(4,q),u(2,p)]+=1
+    for color,src,dst in [(0,2,4),(1,3,3)]:
+        A["L4.W"][u(color,p),u(dst,p)]=1
+        for q in [p]+N[p]:
+            A["L4.W"][u(src,q),u(dst,p)]-=2
+
+# Friendly connections with two liberties suffice when the new move has
+# an empty neighbour; a three-liberty certificate also protects tight moves.
+for p in range(81):
+    for q in N[p]:
+        A["L5.W"][u(0,q),u(1,p)]-=1
+        A["L5.W"][u(4,q),u(1,p)]+=1
+
+# Reward connecting nearby stones without rewarding an already filled-in
+# triangle. Saturate the attack bonus instead of counting a chain repeatedly.
+for ch in (3,4):
+    A["L5.W"][:,ch*81:(ch+1)*81]=0
+    A["L5.b"][ch*81:(ch+1)*81]=0
+for p in range(81):
+    A["L5.b"][u(3,p)]=-1
+    for q in N[p]:
+        A["L5.W"][u(0,q),u(3,p)]=1
+    for q in D[p]:
+        A["L5.W"][u(0,q),u(3,p)]=-0.7
+    A["L5.b"][u(4,p)]=-1
+    for q in N[p]:
+        A["L5.W"][u(3,q),u(4,p)]=1
+    A["out.W"][u(3,p),p]=2.5
+    A["out.W"][u(4,p),p]=-9
+
+# Unsupported contact is discouraged in the linear positional component.
+for p in range(81):
+    for q in N[p]:
+        A["L2.W"][u(1,q),u(5,p)]-=0.85
+
+for name in NAMES: save(name,A[name])
+np.savez("/work/policy_v3.npz", **A)
+print("Saved revised connection and distinct-liberty rule circuit.")
+```

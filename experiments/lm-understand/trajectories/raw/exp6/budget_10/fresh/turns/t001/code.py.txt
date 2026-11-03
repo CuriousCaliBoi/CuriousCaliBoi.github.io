@@ -1,0 +1,7 @@
+import os
+import numpy as np
+
+print("Tensor shapes:", SHAPES)
+print("Tensor names:", NAMES)
+print("Already saved:", saved())
+print("Working files:", os.listdir("/work"))

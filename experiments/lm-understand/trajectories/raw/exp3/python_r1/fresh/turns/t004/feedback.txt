@@ -1,0 +1,47 @@
+Principal cosines between top-28 L0H1 and L0H5 value row spaces:
+[0.982 0.98  0.978 0.978 0.975 0.972 0.972 0.969 0.966 0.964 0.961 0.955
+ 0.952 0.95  0.944 0.937 0.931 0.922 0.918 0.907 0.887 0.847 0.821 0.695
+ 0.62  0.504 0.356 0.169]
+Consensus eigenvalues: [1.982 1.98  1.978 1.978 1.975 1.972 1.972 1.969 1.966 1.964 1.961 1.955
+ 1.952 1.95  1.944 1.937 1.931 1.922 1.918 1.907 1.887 1.847 1.821 1.695
+ 1.62  1.504 1.356 1.169 0.831 0.644 0.496 0.38  0.305 0.179 0.153]
+
+L0 QK energy inside the consensus content subspace (unscaled matrices)
+0 query 0.077 key 0.441
+1 query 0.204 key 0.198
+2 query 0.429 key 0.599
+3 query 0.201 key 0.472
+4 query 0.054 key 0.108
+5 query 0.075 key 0.078
+
+ICA of final MLP output WEIGHT columns, not activations
+Sorted component kurtoses: [25.01  1.46  1.34  1.3   1.27  1.23  1.17  1.13  1.13  1.1   1.08  1.05
+  1.03  1.02  1.    0.97  0.97  0.96  0.86  0.58  0.5   0.49  0.43  0.41
+ -0.24 -0.4  -0.52 -0.56]
+Sorted absolute component skewness: [0.68 0.4  0.38 0.24 0.24 0.2  0.18 0.18 0.17 0.16 0.14 0.13 0.12 0.11
+ 0.1  0.07 0.06 0.06 0.06 0.05 0.05 0.04 0.04 0.03 0.03 0.03 0.01 0.01]
+Output component overlap with initial content subspace: [0.12  0.115 0.1   0.099 0.097 0.097 0.096 0.091 0.09  0.09  0.087 0.085
+ 0.082 0.076 0.075 0.075 0.071 0.071 0.07  0.068 0.068 0.063 0.062 0.056
+ 0.054 0.053 0.053 0.049]
+Component norms: [0.524 0.485 0.476 0.473 0.425 0.424 0.422 0.414 0.409 0.402 0.402 0.4
+ 0.398 0.391 0.39  0.375 0.374 0.372 0.363 0.355 0.353 0.351 0.346 0.344
+ 0.342 0.337 0.33  0.326]
+
+Initial MLP input-weight geometry in consensus content coordinates
+Sorted component kurtoses: [376.31 261.48 223.02 197.54 171.95 166.83 162.4  153.1  141.93 129.79
+ 121.49 105.13  82.7   79.19  78.52  75.73  73.28  69.47  65.69  59.39
+  53.58  49.19  43.57  43.35  36.13  30.05  26.73  15.29]
+Sorted absolute component skewness: [16.48 13.18 12.66 11.22 10.92 10.71 10.65 10.27  9.82  9.82  8.55  7.85
+  7.07  6.9   6.6   6.49  6.47  5.62  5.54  5.28  5.21  5.18  4.62  3.2
+  3.01  2.94  1.23  0.34]
+
+Final MLP output-column directional clustering
+k 20 inertia 543.63 cluster sizes [52, 48, 46, 45, 41, 39, 39, 38, 38, 37, 37, 37, 36, 36, 36, 36, 34, 34, 30, 29]
+k 24 inertia 530.88 cluster sizes [43, 41, 38, 35, 35, 35, 35, 34, 33, 32, 32, 32, 32, 32, 31, 31, 31, 29, 28, 28, 27, 25, 25, 24]
+k 28 inertia 517.56 cluster sizes [59, 42, 38, 33, 32, 30, 30, 29, 28, 28, 27, 27, 27, 27, 27, 26, 25, 25, 24, 24, 24, 23, 21, 19, 19, 19, 18, 17]
+k 32 inertia 507.03 cluster sizes [37, 34, 32, 32, 31, 30, 29, 28, 27, 26, 26, 25, 25, 25, 25, 24, 24, 24, 23, 23, 22, 21, 21, 21, 21, 19, 18, 17, 16, 14, 14, 14]
+k 40 inertia 488.43 cluster sizes [35, 35, 28, 24, 24, 24, 24, 23, 22, 22, 22, 22, 22, 21, 21, 21, 21, 20, 20, 20, 19, 19, 19, 19, 18, 17, 16, 15, 15, 15, 15, 14, 14, 14, 12, 12, 11, 11, 11, 11]
+
+[stderr]
+/env/lib/python3.12/site-packages/sklearn/decomposition/_fastica.py:132: ConvergenceWarning: FastICA did not converge. Consider increasing tolerance or the maximum number of iterations.
+  warnings.warn(

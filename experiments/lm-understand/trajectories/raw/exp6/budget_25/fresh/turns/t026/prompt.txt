@@ -1,0 +1,6 @@
+OUTPUT of Python run 16 of at most 120:
+```
+Saved revision 9: empty-triangle and redundant-connection avoidance,
+relaxed where nearby enemy stones make connections valuable.
+
+```

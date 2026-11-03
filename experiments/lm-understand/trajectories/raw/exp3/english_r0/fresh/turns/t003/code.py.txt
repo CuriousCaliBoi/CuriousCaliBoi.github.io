@@ -1,0 +1,81 @@
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=4, suppress=True, linewidth=180)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+A={}; B={}; QB={}; KB={}
+for l in range(4):
+    g=W[f"ln1_w.{l}"].astype(float)
+    b=W[f"ln1_b.{l}"].astype(float)
+    for h in range(6):
+        s=slice(64*h,64*(h+1))
+        q,k,v=[W[f"W_{t}.{l}"][s].astype(float) for t in ["q","k","v"]]
+        o=P@W[f"W_o.{l}"][:,s].astype(float)
+        qg,kg,vg=[(m*g)@P for m in [q,k,v]]
+        A[l,h]=qg.T@kg/8
+        B[l,h]=o@vg
+        KB[l,h]=kg.T@(q@b)/8
+        QB[l,h]=qg.T@(k@b)/8
+
+print("L0 OV spectra")
+for h in range(6):
+    s=np.linalg.svd(B[0,h],compute_uv=False)
+    print(h,np.round(s[:32],4))
+
+print("\nL0 OV pairwise cosines")
+z=np.array([B[0,h].ravel()/np.linalg.norm(B[0,h]) for h in range(6)])
+print(np.round(z@z.T,3))
+
+broad=[0,1,4,5]
+ub,sb,_=np.linalg.svd(np.concatenate([B[0,h] for h in broad],axis=1),full_matrices=False)
+print("\nJoint broad-head output spectrum",np.round(sb[:35],4))
+for r in [2,4,8,16]:
+    T=ub[:,:r]
+    print("Broad-output subspace dimension",r)
+    for l in range(1,4):
+        print("layer",l,"Q/K/both energy",np.round([
+            [np.linalg.norm(T.T@A[l,h])**2/np.linalg.norm(A[l,h])**2,
+             np.linalg.norm(A[l,h]@T)**2/np.linalg.norm(A[l,h])**2,
+             np.linalg.norm(T.T@A[l,h]@T)**2/np.linalg.norm(A[l,h])**2]
+            for h in range(6)],3))
+
+print("\nKey-bias vector cosines within layers")
+for l in range(4):
+    z=np.array([KB[l,h]/np.linalg.norm(KB[l,h]) for h in range(6)])
+    print(l,np.round(z@z.T,3))
+
+print("\nL0H2 nonzero effective QK eigenvalues, sorted by phase (positive imaginary part)")
+ev=np.linalg.eigvals(A[0,2])
+ev=ev[(ev.imag>1e-5)&(abs(ev)>.03)]
+ev=ev[np.argsort(np.angle(ev))]
+print("magnitude, phase",np.round(np.array([abs(ev),np.angle(ev)]).T,4))
+
+# Input directions read by L0H2's value matrix; no activations.
+g=W["ln1_w.0"].astype(float)
+vg=(W["W_v.0"][128:192].astype(float)*g)@P
+_,sv,tv=np.linalg.svd(vg,full_matrices=False)
+print("\nL0H2 effective V singular values",np.round(sv,4))
+for r in [16,24,28,40]:
+    T=tv[:r].T
+    print("V-input subspace dimension",r)
+    for l in range(1,4):
+        out=[]
+        for h in range(6):
+            c=T.T@A[l,h]@B[0,2]@T
+            n=np.linalg.norm(c)
+            ev=np.linalg.eigvalsh((c+c.T)/2)
+            out.append([np.trace(c)/max(n,1e-12),
+                        np.sum(c*c.T)/max(n*n,1e-12),
+                        np.sum(ev[ev>0])/max(np.sum(abs(ev)),1e-12)])
+        print("layer",l,"composition trace/F, symmetry, positive-symmetric-mass",np.round(out,3))
+
+print("\nMLP matrix-product spectra (not applying ReLU)")
+for l in range(4):
+    f=(W[f"W_fc.{l}"].astype(float)*W[f"ln2_w.{l}"])@P
+    o=P@W[f"W_proj.{l}"].astype(float)
+    m=o@f
+    s=np.linalg.svd(m,compute_uv=False)
+    print(l,"norm",round(np.linalg.norm(m),3),"trace",round(np.trace(m),3),
+          "topSV",np.round(s[:35],3))

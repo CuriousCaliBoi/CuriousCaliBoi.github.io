@@ -1,0 +1,6 @@
+{
+  "code_sha256": "45fd1fe30fa9ab18c70963d687031ec489003c18b331ddeee90ef2f0081817bd",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Builds all tensors analytically from fixed coordinate-neighborhood and distance rules, manually selected thresholds/constants, and static relay assignments. The generated module constructs weights only; shape/finiteness checks do not evaluate layers. No input examples, Go simulation, fitting, or search."
+}

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "87b144c9d233d1fa48df0881eddaabcf51b751add5d82e8b08d6418aaadbcc84",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It restores fixed rescue and opening coefficients, symmetrizes the color-plane coefficient pattern, and verifies only tensor dtype, finiteness and counts. There is no network evaluation on inputs, fitting, simulation or move search."
+}

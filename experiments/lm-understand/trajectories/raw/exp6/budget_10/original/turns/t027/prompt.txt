@@ -1,0 +1,9 @@
+OUTPUT of Python run 17 of at most 120:
+```
+Final policy saved and all 14 tensors checked.
+Design: liberty-based group signals, guarded captures, atari escapes,
+self-atari avoidance, eye preservation, connection/shape preferences,
+local influence, center opening, and conservative passing.
+No training, search, or sandbox forward evaluations were used.
+
+```

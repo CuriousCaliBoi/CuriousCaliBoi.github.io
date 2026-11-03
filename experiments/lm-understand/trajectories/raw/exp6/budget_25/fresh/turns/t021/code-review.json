@@ -1,0 +1,6 @@
+{
+  "code_sha256": "5f6a9c172ba656c572ac6714dc501cc6c90a7187fcafde2378343d764ea2c87a",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Archives current tensors and reuses the reviewed analytic builder with manually selected strategic coefficients. All generated code constructs weights only; no network/layer forward computation, Go simulation, fitting, or search."
+}

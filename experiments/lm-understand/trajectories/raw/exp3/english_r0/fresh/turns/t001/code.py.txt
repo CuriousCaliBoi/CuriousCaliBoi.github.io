@@ -1,0 +1,54 @@
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+
+np.set_printoptions(precision=4, suppress=True)
+print("WEIGHT-ONLY ANALYSIS: no inputs, activations, or forward passes.")
+print("Keys and shapes:", [(k, tuple(v.shape)) for k, v in sorted(W.items())])
+
+def spectrum_summary(a):
+    s = np.linalg.svd(a.astype(np.float64), compute_uv=False)
+    e = np.cumsum(s*s) / np.sum(s*s)
+    return np.linalg.norm(a), s[0], int(np.searchsorted(e, .5)+1), int(np.searchsorted(e, .9)+1)
+
+for l in range(4):
+    print("\nLAYER", l)
+    for name in ["ln1_w", "ln1_b", "ln2_w", "ln2_b"]:
+        a = W[f"{name}.{l}"]
+        print(name, "min/mean/max/std/norm:",
+              np.round([a.min(), a.mean(), a.max(), a.std(), np.linalg.norm(a)], 5))
+    for name in ["W_q", "W_k", "W_v", "W_o", "W_fc", "W_proj"]:
+        a = W[f"{name}.{l}"]
+        norm, top, r50, r90 = spectrum_summary(a)
+        print(name, "norm/topSV/r50/r90:", round(float(norm), 4),
+              round(float(top), 4), r50, r90)
+
+print("\nHEAD PRODUCTS")
+print("QK=Q.T@K/sqrt(64); OV=O@V.")
+print("sym=<A,A.T>/||A||F^2; trN=trace(A)/nuclear_norm(A).")
+print("Columns: head; QK(norm,topSV,r50,r90,sym,trN); "
+      "OV(norm,topSV,r50,r90,sym,trN); leading nonzero eigenvalues by magnitude.")
+
+for l in range(4):
+    for h in range(6):
+        sl = slice(64*h, 64*(h+1))
+        q = W[f"W_q.{l}"][sl].astype(np.float64)
+        k = W[f"W_k.{l}"][sl].astype(np.float64)
+        v = W[f"W_v.{l}"][sl].astype(np.float64)
+        o = W[f"W_o.{l}"][:, sl].astype(np.float64)
+        summaries, eigenvalues = [], []
+        for a, small in [(q.T @ k / 8, k @ q.T / 8), (o @ v, v @ o)]:
+            s = np.linalg.svd(a, compute_uv=False)
+            norm = np.linalg.norm(a)
+            e = np.cumsum(s*s) / np.sum(s*s)
+            summaries.append([
+                round(norm, 4), round(s[0], 4),
+                int(np.searchsorted(e, .5)+1), int(np.searchsorted(e, .9)+1),
+                round(np.sum(a*a.T)/(norm*norm), 4),
+                round(np.trace(a)/s.sum(), 4)
+            ])
+            ev = np.linalg.eigvals(small)
+            ev = ev[np.argsort(-np.abs(ev))][:5]
+            eigenvalues.append(np.round(ev, 3))
+        print(f"L{l}H{h}", summaries[0], summaries[1],
+              "QKev", eigenvalues[0], "OVev", eigenvalues[1])

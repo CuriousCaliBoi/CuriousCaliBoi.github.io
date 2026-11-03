@@ -1,0 +1,6 @@
+{
+  "code_sha256": "a84be157bdc32679e4c17ce957ef2e9e8b52a4065cc18f7e5caee6bbcebb06f8",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Weight matrices, QK/OV products, spectral geometry, weight-row clustering and graph statistics only. Every np.maximum floors an eigenvalue/norm/degree denominator; no nonlinear network layer is evaluated on inputs. No search."
+}

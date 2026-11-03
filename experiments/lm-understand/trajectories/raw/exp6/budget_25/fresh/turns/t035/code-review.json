@@ -1,0 +1,6 @@
+{
+  "code_sha256": "9e8694f6fbdf055add8a4d54264b30b5444cb034ab3ccad0c83ac929d4076fb7",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Computes area ownership by flood-filling only saved pass_14 boards and compares recorded first-pass positions with actual subsequent logged outcomes. It generates no moves/successor states and performs no policy inference, fitting, or action search; this is rules-based analysis of permitted feedback."
+}

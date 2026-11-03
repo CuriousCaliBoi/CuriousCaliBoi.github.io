@@ -1,0 +1,6 @@
+{
+  "code_sha256": "9111f1d674c0811b69bc8405a49c89d94c034575e9076362a1f74cefbc4e6bc9",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Directly revises coefficients for eight fixed board coordinates and manually adjusts shape-rule biases/weights. All operations construct tensors; none evaluates a layer on a position, simulates a game, fits data, or searches."
+}

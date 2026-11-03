@@ -1,0 +1,5 @@
+OUTPUT of Python run 25 of at most 120:
+```
+Prioritize connecting separated friendly stones before they are cut.
+
+```

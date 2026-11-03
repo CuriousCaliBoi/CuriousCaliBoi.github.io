@@ -1,0 +1,6 @@
+{
+  "code_sha256": "f7f5ce3a6eacf355ad76ea41cba35331456d0cce53c5e271e8570d193782e39a",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Reuses prior reviewed tensor builders, adjusts manually chosen coefficients, and fills spare units using fixed central-coordinate adjacency. No input-board evaluation, new games, training/fitting, or action search."
+}

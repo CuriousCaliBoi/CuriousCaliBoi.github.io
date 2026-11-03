@@ -1,0 +1,78 @@
+```python
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=4, suppress=True, linewidth=180)
+
+d = 384
+P = np.eye(d) - np.ones((d, d))/d
+A, B = {}, {}
+print("All calculations below are matrix products or decompositions, not layer evaluations.")
+
+for l in range(4):
+    g = W[f"ln1_w.{l}"].astype(float)
+    b = W[f"ln1_b.{l}"].astype(float)
+    print("\nLAYER", l)
+    for h in range(6):
+        sl = slice(64*h, 64*(h+1))
+        q, k, v = [W[f"W_{name}.{l}"][sl].astype(float) for name in ["q", "k", "v"]]
+        o = W[f"W_o.{l}"][:, sl].astype(float)
+        qg, kg, vg = [(m*g) @ P for m in [q, k, v]]
+        a = qg.T @ kg / 8
+        bb = P @ o @ vg
+        A[l,h], B[l,h] = a, bb
+        s = np.linalg.svd(a, compute_uv=False)
+        ev = np.linalg.eigvals(kg @ qg.T / 8)
+        ev = ev[np.argsort(-abs(ev))]
+        key_bias = kg.T @ (q @ b) / 8
+        print(f"L{l}H{h}",
+              "Q/K/V/O norms", np.round([np.linalg.norm(m) for m in [q,k,v,o]],3),
+              "effective QK norm/top/sym/trace",
+              np.round([np.linalg.norm(a),s[0],np.sum(a*a.T)/np.sum(a*a),np.trace(a)],4),
+              "query_bias_ratio", round(np.linalg.norm(q@b)/np.linalg.norm(qg),4),
+              "key_bias_norm", round(np.linalg.norm(key_bias),4),
+              "QKev", np.round(ev[:8],3))
+
+print("\nSINGULAR VALUES: first 45 for selected matrices")
+for name in ["W_q.0","W_k.0","W_v.0","W_o.0","W_fc.0","W_proj.0",
+             "W_proj.1","W_proj.2","W_proj.3"]:
+    s = np.linalg.svd(W[name].astype(float),compute_uv=False)
+    print(name, np.round(s[:45],3))
+
+# Positional candidate subspace: the dominant left/right singular spaces
+# of L0H2's QK product. This is not an embedding or a constructed input.
+u,s,vt = np.linalg.svd(A[0,2],full_matrices=False)
+joined = np.concatenate([u[:,:16],vt[:16].T],axis=1)
+up,sp,_ = np.linalg.svd(joined,full_matrices=False)
+print("\nL0H2 left/right-space joint singular values",np.round(sp,4))
+for r in [16,24,32]:
+    T=up[:,:r]
+    print("Candidate position-space dimension",r)
+    for l in range(4):
+        vals=[]
+        for h in range(6):
+            a=A[l,h]
+            vals.append([np.linalg.norm(T.T@a)**2/np.linalg.norm(a)**2,
+                         np.linalg.norm(a@T)**2/np.linalg.norm(a)**2,
+                         np.linalg.norm(T.T@a@T)**2/np.linalg.norm(a)**2])
+        print("layer",l,"Q/K/both energy:",np.round(vals,3))
+
+print("\nKEY-COMPOSITION CANDIDATES: QK_l @ OV_earlier")
+print("For each head: strongest positive trace/Frobenius scores; "
+      "entries=(earlier head, trace/Fnorm, transpose symmetry, Fnorm).")
+for l in range(1,4):
+    for h in range(6):
+        results=[]
+        for j in range(l):
+            for k in range(6):
+                c=A[l,h]@B[j,k]
+                fn=np.linalg.norm(c)
+                results.append((f"L{j}H{k}",np.trace(c)/fn,np.sum(c*c.T)/(fn*fn),fn))
+        results.sort(key=lambda t:t[1],reverse=True)
+        print(f"L{l}H{h}",[(n,round(t,3),round(y,3),round(f,3)) for n,t,y,f in results[:5]])
+
+print("\nPairwise cosine similarities of effective QK products, within each layer")
+for l in range(4):
+    z=np.array([A[l,h].ravel()/np.linalg.norm(A[l,h]) for h in range(6)])
+    print("Layer",l,"\n",np.round(z@z.T,3))
+```

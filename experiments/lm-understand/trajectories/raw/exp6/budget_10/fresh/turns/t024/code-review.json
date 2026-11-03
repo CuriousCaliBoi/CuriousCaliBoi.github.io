@@ -1,0 +1,6 @@
+{
+  "code_sha256": "62b10edbc52cbc1b5de759adf54180331e26e77caa5fa1fd391e007aad76b450",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Assigns a symmetric opening-prior output coefficient by fixed row/column cases and manually selected constants, then saves tensors. It does not evaluate logits, fit examples, simulate games, or search."
+}

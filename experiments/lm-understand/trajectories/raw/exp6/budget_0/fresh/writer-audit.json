@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "budget": 0,
+  "case_id": "b80ce267539e414a927671e47cf8b5f0",
+  "cli_turns": 2,
+  "python_runs": 1,
+  "passes": 0,
+  "all_code_sha_bound_manual_approvals": true,
+  "pass_records": [],
+  "failed_requests_or_python": [],
+  "tensor_sha256": {
+    "L1.W": "33dcc3ccc820c3bd05e798f98ece83212e482e40943abb25c108f338abf08747",
+    "L1.b": "089d729b8cd43aa51fded5776644358ec5f16f70c02557b5fa997696a25db790",
+    "L2.W": "b40822aaf1625ab439c25b52f6a8ec58b31ceb7136fb4de750c0db2dba59cfa5",
+    "L2.b": "808842040ea7892a2539e8164af271b3147f49f4e2ded654914fb398d05d9943",
+    "L3.W": "6be296810f838befcd39a3d3c613b4a578b0e53e129db1e6f264f3e85dd07f5c",
+    "L3.b": "085e5a58c0caeb21f33d04e625783090cfc35ab80a89ca512420a60181dcc494",
+    "L4.W": "6b8fd073f0e59c9205e129d413fa17621df17738a745be7dd3796fd5120d2859",
+    "L4.b": "65968bf2d4ce79522d425f2d62b292dbcb2acdbbdbd081bb091e12e844f7aac8",
+    "L5.W": "2f31ace8c6ae0a9efb62c4bc0b6261088aa3096b7d032bacaf59e882d9c6ad43",
+    "L5.b": "873d4d188180c3b39ecf1d797159633a898fbe6764be40642f993958ff5d1188",
+    "L6.W": "ebd217a946092fc43c77e1015c3c6dabe38173a97609945263fef15b791561f0",
+    "L6.b": "a0c6171016cf828da30a83cc6d65dc72d04b0c15153887d83a23b4a3065a1644",
+    "out.W": "b681db077325e475c1570808e42fe885d8a01d760f5d0f12b531d4f2ab9ff561",
+    "out.b": "0818a7b46f7f6619565fe2afa7579c32761de150aed3f006208dbe9701298610"
+  },
+  "artifact_files_hashed": 67,
+  "artifact_hash_manifest_sha256": "d7dbe5846a43d08df74ef13744bc814b5eb095d9b9eb0b2f56329b38c5edeaf1",
+  "scope": "Mechanical provenance and complete transcript/feedback verification. Full code protocol reviews are separately SHA-bound per turn. Local public workspace and private controller snapshots preserve actual practice artifacts; final tensor hashes match all three archived copies."
+}

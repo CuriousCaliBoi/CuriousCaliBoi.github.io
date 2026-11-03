@@ -1,0 +1,6 @@
+{
+  "code_sha256": "dfb58acbcc3c74f6ed3327f67d7ffa47d5c2846dc7f2f1b910bd65363ee78119",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Archives prior tensors and extends the previously reviewed analytic design module by manually chosen constants, fixed-neighborhood coefficient assignments, and tensor-slice relocation. The exec calls only run these tensor builders; no board/layer inference, game stepping, fitting, or search occurs."
+}

@@ -1,0 +1,48 @@
+import numpy as np, json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_3.npz",**{n:load(n) for n in names})
+
+revision=r'''
+import numpy as np
+_base={}
+exec(open("/work/design_v3.py").read(),_base)
+
+def construct(parameters=None):
+    changes=dict(scale=2.8, eye=25.0, capture_exemption=1.0)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    W=t["L6.W"]; b=t["L6.b"]; OW=t["out.W"]
+    def u(c,i): return c*81+i
+    for i in range(81):
+        # Merge the two nonnegative tactical accumulators, freeing an
+        # entire channel for explicit true-eye preservation.
+        W[:,u(1,i)]+=W[:,u(2,i)]
+        b[u(1,i)]+=b[u(2,i)]
+        W[:,u(2,i)]=0
+        b[u(2,i)]=0
+
+        r,c=divmod(i,9)
+        ns=[rr*9+cc for rr,cc in
+            ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+            if 0<=rr<9 and 0<=cc<9]
+        ds=[rr*9+cc for rr,cc in
+            ((r-1,c-1),(r-1,c+1),(r+1,c-1),(r+1,c+1))
+            if 0<=rr<9 and 0<=cc<9]
+        b[u(2,i)]=1-len(ns)
+        for j in ns:
+            W[u(0,j),u(2,i)]=1
+        for j in ds:
+            W[u(1,j),u(2,i)]=-1 if min(r,c,8-r,8-c)==0 else -0.5
+        OW[u(2,i),i]=-p["scale"]*p["eye"]
+    return t,p
+'''
+open("/work/design_v4.py","w").write(revision)
+ns={}
+exec(revision,ns)
+tensors,p=ns["construct"]()
+for name,array in tensors.items():
+    save(name,array)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 4: explicit eye protection, less permissive")
+print("capture exemptions, and more decisive sampling.")

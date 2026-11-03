@@ -1,0 +1,6 @@
+{
+  "code_sha256": "421ca26eb1e28f962dcd215b1959ed75f12dfbad684c99225f5ae930d5d06454",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Analyzes only saved pass_1 positions: flood-fills existing stone groups to count liberties, compares recorded before/after boards for losses and repeats, and summarizes already-played moves. This is rules-based inspection of permitted feedback, not generating successor boards, evaluating a network, fitting weights, or searching actions."
+}

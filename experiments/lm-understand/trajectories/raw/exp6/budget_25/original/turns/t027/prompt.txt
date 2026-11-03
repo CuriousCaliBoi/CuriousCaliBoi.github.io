@@ -1,0 +1,9 @@
+OUTPUT of Python run 16 of at most 120:
+```
+
+[stderr]
+Traceback (most recent call last):
+  File "<string>", line 32, in <module>
+NameError: name 'gs' is not defined. Did you mean: 'os'?
+
+```

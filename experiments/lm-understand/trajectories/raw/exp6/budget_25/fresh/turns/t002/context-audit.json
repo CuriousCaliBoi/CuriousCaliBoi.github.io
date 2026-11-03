@@ -1,0 +1,57 @@
+{
+  "valid": true,
+  "expected_user_messages": 2,
+  "actual_user_messages": 2,
+  "user_messages_exact_and_ordered": true,
+  "unexpected_context": [],
+  "settings": [
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    }
+  ],
+  "message_hashes": [
+    {
+      "role": "developer",
+      "characters": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "role": "developer",
+      "characters": 26,
+      "sha256": "b8a5d51f11d62576e43005a35c4db74c365ace7db42076e7bf4e03c7d949076c"
+    },
+    {
+      "role": "developer",
+      "characters": 1398,
+      "sha256": "e1ec47a3ec231ef78c1e1d61f66f07017c0effb2e1b8c90b123450b5058b070b"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "ef4753c37dfd9ea688a83097c59de875912046e885329e0269b56a50a9464f18"
+    },
+    {
+      "role": "user",
+      "characters": 6610,
+      "sha256": "525e190c78384df67b3f1a5504b15821480dc5b0a6562cd51f757fc2ca9b23d0"
+    },
+    {
+      "role": "user",
+      "characters": 199,
+      "sha256": "801f6dc61b59f11dcf6fefb29b061531365cc1b074faa79bb34fb6adfdfd5f25"
+    }
+  ]
+}

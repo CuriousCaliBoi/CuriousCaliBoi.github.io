@@ -1,0 +1,6 @@
+{
+  "code_sha256": "1989a39560ffb20a1a0506c58936fd4c4a01541aa39e4cc94ad39b315ec1aa5c",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It lists returned pass_9 artifact shapes/text and summarizes recorded pass_8 loss margins and endings. It only reads authorized pass results and performs no network execution, fitting or simulation."
+}

@@ -1,0 +1,273 @@
+import os
+import json
+import numpy as np
+
+os.makedirs("/work", exist_ok=True)
+
+design = r'''
+import numpy as np
+
+DEFAULTS = dict(
+    temperature_scale=1.25,
+    capture=6.0,
+    rescue=4.2,
+    self_atari=14.0,
+    eye=19.0,
+    quiet_fill=10.0,
+    danger=1.8,
+    pass_logit=-4.0,
+    opening_length=36.0,
+    own_adjacent=-0.90,
+    own_diagonal=0.75,
+    own_jump=0.65,
+    own_knight=0.18,
+    own_third=0.10,
+    own_crowding=-0.075,
+    enemy_adjacent=0.20,
+    enemy_diagonal=0.15,
+    enemy_jump=0.25,
+    enemy_knight=0.10,
+)
+
+def construct(parameters=None):
+    p = dict(DEFAULTS)
+    if parameters:
+        p.update(parameters)
+
+    W = [np.zeros((243 if k == 0 else 512, 512), np.float32)
+         for k in range(6)]
+    b = [np.zeros(512, np.float32) for _ in range(6)]
+    OW = np.zeros((512, 82), np.float32)
+    OB = np.zeros(82, np.float32)
+
+    def unit(channel, point):
+        return channel * 81 + point
+
+    def neighbors(point):
+        r, c = divmod(point, 9)
+        return [rr * 9 + cc for rr, cc in
+                ((r-1,c), (r+1,c), (r,c-1), (r,c+1))
+                if 0 <= rr < 9 and 0 <= cc < 9]
+
+    def diagonals(point):
+        r, c = divmod(point, 9)
+        return [rr * 9 + cc
+                for rr, cc in ((r-1,c-1), (r-1,c+1),
+                               (r+1,c-1), (r+1,c+1))
+                if 0 <= rr < 9 and 0 <= cc < 9]
+
+    adjacent = [neighbors(i) for i in range(81)]
+    diagonal = [diagonals(i) for i in range(81)]
+
+    def copy_channel(layer, source, destination=None):
+        if destination is None:
+            destination = source
+        for i in range(81):
+            W[layer][unit(source, i), unit(destination, i)] = 1.0
+
+    # A fading opening prior; this is computed from occupancy, not move history.
+    opening = 486
+    b[0][opening] = 1.0
+    for i in range(81):
+        W[0][3*i, opening] = -1.0 / p["opening_length"]
+        W[0][3*i+1, opening] = -1.0 / p["opening_length"]
+    for layer in range(1, 5):
+        W[layer][opening, opening] = 1.0
+
+    # Layer 1: both occupancies and each stone's immediate liberty count.
+    # Channels 2/3 are zero at points not occupied by the relevant colour.
+    for i in range(81):
+        degree = len(adjacent[i])
+        for colour in (0, 1):
+            W[0][3*i+colour, unit(colour, i)] = 1.0
+            target = unit(2+colour, i)
+            b[0][target] = degree - 4.0
+            W[0][3*i+colour, target] = 4.0
+            for j in adjacent[i]:
+                W[0][3*j, target] -= 1.0
+                W[0][3*j+1, target] -= 1.0
+
+    # Layer 2: deficiency of liberties in a stone's connected local cluster.
+    # Adjacent same-colour stones contribute their immediate liberties.
+    for colour in (0, 1):
+        copy_channel(1, colour)
+        for i in range(81):
+            target = unit(2+colour, i)
+            W[1][unit(colour, i), target] = 2.0
+            for j in [i] + adjacent[i]:
+                W[1][unit(2+colour, j), target] -= 1.0
+
+    # Layer 3: binary seeds for locally safe groups.
+    for colour in (0, 1):
+        copy_channel(2, colour)
+        for i in range(81):
+            target = unit(2+colour, i)
+            W[2][unit(colour, i), target] = 1.0
+            W[2][unit(2+colour, i), target] = -1.0
+
+    # Layer 4: spread safety through connected stones, retaining the
+    # complement: potentially critical stones. Also compute local danger.
+    for colour in (0, 1):
+        copy_channel(3, colour)
+        for i in range(81):
+            target = unit(2+colour, i)
+            W[3][unit(colour, i), target] = 1.0
+            for j in [i] + adjacent[i]:
+                W[3][unit(2+colour, j), target] -= 1.0
+
+    for i in range(81):
+        r, c = divmod(i, 9)
+
+        # Positive enemy pressure not balanced by friendly support.
+        danger = unit(4, i)
+        b[3][danger] = -1.4
+        for j in range(81):
+            rr, cc = divmod(j, 9)
+            dr, dc = abs(rr-r), abs(cc-c)
+            if dr + dc == 1:
+                strength = 1.0
+            elif dr == 1 and dc == 1:
+                strength = 0.55
+            elif (dr == 2 and dc == 0) or (dr == 0 and dc == 2):
+                strength = 0.30
+            else:
+                continue
+            W[3][unit(1, j), danger] += strength
+            W[3][unit(0, j), danger] -= strength
+
+        # max(0, 2 - number of adjacent empty points).
+        target = unit(5, i)
+        b[3][target] = 2.0 - len(adjacent[i])
+        for j in adjacent[i]:
+            W[3][unit(0, j), target] += 1.0
+            W[3][unit(1, j), target] += 1.0
+
+    # Layer 5: propagate safety another step.
+    for colour in (0, 1):
+        copy_channel(4, colour)
+        for i in range(81):
+            target = unit(2+colour, i)
+            W[4][unit(colour, i), target] = 1.0
+            for j in [i] + adjacent[i]:
+                W[4][unit(colour, j), target] -= 1.0
+                W[4][unit(2+colour, j), target] += 1.0
+    copy_channel(4, 5)
+
+    # Compress the strategic, spatial component into one unit per move.
+    # The offset keeps this signed calculation within the linear ReLU region.
+    offset = 100.0
+    opening_prior = [-3.0, -0.6, 0.8, 0.5, 0.4]
+    for i in range(81):
+        r, c = divmod(i, 9)
+        edge = min(r, c, 8-r, 8-c)
+        target = unit(4, i)
+        b[4][target] = offset - (0.35 if edge == 0 else 0.0)
+        W[4][opening, target] = opening_prior[edge]
+        W[4][unit(4, i), target] = -p["danger"]
+
+        for j in range(81):
+            if i == j:
+                continue
+            rr, cc = divmod(j, 9)
+            dr, dc = abs(rr-r), abs(cc-c)
+            distance = dr + dc
+            own = 0.0
+            enemy = 0.0
+
+            if distance == 1:
+                own += p["own_adjacent"]
+                enemy += p["enemy_adjacent"]
+            elif dr == 1 and dc == 1:
+                own += p["own_diagonal"]
+                enemy += p["enemy_diagonal"]
+            elif distance == 2:
+                own += p["own_jump"]
+                enemy += p["enemy_jump"]
+            elif sorted((dr, dc)) == [1, 2]:
+                own += p["own_knight"]
+                enemy += p["enemy_knight"]
+            elif distance == 3 and min(dr, dc) == 0:
+                own += p["own_third"]
+
+            if distance <= 4:
+                own += p["own_crowding"]
+
+            W[4][unit(0, j), target] += own
+            W[4][unit(1, j), target] += enemy
+
+    # Layer 6: strategic score, captures, rescues, eyes, self-atari,
+    # and unnecessary filling of narrow friendly territory.
+    for i in range(81):
+        degree = len(adjacent[i])
+        r, c = divmod(i, 9)
+        boundary = r in (0, 8) or c in (0, 8)
+
+        W[5][unit(4, i), unit(0, i)] = 1.0
+
+        for j in adjacent[i]:
+            W[5][unit(3, j), unit(1, i)] += 1.0
+            W[5][unit(2, j), unit(2, i)] += 1.0
+
+        eye = unit(3, i)
+        b[5][eye] = 1.0 - degree
+        for j in adjacent[i]:
+            W[5][unit(0, j), eye] += 1.0
+        for j in diagonal[i]:
+            W[5][unit(1, j), eye] -= 1.0 if boundary else 0.5
+
+        self_atari = unit(4, i)
+        W[5][unit(5, i), self_atari] = 1.0
+        for j in adjacent[i]:
+            # A connection to a safe friendly group or a potential capture
+            # can make an otherwise cramped move playable.
+            W[5][unit(0, j), self_atari] -= 2.0
+            W[5][unit(2, j), self_atari] += 2.0
+            W[5][unit(3, j), self_atari] -= 2.0
+
+        quiet = unit(5, i)
+        b[5][quiet] = 2.0 - degree
+        for j in adjacent[i]:
+            W[5][unit(0, j), quiet] += 1.0
+            W[5][unit(1, j), quiet] -= 1.0
+        for j in diagonal[i]:
+            W[5][unit(1, j), quiet] -= 0.5
+
+        scale = p["temperature_scale"]
+        coefficients = [
+            1.0, p["capture"], p["rescue"],
+            -p["eye"], -p["self_atari"], -p["quiet_fill"]
+        ]
+        for channel, coefficient in enumerate(coefficients):
+            OW[unit(channel, i), i] = scale * coefficient
+        OB[i] = -scale * offset
+
+    OB[81] = p["temperature_scale"] * p["pass_logit"]
+
+    tensors = {}
+    for layer in range(6):
+        tensors[f"L{layer+1}.W"] = W[layer]
+        tensors[f"L{layer+1}.b"] = b[layer]
+    tensors["out.W"] = OW
+    tensors["out.b"] = OB
+    return tensors, p
+'''
+
+with open("/work/design.py", "w") as f:
+    f.write(design)
+
+namespace = {}
+exec(design, namespace)
+tensors, parameters = namespace["construct"]()
+
+for name, array in tensors.items():
+    assert array.shape == load(name).shape, (name, array.shape, load(name).shape)
+    assert np.isfinite(array).all()
+    save(name, array)
+
+with open("/work/parameters.json", "w") as f:
+    json.dump(parameters, f, indent=2)
+
+print("Saved all 14 tensors.")
+print("Total parameters:", sum(a.size for a in tensors.values()))
+print("Nonzero parameters:", sum(np.count_nonzero(a) for a in tensors.values()))
+print("Analytically constructed policy; no training or network evaluation performed.")

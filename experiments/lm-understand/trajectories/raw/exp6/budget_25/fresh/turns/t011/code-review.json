@@ -1,0 +1,6 @@
+{
+  "code_sha256": "8c47403dd132f4b4206caf5d7a31c0087d8b117077d45101995b6ecbbba67dec",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Inspects saved pass_2/pass_3 trajectories using a static-board group/liberty flood fill, observed top-five probabilities, and before/after stone-loss counts. The utility creates no successor states and never evaluates weights or fits coefficients; it only summarizes permitted recorded feedback, with no action search."
+}

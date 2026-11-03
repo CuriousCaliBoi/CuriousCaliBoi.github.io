@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "checked_utc": "2026-11-03T18:19:22.702821+00:00",
+  "source_file_hashes_checked": 4101,
+  "local_links_checked": 1654,
+  "counts": {
+    "original_turns": 241,
+    "original_conversations": 21,
+    "fresh_turns": 244,
+    "fresh_conversations": 21,
+    "fresh_python": 138,
+    "fresh_games": 81,
+    "fresh_positions": 4
+  },
+  "all_original_run_files_copied_exactly": true,
+  "all_prompts_and_emitted_message_text_present_in_plain_transcripts": true,
+  "all_zip_members_match_output_files": true,
+  "archive_members": 4189,
+  "archive_bytes": 9685147,
+  "archive_sha256": "d6c37567cd4b98b24861f08b62e4055915c835ff8229b53139e23c2db347c739",
+  "scope": "Read-only verification of original sources, packaged raw logs, readable transcripts, local links and ZIP bytes. No inference or experimental re-execution."
+}

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "3ea8044f534032a8d766145020589f34f0d8cdee92f27ab3b97608790083c5df",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: weight-derived QK/OV bilinear matrices, SVD/eigenspaces, Gram whitening, polar matrix powers, cross-layer matrix compositions and trace/norm comparisons. No model or nonlinear layer is run on an input; no sequence construction, softmax, training data or external search."
+}

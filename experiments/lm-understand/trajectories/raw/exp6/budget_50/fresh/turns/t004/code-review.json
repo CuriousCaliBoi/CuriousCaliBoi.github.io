@@ -1,0 +1,6 @@
+{
+  "code_sha256": "8686adb9c0d0d5ef618ae1e1660396e4dc3f99755a0b36610fb8af5be0de09e7",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It selects recorded losses and prints previously returned game metadata, stored board snapshots and saved top-five move probabilities. It does not simulate moves, evaluate network layers, fit parameters or access external data."
+}

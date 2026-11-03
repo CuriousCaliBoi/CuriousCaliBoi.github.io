@@ -1,0 +1,98 @@
+OUTPUT of run 9 of at most 100:
+```
+
+rank 16 reference H5 mode phases: [0.541 0.734 0.893 1.393 1.939 2.018]
+H0 magnitudes [0.004 0.003 0.003 0.    0.001 0.002]
+H0 phases [ 2.822  2.255 -2.344 -1.159 -2.389  1.843]
+phase agreement for multipliers 0..12: [-0.676 -0.299 -0.012  0.336  0.727  0.531  0.08  -0.117 -0.333 -0.405 -0.109  0.07   0.068]
+H1 magnitudes [0.264 0.162 0.295 0.222 1.291 1.024]
+H1 phases [ 0.949  1.488  1.997  3.041 -2.296 -2.204]
+phase agreement for multipliers 0..12: [-0.503 -0.184  0.992 -0.025 -0.55   0.473 -0.124 -0.746  0.402  0.246 -0.58   0.397  0.495]
+H2 magnitudes [0.022 0.011 0.002 0.006 0.001 0.009]
+H2 phases [-0.627 -0.642 -2.212 -1.884  1.901  1.804]
+phase agreement for multipliers 0..12: [ 0.412  0.249 -0.319 -0.455 -0.322 -0.628 -0.449  0.284  0.348  0.201  0.441  0.308  0.046]
+H3 magnitudes [0.043 0.025 0.009 0.004 0.001 0.005]
+H3 phases [-2.978 -2.808 -2.553  0.747 -1.477 -3.015]
+phase agreement for multipliers 0..12: [-0.859 -0.776 -0.432 -0.01   0.553  0.864  0.632  0.258 -0.038 -0.317 -0.402 -0.334 -0.302]
+H4 magnitudes [0.    0.    0.    0.    0.    0.001]
+H4 phases [ 2.147 -3.091 -2.876  2.944 -1.82   2.934]
+phase agreement for multipliers 0..12: [-0.878 -0.178  0.308  0.025  0.469  0.563 -0.223 -0.239 -0.127 -0.568 -0.091  0.549  0.074]
+H5 magnitudes [1.052 0.832 1.525 1.241 1.003 0.817]
+H5 phases [0.541 0.734 0.893 1.393 1.939 2.018]
+phase agreement for multipliers 0..12: [ 0.306  1.     0.306 -0.335 -0.131 -0.297 -0.416  0.054  0.062 -0.028  0.42   0.162 -0.516]
+
+rank 24 reference H5 mode phases: [0.481 0.64  0.876 1.117 1.604 1.941 1.971]
+H0 magnitudes [0.055 0.073 0.005 0.114 0.036 0.037 0.03 ]
+H0 phases [-3.102  3.072  2.453 -3.125  2.909  2.973  3.099]
+phase agreement for multipliers 0..12: [-0.992 -0.33   0.286  0.175  0.24   0.281 -0.061  0.05   0.411  0.126 -0.297 -0.407 -0.466]
+H1 magnitudes [0.171 0.182 0.282 0.14  0.213 0.442 0.791]
+H1 phases [ 1.274  1.575  1.683  2.184 -2.926 -2.076 -2.31 ]
+phase agreement for multipliers 0..12: [-0.458 -0.073  0.981  0.126 -0.499  0.317 -0.007 -0.629  0.212  0.296 -0.465  0.053  0.312]
+H2 magnitudes [0.023 0.026 0.008 0.036 0.015 0.006 0.012]
+H2 phases [-2.533 -2.074 -0.251  2.963  2.681  2.934  2.616]
+phase agreement for multipliers 0..12: [-0.707 -0.263 -0.035 -0.258 -0.136  0.065  0.085  0.399  0.654  0.321 -0.154 -0.484 -0.574]
+H3 magnitudes [0.07  0.108 0.023 0.125 0.036 0.034 0.033]
+H3 phases [ 2.882  2.829  3.056 -2.931  2.753  2.811  2.88 ]
+phase agreement for multipliers 0..12: [-0.963 -0.344  0.241  0.32   0.482  0.383 -0.086 -0.071  0.201  0.009 -0.251 -0.352 -0.431]
+H4 magnitudes [0.001 0.002 0.001 0.001 0.001 0.001 0.   ]
+H4 phases [-2.942 -3.033  2.752  3.069 -2.804  3.055  3.025]
+phase agreement for multipliers 0..12: [-0.983 -0.415  0.162  0.109  0.27   0.372  0.036  0.103  0.356  0.    -0.283 -0.203 -0.372]
+H5 magnitudes [0.594 0.523 1.069 0.205 0.583 0.343 0.617]
+H5 phases [0.481 0.64  0.876 1.117 1.604 1.941 1.971]
+phase agreement for multipliers 0..12: [ 0.34   1.     0.34  -0.278 -0.075 -0.28  -0.544 -0.037  0.224 -0.004  0.052 -0.022 -0.203]
+
+Read basis from L0H1 OV, rank16
+L2H1 <- L0H5: trace/norm 2.580
+L3H1 <- L0H5: trace/norm 2.362
+L3H5 <- L0H5: trace/norm 2.590
+L3H1 <- L2H2: trace/norm 2.391
+L3H5 <- L2H2: trace/norm 2.819
+L2H0 <- L0H5: trace/norm -0.266
+L3H0 <- L0H5: trace/norm 1.241
+
+Read basis from L0H1 OV, rank24
+L2H1 <- L0H5: trace/norm 2.768
+L3H1 <- L0H5: trace/norm 2.646
+L3H5 <- L0H5: trace/norm 2.807
+L3H1 <- L2H2: trace/norm 2.417
+L3H5 <- L2H2: trace/norm 2.847
+L2H0 <- L0H5: trace/norm -0.351
+L3H0 <- L0H5: trace/norm 1.245
+
+Read basis from L0H1 OV, rank32
+L2H1 <- L0H5: trace/norm 2.628
+L3H1 <- L0H5: trace/norm 2.506
+L3H5 <- L0H5: trace/norm 2.658
+L3H1 <- L2H2: trace/norm 2.247
+L3H5 <- L2H2: trace/norm 2.826
+L2H0 <- L0H5: trace/norm -0.277
+L3H0 <- L0H5: trace/norm 1.143
+
+Read basis from L0H5 OV, rank16
+L2H1 <- L0H5: trace/norm 2.898
+L3H1 <- L0H5: trace/norm 2.703
+L3H5 <- L0H5: trace/norm 2.837
+L3H1 <- L2H2: trace/norm 2.258
+L3H5 <- L2H2: trace/norm 2.738
+L2H0 <- L0H5: trace/norm -0.463
+L3H0 <- L0H5: trace/norm 1.376
+
+Read basis from L0H5 OV, rank24
+L2H1 <- L0H5: trace/norm 2.819
+L3H1 <- L0H5: trace/norm 2.663
+L3H5 <- L0H5: trace/norm 2.766
+L3H1 <- L2H2: trace/norm 2.234
+L3H5 <- L2H2: trace/norm 2.772
+L2H0 <- L0H5: trace/norm -0.328
+L3H0 <- L0H5: trace/norm 1.261
+
+Read basis from L0H5 OV, rank32
+L2H1 <- L0H5: trace/norm 2.671
+L3H1 <- L0H5: trace/norm 2.420
+L3H5 <- L0H5: trace/norm 2.539
+L3H1 <- L2H2: trace/norm 2.109
+L3H5 <- L2H2: trace/norm 2.632
+L2H0 <- L0H5: trace/norm -0.261
+L3H0 <- L0H5: trace/norm 1.107
+
+```

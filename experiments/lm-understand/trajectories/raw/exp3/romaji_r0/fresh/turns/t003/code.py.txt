@@ -1,0 +1,64 @@
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=3, suppress=True, linewidth=180)
+
+print("DETAILED SINGULAR VALUES")
+for l,name in [(0,"W_q"),(0,"W_k"),(0,"W_v"),(0,"W_fc"),
+               (0,"W_proj"),(1,"W_fc"),(3,"W_proj"),(3,"W_fc")]:
+    a=W[f"{name}.{l}"].astype(float)
+    sv=np.linalg.svd(a,compute_uv=False)
+    print(f"{name}.{l} first 80:",sv[:80])
+    print("at indices 96,128,192,256,320,383:",sv[[95,127,191,255,319,382]])
+
+print("\nL0 HEAD Q/K/V SINGULAR VALUES")
+for j in range(6):
+    s=slice(64*j,64*j+64)
+    for name in ["W_q","W_k","W_v"]:
+        a=W[f"{name}.0"][s].astype(float)
+        sv=np.linalg.svd(a,compute_uv=False)
+        print(f"H{j} {name}:",sv[:12], "tail8:",sv[-8:])
+
+print("\nL0 SUBSPACE OVERLAPS")
+_,_,Vv=np.linalg.svd(W["W_v.0"].astype(float),full_matrices=False)
+_,_,Vf=np.linalg.svd(W["W_fc.0"].astype(float),full_matrices=False)
+s=slice(192,256)
+qp=W["W_q.0"][s].astype(float)
+kp=W["W_k.0"][s].astype(float)
+_,_,Vp=np.linalg.svd(np.vstack([qp,kp]),full_matrices=False)
+for j in range(6):
+    s=slice(64*j,64*j+64)
+    for name in ["W_q","W_k","W_v"]:
+        a=W[f"{name}.0"][s].astype(float)
+        n=np.linalg.norm(a)**2
+        print(f"H{j} {name}",
+              "energy in V_all top27/top40=",round(np.linalg.norm(a@Vv[:27].T)**2/n,3),round(np.linalg.norm(a@Vv[:40].T)**2/n,3),
+              "FC top27/top40=",round(np.linalg.norm(a@Vf[:27].T)**2/n,3),round(np.linalg.norm(a@Vf[:40].T)**2/n,3),
+              "H3_QK top40=",round(np.linalg.norm(a@Vp[:40].T)**2/n,3))
+
+print("\nRAW QK ROTATION COMPARISON WITH L0H3")
+# Polar factors are obtained only from trained matrices. No inputs or activations.
+A0=W["W_q.0"][192:256].astype(float).T@W["W_k.0"][192:256].astype(float)/8
+u,s,vt=np.linalg.svd(A0,full_matrices=False)
+U=np.linalg.svd(np.hstack([u[:,:40],vt[:40].T]),full_matrices=False)[0][:,:50]
+base=U.T@A0@U
+ub,sb,vb=np.linalg.svd(base)
+rot=ub@vb
+powers={n:np.linalg.matrix_power(rot,n) for n in range(-8,9)}
+for l in range(4):
+    for j in range(6):
+        ss=slice(64*j,64*j+64)
+        a=W[f"W_q.{l}"][ss].astype(float).T@W[f"W_k.{l}"][ss].astype(float)/8
+        ar=U.T@a@U
+        frac=np.linalg.norm(ar)**2/np.linalg.norm(a)**2
+        vals=[(np.sum(ar*p)/(np.linalg.norm(ar)*np.linalg.norm(p)),n) for n,p in powers.items()]
+        vals.sort(reverse=True)
+        print(f"L{l}H{j} projected_fraction={frac:.3f} polar_correlations=",
+              [(n,round(c,3)) for c,n in vals[:4]])
+
+print("\nLAYER-NORM EXTREME COORDINATES")
+for l in range(4):
+    for name in ["ln1_w","ln1_b","ln2_w","ln2_b"]:
+        a=W[f"{name}.{l}"]
+        ii=np.argsort(abs(a-(1 if name.endswith("_w") else 0)))[-8:][::-1]
+        print(f"{name}.{l}",[(int(i),round(float(a[i]),4)) for i in ii])

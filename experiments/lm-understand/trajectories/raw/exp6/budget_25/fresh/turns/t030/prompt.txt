@@ -1,0 +1,6 @@
+OUTPUT of Python run 18 of at most 120:
+```
+Saved revision 11: komi-aware, late-game passing when the
+analytic area estimate indicates a comfortable lead.
+
+```

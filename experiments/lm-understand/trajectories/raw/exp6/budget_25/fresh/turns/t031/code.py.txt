@@ -1,0 +1,31 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_11.npz",**{n:load(n) for n in names})
+
+revision=r'''
+_base={}
+exec(open("/work/design_v11.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(tactical_soft_cap=6.0, tactical_cap_strength=0.75)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    # Several adjacent stones may belong to the same threatened group.
+    # Compress excessive tactical counts in the main fighting region.
+    for index,(r,c) in enumerate((r,c) for r in range(2,7) for c in range(2,7)):
+        i=9*r+c
+        hidden=487+index
+        source=81+i
+        t["L6.W"][:,hidden]=t["L6.W"][:,source]
+        t["L6.b"][hidden]=t["L6.b"][source]-p["tactical_soft_cap"]
+        t["out.W"][hidden,i]=-p["scale"]*p["tactical_cap_strength"]
+    return t,p
+'''
+open("/work/design_v12.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 12: diminishing returns for repeated tactical")
+print("counts around the same central group.")

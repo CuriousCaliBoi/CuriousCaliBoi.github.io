@@ -1,0 +1,19 @@
+OUTPUT of Python run 30 of at most 120:
+```
+L1.W (243, 512) nonzero 3368 max_abs 16.0
+L1.b (512,) nonzero 349 max_abs 61.0
+L2.W (512, 512) nonzero 4203 max_abs 16.0
+L2.b (512,) nonzero 186 max_abs 61.0
+L3.W (512, 512) nonzero 3896 max_abs 16.0
+L3.b (512,) nonzero 105 max_abs 4.0
+L4.W (512, 512) nonzero 3234 max_abs 4096.0
+L4.b (512,) nonzero 186 max_abs 20.0
+L5.W (512, 512) nonzero 1895 max_abs 4096.0
+L5.b (512,) nonzero 0 max_abs 0.0
+L6.W (512, 512) nonzero 5548 max_abs 2.0
+L6.b (512,) nonzero 405 max_abs 3.5
+out.W (512, 82) nonzero 487 max_abs 25.600000381469727
+out.b (82,) nonzero 82 max_abs 14.080000877380371
+Final network restored and saved; all 1,480,274 parameters are finite.
+
+```

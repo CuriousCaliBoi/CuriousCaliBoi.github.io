@@ -1,0 +1,29 @@
+Weight-only matching diagnostic:
+trace(P.T @ QK_lh @ OV_source @ P) / Frobenius norm;
+P = top 20 right singular directions of source V.
+L1H0 L0-source scores [0.214 0.281 0.413 0.329 0.387 0.387] best [('L0H2', np.float64(0.413), np.float64(0.084)), ('L0H5', np.float64(0.387), np.float64(0.025)), ('L0H4', np.float64(0.387), np.float64(0.222))]
+L1H1 L0-source scores [0.106 0.052 0.221 0.632 0.048 0.149] best [('L0H3', np.float64(0.632), np.float64(0.126)), ('L0H2', np.float64(0.221), np.float64(0.067)), ('L0H5', np.float64(0.149), np.float64(0.043))]
+L1H2 L0-source scores [-0.225  0.256  0.348  0.482  0.377  0.326] best [('L0H3', np.float64(0.482), np.float64(0.175)), ('L0H4', np.float64(0.377), np.float64(0.156)), ('L0H2', np.float64(0.348), np.float64(0.065))]
+L1H3 L0-source scores [0.196 0.206 0.38  0.164 0.277 0.29 ] best [('L0H2', np.float64(0.38), np.float64(0.09)), ('L0H5', np.float64(0.29), np.float64(0.025)), ('L0H4', np.float64(0.277), np.float64(0.177))]
+L1H4 L0-source scores [0.05  0.149 0.294 0.157 0.374 0.239] best [('L0H4', np.float64(0.374), np.float64(0.084)), ('L0H2', np.float64(0.294), np.float64(-0.002)), ('L0H5', np.float64(0.239), np.float64(-0.008))]
+L1H5 L0-source scores [-0.149  0.147  0.301  0.518  0.205  0.201] best [('L0H3', np.float64(0.518), np.float64(0.211)), ('L0H2', np.float64(0.301), np.float64(0.06)), ('L0H4', np.float64(0.205), np.float64(0.265))]
+L2H0 L0-source scores [-0.065  0.328  0.58   0.282  0.297  0.51 ] best [('L1H3', np.float64(0.743), np.float64(-0.011)), ('L1H1', np.float64(0.669), np.float64(0.024)), ('L0H2', np.float64(0.58), np.float64(0.235))]
+L2H1 L0-source scores [0.145 0.273 0.541 0.107 0.258 0.505] best [('L0H2', np.float64(0.541), np.float64(0.21)), ('L0H5', np.float64(0.505), np.float64(0.087)), ('L0H1', np.float64(0.273), np.float64(0.12))]
+L2H2 L0-source scores [0.244 0.307 0.567 0.349 0.249 0.523] best [('L0H2', np.float64(0.567), np.float64(0.269)), ('L0H5', np.float64(0.523), np.float64(0.136)), ('L0H3', np.float64(0.349), np.float64(0.024))]
+L2H3 L0-source scores [0.324 0.329 0.493 0.434 0.357 0.469] best [('L0H2', np.float64(0.493), np.float64(0.18)), ('L0H5', np.float64(0.469), np.float64(0.116)), ('L0H3', np.float64(0.434), np.float64(0.145))]
+L2H4 L0-source scores [-0.132  0.341  0.661  0.708  0.325  0.581] best [('L0H3', np.float64(0.708), np.float64(0.191)), ('L0H2', np.float64(0.661), np.float64(0.323)), ('L0H5', np.float64(0.581), np.float64(0.155))]
+L2H5 L0-source scores [ 0.098  0.274  0.519 -0.03   0.25   0.571] best [('L0H5', np.float64(0.571), np.float64(0.131)), ('L0H2', np.float64(0.519), np.float64(0.159)), ('L0H1', np.float64(0.274), np.float64(0.121))]
+L3H0 L0-source scores [-0.263  0.218  0.391 -0.629  0.19   0.278] best [('L0H2', np.float64(0.391), np.float64(0.196)), ('L0H5', np.float64(0.278), np.float64(0.039)), ('L0H1', np.float64(0.218), np.float64(0.097))]
+L3H1 L0-source scores [ 0.121  0.208  0.388 -0.214  0.14   0.307] best [('L0H2', np.float64(0.388), np.float64(0.225)), ('L0H5', np.float64(0.307), np.float64(0.082)), ('L1H2', np.float64(0.238), np.float64(0.002))]
+L3H2 L0-source scores [-0.028  0.138  0.282  0.202  0.043  0.061] best [('L0H2', np.float64(0.282), np.float64(0.187)), ('L0H3', np.float64(0.202), np.float64(0.105)), ('L0H1', np.float64(0.138), np.float64(0.12))]
+L3H3 L0-source scores [-0.59   0.275  0.352  2.858  0.388 -0.173] best [('L0H3', np.float64(2.858), np.float64(0.591)), ('L2H5', np.float64(1.86), np.float64(0.226)), ('L1H5', np.float64(1.361), np.float64(0.183))]
+L3H4 L0-source scores [0.246 0.606 0.763 0.682 0.693 0.586] best [('L2H4', np.float64(1.023), np.float64(0.161)), ('L0H2', np.float64(0.763), np.float64(0.349)), ('L2H0', np.float64(0.718), np.float64(0.092))]
+L3H5 L0-source scores [-0.048  0.06   0.241 -0.126  0.011  0.187] best [('L0H2', np.float64(0.241), np.float64(0.077)), ('L0H5', np.float64(0.187), np.float64(0.015)), ('L0H1', np.float64(0.06), np.float64(0.047))]
+
+L3H3 <- L0H3 matching score: 2.858
+Coordinate-sign scrambling of the weight connection, null quantiles: [-1.0762 -0.8702  0.0232  0.8891  1.0625]
+
+Selected literal LayerNorm weights
+ln1_b.1 [(39, -1.5675644874572754), (58, 1.36513352394104), (99, -1.3355246782302856), (21, -0.4298906922340393)]
+ln1_b.2 [(39, -1.1991313695907593), (58, 1.331817865371704), (99, -1.6588826179504395), (21, -0.4534468650817871)]
+ln1_w.0 [(180, 0.9784557819366455), (184, 0.9740331768989563), (162, 0.9703823924064636), (99, 0.9171200394630432), (211, 0.8959937691688538)]

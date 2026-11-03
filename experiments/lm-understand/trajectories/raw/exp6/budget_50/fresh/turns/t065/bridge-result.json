@@ -1,0 +1,115 @@
+{
+  "request_sha256": "1bc5f467121800ba9baebaa45feefa23638a6b29ff2f4e79a838931e1080abb8",
+  "request": {
+    "kind": "positions",
+    "case_id": "a68c3c49ed7b4219bc75bafadd071956",
+    "pass": 31,
+    "request": {
+      "positions": [
+        {
+          "board": [
+            "O.OXX.X.X",
+            "OOOXXXXXX",
+            ".OXXXXXX.",
+            "XXX.XXXOX",
+            "XXXXX.XO.",
+            ".XX.XXXOO",
+            "XXXX.XOOO",
+            ".X.XXXOOO",
+            "X.X.XXXO."
+          ],
+          "to_move": "black"
+        },
+        {
+          "board": [
+            ".X.XXXX.X",
+            "X.XX...X.",
+            "XX.XXXXXX",
+            ".XXX.X.X.",
+            ".X.XXXXOX",
+            "X.X.X.XO.",
+            ".XXXXXXOO",
+            "XXOOOOOOO",
+            "XOOO.O.O."
+          ],
+          "to_move": "black"
+        },
+        {
+          "board": [
+            ".X.XXOOO.",
+            "OOXX.XXXO",
+            "OOOXXXOX.",
+            "XOOOOOOO.",
+            "XXXXXXXO.",
+            "..X.X.XOO",
+            "...X..XO.",
+            ".........",
+            "........."
+          ],
+          "to_move": "black"
+        }
+      ],
+      "activations": true
+    }
+  },
+  "result": {
+    "ok": true,
+    "pass": 31,
+    "kind": "positions",
+    "positions": 3,
+    "top3": [
+      [
+        {
+          "move": 44,
+          "probability": 1.0,
+          "logit": 132.33599853515625
+        },
+        {
+          "move": 0,
+          "probability": 0.0,
+          "logit": -57.88800048828125
+        },
+        {
+          "move": 58,
+          "probability": 0.0,
+          "logit": -159.33599853515625
+        }
+      ],
+      [
+        {
+          "move": 53,
+          "probability": 0.8295804262161255,
+          "logit": 14.2559814453125
+        },
+        {
+          "move": 76,
+          "probability": 0.17019344866275787,
+          "logit": 12.6719970703125
+        },
+        {
+          "move": 35,
+          "probability": 0.0002260299661429599,
+          "logit": 6.0479736328125
+        }
+      ],
+      [
+        {
+          "move": 0,
+          "probability": 1.0,
+          "logit": 81.93597412109375
+        },
+        {
+          "move": 35,
+          "probability": 9.776024143290607e-17,
+          "logit": 45.07196044921875
+        },
+        {
+          "move": 26,
+          "probability": 9.76234257595898e-18,
+          "logit": 42.767974853515625
+        }
+      ]
+    ],
+    "files": "/work/pass_31/"
+  }
+}

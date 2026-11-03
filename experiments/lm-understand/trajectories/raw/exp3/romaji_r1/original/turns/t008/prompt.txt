@@ -1,0 +1,15 @@
+OUTPUT of run 7 of at most 100:
+```
+Clustering ONLY first-MLP weight projections onto current/previous value subspaces
+clusters 16 mean within-cluster cosine 0.506 counts [281 253 227 226 215 210 207 202 200 187 156 156 150 142 141 119]
+clusters 20 mean within-cluster cosine 0.53 counts [229 221 206 204 201 195 180 160 152 141 140 135 131 126 121 120 116 108  97  89]
+clusters 24 mean within-cluster cosine 0.549 counts [227 219 210 196 191 161 148 131 127 121 117 112 105 104 103 101 101 100  93  93  87  78  77  70]
+pair-table standardized residual singular values [21.65 10.39  9.11  8.02  7.06  6.58  6.12  5.33  5.06  4.9   4.21  4.09]
+largest pair enrichments (arbitrary cluster labels): [(1, 5, 52, 17.8, 7.88), (22, 13, 17, 3.6, 6.26), (6, 0, 42, 17.3, 5.76), (17, 17, 12, 2.1, 5.58), (23, 23, 8, 1.1, 4.68), (9, 9, 10, 2.0, 4.57), (14, 14, 8, 1.3, 4.36), (18, 18, 9, 1.8, 4.28), (22, 7, 10, 2.4, 4.15), (6, 21, 41, 21.7, 4.04), (8, 21, 47, 26.1, 4.01), (10, 2, 9, 2.1, 3.88), (4, 4, 7, 1.4, 3.67), (8, 15, 13, 4.5, 3.65), (8, 12, 13, 4.5, 3.65), (8, 0, 37, 20.9, 3.45), (8, 11, 26, 13.1, 3.42), (7, 10, 7, 1.9, 3.04), (19, 9, 7, 1.9, 2.97), (9, 14, 7, 2.0, 2.92)]
+clusters 28 mean within-cluster cosine 0.567 counts [183 172 162 158 150 145 143 143 140 114 112 110 107 107  94  92  91  88  85  85  82  81  78  77  73  72  66  62]
+
+Last-MLP output spectrum: adjacent ratios
+[(19, np.float64(12.317), np.float64(1.068)), (20, np.float64(11.531), np.float64(1.044)), (21, np.float64(11.047), np.float64(1.216)), (22, np.float64(9.084), np.float64(1.087)), (23, np.float64(8.353), np.float64(1.014)), (24, np.float64(8.24), np.float64(1.294)), (25, np.float64(6.37), np.float64(1.092)), (26, np.float64(5.836), np.float64(1.261)), (27, np.float64(4.626), np.float64(1.009)), (28, np.float64(4.583), np.float64(1.213)), (29, np.float64(3.777), np.float64(1.046)), (30, np.float64(3.61), np.float64(1.11)), (31, np.float64(3.252), np.float64(1.022)), (32, np.float64(3.183), np.float64(1.031))]
+top24 energy 0.9213614809422224 top28 energy 0.937515023916908
+
+```

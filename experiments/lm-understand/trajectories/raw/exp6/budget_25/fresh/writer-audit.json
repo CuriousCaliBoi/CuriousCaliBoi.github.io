@@ -1,0 +1,181 @@
+{
+  "passed": true,
+  "budget": 25,
+  "case_id": "31ee2660bc034a25809a195ac07cb8b1",
+  "cli_turns": 55,
+  "python_runs": 29,
+  "passes": 25,
+  "all_code_sha_bound_manual_approvals": true,
+  "pass_records": [
+    {
+      "turn": "t002",
+      "pass": 1,
+      "kind": "games",
+      "request_sha256": "7049a8dc4226a8e0f3b047899c775a1a5a7e2ddd01ed563b5210b65648bca9d7"
+    },
+    {
+      "turn": "t007",
+      "pass": 2,
+      "kind": "games",
+      "request_sha256": "292e04b0b971297f262a71907cca4d2b6aa95d6e9f948110ce4f2a29b0ebae1c"
+    },
+    {
+      "turn": "t010",
+      "pass": 3,
+      "kind": "games",
+      "request_sha256": "6d1adaadf30c33ccead67029fb23474bb9b34b7ef3fd3ef195371469c8cfe544"
+    },
+    {
+      "turn": "t013",
+      "pass": 4,
+      "kind": "positions",
+      "request_sha256": "ea843a901e753a3c59fd52cfae67f831390b8840a17ef34781f825be17320f3f"
+    },
+    {
+      "turn": "t016",
+      "pass": 5,
+      "kind": "games",
+      "request_sha256": "54d01e11763dfbd003fc4045616b984c1f8d030213ed8828f5ffc60613d79576"
+    },
+    {
+      "turn": "t018",
+      "pass": 6,
+      "kind": "games",
+      "request_sha256": "2a76c23de887d84243f4850e1edd838e113f80a0aead34405de12e9da0c8e87c"
+    },
+    {
+      "turn": "t020",
+      "pass": 7,
+      "kind": "games",
+      "request_sha256": "31876ba0b45d3be3bfc649a2a6fe5b8b67939c19cbb351f67aa0aecbd9c88fa8"
+    },
+    {
+      "turn": "t022",
+      "pass": 8,
+      "kind": "games",
+      "request_sha256": "74393c7a29a846fde2c749a976cb6395eae582621a0dead47b46039fa15d072f"
+    },
+    {
+      "turn": "t024",
+      "pass": 9,
+      "kind": "games",
+      "request_sha256": "1e1f111c64c1105b450f6ae19910714c69a2faa12c40772c3dbc7fe23f87b608"
+    },
+    {
+      "turn": "t026",
+      "pass": 10,
+      "kind": "games",
+      "request_sha256": "f3caddb6c480d7f1558d7a22ec9c15a0f5f63398ac6f1fadfaa904d2e2cadf93"
+    },
+    {
+      "turn": "t028",
+      "pass": 11,
+      "kind": "games",
+      "request_sha256": "664b394c5387de80b1faa0d1be91a711bcf8f5b3e35e50069d4a881850c3ec06"
+    },
+    {
+      "turn": "t030",
+      "pass": 12,
+      "kind": "games",
+      "request_sha256": "e52bf132d1288133285f9e286074888f607e31fdf9d1e852da58ad0195a77301"
+    },
+    {
+      "turn": "t032",
+      "pass": 13,
+      "kind": "games",
+      "request_sha256": "6fe620f47e7a7184a37005a361c0525dcc61169610595a23c1296cfedba04449"
+    },
+    {
+      "turn": "t034",
+      "pass": 14,
+      "kind": "games",
+      "request_sha256": "ab6edcf42659beff04b88f5683e54a4348b4d77511df75e6cc52b0d1937108ee"
+    },
+    {
+      "turn": "t037",
+      "pass": 15,
+      "kind": "games",
+      "request_sha256": "21ccdef37bf9f60b25c7b8c0333d571402be2b8f5894ec6ff59067535e666d51"
+    },
+    {
+      "turn": "t039",
+      "pass": 16,
+      "kind": "games",
+      "request_sha256": "15f1fbcc71bf6f0aab77aab79cb3dcea0e9ea45320215cb0fb552fe51b4e2434"
+    },
+    {
+      "turn": "t041",
+      "pass": 17,
+      "kind": "games",
+      "request_sha256": "de124845655b808e4e3d5c2b7bec3c52d944e499175a025ef7e98f449f0832cb"
+    },
+    {
+      "turn": "t043",
+      "pass": 18,
+      "kind": "games",
+      "request_sha256": "120e3575ea0a6af0c2eee21ac4ba58bb7cbb5251f3908064875206dbfb6e442b"
+    },
+    {
+      "turn": "t045",
+      "pass": 19,
+      "kind": "games",
+      "request_sha256": "4d748a32978961ca18edfca79b24e5c55d540c57d03684f2298f552a06ace438"
+    },
+    {
+      "turn": "t047",
+      "pass": 20,
+      "kind": "games",
+      "request_sha256": "b500a70bb396d906c3f21331a2efebf737f9b847f72f6e4939df36def04c8de2"
+    },
+    {
+      "turn": "t048",
+      "pass": 21,
+      "kind": "positions",
+      "request_sha256": "1b667d7e239f6d8381e7935183a5124836be02604ac357db82e216133a72cb06"
+    },
+    {
+      "turn": "t049",
+      "pass": 22,
+      "kind": "games",
+      "request_sha256": "ee4beab8800d1731c348e2d75d19d50e723427aa355b1e82b3bacdd38d1b885d"
+    },
+    {
+      "turn": "t051",
+      "pass": 23,
+      "kind": "games",
+      "request_sha256": "e04887c7a7dfd9cc2bfe0f782bbd5bfa922400f62273aefa6ab40193afc068ea"
+    },
+    {
+      "turn": "t052",
+      "pass": 24,
+      "kind": "games",
+      "request_sha256": "3f5005a04279cfd2e9a952c2c386866fa42a8912574456660f29e1ca200dfa5d"
+    },
+    {
+      "turn": "t054",
+      "pass": 25,
+      "kind": "games",
+      "request_sha256": "4bf40d5f87b380c52114cbf069f5b6e75effe8c46c96cf5d930d9d7c07c1e746"
+    }
+  ],
+  "failed_requests_or_python": [],
+  "tensor_sha256": {
+    "L1.W": "2b1376decad503309379911c680d902c13071d4a8604ad5546944ae09b3e0e5e",
+    "L1.b": "8cbe89706d21c8ba1a4acf137aae481058916ca823080fb041f1b05769822348",
+    "L2.W": "c66694e1c9af286b8bb6ecc5964520ad529a7daaec79b12c674527df5cfe28ea",
+    "L2.b": "2f7de9714bfed54f011d83dffa78cfe9f2ee6af9af6c8ed19ab2c94fefac086c",
+    "L3.W": "9dbe3e9575577f52be6efb06a0a2232864e3b7318979f9647f1eb9488c96c9a7",
+    "L3.b": "17ac5d93a4c6cac862537b5c8eff9bd651228e9e8be54c989c98c64f2358475a",
+    "L4.W": "e1f0b6781166a6e76a26b8d0da9c4157a5d43a4b6b46724a251c44d549f7036a",
+    "L4.b": "d1de5c62217bf14b573a3a18b7ee81440937682772c4f46b8893a9c4fc5c4a26",
+    "L5.W": "e4f7d19a3ee5c54818ecdef653b3cfe20250bac73ef4aa4c554543c59303170b",
+    "L5.b": "085e5a58c0caeb21f33d04e625783090cfc35ab80a89ca512420a60181dcc494",
+    "L6.W": "5d17b6f94442267f4d1a26700dd241f90273b46ab1253d7c0eaf78e9b5906568",
+    "L6.b": "144ef1e8c676672b44ff45dc7682144c4f9321ca17a6eaf8fe96196ead7c7e0e",
+    "out.W": "f0ba786e9ad31e2a04d58e585cefd90827f1d6b13ff0457378788eaa0de33795",
+    "out.b": "9eb2bdceacf94cd5186696f633bd2a6c9d432453bb90897fc5ee0e0aaba58b8f"
+  },
+  "artifact_files_hashed": 1557,
+  "artifact_hash_manifest_sha256": "4775a7fd6bf8d4000325cfe3273d6e16e4ff4805c1f28763abefa4190c22ca5a",
+  "scope": "Mechanical provenance and complete transcript/feedback verification. Full code protocol reviews are separately SHA-bound per turn. Local public workspace and private controller snapshots preserve actual practice artifacts; final tensor hashes match all three archived copies."
+}

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "0988b3f4d8f42f6d660c0cbba9f4a5e9f2ff67736996977adc9497b0d0e85fb0",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It restores two fixed output coefficients and changes one fixed layer-six coefficient per board point. These are manual tensor edits; no network inference, fitting, simulation or move search is performed."
+}

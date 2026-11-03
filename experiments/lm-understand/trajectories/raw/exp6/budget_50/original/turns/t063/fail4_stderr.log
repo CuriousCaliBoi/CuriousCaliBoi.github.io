@@ -1,0 +1,7 @@
+WARNING: proceeding, even though we could not create PATH aliases: Quota exceeded (os error 122)
+2026-10-23T22:55:13.866233Z ERROR codex_models_manager::manager: failed to load models cache: EOF while parsing a value at line 1 column 0
+2026-10-23T22:55:13.887615Z ERROR codex_models_manager::manager: failed to write models cache: Quota exceeded (os error 122)
+2026-10-23T22:55:14.496783Z ERROR codex_models_manager::manager: failed to write models cache: Quota exceeded (os error 122)
+2026-10-23T22:55:14.515201Z ERROR codex_core::session::session: failed to initialize thread persistence: thread-store internal error: failed to open thread writer lock <codex_home>/thread-writer-locks/id-2ecb4c7a.lock: Quota exceeded (os error 122)
+2026-10-23T22:55:14.515371Z ERROR codex_core::session: Failed to create session: thread-store internal error: failed to open thread writer lock <codex_home>/thread-writer-locks/id-2ecb4c7a.lock: Quota exceeded (os error 122)
+Error: thread/resume: thread/resume failed: error resuming thread: Fatal error: Failed to initialize session: thread-store internal error: failed to open thread writer lock <codex_home>/thread-writer-locks/id-2ecb4c7a.lock: Quota exceeded (os error 122) (code -32603)

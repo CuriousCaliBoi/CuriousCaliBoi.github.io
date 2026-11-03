@@ -1,0 +1,12 @@
+```python
+# A symmetric four-four opening develops a corner while retaining central
+# influence. This changes only Black's very first move.
+w=load("out.W")
+stars=[(3,3),(3,5),(5,3),(5,5)]
+for q in range(81):
+    r,c=divmod(q,9)
+    distance=min(abs(r-a)+abs(c-b) for a,b in stars)
+    w[493,q]=-14.4*distance
+save("out.W",w)
+print("Empty-board prior: equal, symmetric four-four openings.")
+```

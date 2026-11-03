@@ -1,0 +1,84 @@
+```python
+import numpy as np
+from scipy.linalg import svd
+from scipy.stats import skew
+from sklearn.decomposition import FastICA
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+rs=[]
+for h in [1,5]:
+    _,_,r=svd(np.asarray(W["W_v.0"][64*h:64*(h+1)],float)@P,full_matrices=False)
+    rs.append(r[:28])
+G=sum(r.T@r for r in rs)
+e,u=np.linalg.eigh(G)
+u=u[:,np.argsort(e)[::-1][:28]]
+F=np.asarray(W["W_fc.0"],float)*W["ln2_w.0"][None,:]
+ica=FastICA(n_components=28,whiten="unit-variance",random_state=17,max_iter=4000,tol=.001)
+Z=ica.fit_transform(F@u)
+sg=np.where(skew(Z,axis=0)>=0,1.,-1.)
+mix=ica.mixing_*sg[None,:]
+T=u@np.linalg.pinv(mix.T)
+
+# These are coefficients of MLP WEIGHT rows in weight-derived bases.
+# No LayerNorm, attention distribution, or nonlinear MLP is evaluated.
+C=F@T
+C-=C.mean(0)
+prev=[]
+for h in [1,5]:
+    s=slice(64*h,64*(h+1))
+    b=np.asarray(W["W_o.0"][:,s],float)@(
+        np.asarray(W["W_v.0"][s],float)*W["ln1_w.0"][None,:])@P
+    R=F@b@T
+    R-=R.mean(0)
+    R/=np.std(R,axis=0,keepdims=True)
+    prev.append(R)
+C/=np.std(C,axis=0,keepdims=True)
+
+for name,R in [("current",C),("H1 route",prev[0]),("H5 route",prev[1])]:
+    strength=np.abs(R)
+    ids=np.argmax(strength,axis=1)
+    top=np.max(strength,axis=1)
+    counts=np.bincount(ids[top>1.5],minlength=28)
+    print(name,"dominant-axis counts (>1.5 SD):",counts.tolist())
+
+print("\nWeight-row co-specialization: current axis versus H5-route axis")
+print("Rows count neurons with both dominant coefficients >1.5 SD; positive coefficient fraction is also shown.")
+ci=np.argmax(np.abs(C),axis=1)
+ri=np.argmax(np.abs(prev[1]),axis=1)
+cm=np.max(np.abs(C),axis=1)
+rm=np.max(np.abs(prev[1]),axis=1)
+sel=(cm>1.5)&(rm>1.5)
+counts=np.zeros((28,28),dtype=int)
+for n in np.where(sel)[0]:
+    counts[ci[n],ri[n]]+=1
+print("Selected neurons",int(sel.sum()),"positive current/route fractions",
+      round(np.mean(C[np.where(sel)[0],ci[sel]]>0),3),
+      round(np.mean(prev[1][np.where(sel)[0],ri[sel]]>0),3))
+for k in range(28):
+    ix=np.argsort(counts[k])[::-1][:6]
+    print(k,"rowtotal",int(counts[k].sum()),
+          [(int(j),int(counts[k,j])) for j in ix if counts[k,j]])
+
+# Shared low-dimensional attention-weight structure, independent of the ICA.
+A={};B={}
+for l in range(4):
+    scale=np.asarray(W[f"ln1_w.{l}"],float)
+    for h in range(6):
+        s=slice(64*h,64*(h+1))
+        q,k,v=[np.asarray(W[f"W_{n}.{l}"][s],float) for n in ["q","k","v"]]
+        A[l,h]=P@(scale[:,None]*(q.T@k)*scale[None,:])@P
+        B[l,h]=np.asarray(W[f"W_o.{l}"][:,s],float)@(v*scale[None,:])@P
+ub,sb,vb=svd(B[0,4],full_matrices=False)
+print("\nL0H4 effective OV singular values:",np.round(sb[:12],3))
+for rank in [2,3,6]:
+    U=ub[:,:rank]
+    print("Rank",rank,"L0H4 output subspace: later QK query/key energy fractions")
+    for l in range(1,4):
+        print("layer",l,[
+            (h,round(np.linalg.norm(U.T@A[l,h])**2/np.linalg.norm(A[l,h])**2,3),
+             round(np.linalg.norm(A[l,h]@U)**2/np.linalg.norm(A[l,h])**2,3))
+            for h in range(6)])
+```

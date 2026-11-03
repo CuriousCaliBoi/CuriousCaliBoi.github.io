@@ -1,0 +1,6 @@
+{
+  "code_sha256": "154c842a729174c005471f72767027d6b043c04ec32033f0e64a92dd2729f3b4",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Makes direct manual output-weight edits and uniformly scales saved output parameters. No logits are evaluated or examples fitted; the external sampler remains unchanged at temperature one. No forward computation, game simulation, or search."
+}

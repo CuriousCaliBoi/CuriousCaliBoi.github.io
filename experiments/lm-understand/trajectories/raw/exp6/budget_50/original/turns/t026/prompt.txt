@@ -1,0 +1,5 @@
+OUTPUT of Python run 15 of at most 120:
+```
+Saved v10: graded preventive defense, with suicidal rescues still suppressed.
+
+```

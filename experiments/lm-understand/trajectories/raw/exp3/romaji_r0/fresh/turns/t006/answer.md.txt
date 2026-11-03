@@ -1,0 +1,71 @@
+```python
+import numpy as np
+from scipy.stats import kurtosis
+from sklearn.decomposition import FastICA
+from threadpoolctl import threadpool_limits
+import warnings
+threadpool_limits(2)
+np.set_printoptions(precision=3, suppress=True, linewidth=180)
+
+A={};B={}
+for l in range(4):
+    g=W[f"ln1_w.{l}"].astype(float)
+    for j in range(6):
+        sl=slice(j*64,j*64+64)
+        q=W[f"W_q.{l}"][sl].astype(float)*g
+        k=W[f"W_k.{l}"][sl].astype(float)*g
+        A[l,j]=q.T@k/8
+        B[l,j]=W[f"W_o.{l}"][:,sl].astype(float)@(W[f"W_v.{l}"][sl].astype(float)*g)
+
+b=B[0,3]
+_,_,vt=np.linalg.svd(W["W_v.0"][192:256].astype(float)*W["ln1_w.0"],full_matrices=False)
+T=vt[:24].T
+
+def diagnostic(c):
+    n=np.linalg.norm(c)
+    sym=(c+c.T)/2
+    return [np.trace(c)/n,np.linalg.norm(sym)/n]
+
+print("MATCHING-PATH DIAGNOSTICS")
+print("Each pair is trace/F, symmetric_fraction.")
+print("00=direct/direct; 01=direct/earlier-OV; 10=earlier-OV/direct; 11=earlier-OV/both.")
+for l in range(1,4):
+    for j in range(6):
+        a=A[l,j]
+        cs=[a,a@b,b.T@a,b.T@a@b]
+        full=[diagnostic(c) for c in cs]
+        sub=[diagnostic(T.T@c@T) for c in cs]
+        print(f"L{l}H{j} full",np.round(full,3),"V-subspace",np.round(sub,3))
+
+print("\nL0H3 PATH TO L3H3: POSITIVE/NEGATIVE SYMMETRIC ENERGY")
+for label,c in [
+    ("direct",A[3,3]),
+    ("key via H3",A[3,3]@b),
+    ("query via H3",b.T@A[3,3]),
+    ("both via H3",b.T@A[3,3]@b)
+]:
+    e=np.linalg.eigvalsh((c+c.T)/2)
+    print(label,"positive squared-eigenvalue fraction",np.sum(e[e>0]**2)/np.sum(e**2),
+          "top positive",e[-8:],"most negative",e[:8])
+
+print("\nICA OF FINAL MLP OUTPUT COLUMNS (weights only; no neural computation)")
+X=W["W_proj.3"].astype(float).T
+for n in [22,24,27,30]:
+    with warnings.catch_warnings(record=True) as ws:
+        ica=FastICA(n_components=n,whiten="unit-variance",random_state=0,max_iter=3000,tol=1e-4)
+        Z=ica.fit_transform(X)
+    ku=kurtosis(Z,axis=0,fisher=True)
+    norms=np.linalg.norm(ica.mixing_,axis=0)
+    order=np.argsort(norms)[::-1]
+    print("components",n,"iterations",ica.n_iter_,"warnings",len(ws))
+    print("mixing norm, excess kurtosis:",np.round(np.column_stack([norms[order],ku[order]]),3))
+
+print("\nCLOCK-REGISTER WRITE STRENGTHS")
+for j in range(6):
+    mat=B[0,j]
+    print(f"L0H{j}: row21 norm={np.linalg.norm(mat[21]):.3f}",
+          f"row21 energy fraction={np.sum(mat[21]**2)/np.sum(mat**2):.3f}",
+          f"rows21,39,58,99 combined fraction={np.sum(mat[[21,39,58,99]]**2)/np.sum(mat**2):.3f}")
+print("Exact LayerNorm gains at coordinate 21:",
+      {f"{name}.{l}":float(W[f"{name}.{l}"][21]) for l in range(4) for name in ["ln1_w","ln2_w"]})
+```

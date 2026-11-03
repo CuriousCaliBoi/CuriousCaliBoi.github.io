@@ -1,0 +1,5 @@
+OUTPUT of Python run 24 of at most 120:
+```
+Saved v19: sharpen the policy while retaining symmetry among equally valued moves.
+
+```

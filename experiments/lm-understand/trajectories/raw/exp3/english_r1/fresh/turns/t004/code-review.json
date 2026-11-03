@@ -1,0 +1,6 @@
+{
+  "code_sha256": "8b115ffd5910a213105d07b9f69e5b78819de0166ad6a3632b840ad69b4ee1d0",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Weight/bias-derived selector vectors, QK/OV/MLP products, subspace comparisons and clustering on weight rows only. np.maximum prevents division by tiny row norms. No model/layer forward pass or search."
+}

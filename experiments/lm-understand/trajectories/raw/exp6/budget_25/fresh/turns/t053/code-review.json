@@ -1,0 +1,6 @@
+{
+  "code_sha256": "b450f3737fc91ed2e2cd6f9fc83073c40770b4d882d96851567576dcba1773d4",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Verifies parameter counts, finiteness, saved-array equality, and rotation/reflection equivariance by permuting weight/bias indices only. No input board or activation is computed. Saves the unchanged parameters and a manifest; no network inference, game simulation, fitting, or search."
+}

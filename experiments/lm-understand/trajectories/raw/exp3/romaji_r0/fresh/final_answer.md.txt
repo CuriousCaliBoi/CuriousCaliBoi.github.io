@@ -1,0 +1,52 @@
+## Observations
+
+These are **weight-based hypotheses**, not measured attention patterns. Ordering is much more identifiable here than corpus.
+
+Let \(A=(W_qD)^T(W_kD)/8\) and \(B=W_oW_vD\), where \(D=\operatorname{diag}(\text{ln1_w})\), restricted to the relevant head.
+
+- **A short-range transport circuit:** L0H3 has substantial, asymmetric QK structure: effective rank **17.07**, with raw QK eigenvalues including **\(0.724\pm0.691i\)**. Its query/key subspace is comparatively separate from its value subspace. This suggests positional addressing rather than character matching. L0H0’s positional component consistently aligns best with the **fourth power** of L0H3’s rotation-like component—evidence for a somewhat longer local offset, not proof of exactly four characters.
+- **A shared scalar-control circuit:** L0H1/H2/H4/H5 concentrate **90.8%, 91.8%, 83.8%, 96.3%** of their OV squared norm into coordinates **21, 39, 58, 99**. Coordinate 21 is largely excluded from intervening MLP reads: `ln2_w.1[21] = 0.001865` and `ln2_w.2[21] = 0.012022`. This resembles a protected positional or contextual register, but its meaning is unidentified.
+- **Strong induction-compatible composition:** For L3H3, the key-side path through L0H3 gives a normalized matching trace of **2.716** in a 24-dimensional value-reader subspace. Breaking the earlier OV pairing gives **0.034 ± 0.212**, with maximum **0.586** across 300 controls. Reversing the query/key-side role instead gives negative matching. This is the strongest evidence for copying earlier continuations.
+- **Corpus evidence is weak:** `W_proj.3` has singular values **8.240, 6.370, 5.836, 4.626** at ranks 24–27. There is no decisive reduced-alphabet signature. These singular values do **not** identify letters or establish an alphabet size.
+
+## Heads
+
+Here, “register fraction” means the fraction of the affine key-preference vector’s squared norm at coordinate 21. It identifies shared circuitry, **not attention distance**.
+
+L0H0: **local** — rotation comparison consistently favors a longer offset than L0H3; moderate confidence.  
+L0H1: **unclear** — QK effective rank 1.25; mostly writes the shared scalar register, without identifiable range.  
+L0H2: **unclear** — QK effective rank 1.21; OV closely resembles H1, cosine 0.925.  
+L0H3: **previous** — strongest positional transport signature; previous-character addressing is the leading interpretation, not a verified lag.  
+L0H4: **unclear** — low-rank QK and shared-register writing; insufficient evidence for distance.  
+L0H5: **broad** — tentative pooling interpretation: QK norm 0.034 versus OV norm 18.820, dominated by shared-register writes.
+
+L1H0: **unclear** — register fraction 83.1%; strong shared control, unidentified range.  
+L1H1: **unclear** — register fraction 82.4%; weak matching composition is insufficient for induction.  
+L1H2: **unclear** — register fraction 82.2%; negative same-context matching complicates interpretation.  
+L1H3: **unclear** — register fraction 82.4%; shared control plus head-specific content selection.  
+L1H4: **unclear** — register fraction 74.2%; particularly negative direct matching, but no identifiable lag.  
+L1H5: **unclear** — register fraction 83.5%; resembles the other L1 control-dependent heads.
+
+L2H0: **unclear** — register fraction 80.4%; lower-rank content selection than most L2 heads.  
+L2H1: **unclear** — register fraction 79.9%; substantial content-dependent QK structure, no compelling induction path.  
+L2H2: **unclear** — register fraction 76.7%; negative matching signatures do not determine range.  
+L2H3: **unclear** — register fraction 57.5%; less shared control, but that alone does not establish broad attention.  
+L2H4: **unclear** — register fraction 80.2%; positive key-side composition is much weaker than L3H3’s.  
+L2H5: **unclear** — register fraction 84.2%; mixed control/content circuitry without a resolved positional role.
+
+L3H0: **unclear** — positive direct matching but negative L0H3 key-side matching; not convincing induction.  
+L3H1: **unclear** — weaker register dependence and no distinctive matching circuit.  
+L3H2: **unclear** — mixed content selection; neither distance nor copying is established.  
+L3H3: **copy** — strong, directional, control-tested composition with the likely previous-character head.  
+L3H4: **broad** — tentative: large OV norm 49.245, relatively weak QK norm 0.623, and little shared-register dependence.  
+L3H5: **unclear** — some direct matching and register dependence, but no convincing induction signature.
+
+## Reasoning
+
+The combination of short-range transport and a strong continuation-matching circuit favors **as-is text**: line shuffling largely removes the ordered patterns these circuits would exploit.
+
+I weakly favor **English**. The distributed character/context structure and late copying circuit fit ordinary prose, without compelling evidence specifically identifying Python indentation or romaji phonotactics. This is a modest preference—not a recovered linguistic fingerprint. The missing embeddings prevent attaching character labels to these directions.
+
+corpus: english  
+order: as is  
+probabilities: python=0.34 romaji=0.20 english=0.46; as is=0.96 shuffled=0.04

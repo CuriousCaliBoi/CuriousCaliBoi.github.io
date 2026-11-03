@@ -1,0 +1,6 @@
+{
+  "code_sha256": "51bd2037e49a9c3292169a2150be5852ce641507e62bd169a99dfab8a9392e37",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Archives existing weights and constructs replacement tensors analytically from fixed coordinate neighborhoods, static randomly assigned coordinate fingerprints, and manually chosen coefficients. All loops assign weights; none propagates any board through the network or performs game simulation, fitting, or action search."
+}

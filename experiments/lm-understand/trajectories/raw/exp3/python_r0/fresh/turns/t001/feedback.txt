@@ -1,0 +1,73 @@
+WEIGHT KEYS: ['W_fc.0', 'W_fc.1', 'W_fc.2', 'W_fc.3', 'W_k.0', 'W_k.1', 'W_k.2', 'W_k.3', 'W_o.0', 'W_o.1', 'W_o.2', 'W_o.3', 'W_proj.0', 'W_proj.1', 'W_proj.2', 'W_proj.3', 'W_q.0', 'W_q.1', 'W_q.2', 'W_q.3', 'W_v.0', 'W_v.1', 'W_v.2', 'W_v.3', 'ln1_b.0', 'ln1_b.1', 'ln1_b.2', 'ln1_b.3', 'ln1_w.0', 'ln1_w.1', 'ln1_w.2', 'ln1_w.3', 'ln2_b.0', 'ln2_b.1', 'ln2_b.2', 'ln2_b.3', 'ln2_w.0', 'ln2_w.1', 'ln2_w.2', 'ln2_w.3']
+
+LAYER 0
+ln1_w min/mean/max/std: 0.01654764 0.26770642 1.0134335 0.21465456 norm: 6.724094
+ln1_b min/mean/max/std: -0.12149114 0.00065349764 0.14177816 0.036595043 norm: 0.7172278
+ln2_w min/mean/max/std: 0.04681267 0.8168376 1.6411812 0.33119047 norm: 17.27234
+ln2_b min/mean/max/std: -0.55371493 0.017958164 0.16627714 0.066667244 norm: 1.3529724
+W_q rms 0.05912 topSV [5.039 4.999 4.703 4.377 4.343] stableRank 20.30 r90 61
+W_k rms 0.06045 topSV [6.204 5.052 4.572 4.537 4.391] stableRank 14.00 r90 60
+W_v rms 0.04739 topSV [4.553 4.024 3.738 3.497 3.465] stableRank 15.97 r90 66
+W_o rms 0.05104 topSV [6.678 5.237 2.835 2.679 2.62 ] stableRank 8.61 r90 75
+W_fc rms 0.06725 topSV [18.11  12.28   8.473  7.902  7.779] stableRank 8.13 r90 87
+W_proj rms 0.05964 topSV [10.932  7.576  6.628  6.293  6.166] stableRank 17.56 r90 135
+L0H0 QK: norm 0.807 top [0.649 0.424 0.106 0.082 0.064] sr 1.54 r90 2 symmetry 0.155; OV: norm 8.667 top [6.898 3.897 1.936 1.638 1.469] sr 1.58 r90 4 symmetry 0.049 trace 1.620
+L0H1 QK: norm 4.067 top [2.153 1.515 1.437 1.216 1.074] sr 3.57 r90 14 symmetry 0.164; OV: norm 17.067 top [4.703 4.573 4.424 4.248 4.199] sr 13.17 r90 20 symmetry 0.004 trace -0.820
+L0H2 QK: norm 1.136 top [0.561 0.447 0.374 0.356 0.324] sr 4.10 r90 11 symmetry 0.176; OV: norm 8.592 top [4.786 3.621 3.514 2.916 2.224] sr 3.22 r90 7 symmetry 0.003 trace -0.743
+L0H3 QK: norm 1.434 top [0.959 0.701 0.431 0.294 0.279] sr 2.23 r90 7 symmetry 0.085; OV: norm 5.288 top [2.168 1.997 1.875 1.555 1.484] sr 5.95 r90 12 symmetry 0.007 trace -0.071
+L0H4 QK: norm 0.097 top [0.04  0.03  0.024 0.018 0.017] sr 5.86 r90 41 symmetry 0.039; OV: norm 25.795 top [18.815 15.373  5.587  3.989  2.502] sr 1.88 r90 3 symmetry 0.039 trace 6.681
+L0H5 QK: norm 5.785 top [1.76  1.72  1.649 1.558 1.543] sr 10.81 r90 18 symmetry -0.228; OV: norm 18.558 top [5.61  5.503 5.123 4.867 4.799] sr 10.94 r90 17 symmetry 0.008 trace -11.398
+
+LAYER 1
+ln1_w min/mean/max/std: 0.19793172 0.4753575 1.2095798 0.09638874 norm: 9.504637
+ln1_b min/mean/max/std: -1.0504974 0.022033103 0.9102453 0.15318407 norm: 3.0326743
+ln2_w min/mean/max/std: 0.0139104035 1.0110891 1.470659 0.15819876 norm: 20.054274
+ln2_b min/mean/max/std: -0.37441117 0.02753053 0.36524463 0.14420813 norm: 2.876926
+W_q rms 0.08249 topSV [8.984 7.137 6.079 5.874 5.19 ] stableRank 12.43 r90 66
+W_k rms 0.07448 topSV [10.967  9.448  5.438  4.842  4.539] stableRank 6.80 r90 68
+W_v rms 0.07414 topSV [5.35  5.064 4.979 4.819 4.69 ] stableRank 28.31 r90 84
+W_o rms 0.06810 topSV [4.19  3.651 3.385 3.352 3.24 ] stableRank 38.95 r90 119
+W_fc rms 0.10451 topSV [20.796 14.143 13.826 13.428 13.122] stableRank 14.90 r90 93
+W_proj rms 0.09781 topSV [7.625 7.359 6.908 6.489 6.344] stableRank 97.06 r90 280
+L1H0 QK: norm 2.471 top [1.116 0.861 0.756 0.719 0.664] sr 4.90 r90 15 symmetry 0.042; OV: norm 27.504 top [9.927 9.271 8.872 7.793 7.506] sr 7.68 r90 16 symmetry 0.087 trace -34.568
+L1H1 QK: norm 4.754 top [2.392 1.846 1.725 1.378 1.068] sr 3.95 r90 14 symmetry 0.082; OV: norm 19.961 top [6.211 5.658 5.403 5.113 4.867] sr 10.33 r90 21 symmetry 0.063 trace -23.812
+L1H2 QK: norm 3.618 top [1.811 1.583 1.277 0.905 0.808] sr 3.99 r90 14 symmetry 0.070; OV: norm 23.710 top [6.799 6.707 6.454 6.192 6.   ] sr 12.16 r90 20 symmetry 0.079 trace -31.928
+L1H3 QK: norm 3.776 top [1.998 1.66  1.278 0.901 0.796] sr 3.57 r90 14 symmetry 0.062; OV: norm 20.845 top [7.119 6.39  5.875 5.68  5.417] sr 8.57 r90 18 symmetry 0.053 trace -22.474
+L1H4 QK: norm 3.647 top [1.853 1.468 1.368 0.938 0.865] sr 3.87 r90 14 symmetry 0.052; OV: norm 19.572 top [6.354 5.996 5.642 5.541 5.215] sr 9.49 r90 18 symmetry 0.046 trace -21.931
+L1H5 QK: norm 4.695 top [2.523 2.023 1.535 1.4   1.068] sr 3.46 r90 13 symmetry 0.072; OV: norm 20.352 top [5.781 5.643 5.336 4.976 4.846] sr 12.39 r90 22 symmetry 0.073 trace -27.708
+
+LAYER 2
+ln1_w min/mean/max/std: 0.3444815 0.73433226 0.90473896 0.071201816 norm: 14.4574
+ln1_b min/mean/max/std: -0.9416654 0.024390584 0.73256344 0.13152973 norm: 2.6213865
+ln2_w min/mean/max/std: 0.07753398 1.2749993 1.5018098 0.11256402 norm: 25.081963
+ln2_b min/mean/max/std: -0.41570842 0.01880513 0.36354828 0.14735465 norm: 2.9109683
+W_q rms 0.09761 topSV [5.067 4.742 4.456 4.39  4.314] stableRank 54.72 r90 170
+W_k rms 0.09468 topSV [8.293 7.348 5.059 4.467 4.306] stableRank 19.22 r90 169
+W_v rms 0.09049 topSV [3.89  3.824 3.791 3.654 3.644] stableRank 79.78 r90 176
+W_o rms 0.08908 topSV [4.442 4.073 3.768 3.455 3.44 ] stableRank 59.31 r90 190
+W_fc rms 0.10346 topSV [14.829  8.048  7.921  7.76   7.66 ] stableRank 28.71 r90 252
+W_proj rms 0.10088 topSV [10.095  8.985  8.075  7.909  7.791] stableRank 58.91 r90 272
+L2H0 QK: norm 3.752 top [0.935 0.887 0.852 0.809 0.745] sr 16.09 r90 39 symmetry -0.006; OV: norm 25.165 top [5.556 5.132 5.005 4.795 4.773] sr 20.52 r90 41 symmetry 0.080 trace -48.290
+L2H1 QK: norm 3.610 top [0.907 0.818 0.747 0.716 0.675] sr 15.83 r90 39 symmetry 0.040; OV: norm 28.885 top [8.652 6.394 6.333 6.217 6.016] sr 11.15 r90 39 symmetry 0.072 trace -54.375
+L2H2 QK: norm 5.221 top [1.354 1.284 1.219 1.175 1.148] sr 14.87 r90 31 symmetry 0.034; OV: norm 22.619 top [4.742 4.585 4.492 4.275 4.22 ] sr 22.75 r90 42 symmetry 0.069 trace -39.941
+L2H3 QK: norm 3.648 top [1.012 0.878 0.775 0.766 0.712] sr 13.01 r90 39 symmetry -0.015; OV: norm 27.634 top [6.179 5.765 5.693 5.322 5.194] sr 20.00 r90 42 symmetry 0.090 trace -51.741
+L2H4 QK: norm 4.112 top [1.451 1.211 0.897 0.843 0.772] sr 8.03 r90 36 symmetry -0.001; OV: norm 24.785 top [5.445 5.184 5.128 4.988 4.903] sr 20.72 r90 38 symmetry 0.096 trace -52.123
+L2H5 QK: norm 3.041 top [0.788 0.74  0.685 0.588 0.574] sr 14.90 r90 42 symmetry -0.005; OV: norm 31.883 top [8.467 7.339 6.951 6.407 6.182] sr 14.18 r90 40 symmetry 0.053 trace -45.690
+
+LAYER 3
+ln1_w min/mean/max/std: 0.45101672 0.7693753 0.8778313 0.04688468 norm: 15.104584
+ln1_b min/mean/max/std: -0.5140651 0.010210011 0.62853575 0.09446622 norm: 1.861933
+ln2_w min/mean/max/std: 0.26189932 1.2551554 1.4567947 0.08882699 norm: 24.65744
+ln2_b min/mean/max/std: -0.5112283 0.013986574 0.3808068 0.12666406 norm: 2.497185
+W_q rms 0.08839 topSV [4.154 3.946 3.875 3.601 3.521] stableRank 66.74 r90 186
+W_k rms 0.08651 topSV [4.888 3.928 3.62  3.437 3.381] stableRank 46.20 r90 190
+W_v rms 0.10140 topSV [4.697 4.356 4.255 4.208 4.171] stableRank 68.73 r90 179
+W_o rms 0.10161 topSV [9.175 6.63  4.442 4.111 4.054] stableRank 18.08 r90 172
+W_fc rms 0.10181 topSV [14.373  8.176  7.973  7.83   7.036] stableRank 29.59 r90 279
+W_proj rms 0.11079 topSV [28.175 20.293 19.292 19.135 18.708] stableRank 9.12 r90 25
+L3H0 QK: norm 3.500 top [0.699 0.673 0.651 0.641 0.626] sr 25.05 r90 48 symmetry 0.019; OV: norm 31.618 top [7.123 6.403 6.09  5.949 5.73 ] sr 19.70 r90 44 symmetry 0.067 trace -62.391
+L3H1 QK: norm 2.865 top [0.55  0.535 0.521 0.511 0.505] sr 27.15 r90 48 symmetry 0.023; OV: norm 33.152 top [9.373 6.819 6.701 6.663 6.486] sr 12.51 r90 37 symmetry 0.081 trace -63.987
+L3H2 QK: norm 3.474 top [0.781 0.687 0.662 0.608 0.6  ] sr 19.80 r90 48 symmetry -0.008; OV: norm 34.637 top [11.577  7.787  6.815  6.5    6.372] sr 8.95 r90 42 symmetry 0.074 trace -65.099
+L3H3 QK: norm 1.784 top [0.461 0.408 0.363 0.34  0.328] sr 14.99 r90 47 symmetry -0.010; OV: norm 48.677 top [18.625 12.287 11.952 11.362 11.111] sr 6.83 r90 32 symmetry 0.065 trace -65.504
+L3H4 QK: norm 2.930 top [0.715 0.63  0.607 0.545 0.526] sr 16.79 r90 47 symmetry 0.004; OV: norm 36.644 top [11.774 10.138  8.487  7.578  7.163] sr 9.69 r90 40 symmetry 0.040 trace -45.155
+L3H5 QK: norm 3.581 top [0.676 0.658 0.643 0.627 0.617] sr 28.07 r90 48 symmetry 0.220; OV: norm 30.624 top [13.046  7.099  6.721  6.521  6.348] sr 5.51 r90 26 symmetry 0.209 trace -73.740

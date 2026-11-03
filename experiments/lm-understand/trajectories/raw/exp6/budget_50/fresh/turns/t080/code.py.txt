@@ -1,0 +1,7 @@
+# Keep the komi adjustment modest: supported connections should not
+# overwhelm expansion merely because Black is moving.
+w=load("out.W")
+for q in range(81):
+    w[405+q,q]=14.4*.6
+save("out.W",w)
+print("Black-only contact bonus restored to 0.6; all other weights unchanged.")

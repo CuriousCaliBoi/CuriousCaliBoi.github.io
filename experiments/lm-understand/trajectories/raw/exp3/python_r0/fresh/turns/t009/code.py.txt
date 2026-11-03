@@ -1,0 +1,63 @@
+import numpy as np
+from scipy.linalg import svd, eig
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+np.set_printoptions(precision=3,suppress=True,linewidth=160)
+
+A=[]
+for j in range(6):
+    sl=slice(64*j,64*(j+1))
+    A.append(W["W_q.0"][sl].astype(float).T @ W["W_k.0"][sl].astype(float)/8)
+u=svd(np.concatenate([A[1],A[1].T,A[5],A[5].T],axis=1),
+      full_matrices=False,check_finite=False)[0]
+
+for r in [16,24]:
+    p=u[:,:r]
+    mats=[p.T@a@p for a in A]
+    vals,vecs=eig(mats[5],mats[5].T,check_finite=False)
+    zs=[]
+    for n,lam in enumerate(vals):
+        if not np.isfinite(lam) or np.imag(lam)<=1e-5 or abs(np.log(abs(lam)))>.1:
+            continue
+        z=vecs[:,n]
+        c=np.vdot(z,mats[5]@z)
+        if abs(c)<.02: continue
+        if np.angle(c)<0: z=z.conj()
+        zs.append(z)
+    zs.sort(key=lambda z: np.angle(np.vdot(z,mats[5]@z)))
+    coeff=np.array([[np.vdot(z,m@z) for z in zs]for m in mats])
+    theta=np.angle(coeff[5])
+    print("\nrank",r,"reference H5 mode phases:",theta)
+    for j in range(6):
+        mag=np.abs(coeff[j])
+        phase=np.angle(coeff[j])
+        print("H%d magnitudes"%j,mag)
+        print("H%d phases"%j,phase)
+        ks=np.arange(0,13)
+        scores=np.array([np.average(np.cos(phase-k*theta),weights=mag+1e-20)for k in ks])
+        print("phase agreement for multipliers 0..12:",np.round(scores,3))
+
+# Signed agreement of the strongest induction candidates, across several
+# independently defined first-layer read subspaces and ranks.
+def products(l,j):
+    sl=slice(j*64,(j+1)*64)
+    g=W[f"ln1_w.{l}"].astype(float)
+    q=W[f"W_q.{l}"][sl].astype(float)*g
+    k=W[f"W_k.{l}"][sl].astype(float)*g
+    v=W[f"W_v.{l}"][sl].astype(float)*g
+    q-=q.mean(axis=1,keepdims=True)
+    k-=k.mean(axis=1,keepdims=True)
+    v-=v.mean(axis=1,keepdims=True)
+    o=W[f"W_o.{l}"][:,sl].astype(float)
+    o-=o.mean(axis=0,keepdims=True)
+    return q.T@k/8,o@v
+pairs=[products(l,j)for l in range(4)for j in range(6)]
+for source in [1,5]:
+    _,_,vt=svd(pairs[source][1],full_matrices=False,check_finite=False)
+    for rank in [16,24,32]:
+        t=vt[:rank].T
+        print("\nRead basis from L0H%d OV, rank%d"%(source,rank))
+        for target,earlier in [(13,5),(19,5),(23,5),(19,14),(23,14),(12,5),(18,5)]:
+            c=t.T@pairs[target][0]@pairs[earlier][1]@t
+            print("L%dH%d <- L%dH%d: trace/norm %.3f"%(target//6,target%6,
+                  earlier//6,earlier%6,np.trace(c)/(np.linalg.norm(c)+1e-30)))

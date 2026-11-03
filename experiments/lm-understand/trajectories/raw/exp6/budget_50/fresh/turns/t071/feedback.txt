@@ -1,0 +1,5 @@
+OUTPUT of Python run 37 of at most 120:
+```
+Empty-board prior: equal, symmetric four-four openings.
+
+```

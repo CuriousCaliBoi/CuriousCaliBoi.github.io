@@ -1,0 +1,12 @@
+```python
+import os, json
+print(os.listdir("/work/pass_1"))
+for root, dirs, files in os.walk("/work/pass_1"):
+    for name in files[:4]:
+        path = os.path.join(root, name)
+        print("\nFILE:", path)
+        if name.endswith((".json", ".jsonl", ".txt")):
+            with open(path) as f:
+                print(f.read(5000))
+    break
+```

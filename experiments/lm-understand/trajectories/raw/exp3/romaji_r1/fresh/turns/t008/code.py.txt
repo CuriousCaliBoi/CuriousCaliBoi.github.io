@@ -1,0 +1,58 @@
+import numpy as np
+from scipy.linalg import svd
+from threadpoolctl import threadpool_limits
+
+with threadpool_limits(limits=2):
+    A=[]; B=[]; bases=[]
+    for l in range(4):
+        g=W[f"ln1_w.{l}"].astype(float)
+        for j in range(6):
+            sl=slice(64*j,64*j+64)
+            q=W[f"W_q.{l}"][sl].astype(float)*g
+            k=W[f"W_k.{l}"][sl].astype(float)*g
+            v=W[f"W_v.{l}"][sl].astype(float)*g
+            for m in [q,k,v]:m-=m.mean(1,keepdims=True)
+            A.append(q.T@k/8)
+            B.append(W[f"W_o.{l}"][:,sl].astype(float)@v)
+            bases.append(svd(v,full_matrices=False)[2][:20].T)
+
+    print("Weight-only matching diagnostic:")
+    print("trace(P.T @ QK_lh @ OV_source @ P) / Frobenius norm;")
+    print("P = top 20 right singular directions of source V.")
+    for i in range(6,24):
+        scores=[]
+        syms=[]
+        for j in range((i//6)*6):
+            P=bases[j]
+            C=P.T@A[i]@B[j]@P
+            n=np.linalg.norm(C)
+            scores.append(np.trace(C)/n)
+            syms.append(np.sum(C*C.T)/(n*n))
+        best=np.argsort(scores)[::-1][:3]
+        print("L%dH%d"%(i//6,i%6),
+              "L0-source scores",np.round(scores[:6],3),
+              "best",[
+                  ("L%dH%d"%(j//6,j%6),round(scores[j],3),round(syms[j],3))
+                  for j in best])
+
+    rng=np.random.default_rng(874)
+    P=bases[3]
+    left=P.T@A[21]
+    right=B[3]@P
+    C=left@right
+    observed=np.trace(C)/np.linalg.norm(C)
+    null=[]
+    for _ in range(1000):
+        signs=rng.choice([-1.,1.],size=384)
+        D=(left*signs)@right
+        null.append(np.trace(D)/np.linalg.norm(D))
+    print("\nL3H3 <- L0H3 matching score:",round(observed,4))
+    print("Coordinate-sign scrambling of the weight connection, null quantiles:",
+          np.round(np.quantile(null,[0,.01,.5,.99,1]),4))
+
+    print("\nSelected literal LayerNorm weights")
+    for name,inds in [
+        ("ln1_b.1",[39,58,99,21]),
+        ("ln1_b.2",[39,58,99,21]),
+        ("ln1_w.0",[180,184,162,99,211])]:
+        print(name,[(i,float(W[name][i])) for i in inds])

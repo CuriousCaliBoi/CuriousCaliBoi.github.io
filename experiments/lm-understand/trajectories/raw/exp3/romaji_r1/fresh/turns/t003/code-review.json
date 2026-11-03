@@ -1,0 +1,6 @@
+{
+  "code_sha256": "cbdb2c519218c533235a4b711fe9324d8541ec4be41eabc8bf147dee056f95b4",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: QK/OV weight products, SVD/eigenmode overlaps, cross-head matrix compositions and shared weight-subspace energies. No sequence inputs, nonlinear layer computation, hidden-state normalization or external search."
+}

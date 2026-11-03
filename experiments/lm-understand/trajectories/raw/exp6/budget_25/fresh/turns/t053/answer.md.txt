@@ -1,0 +1,64 @@
+```python
+import json,numpy as np
+
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+tensors={name:load(name).copy() for name in names}
+archive=np.load("/work/version_13.npz")
+
+assert sum(a.size for a in tensors.values())==1_480_274
+assert all(np.isfinite(a).all() for a in tensors.values())
+assert all(np.array_equal(tensors[n],archive[n]) for n in names)
+
+# Weight-only symmetry audit; this does not evaluate the network.
+for label,transform in (
+    ("90-degree rotation",lambda r,c:(c,8-r)),
+    ("reflection",lambda r,c:(r,8-c)),
+):
+    point=np.array([9*transform(*divmod(i,9))[0]+transform(*divmod(i,9))[1]
+                    for i in range(81)])
+    input_perm=np.arange(243)
+    for i in range(81):
+        input_perm[3*i]=3*point[i]
+        input_perm[3*i+1]=3*point[i]+1
+    # The colour plane is spatially constant on every valid input.
+    hidden_perm=np.arange(512)
+    for channel in range(6):
+        hidden_perm[81*channel:81*(channel+1)]=81*channel+point
+    output_perm=np.r_[point,81]
+    errors=[]
+    for k in range(1,7):
+        incoming=input_perm if k==1 else hidden_perm
+        w=tensors[f"L{k}.W"]
+        errors.append(float(np.max(np.abs(w[np.ix_(incoming,hidden_perm)]-w))))
+        bias=tensors[f"L{k}.b"]
+        errors.append(float(np.max(np.abs(bias[hidden_perm]-bias))))
+    w=tensors["out.W"]
+    errors.append(float(np.max(np.abs(w[np.ix_(hidden_perm,output_perm)]-w))))
+    errors.append(float(np.max(np.abs(
+        tensors["out.b"][output_perm]-tensors["out.b"]))))
+    assert max(errors)<1e-6,(label,max(errors))
+    print(label+": passed weight-only equivariance audit")
+
+for name,array in tensors.items():
+    save(name,array)
+np.savez_compressed("/work/final_policy.npz",**tensors)
+json.dump({
+    "design":"analytic Go policy, revision 13",
+    "parameters":1_480_274,
+    "nonzero_parameters":int(sum(np.count_nonzero(a) for a in tensors.values())),
+    "training":False,
+    "search":False,
+    "features":[
+        "local liberties and connected-group safety propagation",
+        "capture, rescue, and two-liberty pressure",
+        "saturated tactical rewards",
+        "eye, self-atari, and redundant-shape protection",
+        "spatial development and fading opening priors",
+        "komi-aware late-game passing"
+    ]
+},open("/work/final_policy_manifest.json","w"),indent=2)
+
+print("Final policy saved; all 14 tensors verified.")
+print("Nonzero parameters:",sum(np.count_nonzero(a) for a in tensors.values()))
+print("No inference, training, or search was performed in this audit.")
+```

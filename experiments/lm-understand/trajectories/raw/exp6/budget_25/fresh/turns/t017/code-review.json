@@ -1,0 +1,6 @@
+{
+  "code_sha256": "a67fe146449b4db5dfd980fac368860c2447c753995763460b867b5313d32a1e",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Uses prior reviewed analytic builders, manual parameter choices, and direct fixed-adjacency tensor edits. The exec chain only constructs coefficients; no board inputs run through the model, no game simulation, fitting, or search."
+}

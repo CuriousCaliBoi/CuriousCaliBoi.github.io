@@ -1,0 +1,25 @@
+## Observations:
+Hidden-unit indices below are zero-based.
+
+- **Channel 0 — agent:** Large weights outline a **maze-like set of reachable cells**, rather than a paddle’s row or column. At `(1,1)`, weights include `−3.242`, `3.377`, `−3.734`, and `4.081`; at `(1,3)`, one reaches `4.742`. Row 2 has strong agent weights at columns **1, 4, 5, and 8**, while columns **2, 3, 6, and 7** have small, initialization-like weights. This suggests fixed corridors separated by internal walls.
+- **Channel 1 — moving objects:** Substantial weights occur in those same corridors. At `(1,1)`, hidden units 11 and 12 receive `2.453` and `1.978`; at `(2,5)`, unit 5 receives `−5.209`. These look like independently moving entities sharing the agent’s maze—plausibly ghosts.
+- **Channel 2 — reward targets:** Generally weaker and less distributed across hidden units than agent/object weights, but decidedly learned at some corridor cells. Along row 1, columns 1–4 feed unit 6 with `−1.490, −2.361, −1.905, −0.883`; `(2,4)` feeds it with `−4.876`. This supports collectible targets in the maze, with particularly strong sensitivity to some locations.
+- **Channel 3 — obstacles:** Weights are comparatively small. Border cells nevertheless show repeated structure: `(0,0)`, `(0,1)`, and `(0,2)` feed unit 6 with `−0.162, −0.149, −0.130`. Small obstacle weights do **not** imply an empty board: a fixed maze can be memorized through position-dependent behavior, and constant wall inputs act like additional biases.
+- **Channel 4 — previous frame:** Structured weights follow accessible locations, generally smaller than current agent/object weights. For example, `(1,1)` and `(1,8)` feed unit 9 with `−1.316` and `−2.849`. Previous positions matter, consistent with tracking moving enemies.
+- **Outputs:** All four directions have substantial, distinct connections. Output row 17 favors up over down (`2.144` versus `−1.525`); row 16 strongly supports left (`2.490`), and row 28 supports right (`2.500`). Biases are `[-0.873, 0.703, 0.712, 0.595, -0.092]`: a baseline preference for movement over waiting, though actual preferences depend on hidden activations.
+
+## Reasoning:
+The strongest combination is **fixed maze corridors, four-direction navigation, moving entities occupying those corridors, and collectible rewards**. That fits Pac-Man particularly well.
+
+Pong, Breakout, and falling-object catching are poor fits because the agent’s learned positions span a two-dimensional corridor network. Ordinary Snake would not naturally explain the fixed inaccessible interior pattern or the weak, largely static obstacle channel. A simple maze-exit task fits the geometry but explains the substantial moving-object and history weights less well.
+
+The weights cannot uniquely establish the rules, but a pellet-collecting maze with ghosts is the best-supported interpretation.
+
+## Game:
+**Pac-Man — a small grid-based variant.**
+
+## Description:
+The agent navigates a fixed maze, collecting pellets or other food targets for reward while avoiding moving ghosts. Clearing the remaining collectibles is the likely objective.
+
+## Confidence:
+91%

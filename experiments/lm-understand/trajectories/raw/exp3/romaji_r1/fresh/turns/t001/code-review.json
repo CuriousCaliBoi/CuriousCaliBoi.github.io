@@ -1,0 +1,6 @@
+{
+  "code_sha256": "fd52eeaf6e709635bb34b54539ed77675c810ce0162c1fb585f00a4361b3264a",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: tensor statistics, centered/gain-scaled QK and OV products, singular spectra, matrix symmetries and affine bias coefficients. np.exp is used solely for entropy-based effective rank of squared singular values, not attention softmax or a layer forward pass. No sequence inputs or external search."
+}

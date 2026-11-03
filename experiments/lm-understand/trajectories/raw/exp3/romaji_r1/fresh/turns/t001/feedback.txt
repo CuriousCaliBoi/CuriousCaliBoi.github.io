@@ -1,0 +1,73 @@
+Available: ['W_fc.0', 'W_fc.1', 'W_fc.2', 'W_fc.3', 'W_k.0', 'W_k.1', 'W_k.2', 'W_k.3', 'W_o.0', 'W_o.1', 'W_o.2', 'W_o.3', 'W_proj.0', 'W_proj.1', 'W_proj.2', 'W_proj.3', 'W_q.0', 'W_q.1', 'W_q.2', 'W_q.3', 'W_v.0', 'W_v.1', 'W_v.2', 'W_v.3', 'ln1_b.0', 'ln1_b.1', 'ln1_b.2', 'ln1_b.3', 'ln1_w.0', 'ln1_w.1', 'ln1_w.2', 'ln1_w.3', 'ln2_b.0', 'ln2_b.1', 'ln2_b.2', 'ln2_b.3', 'ln2_w.0', 'ln2_w.1', 'ln2_w.2', 'ln2_w.3']
+
+LAYER 0
+ln1_w (384,) mean=0.2965 sd=0.1884 min=0.03522 max=0.9785 norm=6.884
+ln1_b (384,) mean=0.0003872 sd=0.03113 min=-0.09542 max=0.09061 norm=0.6101
+ln2_w (384,) mean=0.8718 sd=0.3382 min=0.04203 max=1.775 norm=18.32
+ln2_b (384,) mean=0.0134 sd=0.06913 min=-0.6236 max=0.4636 norm=1.38
+W_q (384, 384) mean=5.472e-05 sd=0.04601 min=-0.4639 max=0.4214 norm=17.67
+W_k (384, 384) mean=6.684e-06 sd=0.04822 min=-0.5163 max=0.5037 norm=18.52
+W_v (384, 384) mean=1.748e-05 sd=0.0389 min=-0.3922 max=0.3895 norm=14.94
+W_o (384, 384) mean=-0.0001201 sd=0.0431 min=-1.124 max=1.082 norm=16.55
+W_fc (1536, 384) mean=0.0007535 sd=0.0721 min=-0.8384 max=1.123 norm=55.38
+W_proj (384, 1536) mean=-9.916e-07 sd=0.06511 min=-0.6883 max=1.464 norm=50.01
+L0H0 QK: norm=0.293 top=0.248 erank=3.5 trace/norm=-0.357 symmetry=0.141; OV: norm=2.126 top=0.957 erank=12.4 trace/norm=-0.067; LN-bias key-vector=0.043 query-vector=0.106
+L0H1 QK: norm=0.159 top=0.150 erank=1.6 trace/norm=-0.619 symmetry=0.161; OV: norm=3.979 top=3.380 erank=2.0 trace/norm=0.231; LN-bias key-vector=0.013 query-vector=0.027
+L0H2 QK: norm=0.107 top=0.102 erank=1.7 trace/norm=-0.813 symmetry=0.289; OV: norm=3.033 top=2.643 erank=2.1 trace/norm=0.229; LN-bias key-vector=0.007 query-vector=0.033
+L0H3 QK: norm=0.698 top=0.244 erank=22.1 trace/norm=1.923 symmetry=-0.067; OV: norm=3.533 top=1.126 erank=24.8 trace/norm=-0.571; LN-bias key-vector=0.043 query-vector=0.052
+L0H4 QK: norm=0.088 top=0.080 erank=2.5 trace/norm=-0.519 symmetry=0.050; OV: norm=1.684 top=1.454 erank=2.5 trace/norm=0.103; LN-bias key-vector=0.017 query-vector=0.069
+L0H5 QK: norm=0.034 top=0.032 erank=1.9 trace/norm=-0.253 symmetry=0.024; OV: norm=18.812 top=16.278 erank=2.0 trace/norm=0.111; LN-bias key-vector=0.005 query-vector=0.015
+
+LAYER 1
+ln1_w (384,) mean=0.5058 sd=0.08918 min=0.197 max=1.085 norm=10.07
+ln1_b (384,) mean=0.01103 sd=0.1546 min=-1.568 max=1.365 norm=3.037
+ln2_w (384,) mean=1.131 sd=0.1741 min=0.001865 max=1.52 norm=22.43
+ln2_b (384,) mean=0.006468 sd=0.1435 min=-0.3892 max=0.417 norm=2.815
+W_q (384, 384) mean=-0.0002709 sd=0.1014 min=-0.441 max=0.4642 norm=38.93
+W_k (384, 384) mean=5.424e-05 sd=0.09087 min=-1.087 max=1.276 norm=34.89
+W_v (384, 384) mean=2.812e-05 sd=0.07486 min=-0.3539 max=0.3314 norm=28.74
+W_o (384, 384) mean=1.889e-05 sd=0.07416 min=-0.4175 max=0.455 norm=28.48
+W_fc (1536, 384) mean=0.001389 sd=0.1047 min=-0.6542 max=0.645 norm=80.38
+W_proj (384, 1536) mean=-8.241e-05 sd=0.1008 min=-0.5072 max=2.66 norm=77.38
+L1H0 QK: norm=1.978 top=1.185 erank=10.4 trace/norm=-0.884 symmetry=0.042; OV: norm=11.479 top=3.189 erank=29.8 trace/norm=-1.346; LN-bias key-vector=3.975 query-vector=2.959
+L1H1 QK: norm=1.843 top=1.154 erank=9.2 trace/norm=-0.845 symmetry=0.018; OV: norm=11.264 top=3.147 erank=26.6 trace/norm=-1.351; LN-bias key-vector=3.689 query-vector=2.802
+L1H2 QK: norm=1.781 top=1.176 erank=9.0 trace/norm=-1.060 symmetry=0.037; OV: norm=11.807 top=3.550 erank=25.4 trace/norm=-1.467; LN-bias key-vector=3.051 query-vector=2.509
+L1H3 QK: norm=1.787 top=1.187 erank=8.5 trace/norm=-0.846 symmetry=0.005; OV: norm=12.398 top=3.408 erank=26.7 trace/norm=-1.482; LN-bias key-vector=3.390 query-vector=2.624
+L1H4 QK: norm=1.629 top=1.059 erank=10.0 trace/norm=-1.234 symmetry=0.047; OV: norm=13.399 top=4.132 erank=26.4 trace/norm=-1.429; LN-bias key-vector=2.329 query-vector=2.031
+L1H5 QK: norm=1.863 top=1.146 erank=9.5 trace/norm=-0.875 symmetry=0.017; OV: norm=10.917 top=3.083 erank=26.4 trace/norm=-1.370; LN-bias key-vector=3.895 query-vector=2.825
+
+LAYER 2
+ln1_w (384,) mean=0.6809 sd=0.06874 min=0.3175 max=1.093 norm=13.41
+ln1_b (384,) mean=0.01305 sd=0.1565 min=-1.659 max=1.332 norm=3.077
+ln2_w (384,) mean=1.31 sd=0.1148 min=0.01202 max=1.508 norm=25.78
+ln2_b (384,) mean=0.01229 sd=0.1737 min=-0.517 max=0.4489 norm=3.413
+W_q (384, 384) mean=8.331e-05 sd=0.1013 min=-0.4865 max=0.4916 norm=38.9
+W_k (384, 384) mean=1.482e-05 sd=0.0957 min=-1.224 max=1.194 norm=36.75
+W_v (384, 384) mean=-3.459e-05 sd=0.08641 min=-0.4009 max=0.3919 norm=33.18
+W_o (384, 384) mean=-4.614e-06 sd=0.08446 min=-0.5312 max=0.5185 norm=32.43
+W_fc (1536, 384) mean=0.0003871 sd=0.1039 min=-0.5244 max=0.5953 norm=79.83
+W_proj (384, 1536) mean=-7.138e-05 sd=0.1016 min=-0.5107 max=0.8014 norm=78.05
+L2H0 QK: norm=1.631 top=0.689 erank=31.3 trace/norm=-0.953 symmetry=-0.040; OV: norm=16.379 top=5.289 erank=35.9 trace/norm=-1.028; LN-bias key-vector=2.020 query-vector=1.805
+L2H1 QK: norm=2.154 top=0.578 erank=40.5 trace/norm=-0.100 symmetry=-0.021; OV: norm=17.616 top=4.136 erank=44.6 trace/norm=-1.996; LN-bias key-vector=1.880 query-vector=1.629
+L2H2 QK: norm=1.720 top=0.518 erank=42.4 trace/norm=-0.754 symmetry=-0.004; OV: norm=18.662 top=5.045 erank=39.3 trace/norm=-1.604; LN-bias key-vector=1.608 query-vector=1.411
+L2H3 QK: norm=1.623 top=0.502 erank=42.2 trace/norm=-0.367 symmetry=-0.008; OV: norm=18.996 top=4.832 erank=41.7 trace/norm=-1.590; LN-bias key-vector=1.060 query-vector=0.840
+L2H4 QK: norm=2.215 top=0.813 erank=35.3 trace/norm=-0.442 symmetry=-0.032; OV: norm=14.875 top=3.533 erank=42.1 trace/norm=-2.103; LN-bias key-vector=2.305 query-vector=1.969
+L2H5 QK: norm=2.264 top=0.615 erank=39.4 trace/norm=-0.118 symmetry=-0.024; OV: norm=16.858 top=3.735 erank=45.4 trace/norm=-2.058; LN-bias key-vector=2.023 query-vector=1.738
+
+LAYER 3
+ln1_w (384,) mean=0.7087 sd=0.04941 min=0.4078 max=0.8155 norm=13.92
+ln1_b (384,) mean=0.02963 sd=0.09939 min=-0.7639 max=0.8241 norm=2.032
+ln2_w (384,) mean=1.267 sd=0.08945 min=0.2328 max=1.453 norm=24.89
+ln2_b (384,) mean=0.0128 sd=0.1413 min=-0.5402 max=0.3932 norm=2.78
+W_q (384, 384) mean=-8.166e-05 sd=0.08656 min=-0.3908 max=0.4595 norm=33.24
+W_k (384, 384) mean=-2.536e-05 sd=0.08454 min=-0.9139 max=0.9735 norm=32.46
+W_v (384, 384) mean=4.308e-05 sd=0.1027 min=-0.508 max=0.5939 norm=39.42
+W_o (384, 384) mean=9.028e-06 sd=0.1045 min=-1.517 max=1.527 norm=40.13
+W_fc (1536, 384) mean=0.0002521 sd=0.1019 min=-0.4902 max=0.55 norm=78.26
+W_proj (384, 1536) mean=0.0002828 sd=0.1108 min=-1.058 max=1.477 norm=85.12
+L3H0 QK: norm=2.029 top=0.435 erank=51.5 trace/norm=1.073 symmetry=0.006; OV: norm=20.711 top=5.784 erank=41.2 trace/norm=-2.223; LN-bias key-vector=0.500 query-vector=0.446
+L3H1 QK: norm=1.216 top=0.345 erank=45.8 trace/norm=0.355 symmetry=-0.002; OV: norm=26.504 top=8.230 erank=33.4 trace/norm=-1.586; LN-bias key-vector=0.280 query-vector=0.306
+L3H2 QK: norm=1.437 top=0.383 erank=50.0 trace/norm=0.243 symmetry=-0.010; OV: norm=23.504 top=7.460 erank=38.3 trace/norm=-1.593; LN-bias key-vector=0.495 query-vector=0.338
+L3H3 QK: norm=1.815 top=0.322 erank=57.8 trace/norm=3.212 symmetry=0.210; OV: norm=37.524 top=10.809 erank=30.0 trace/norm=-1.210; LN-bias key-vector=0.220 query-vector=0.179
+L3H4 QK: norm=0.622 top=0.236 erank=33.1 trace/norm=0.003 symmetry=0.001; OV: norm=49.234 top=21.266 erank=14.3 trace/norm=-0.794; LN-bias key-vector=0.144 query-vector=0.113
+L3H5 QK: norm=1.665 top=0.454 erank=51.3 trace/norm=0.863 symmetry=0.009; OV: norm=22.563 top=6.302 erank=40.0 trace/norm=-1.534; LN-bias key-vector=0.493 query-vector=0.422

@@ -1,0 +1,71 @@
+```python
+import numpy as np
+from scipy.linalg import svd, eig
+from scipy.stats import skew
+from sklearn.decomposition import FastICA
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+rs=[]
+for h in [1,5]:
+    _,_,r=svd(np.asarray(W["W_v.0"][64*h:64*(h+1)],float)@P,full_matrices=False)
+    rs.append(r[:28])
+ev,U=np.linalg.eigh(sum(r.T@r for r in rs))
+U=U[:,np.argsort(ev)[::-1][:28]]
+F=np.asarray(W["W_fc.0"],float)*W["ln2_w.0"][None,:]
+ica=FastICA(n_components=28,whiten="unit-variance",random_state=17,max_iter=4000,tol=.001)
+Z=ica.fit_transform(F@U)
+sg=np.where(skew(Z,axis=0)>=0,1.,-1.)
+T=U@np.linalg.pinv((ica.mixing_*sg[None,:]).T)
+T/=np.linalg.norm(T,axis=0,keepdims=True)
+
+print("L0 character-subspace weight energies by unlabeled ICA axis")
+for h in range(6):
+    s=slice(64*h,64*(h+1))
+    q,k,v=[np.asarray(W[f"W_{n}.0"][s],float) for n in ["q","k","v"]]
+    a=q.T@k
+    vals=[]
+    for name,z in [("query",np.linalg.norm(T.T@a,axis=1)),
+                   ("key",np.linalg.norm(a@T,axis=0)),
+                   ("value",np.linalg.norm(v@T,axis=0))]:
+        ix=np.argsort(z)[::-1][:7]
+        vals.append((name,[(int(i),round(z[i],3)) for i in ix]))
+    print(h,vals)
+
+print("\nL0H4 top value-input singular vectors: overlap with content and QK5 row spaces")
+v=np.asarray(W["W_v.0"][256:320],float)@P
+_,ss,vt=svd(v,full_matrices=False)
+q=np.asarray(W["W_q.0"][320:384],float)@P
+k=np.asarray(W["W_k.0"][320:384],float)@P
+_,_,pos=svd(np.concatenate([q,k]),full_matrices=False)
+for j in range(6):
+    print(j,round(ss[j],3),round(np.linalg.norm(U.T@vt[j])**2,3),
+          round(np.linalg.norm(pos[:40]@vt[j])**2,3))
+
+print("\nRelative rotation geometry of L0H1 and L0H5")
+print("Weight-matrix powers only; no sequence or attention computation.")
+# Exclude the shared value-reading subspace, then whiten a Q/K Gram matrix.
+R=P-U@U.T
+q5=np.asarray(W["W_q.0"][320:384],float)@R
+k5=np.asarray(W["W_k.0"][320:384],float)@R
+gram=(q5.T@q5+k5.T@k5)/2
+ee,V=np.linalg.eigh(gram)
+ix=np.argsort(ee)[::-1]
+ee,V=ee[ix],V[:,ix]
+for rank in [16,24,32,40]:
+    T0=V[:,:rank]/np.sqrt(ee[:rank])[None,:]
+    a5=T0.T@(q5.T@k5)@T0
+    left,_,right=svd(a5)
+    rot=left@right
+    q1=np.asarray(W["W_q.0"][64:128],float)@R
+    k1=np.asarray(W["W_k.0"][64:128],float)@R
+    a1=T0.T@(q1.T@k1)@T0
+    co=[]
+    for power in range(-4,7):
+        rp=np.linalg.matrix_power(rot,power)
+        co.append((power,round(np.sum(a1*rp)/(np.linalg.norm(a1)*np.linalg.norm(rp)),3)))
+    print("rank",rank,"H5 singular values",np.round(np.linalg.svd(a5,compute_uv=False)[[0,-1]],3),
+          "H1 versus H5 polar powers",co)
+```

@@ -1,0 +1,67 @@
+```python
+import numpy as np
+from scipy.linalg import svd, svdvals
+from scipy.stats import kurtosis, skew
+from sklearn.decomposition import FastICA
+from sklearn.cluster import KMeans
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+v1=np.asarray(W["W_v.0"][64:128],float)@P
+v5=np.asarray(W["W_v.0"][320:384],float)@P
+_,s1,r1=svd(v1,full_matrices=False)
+_,s5,r5=svd(v5,full_matrices=False)
+print("Principal cosines between top-28 L0H1 and L0H5 value row spaces:")
+print(np.round(svdvals(r1[:28]@r5[:28].T),3))
+
+# Consensus directions read by both value matrices.
+G=r1[:28].T@r1[:28]+r5[:28].T@r5[:28]
+e,u=np.linalg.eigh(G)
+u=u[:,np.argsort(e)[::-1][:28]]
+print("Consensus eigenvalues:",np.round(np.sort(e)[::-1][:35],3))
+
+print("\nL0 QK energy inside the consensus content subspace (unscaled matrices)")
+for h in range(6):
+    s=slice(64*h,64*(h+1))
+    a=np.asarray(W["W_q.0"][s],float).T@np.asarray(W["W_k.0"][s],float)
+    print(h,"query",round(np.linalg.norm(u.T@a)**2/np.linalg.norm(a)**2,3),
+          "key",round(np.linalg.norm(a@u)**2/np.linalg.norm(a)**2,3))
+
+print("\nICA of final MLP output WEIGHT columns, not activations")
+Y=np.asarray(W["W_proj.3"],float).T
+ica=FastICA(n_components=28,whiten="unit-variance",random_state=17,
+            max_iter=2000,tol=0.0005)
+Z=ica.fit_transform(Y)
+ku=kurtosis(Z,axis=0,fisher=True)
+sk=skew(Z,axis=0)
+print("Sorted component kurtoses:",np.round(np.sort(ku)[::-1],2))
+print("Sorted absolute component skewness:",np.round(np.sort(np.abs(sk))[::-1],2))
+mix=ica.mixing_
+# Report component directions' relation to the initial value-read subspace.
+frac=np.sum((u.T@mix)**2,axis=0)/np.sum(mix**2,axis=0)
+print("Output component overlap with initial content subspace:",np.round(np.sort(frac)[::-1],3))
+print("Component norms:",np.round(np.sort(np.linalg.norm(mix,axis=0))[::-1],3))
+
+print("\nInitial MLP input-weight geometry in consensus content coordinates")
+F=np.asarray(W["W_fc.0"],float)*W["ln2_w.0"][None,:]
+X=F@u
+ica2=FastICA(n_components=28,whiten="unit-variance",random_state=17,
+             max_iter=2000,tol=0.0005)
+Z2=ica2.fit_transform(X)
+print("Sorted component kurtoses:",np.round(np.sort(kurtosis(Z2,axis=0))[::-1],2))
+print("Sorted absolute component skewness:",np.round(np.sort(np.abs(skew(Z2,axis=0)))[::-1],2))
+
+print("\nFinal MLP output-column directional clustering")
+norm=np.linalg.norm(Y,axis=1)
+Ysmall=Y[norm>=np.quantile(norm,.5)]
+U,S,VT=svd(Ysmall-Ysmall.mean(0),full_matrices=False)
+X=U[:,:30]*S[:30]
+X=X/np.linalg.norm(X,axis=1,keepdims=True)
+for k in [20,24,28,32,40]:
+    km=KMeans(n_clusters=k,n_init=10,random_state=17).fit(X)
+    sizes=np.bincount(km.labels_,minlength=k)
+    print("k",k,"inertia",round(km.inertia_,2),
+          "cluster sizes",np.sort(sizes)[::-1].tolist())
+```

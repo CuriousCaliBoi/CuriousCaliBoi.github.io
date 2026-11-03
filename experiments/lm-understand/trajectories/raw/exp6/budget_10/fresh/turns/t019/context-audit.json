@@ -1,0 +1,283 @@
+{
+  "valid": true,
+  "expected_user_messages": 19,
+  "actual_user_messages": 19,
+  "user_messages_exact_and_ordered": true,
+  "unexpected_context": [],
+  "settings": [
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    }
+  ],
+  "message_hashes": [
+    {
+      "role": "developer",
+      "characters": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "role": "developer",
+      "characters": 26,
+      "sha256": "b8a5d51f11d62576e43005a35c4db74c365ace7db42076e7bf4e03c7d949076c"
+    },
+    {
+      "role": "developer",
+      "characters": 1398,
+      "sha256": "e1ec47a3ec231ef78c1e1d61f66f07017c0effb2e1b8c90b123450b5058b070b"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "baf6d51f435a7026f20957ef5a6e178ac2b12db7a2046fc4835ba6e7d0c955a2"
+    },
+    {
+      "role": "user",
+      "characters": 6610,
+      "sha256": "67ca084cbcadfc0d81ac1aae4ba761bba115be479001bf8ddc8191fec2953ba5"
+    },
+    {
+      "role": "user",
+      "characters": 463,
+      "sha256": "7fde9f0b97c8f67e68b5d886f1697f9baf2db69f4bbc104137abaa8f734642ee"
+    },
+    {
+      "role": "user",
+      "characters": 491,
+      "sha256": "c2941b6fbcad705e5e494bb9d10ee6f35b7673258218ef4331ae6538397a3121"
+    },
+    {
+      "role": "user",
+      "characters": 206,
+      "sha256": "e0b1a82f6c413211f2bdae181c3fb378c879050f81cba98525d0aa34dd41022c"
+    },
+    {
+      "role": "user",
+      "characters": 1497,
+      "sha256": "c3ff5fb83a3f9b4f2222de8387f24432763cc01c2b6219c8b87846cb14973b45"
+    },
+    {
+      "role": "user",
+      "characters": 5488,
+      "sha256": "e12ad12a19e9b9f95e5ba4d2a366e3fcf96c0c7f3bc5056105c95acf113afa8a"
+    },
+    {
+      "role": "user",
+      "characters": 19372,
+      "sha256": "31893742088561c08a7fddb6a93248ce90da05fbc8033363760ed5646cc47125"
+    },
+    {
+      "role": "user",
+      "characters": 5933,
+      "sha256": "23938410f2a3bebfe7b65bc9ec41792947896dc93ff7580ffeb6132483a9415a"
+    },
+    {
+      "role": "user",
+      "characters": 107,
+      "sha256": "9aef1d2c8682edc9c5cea090679e6f61be80d974a16225d501936330d33225da"
+    },
+    {
+      "role": "user",
+      "characters": 1573,
+      "sha256": "6fc6c290380d6ea70266b5f51e4f830a0ab2f1670c58a5e9877e5cc0903f9254"
+    },
+    {
+      "role": "user",
+      "characters": 266,
+      "sha256": "a3a28e91b187b68983e964659e1e517758f73e08259f82b3598aacb2110f0aeb"
+    },
+    {
+      "role": "user",
+      "characters": 1551,
+      "sha256": "977db221a7db5cd5338c292d7763db10baf98ac71b7a65f542f43d408fb28806"
+    },
+    {
+      "role": "user",
+      "characters": 182,
+      "sha256": "e78f70a1d971c75435a134656ac7b07eb992314168b3b7576e5c20622b2928e0"
+    },
+    {
+      "role": "user",
+      "characters": 587,
+      "sha256": "923908ab2876f63c44cefe1bf2abb66dffa1e86c391847cf53067fdd9e61313e"
+    },
+    {
+      "role": "user",
+      "characters": 119,
+      "sha256": "f5764ac607f68fd938cca067423181b9c7c19a9c5544fb66e6a2406b018c2c95"
+    },
+    {
+      "role": "user",
+      "characters": 599,
+      "sha256": "e86040d876c2156e195f2d62280a52526aeef51d784a587b6e140a141a5ba245"
+    },
+    {
+      "role": "user",
+      "characters": 2111,
+      "sha256": "5f804bf4ac5f6422836ea717a9fc1ad7436d4595e4450503ca68d6175f86ff75"
+    },
+    {
+      "role": "user",
+      "characters": 112,
+      "sha256": "263567e915595a3ef22ef82f7088b252d6e8aab97e90dd3d63e0a9c0ef578d46"
+    },
+    {
+      "role": "user",
+      "characters": 594,
+      "sha256": "6d5e0c20b8564a6b338059a25b38109bac289d5c98d6c49aab2cd3f2f7c52d84"
+    },
+    {
+      "role": "user",
+      "characters": 120,
+      "sha256": "b1a8d32ef3727647fcf6fe07f07280f0037c49e3cfd9d6787b5f57cdf9eeadad"
+    }
+  ]
+}

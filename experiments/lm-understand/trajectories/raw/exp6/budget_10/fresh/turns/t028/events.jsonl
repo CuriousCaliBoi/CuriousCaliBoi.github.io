@@ -1,0 +1,6 @@
+{"type":"thread.started","thread_id":"01a1a06a-b648-7500-8c86-b176a50be72d"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"Failed to read global AGENTS.md instructions from `<local-home>/.codex/AGENTS.md`: Operation not permitted (os error 1)"}}
+{"type":"item.completed","item":{"id":"item_1","type":"error","message":"Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`."}}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_2","type":"agent_message","text":"All 14 tensors are saved.\n\nThe network implements handcrafted Go heuristics: approximate connected-group liberty detection, captures, urgent rescues, proactive attacks, eye preservation, self-atari avoidance, edge-trap protection, and opening/endgame priorities. No training or search was used.\n\nFinal practice results:\n- **Strong:** 52/96 wins (54.2%)\n- **Weak:** 16/16\n- **Random:** 16/16\n\nIts strength comes from exploiting vulnerable groups while protecting its own. Performance against the two unseen evaluation networks remains unmeasured."}}
+{"type":"turn.completed","usage":{"input_tokens":1228422,"cached_input_tokens":1198336,"cache_write_input_tokens":0,"output_tokens":37074,"reasoning_output_tokens":26903}}

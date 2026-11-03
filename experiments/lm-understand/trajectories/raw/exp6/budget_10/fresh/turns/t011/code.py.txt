@@ -1,0 +1,46 @@
+import numpy as np
+V1=dict(np.load("/work/policy_v1.npz"))
+V3=dict(np.load("/work/policy_v3.npz"))
+A={n:V1[n].copy() for n in NAMES}
+for k in (2,3,4):
+    A[f"L{k}.W"]=V3[f"L{k}.W"].copy()
+    A[f"L{k}.b"]=V3[f"L{k}.b"].copy()
+
+# Restore the original spacious, contact-aware positional policy.
+A["L2.W"][:,405:486]=V1["L4.W"][:,405:486]
+A["L2.b"][405:486]=V1["L4.b"][405:486]
+A["L5.W"][:,81:162]=V3["L5.W"][:,81:162]
+A["L5.b"][81:162]=V3["L5.b"][81:162]
+
+def u(ch,p): return 81*ch+p
+def neighbors(p):
+    r,c=divmod(p,9)
+    return [(r+dr)*9+c+dc for dr,dc in [(-1,0),(1,0),(0,-1),(0,1)]
+            if 0<=r+dr<9 and 0<=c+dc<9]
+# Edge connection traps: consuming a group's penultimate liberty without
+# making any new liberty can initiate a losing capture/repetition cycle.
+edge_points=[r*9+c for r in range(9) for c in range(9)
+             if ((r in (0,8) and c in (1,2,3,5,6,7))
+                 or (c in (0,8) and r in (1,2,3,5,6,7)))]
+slots=[487,488]+list(range(490,512))
+for j,p in zip(slots,edge_points):
+    A["L5.W"][:,j]=0
+    A["L5.b"][j]=-4*len(neighbors(p))
+    for q in neighbors(p):
+        A["L5.W"][u(0,q),j]+=5
+        A["L5.W"][u(1,q),j]+=4
+        A["L5.W"][u(4,q),j]-=1
+        A["L5.W"][u(2,q),j]-=4
+    A["L6.W"][:,j]=0
+    A["L6.W"][j,j]=1
+    A["L6.b"][j]=0
+    A["out.W"][j,:]=0
+    A["out.W"][j,p]=-24
+
+for p in range(81):
+    A["out.W"][u(5,p),p]=12
+
+for name in NAMES: save(name,A[name])
+np.savez("/work/policy_v4.npz",**A)
+print("Saved original shape policy with separate three-liberty safety,",
+      "edge self-atari protection, and priority for saving threatened stones.")

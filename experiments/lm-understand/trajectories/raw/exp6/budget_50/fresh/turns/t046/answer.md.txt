@@ -1,0 +1,13 @@
+```python
+# Restore initiative-oriented rescue weighting; strengthen genuine bridges.
+w=load("out.W")
+for q in range(81):
+    w[2*81+q,q]=7.2*2.4
+    w[4*81+q,q]=-7.2*1.4
+save("out.W",w)
+w=load("L6.W")
+for q in range(81):
+    w[5*81+q,q]=2.0
+save("L6.W",w)
+print("Prioritize connecting separated friendly stones before they are cut.")
+```

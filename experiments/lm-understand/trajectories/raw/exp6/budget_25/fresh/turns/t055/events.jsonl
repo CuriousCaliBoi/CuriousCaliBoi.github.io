@@ -1,0 +1,6 @@
+{"type":"thread.started","thread_id":"01a1a091-e58a-7650-9045-af4c403bfcaa"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"Failed to read global AGENTS.md instructions from `<local-home>/.codex/AGENTS.md`: Operation not permitted (os error 1)"}}
+{"type":"item.completed","item":{"id":"item_1","type":"error","message":"Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`."}}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_2","type":"agent_message","text":"Final policy saved.\n\nIt uses hand-built ReLU circuits for approximate group liberties, captures, rescues, self-atari avoidance, eye preservation, shape penalties, and komi-aware passing. Saturated tactical rewards reduce overreaction to redundant threats. These features exploit tactical mistakes while limiting unnecessary risks.\n\nThe exact final weights won:\n- **303/432 (70.1%)** against strong practice.\n- **38/40** against weak practice.\n- **40/40** against random.\n\nNo training or search was used. Held-out performance remains unknown."}}
+{"type":"turn.completed","usage":{"input_tokens":4361086,"cached_input_tokens":4302464,"cache_write_input_tokens":0,"output_tokens":69136,"reasoning_output_tokens":50182}}

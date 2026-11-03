@@ -1,0 +1,600 @@
+OUTPUT of Python run 2 of at most 120:
+```
+<class 'list'> 128
+{
+  "game": 0,
+  "opponent": "random",
+  "net_color": "black",
+  "result": 1,
+  "margin": 73.5,
+  "end": "two passes",
+  "stones_captured_by_net": 71,
+  "stones_lost_by_net": 0,
+  "moves": [
+    {
+      "ply": 0,
+      "by": "net",
+      "move": 67,
+      "top5": [
+        [
+          20,
+          0.0369
+        ],
+        [
+          24,
+          0.0369
+        ],
+        [
+          56,
+          0.0369
+        ],
+        [
+          60,
+          0.0369
+        ],
+        [
+          22,
+          0.0302
+        ]
+      ]
+    },
+    {
+      "ply": 1,
+      "by": "opponent",
+      "move": 65
+    },
+    {
+      "ply": 2,
+      "by": "net",
+      "move": 57,
+      "top5": [
+        [
+          56,
+          0.0752
+        ],
+        [
+          57,
+          0.0574
+        ],
+        [
+          59,
+          0.0447
+        ],
+        [
+          60,
+          0.0355
+        ],
+        [
+          58,
+          0.0331
+        ]
+      ]
+    },
+    {
+      "ply": 3,
+      "by": "opponent",
+      "move": 3
+    },
+    {
+      "ply": 4,
+      "by": "net",
+      "move": 24,
+      "top5": [
+        [
+          58,
+          0.0817
+        ],
+        [
+          56,
+          0.0754
+        ],
+        [
+          66,
+          0.0605
+        ],
+        [
+          59,
+          0.0521
+        ],
+        [
+          12,
+          0.0472
+        ]
+      ]
+    },
+    {
+      "ply": 5,
+      "by": "opponent",
+      "move": 59
+    },
+    {
+      "ply": 6,
+      "by": "net",
+      "move": 29,
+      "top5": [
+        [
+          58,
+          0.1474
+        ],
+        [
+          56,
+          0.0643
+        ],
+        [
+          66,
+          0.0516
+        ],
+        [
+          60,
+          0.0501
+        ],
+        [
+          49,
+          0.0467
+        ]
+      ]
+    },
+    {
+      "ply": 7,
+      "by": "opponent",
+      "move": 63
+    },
+    {
+      "ply": 8,
+      "by": "net",
+      "move": 20,
+      "top5": [
+        [
+          58,
+          0.1331
+        ],
+        [
+          56,
+          0.058
+        ],
+        [
+          66,
+          0.0466
+        ],
+        [
+          60,
+          0.0452
+        ],
+        [
+          47,
+          0.0452
+        ]
+      ]
+    },
+    {
+      "ply": 9,
+      "by": "opponent",
+      "move": 4
+    },
+    {
+      "ply": 10,
+      "by": "net",
+      "move": 41,
+      "top5": [
+        [
+          58,
+          0.1269
+        ],
+        [
+          56,
+          0.0553
+        ],
+        [
+          66,
+          0.0444
+        ],
+        [
+          60,
+          0.0431
+        ],
+        [
+          47,
+          0.0431
+        ]
+      ]
+    },
+    {
+      "ply": 11,
+      "by": "opponent",
+      "move": 72
+    },
+    {
+      "ply": 12,
+      "by": "net",
+      "move": 39,
+      "top5": [
+        [
+          58,
+          0.1245
+        ],
+        [
+          49,
+          0.067
+        ],
+        [
+          56,
+          0.0481
+        ],
+        [
+          39,
+          0.0458
+        ],
+        [
+          60,
+          0.0423
+        ]
+      ]
+    },
+    {
+      "ply": 13,
+      "by": "opponent",
+      "move": 0
+    },
+    {
+      "ply": 14,
+      "by": "net",
+      "move": 50,
+      "top5": [
+        [
+          58,
+          0.1071
+        ],
+        [
+          49,
+          0.0979
+        ],
+        [
+          38,
+          0.067
+        ],
+        [
+          47,
+          0.0548
+        ],
+        [
+          31,
+          0.0506
+        ]
+      ]
+    },
+    {
+      "ply": 15,
+      "by": "opponent",
+      "move": 17
+    },
+    {
+      "ply": 16,
+      "by": "net",
+      "move": 60,
+      "top5": [
+        [
+          58,
+          0.2323
+        ],
+        [
+          60,
+          0.1256
+        ],
+        [
+          49,
+          0.0809
+        ],
+        [
+          38,
+          0.0431
+        ],
+        [
+          48,
+          0.0367
+        ]
+      ]
+    },
+    {
+      "ply": 17,
+      "by": "opponent",
+      "move": 42
+    },
+    {
+      "ply": 18,
+      "by": "net",
+      "move": 58,
+      "top5": [
+        [
+          58,
+          0.4931
+        ],
+        [
+          51,
+          0.0956
+        ],
+        [
+          68,
+          0.087
+        ],
+        [
+          33,
+          0.0477
+        ],
+        [
+          49,
+          0.0411
+        ]
+      ]
+    },
+    {
+      "ply": 19,
+      "by": "opponent",
+      "move": 34
+    },
+    {
+      "ply": 20,
+      "by": "net",
+      "move": 68,
+      "top5": [
+        [
+          68,
+          0.9999
+        ],
+        [
+          51,
+          0.0
+        ],
+        [
+          33,
+          0.0
+        ],
+        [
+          40,
+          0.0
+        ],
+        [
+          49,
+          0.0
+        ]
+      ]
+    },
+    {
+      "ply": 21,
+      "by": "opponent",
+      "move": 44
+    },
+    {
+      "ply": 22,
+      "by": "net",
+      "move": 47,
+      "top5": [
+        [
+          51,
+          0.2161
+        ],
+        [
+          33,
+          0.215
+        ],
+        [
+          40,
+          0.0492
+        ],
+        [
+          38,
+          0.0443
+        ],
+        [
+          47,
+          0.0409
+        ]
+      ]
+    },
+    {
+      "ply": 23,
+      "by": "opponent",
+      "move": 10
+    },
+    {
+      "ply": 24,
+      "by": "net",
+      "move": 79,
+      "top5": [
+        [
+          51,
+          0.2029
+        ],
+        [
+          33,
+          0.2019
+        ],
+        [
+          56,
+          0.1212
+        ],
+        [
+          38,
+          0.0464
+        ],
+        [
+          40,
+          0.0403
+        ]
+      ]
+    },
+    {
+      "ply": 25,
+      "by": "opponent",
+      "move": 16
+    },
+    {
+      "ply": 26,
+      "by": "net",
+      "move": 22,
+      "top5": [
+        [
+          51,
+          0.2063
+        ],
+        [
+          33,
+          0.2053
+        ],
+        [
+          56,
+          0.1233
+        ],
+        [
+          38,
+          0.0472
+        ],
+        [
+          40,
+          0.041
+        ]
+      ]
+    },
+    {
+      "ply": 27,
+      "by": "opponent",
+      "move": 18
+    },
+    {
+      "ply": 28,
+      "by": "net",
+      "move": 15,
+      "top5": [
+        [
+          33,
+          0.2001
+        ],
+        [
+          51,
+          0.1783
+        ],
+        [
+          56,
+          0.1066
+        ],
+        [
+          19,
+          0.0822
+        ],
+        [
+          32,
+          0.0412
+        ]
+      ]
+    },
+    {
+      "ply": 29,
+      "by": "opponent",
+      "move": 13
+    },
+    {
+      "ply": 30,
+  
+board shapes (128, 162, 81) (128, 162)
+files ['boards.npy', 'summary.json', 'README.txt', 'games.json', 'valid.npy']
+LOSS 33 {'game': 33, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -8.5, 'end': 'two passes', 'stones_captured_by_net': 9, 'stones_lost_by_net': 8}
+.X.XXXOO.
+XXX.XOOOO
+XXXXXOOO.
+X.XXXOOOO
+XX.XOOOOO
+.XXXOO.OO
+X.XXOOOOO
+.XXOO.O.O
+X.XXOOOO.
+LOSS 35 {'game': 35, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -14.5, 'end': 'two passes', 'stones_captured_by_net': 3, 'stones_lost_by_net': 10}
+XX.X.XX.X
+XXXXX.XX.
+XOOOXXXXX
+XOOOXXXXX
+OO.OOXXXO
+OOOOOOXOO
+OOO.OOOOO
+OOOOOOOOO
+.OO.XOOX.
+LOSS 36 {'game': 36, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -9.5, 'end': 'two passes', 'stones_captured_by_net': 6, 'stones_lost_by_net': 18}
+X.XOOOOOO
+.XXXOOOXO
+XXXXXOO.O
+.XXXXO.OO
+X.XXOOOOO
+.XXOOOOOO
+X.XOO.XX.
+.XXXOOOOO
+X.XXOOO..
+LOSS 38 {'game': 38, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': 9.5, 'end': 'repetition', 'stones_captured_by_net': 15, 'stones_lost_by_net': 35}
+.X.X..OO.
+OOXXO.OOO
+OOO.O.OXO
+OOOOOOOXX
+XOOOOOXX.
+XXXOXXX.X
+X.XOXX.X.
+.XXXXXX.X
+X.X.X.XX.
+LOSS 40 {'game': 40, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -21.5, 'end': 'two passes', 'stones_captured_by_net': 4, 'stones_lost_by_net': 25}
+.X.X.XXO.
+XXX.X.XOO
+.XXXXXXOO
+XXXXXXOOO
+OOOXXXOOO
+OOOOOOOOO
+OO.OO.XOO
+O.XOOOOOO
+.OOOOOOO.
+LOSS 41 {'game': 41, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -8.5, 'end': 'two passes', 'stones_captured_by_net': 10, 'stones_lost_by_net': 18}
+X.XXXXOO.
+XX.XXOOOO
+.XXXXOOO.
+XX.XXO..O
+.XXXOOOOO
+XXXXOOOOO
+XXOOO.XXX
+.XOO.OOO.
+XXXOOOOOO
+LOSS 42 {'game': 42, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -17.5, 'end': 'two passes', 'stones_captured_by_net': 7, 'stones_lost_by_net': 32}
+.XXOO.OO.
+XXOOOXOOO
+XXOOO.OOO
+.XXXOO.OO
+XXXXOOOOO
+X.XXOO.OO
+.XXOOOOOO
+XXXXOOOOX
+.XXXXXOO.
+LOSS 44 {'game': 44, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -12.5, 'end': 'two passes', 'stones_captured_by_net': 21, 'stones_lost_by_net': 37}
+OXXXX.X.X
+OOOXXX.XX
+OOOOXXX.X
+OX.OOXXXX
+OOOOOOXXX
+.O.OXXX.X
+OOOOOXXXX
+OOO.OOOOX
+.OOOO.OO.
+LOSS 45 {'game': 45, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -27.5, 'end': 'two passes', 'stones_captured_by_net': 11, 'stones_lost_by_net': 54}
+OOOOOOXXX
+.OOOOXXX.
+OOOOOOXXX
+.OOOOXXXX
+OOOOOXXX.
+OXXOOOXXX
+OOX.OXXXX
+OOOOOXOOX
+OOOOOOOOO
+LOSS 47 {'game': 47, 'opponent': 'strong', 'net_color': 'black', 'result': -1, 'margin': -9.5, 'end': 'two passes', 'stones_captured_by_net': 5, 'stones_lost_by_net': 7}
+XXX.X.X.X
+X.XXXXXX.
+XX.XX.XXX
+OXXXXXXOO
+OOXXOOOOO
+OOOOOO.O.
+OO.O.OXOX
+.OOOXOOOO
+.OOOOOOO.
+
+```

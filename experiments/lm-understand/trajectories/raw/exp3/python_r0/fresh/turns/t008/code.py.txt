@@ -1,0 +1,41 @@
+import numpy as np
+from scipy.linalg import svd, eig
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+np.set_printoptions(precision=3,suppress=True,linewidth=160)
+
+# A congruence-invariant matrix-pencil check for shared positional rotations.
+# No position vectors or attention patterns are constructed.
+raw=[]
+for j in [1,5]:
+    sl=slice(64*j,64*(j+1))
+    q=W["W_q.0"][sl].astype(float)
+    k=W["W_k.0"][sl].astype(float)
+    raw.append(q.T@k/8)
+a1,a5=raw
+u=svd(np.concatenate([a1,a1.T,a5,a5.T],axis=1),
+      full_matrices=False,check_finite=False)[0]
+
+for r in [12,16,18,20,24,28,32]:
+    p=u[:,:r]
+    b1=p.T@a1@p
+    b5=p.T@a5@p
+    vals,vecs=eig(b5,b5.T,check_finite=False)
+    rows=[]
+    for n,lam in enumerate(vals):
+        if np.imag(lam)<=1e-5 or not np.isfinite(lam): continue
+        z=vecs[:,n]
+        c5=np.vdot(z,b5@z)
+        c1=np.vdot(z,b1@z)
+        rows.append((float(abs(lam)),float(np.angle(c5)),
+                     float(np.angle(c1)),float(abs(c5)),float(abs(c1))))
+    rows=np.array(rows)
+    print("\nrank",r,"[pencil modulus, phase H5, phase H1, magnitude H5, magnitude H1]")
+    print(rows)
+    if len(rows):
+        good=np.abs(np.log(rows[:,0]))<0.25
+        t=rows[good]
+        if len(t):
+            weights=np.sqrt(t[:,3]*t[:,4])
+            scores=[np.average(np.cos(t[:,2]-k*t[:,1]),weights=weights) for k in range(-4,9)]
+            print("Phase agreement for integer multiples -4..8:",np.round(scores,3))

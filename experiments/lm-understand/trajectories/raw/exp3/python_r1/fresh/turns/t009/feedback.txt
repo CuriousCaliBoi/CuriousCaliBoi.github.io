@@ -1,0 +1,49 @@
+Alignment of copy-candidate output WEIGHT dictionaries
+(2, 1) [((2, 1), np.float64(1.0)), ((3, 0), np.float64(0.383)), ((3, 1), np.float64(0.441)), ((3, 5), np.float64(0.547))]
+(3, 0) [((2, 1), np.float64(0.383)), ((3, 0), np.float64(1.0)), ((3, 1), np.float64(0.439)), ((3, 5), np.float64(0.523))]
+(3, 1) [((2, 1), np.float64(0.441)), ((3, 0), np.float64(0.439)), ((3, 1), np.float64(1.0)), ((3, 5), np.float64(0.831))]
+(3, 5) [((2, 1), np.float64(0.547)), ((3, 0), np.float64(0.523)), ((3, 1), np.float64(0.831)), ((3, 5), np.float64(1.0))]
+
+Dictionary singular values and output-subspace fractions
+Initial dictionary: [1.77  1.224 1.195 1.095 1.07  1.059 1.052 1.039 1.016 1.    0.999 0.98
+ 0.973 0.963 0.947 0.936 0.923 0.914 0.9   0.885 0.868 0.862 0.855 0.827
+ 0.81  0.783 0.779 0.765]
+(2, 1) output fraction 0.129 singular values [1.161 0.681 0.463 0.274 0.138 0.056 0.013 0.005]
+(3, 0) output fraction 0.183 singular values [1.418 1.03  0.687 0.385 0.244 0.112 0.059 0.039]
+(3, 1) output fraction 0.422 singular values [2.457 2.046 1.78  1.465 1.083 0.606 0.105 0.041]
+(3, 5) output fraction 0.396 singular values [2.513 1.969 1.645 1.352 0.972 0.59  0.245 0.019]
+
+Agreement between static coordinate-comparison matrices
+(2, 1) [((2, 1), np.float64(1.0)), ((3, 1), np.float64(0.437)), ((3, 5), np.float64(0.399))]
+(3, 1) [((2, 1), np.float64(0.437)), ((3, 1), np.float64(1.0)), ((3, 5), np.float64(0.742))]
+(3, 5) [((2, 1), np.float64(0.399)), ((3, 1), np.float64(0.742)), ((3, 5), np.float64(1.0))]
+
+L3H5 static comparison: strongest off-diagonal coefficients for each column
+0 diag -0.026 [(10, np.float64(0.073)), (15, np.float64(0.06)), (14, np.float64(0.051)), (20, np.float64(0.048))]
+1 diag -0.113 [(14, np.float64(0.121)), (15, np.float64(0.118)), (13, np.float64(0.085)), (18, np.float64(0.055))]
+2 diag -0.112 [(24, np.float64(0.076)), (16, np.float64(0.072)), (18, np.float64(0.066)), (12, np.float64(0.039))]
+3 diag -0.019 [(15, np.float64(0.096)), (10, np.float64(0.047)), (5, np.float64(0.046)), (16, np.float64(0.037))]
+4 diag -0.04 [(25, np.float64(0.081)), (18, np.float64(0.072)), (24, np.float64(0.067)), (10, np.float64(0.044))]
+5 diag -0.015 [(23, np.float64(0.146)), (26, np.float64(0.111)), (13, np.float64(0.076)), (0, np.float64(0.062))]
+6 diag -0.044 [(10, np.float64(0.093)), (18, np.float64(0.069)), (12, np.float64(0.043)), (21, np.float64(0.042))]
+7 diag 0.007 [(3, np.float64(0.106)), (20, np.float64(0.083)), (5, np.float64(0.078)), (27, np.float64(0.065))]
+8 diag -0.096 [(6, np.float64(0.131)), (13, np.float64(0.105)), (11, np.float64(0.08)), (5, np.float64(0.065))]
+9 diag -0.138 [(8, np.float64(0.127)), (13, np.float64(0.097)), (21, np.float64(0.079)), (6, np.float64(0.079))]
+10 diag 0.029 [(18, np.float64(0.103)), (15, np.float64(0.072)), (24, np.float64(0.07)), (3, np.float64(0.07))]
+11 diag -0.092 [(5, np.float64(0.152)), (14, np.float64(0.145)), (23, np.float64(0.1)), (10, np.float64(0.067))]
+12 diag -0.103 [(15, np.float64(0.09)), (13, np.float64(0.056)), (5, np.float64(0.039)), (16, np.float64(0.037))]
+13 diag 0.092 [(16, np.float64(0.096)), (11, np.float64(0.096)), (10, np.float64(0.094)), (14, np.float64(0.073))]
+14 diag -0.099 [(23, np.float64(0.053)), (21, np.float64(0.036)), (16, np.float64(0.03)), (10, np.float64(0.026))]
+15 diag -0.088 [(26, np.float64(0.044)), (0, np.float64(0.036)), (2, np.float64(0.03)), (21, np.float64(0.027))]
+16 diag -0.142 [(23, np.float64(0.082)), (15, np.float64(0.072)), (1, np.float64(0.061)), (6, np.float64(0.053))]
+17 diag -0.076 [(21, np.float64(0.192)), (2, np.float64(0.087)), (13, np.float64(0.048)), (8, np.float64(0.028))]
+18 diag -0.062 [(24, np.float64(0.104)), (2, np.float64(0.086)), (25, np.float64(0.081)), (21, np.float64(0.058))]
+19 diag -0.076 [(5, np.float64(0.057)), (24, np.float64(0.044)), (9, np.float64(0.044)), (8, np.float64(0.041))]
+20 diag -0.1 [(17, np.float64(0.101)), (15, np.float64(0.091)), (5, np.float64(0.058)), (26, np.float64(0.057))]
+21 diag 0.064 [(23, np.float64(0.074)), (18, np.float64(0.061)), (1, np.float64(0.04)), (12, np.float64(0.038))]
+22 diag -0.023 [(21, np.float64(0.108)), (19, np.float64(0.083)), (10, np.float64(0.065)), (12, np.float64(0.052))]
+23 diag -0.075 [(26, np.float64(0.134)), (18, np.float64(0.059)), (13, np.float64(0.042)), (22, np.float64(0.038))]
+24 diag -0.037 [(27, np.float64(0.133)), (14, np.float64(0.031)), (9, np.float64(0.028)), (1, np.float64(0.027))]
+25 diag -0.049 [(13, np.float64(0.106)), (3, np.float64(0.081)), (15, np.float64(0.034)), (21, np.float64(0.027))]
+26 diag -0.131 [(14, np.float64(0.076)), (21, np.float64(0.064)), (10, np.float64(0.051)), (12, np.float64(0.047))]
+27 diag -0.129 [(17, np.float64(0.056)), (1, np.float64(0.054)), (15, np.float64(0.049)), (18, np.float64(0.044))]

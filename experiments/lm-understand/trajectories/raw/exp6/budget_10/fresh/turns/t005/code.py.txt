@@ -1,0 +1,13 @@
+import json, numpy as np
+with open("/work/pass_1/games.json") as f:
+    games=json.load(f)
+print(open("/work/pass_1/README.txt").read())
+boards=np.load("/work/pass_1/boards.npy")
+valid=np.load("/work/pass_1/valid.npy")
+print("boards:",boards.shape,boards.dtype,"valid:",valid.shape, "values:",np.unique(boards))
+for i,g in enumerate(games):
+    if g["opponent"]=="strong":
+        print(i,g["net_color"],g["result"],g["margin"],g["end"],
+              "captured/lost",g["stones_captured"],g["stones_lost"],
+              "length",len(g["moves"]), "last",g["moves"][-3:])
+        if i>=108: break

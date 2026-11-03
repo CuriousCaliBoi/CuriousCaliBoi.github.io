@@ -1,0 +1,8 @@
+# A safe escape from atari should usually outrank taking a lone stone.
+# Multiple endangered contacts still have diminishing returns.
+w=load("out.W")
+for q in range(81):
+    w[2*81+q,q]=7.2*3.6
+    w[4*81+q,q]=-7.2*2.6
+save("out.W",w)
+print("Raised safe-rescue urgency while retaining capped extra-contact rewards.")

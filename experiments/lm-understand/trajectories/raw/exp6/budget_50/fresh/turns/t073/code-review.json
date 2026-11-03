@@ -1,0 +1,6 @@
+{
+  "code_sha256": "690d5205707594778e04093f84c1ad0eb2e9445b69b044fab89fdc2eeb09c967",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It directly assigns fixed occupancy-indicator propagation and late-game penalty coefficients in the weight tensors. No occupancy or penalty activation is computed for any input; no fitting, model inference, simulated move or search is performed."
+}

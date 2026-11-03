@@ -1,0 +1,47 @@
+The motor direction is correct: action 1 moves the car left, toward blue. The failure is stopping at the ramp rather than crossing it with momentum.
+
+The weights show strong motion feedback—for example, `embed.W[54,116] = 2.25`, `[236,116] = 2.37`, and `[254,116] = 1.73` read the three car parts’ horizontal velocities. The output head strongly opposes motor-off and positive drive: row 6 has `[0.683, -0.638]`, and row 114 has `[0.667, -0.641]` for those actions. The trace shows this controller repeatedly switching between them without escaping.
+
+At the stalled pose, the chassis underside is approximately level with the ramp’s upper tip. The green wheel has passed the tip, but the rear wheel remains on the slope: the car appears high-centred. It has collected progress reward without acquiring enough momentum to clear the red strip.
+
+I retain the trained controller except for one repurposed channel per layer. That channel overrides the stopping behaviour early in the approach, rather than waiting until the car is already stuck.
+
+```edits
+embed.W[:, 30] = 0
+embed.W[52, 30] = -100
+embed.b[30] = 272
+
+actor0.W[30, :] = 0
+actor0.W[:, 30] = 0
+actor0.W[30, 30] = 20
+actor0.b[30] = -20
+
+actor1.W[30, :] = 0
+actor1.W[:, 30] = 0
+actor1.W[30, 30] = 20
+actor1.b[30] = 0
+
+actor2.W[30, :] = 0
+actor2.W[:, 30] = 0
+actor2.W[30, 30] = 20
+actor2.b[30] = 0
+
+actor3.W[30, :] = 0
+actor3.W[:, 30] = 0
+actor3.W[30, 30] = 20
+actor3.b[30] = 0
+
+actor4.W[30, :] = 0
+actor4.W[:, 30] = 0
+actor4.W[30, 30] = 20
+actor4.b[30] = 0
+
+actor_head.W[30, 0:3] = [-100, 100, -100]
+actor_head.b[0:3] = [-99.969, 100.052, -100.194]
+```
+
+The new channel switches when the body crosses approximately `x = 2.71`. Before that, its output contribution cancels against the bias adjustment, leaving the trained policy apart from the removed channel’s contributions. Original head channel 30 only weakly distinguished off from positive drive: `0.047` versus `0.072`.
+
+After crossing, positive drive receives a roughly 400-logit advantage over either alternative. This makes sustained leftward acceleration effectively deterministic, maintaining momentum up the ramp and across the hazardous region. The remaining network and ineffective action bindings are retained.
+
+This is an untested correction; the intended improvement is to prevent the observed high-centring, not merely alter the stalled policy’s sampling probabilities.

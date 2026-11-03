@@ -1,0 +1,6 @@
+{
+  "code_sha256": "c29a88a2383d9531f833fc397cfec61b796d4ef85b17a469568e236dcbe5e2f2",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Initial analytic network builder: all loops derive fixed board-coordinate neighborhoods/distances and assign manually selected weight and bias coefficients. The generated design module is executed only to construct tensors; load calls inspect tensor shapes. No network/layer forward computation, game simulation, training/fitting, or search occurs."
+}

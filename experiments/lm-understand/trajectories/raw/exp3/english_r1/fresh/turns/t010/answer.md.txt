@@ -1,0 +1,52 @@
+## Observations
+
+These are **weight-based hypotheses, not measured attention patterns**. Missing embeddings particularly limit corpus identification and attention-distance estimates.
+
+Write \(A=DQ^\top KD/8\), \(B=OVD\), where \(D=\mathrm{diag}(\text{ln1\_w})\).
+
+- **L0H2 is exceptional:** its `W_q.0[128:192]` and `W_k.0[128:192]` norms are **30.818 and 28.300**. Its \(A\)-norm is **4.078**, versus **0.030–0.395** for the other L0 heads. Its substantial complex-conjugate eigenvalues suggest a directional positional operation—plausibly previous-character retrieval.
+- **Several early heads share a compact summary representation.** One three-dimensional write subspace captures **97.6%, 97.5%, 92.3%, 97.1%** of the \(B\)-energy of L0H0/H1/H4/H5. Their read directions substantially overlap L0H2’s Q/K subspace. Positional summaries are a plausible interpretation.
+- **L3H1 has a distinctive induction-compatible connection to L0H2.** Restricting \(A_{3,1}B_{0,2}\) to the latter’s leading 24 read directions gives normalized trace **0.624** and symmetric-part fraction **0.914**. Other later heads’ corresponding normalized traces range from **−0.125 to 0.150**. This is substantially stronger evidence than merely having large weights.
+- These measurements reveal structured context processing, but **do not reveal identifiable English words, Python syntax, or Japanese phonotactics**.
+
+## Heads
+
+Here, “local” is a tentative recency interpretation, not an established distance. The *shift score* is the restricted normalized trace defined above.
+
+L0H0: **broad** — weak \(A\)-norm 0.055; 97.6% of value-write energy occupies the shared summary subspace.  
+L0H1: **broad** — smallest \(A\)-norm, 0.030; 97.5% shared-summary write energy.  
+L0H2: **previous** — exceptionally strong, directional Q/K structure and comparatively multidimensional value transfer; strongest previous-character candidate.  
+L0H3: **local** — dominant query/key directions overlap the candidate positional subspace by 88.4%/93.3%; weaker, simpler positional mechanism.  
+L0H4: **broad** — \(A\)-norm 0.106; 92.3% shared-summary write energy.  
+L0H5: **broad** — nearly rank-one \(A\), stable rank 1.04; 97.1% shared-summary write energy.
+
+L1H0: **local** — tentative positional retrieval; 64.1% of key-side \(A\)-energy uses the shared summary subspace.  
+L1H1: **local** — similar mechanism; key-side fraction 60.0%, with strong shared-subspace affine key preference.  
+L1H2: **local** — key-side fraction 63.4%; weak shifted-match evidence, score 0.128, insufficient for “copy.”  
+L1H3: **local** — key-side fraction 63.5%; shift score 0.150, still far below L3H1.  
+L1H4: **local** — strongest shared-summary key dependence, 69.2%; shift score 0.144.  
+L1H5: **local** — key-side fraction 63.1%; shift score only 0.046.
+
+L2H0: **unclear** — richer Q/K structure; shift score −0.075; positional preferences do not establish retrieval distance.  
+L2H1: **unclear** — shift score −0.086; relatively weak dependence on the shared positional-summary candidate.  
+L2H2: **unclear** — substantial summary dependence, but shift score 0.017; local versus broader retrieval unresolved.  
+L2H3: **unclear** — shift score 0.064; mixed content and summary connections without a decisive mechanism.  
+L2H4: **unclear** — shift score −0.125; no positive direct induction signature through L0H2.  
+L2H5: **unclear** — shift score 0.013; contextual routing is evident, its span is not.
+
+L3H0: **unclear** — positive self-alignment in Q/K, but shift score −0.033; similarity matching need not imply induction.  
+L3H1: **copy** — standout shifted-match score 0.624 and symmetric fraction 0.914; strongest induction candidate.  
+L3H2: **unclear** — shift score 0.052; remaining positional-summary dependence does not determine attention range.  
+L3H3: **unclear** — shift score 0.018; no convincing direct copy signature.  
+L3H4: **unclear** — shift score −0.072; mixed content/position-related weight structure.  
+L3H5: **broad** — tentative aggregation role: relatively weak \(A\)-norm 0.835, large \(B\)-norm 45.401, and little shared-summary key dependence.
+
+## Reasoning
+
+The combination of a likely previous-character mechanism and a strong downstream shifted-matching circuit favors **preserved character order**. Shuffling would greatly reduce the usefulness of retrieving successors of matching earlier contexts, although it would not eliminate all contextual predictability.
+
+**English is my weak corpus preference**, consistent with local orthographic processing plus contextual copying. These signatures also fit Python and romaji; I did not recover a corpus-specific diagnostic sufficient for a confident distinction. The corpus probabilities below are subjective judgments, not calibrated estimates.
+
+corpus: english  
+order: as is  
+probabilities: python=0.34 romaji=0.23 english=0.43; as is=0.93 shuffled=0.07

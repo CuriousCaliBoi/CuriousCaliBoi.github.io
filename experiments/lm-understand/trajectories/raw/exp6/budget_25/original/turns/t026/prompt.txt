@@ -1,0 +1,112 @@
+OUTPUT of Python run 15 of at most 120:
+```
+
+GAME 12 strong black result -1 margin -24.5
+...OOOO.O
+OOOOOOO..
+XXOO..OOO
+.XXOOOOOO
+XXXXXXOOO
+.XXXOOO.O
+XXXXO..OO
+XXXXXOOOO
+.X.XXXOO.
+[{'ply': 90, 'by': 'net', 'move': 22, 'top5': [[22, 0.6551], [14, 0.1973], [1, 0.1433], [17, 0.0015], [7, 0.0014]]}, {'ply': 91, 'by': 'opponent', 'move': 14}, {'ply': 92, 'by': 'net', 'move': 17, 'top5': [[17, 1.0], [1, 0.0], [7, 0.0], [81, 0.0], [59, 0.0]]}, {'ply': 93, 'by': 'opponent', 'move': 81}, {'ply': 94, 'by': 'net', 'move': 7, 'top5': [[7, 1.0], [1, 0.0], [81, 0.0], [59, 0.0], [22, 0.0]]}, {'ply': 95, 'by': 'opponent', 'move': 8}, {'ply': 96, 'by': 'net', 'move': 16, 'top5': [[16, 0.9832], [1, 0.0166], [81, 0.0001], [59, 0.0], [22, 0.0]]}]
+
+GAME 27 strong black result -1 margin 6.5
+OX.X.XXO.
+.OXXXXO.O
+.OOOOOOOO
+OXXOXXXXO
+OOXOX.XXX
+OOXX.XXX.
+OOX.X.X.X
+OOOXXXXXX
+.OO......
+[{'ply': 74, 'by': 'net', 'move': 71, 'top5': [[0, 0.3025], [76, 0.1872], [78, 0.1728], [71, 0.1255], [75, 0.0987]]}, {'ply': 75, 'by': 'opponent', 'move': 0}, {'ply': 76, 'by': 'net', 'move': 9, 'top5': [[9, 0.9427], [18, 0.0573], [2, 0.0], [78, 0.0], [76, 0.0]]}, {'ply': 77, 'by': 'opponent', 'move': 74}, {'ply': 78, 'by': 'net', 'move': 18, 'top5': [[18, 1.0], [75, 0.0], [76, 0.0], [78, 0.0], [80, 0.0]]}, {'ply': 79, 'by': 'opponent', 'move': 0}, {'ply': 80, 'by': 'net', 'move': 9, 'top5': [[9, 0.9427], [18, 0.0573], [75, 0.0], [2, 0.0], [76, 0.0]]}]
+
+GAME 29 strong black result -1 margin 8.5
+XXXOOOOO.
+.XOOOXOOO
+X.XOOXXXO
+.XXOXXX.X
+XXXOX.XX.
+X.XOOXXXX
+XXXXOXXXO
+XXOOOOXO.
+XOOOOOOO.
+[{'ply': 84, 'by': 'net', 'move': 63, 'top5': [[63, 0.9997], [81, 0.0003], [80, 0.0], [62, 0.0], [41, 0.0]]}, {'ply': 85, 'by': 'opponent', 'move': 76}, {'ply': 86, 'by': 'net', 'move': 81, 'top5': [[81, 0.9693], [80, 0.0192], [62, 0.011], [41, 0.0004], [34, 0.0]]}, {'ply': 87, 'by': 'opponent', 'move': 77}, {'ply': 88, 'by': 'net', 'move': 80, 'top5': [[80, 1.0], [81, 0.0], [62, 0.0], [41, 0.0], [34, 0.0]]}, {'ply': 89, 'by': 'opponent', 'move': 62}, {'ply': 90, 'by': 'net', 'move': 71, 'top5': [[71, 1.0], [81, 0.0], [41, 0.0], [34, 0.0], [19, 0.0]]}]
+
+GAME 51 strong white result -1 margin -3.5
+.X.X.XXX.
+XX..OXXX.
+XXX.XXXOX
+XXXXXOOOO
+XXO.XOOO.
+.X.XOOOOO
+X.XXXOOOO
+XXXXOOOOO
+.XXXXO.O.
+[{'ply': 91, 'by': 'net', 'move': 13, 'top5': [[39, 0.4435], [13, 0.2159], [11, 0.184], [26, 0.1336], [12, 0.0212]]}, {'ply': 92, 'by': 'opponent', 'move': 26}, {'ply': 93, 'by': 'net', 'move': 17, 'top5': [[17, 1.0], [12, 0.0], [39, 0.0], [11, 0.0], [47, 0.0]]}, {'ply': 94, 'by': 'opponent', 'move': 73}, {'ply': 95, 'by': 'net', 'move': 8, 'top5': [[4, 0.7231], [8, 0.2769], [12, 0.0], [39, 0.0], [11, 0.0]]}, {'ply': 96, 'by': 'opponent', 'move': 26}, {'ply': 97, 'by': 'net', 'move': 17, 'top5': [[17, 1.0], [12, 0.0], [39, 0.0], [11, 0.0], [47, 0.0]]}]
+
+GAME 54 strong white result -1 margin 2.5
+O.OO.O.OO
+OO.OO.OOX
+OOOOOOOXX
+OXOOOOXXX
+OXXOOOXXX
+XXXXOXXXX
+XXXXX..XX
+OOXXXXXXX
+X.XXXXXX.
+[{'ply': 93, 'by': 'net', 'move': 81, 'top5': [[81, 0.996], [59, 0.004], [60, 0.0], [11, 0.0], [1, 0.0]]}, {'ply': 94, 'by': 'opponent', 'move': 72}, {'ply': 95, 'by': 'net', 'move': 64, 'top5': [[64, 0.9999], [81, 0.0001], [59, 0.0], [60, 0.0], [63, 0.0]]}, {'ply': 96, 'by': 'opponent', 'move': 81}, {'ply': 97, 'by': 'net', 'move': 63, 'top5': [[63, 0.5], [73, 0.5], [81, 0.0], [59, 0.0], [60, 0.0]]}, {'ply': 98, 'by': 'opponent', 'move': 81}, {'ply': 99, 'by': 'net', 'move': 73, 'top5': [[73, 1.0], [81, 0.0], [59, 0.0], [60, 0.0], [11, 0.0]]}]
+
+GAME 57 strong white result -1 margin 33.5
+.O.OOOO.O
+OOOOO.OOO
+OO.OOOOOX
+.OOO.OOXX
+O.O.OOOXX
+OOOOOOOXX
+XOXXOOOXX
+.XXXXXXXX
+.XXXX.XX.
+[{'ply': 89, 'by': 'net', 'move': 72, 'top5': [[72, 0.9991], [81, 0.0009], [54, 0.0001], [20, 0.0], [31, 0.0]]}, {'ply': 90, 'by': 'opponent', 'move': 54}, {'ply': 91, 'by': 'net', 'move': 63, 'top5': [[63, 1.0], [72, 0.0], [81, 0.0], [73, 0.0], [20, 0.0]]}, {'ply': 92, 'by': 'opponent', 'move': 73}, {'ply': 93, 'by': 'net', 'move': 72, 'top5': [[72, 1.0], [81, 0.0], [54, 0.0], [20, 0.0], [31, 0.0]]}, {'ply': 94, 'by': 'opponent', 'move': 54}, {'ply': 95, 'by': 'net', 'move': 63, 'top5': [[63, 1.0], [81, 0.0], [20, 0.0], [31, 0.0], [39, 0.0]]}]
+
+GAME 58 strong white result -1 margin 13.5
+.OX..XO..
+O.OXXXXO.
+.OXXXOOO.
+O.OXXOO.X
+.OOXXOOOX
+O.OXXOOOO
+.OOXXOOO.
+OXXXXXXXX
+..X......
+[{'ply': 67, 'by': 'net', 'move': 53, 'top5': [[53, 0.9645], [4, 0.0128], [6, 0.0073], [26, 0.0068], [62, 0.0036]]}, {'ply': 68, 'by': 'opponent', 'move': 71}, {'ply': 69, 'by': 'net', 'move': 6, 'top5': [[4, 0.3974], [6, 0.227], [26, 0.2096], [5, 0.0333], [17, 0.0284]]}, {'ply': 70, 'by': 'opponent', 'move': 5}, {'ply': 71, 'by': 'net', 'move': 4, 'top5': [[4, 0.9953], [7, 0.0047], [26, 0.0], [17, 0.0], [72, 0.0]]}, {'ply': 72, 'by': 'opponent', 'move': 2}, {'ply': 73, 'by': 'net', 'move': 3, 'top5': [[3, 0.9912], [7, 0.0088], [10, 0.0], [26, 0.0], [17, 0.0]]}]
+
+GAME 80 strong white result -1 margin -2.5
+.XXO.XX..
+XXXOXXXXO
+XXXOXXXO.
+XXXXXXOOO
+.X.XXOOO.
+XXOXOOOOO
+XXOXXOOO.
+XXXXXOOOO
+.XXXOO.OO
+[{'ply': 121, 'by': 'net', 'move': 21, 'top5': [[21, 0.9549], [7, 0.0422], [4, 0.0016], [81, 0.0011], [2, 0.0003]]}, {'ply': 122, 'by': 'opponent', 'move': 2}, {'ply': 123, 'by': 'net', 'move': 7, 'top5': [[7, 0.9739], [81, 0.0246], [26, 0.0015], [62, 0.0], [44, 0.0]]}, {'ply': 124, 'by': 'opponent', 'move': 26}, {'ply': 125, 'by': 'net', 'move': 17, 'top5': [[17, 1.0], [8, 0.0], [81, 0.0], [7, 0.0], [44, 0.0]]}, {'ply': 126, 'by': 'opponent', 'move': 81}, {'ply': 127, 'by': 'net', 'move': 8, 'top5': [[8, 0.9917], [81, 0.0082], [26, 0.0001], [7, 0.0], [62, 0.0]]}]
+
+GAME 105 weak black result 1 margin 2.5
+.XXX.XXX.
+XX.XXXOOO
+X.XXOOOO.
+.XXOOOOOX
+.XXOXXOXX
+XOXXXOXXX
+OOOXXOX.X
+OOOOOOXX.
+.O..OOX.X
+[{'ply': 69, 'by': 'opponent', 'move': 54}, {'ply': 70, 'by': 'net', 'move': 35, 'top5': [[35, 0.9703], [7, 0.0287], [26, 0.0008], [17, 0.0001], [8, 0.0]]}, {'ply': 71, 'by': 'opponent', 'move': 17}, {'ply': 72, 'by': 'net', 'move': 7, 'top5': [[7, 0.9997], [81, 0.0002], [27, 0.0001], [75, 0.0], [74, 0.0]]}, {'ply': 73, 'by': 'opponent', 'move': 27}, {'ply': 74, 'by': 'net', 'move': 45, 'top5': [[45, 1.0], [81, 0.0], [19, 0.0], [75, 0.0], [74, 0.0]]}, {'ply': 75, 'by': 'opponent', 'move': 36}]
+
+```

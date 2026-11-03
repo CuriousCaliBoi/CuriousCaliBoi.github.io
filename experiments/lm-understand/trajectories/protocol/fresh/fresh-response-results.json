@@ -1,0 +1,252 @@
+{
+  "source_revision": "4d09ba6d6a7e891dd8063974dfe81b3d78e3494f",
+  "completed_responses": 11,
+  "valid_response_audits": 11,
+  "runs": [
+    {
+      "run": "exp1_which_game/runs/breakout",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 62.22,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 73345,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1691,
+          "reasoning_output_tokens": 882
+        }
+      ],
+      "answer_sha256": "3fc5fc914d9daf93806c07870056c91cfb226aabd0753547dbc12ae180de2c3e",
+      "prediction": "Breakout, or a grid-based brick-breaker closely resembling it.",
+      "confidence": "99%",
+      "expected": "breakout",
+      "published_prediction": "Breakout \u2014 a small grid-based brick-breaking variant.",
+      "published_confidence": "99%",
+      "agrees_with_published_label": true,
+      "comparison_method": "Direct comparison of the reply's labelled answer with the published key, using the documented aliases. This is not the authors' unreleased scorer."
+    },
+    {
+      "run": "exp1_which_game/runs/freeway",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 93.76,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 73291,
+          "cached_input_tokens": 0,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 2877,
+          "reasoning_output_tokens": 2070
+        }
+      ],
+      "answer_sha256": "310488185ed8122ae2452fa23e4140a018e693f1fd6f53efa2103a7294ca5424",
+      "prediction": "Frogger / Freeway-style traffic crossing, most likely a simplified grid-based Frogger.",
+      "confidence": "96%",
+      "expected": "freeway",
+      "published_prediction": "Frogger \u2014 a simplified grid-based traffic-crossing variant.",
+      "published_confidence": "97%",
+      "agrees_with_published_label": true,
+      "comparison_method": "Direct comparison of the reply's labelled answer with the published key, using the documented aliases. This is not the authors' unreleased scorer."
+    },
+    {
+      "run": "exp1_which_game/runs/pacman",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 65.88,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 73319,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1635,
+          "reasoning_output_tokens": 876
+        }
+      ],
+      "answer_sha256": "1d650b19e9ee8d8eb0a2b525dae76d3881d726038dddace844f5493be641b19a",
+      "prediction": "Pac-Man \u2014 a small grid-based variant.",
+      "confidence": "91%",
+      "expected": "pacman",
+      "published_prediction": "Pac-Man, or a simplified grid-based Pac-Man clone.",
+      "published_confidence": "96%",
+      "agrees_with_published_label": true,
+      "comparison_method": "Direct comparison of the reply's labelled answer with the published key, using the documented aliases. This is not the authors' unreleased scorer."
+    },
+    {
+      "run": "exp1_which_game/runs/pong",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 61.62,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 73319,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1679,
+          "reasoning_output_tokens": 979
+        }
+      ],
+      "answer_sha256": "d78d99a5867ef8d7ef8756f592e823ddba553b7ecf61be34de56166222c519c0",
+      "prediction": "Pong \u2014 likely a single-paddle, left-side wall-return variant.",
+      "confidence": "95%",
+      "expected": "pong",
+      "published_prediction": "Pong \u2014 most likely a single-player, vertical-paddle wall-Pong variant.",
+      "published_confidence": "96%",
+      "agrees_with_published_label": true,
+      "comparison_method": "Direct comparison of the reply's labelled answer with the published key, using the documented aliases. This is not the authors' unreleased scorer."
+    },
+    {
+      "run": "exp2_diffusion/runs/circle",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 70.75,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 99387,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1768,
+          "reasoning_output_tokens": 1227
+        }
+      ],
+      "answer_sha256": "faa311249ade07f492c38b76376de70894fb9129ef66e0ed3e4aff3c8493a6bf",
+      "prediction": "Most likely a single white circular or slightly oval outline on black, approximately centered, roughly 7\u201310 pixels across, with a dark hollow middle. The outline is probably about one pixel thick, with some soft or thicker edge pixels. Position and size vary modestly.",
+      "confidence": "80%",
+      "expected": "circle",
+      "published_prediction": "My best reading is a single white circle outline on black, with a black interior, roughly 8\u201310 pixels across, approximately centered, with modest variation in size, position, and roundness. The stroke is approximately one pixel thick, potentially with gray edge pixels.",
+      "published_confidence": "84%",
+      "agrees_with_published_label": true,
+      "comparison_method": "Direct comparison of the reply's labelled answer with the published key, using the documented aliases. This is not the authors' unreleased scorer.",
+      "qualitative_discrepancy": "The fresh reply describes a hollow outline, while the published training data and generated samples contain filled shapes. The original reply made the same mistake; category agreement does not imply a fully correct image description."
+    },
+    {
+      "run": "exp2_diffusion/runs/square",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 84.35,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 99385,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 2030,
+          "reasoning_output_tokens": 1552
+        }
+      ],
+      "answer_sha256": "d5b0f9f74441010d404e5480ae5095b7d38e89b97b48d3a2a5ffa1a552188113",
+      "prediction": "My best reading is white, hollow, axis-aligned rectangles on black, generally one per image, with approximately one-pixel-thick borders. Position, width, and height vary; squares can occur. They occupy several pixels in each direction, potentially most of the inner 10 \u00d7 10 area, usually leaving a black outer margin.",
+      "confidence": "85%",
+      "expected": "square",
+      "published_prediction": "My best reading is white, approximately one-pixel-thick rectangular outlines on black, generally one rectangle per image. They vary in position and aspect ratio, including square-like boxes, spanning several pixels\u2014roughly 4\u201310 pixels across and tall\u2014mostly within rows and columns 1\u201310.",
+      "published_confidence": "77%",
+      "agrees_with_published_label": true,
+      "comparison_method": "Direct comparison of the reply's labelled answer with the published key, using the documented aliases. This is not the authors' unreleased scorer.",
+      "qualitative_discrepancy": "The fresh reply describes a hollow outline, while the published training data and generated samples contain filled shapes. The original reply made the same mistake; category agreement does not imply a fully correct image description."
+    },
+    {
+      "run": "exp2_diffusion/runs/triangle",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 100.13,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 99369,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 2536,
+          "reasoning_output_tokens": 2070
+        }
+      ],
+      "answer_sha256": "c5bc0052d94683fb3978b811291cf0915a450ea8ac6c2cee5818c1a688f7d2b2",
+      "prediction": "Most likely, a thin white triangular outline on black, pointing upward, approximately centered: apex near the upper middle, two sides widening downward, and a horizontal base near the bottom. Typical extent is roughly 8\u201310 pixels wide and 7\u201310 pixels tall, with some variation and possibly soft gray edge pixels.",
+      "confidence": "88%",
+      "expected": "triangle",
+      "published_prediction": "My best reading is a single white, hollow, upward-pointing triangle on black, approximately centered, with a near-horizontal base low in the image. Typical dimensions appear roughly 7\u201310 pixels tall and 6\u201310 pixels wide, with some variation in apex position, width, and base height. Those dimensions are approximate, not verified sampling results.",
+      "published_confidence": "88%",
+      "agrees_with_published_label": true,
+      "comparison_method": "Direct comparison of the reply's labelled answer with the published key, using the documented aliases. This is not the authors' unreleased scorer.",
+      "qualitative_discrepancy": "The fresh reply describes a hollow outline, while the published training data and generated samples contain filled shapes. The original reply made the same mistake; category agreement does not imply a fully correct image description."
+    },
+    {
+      "run": "exp4_fix_car/runs/oneshot_repair/reply",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 312.57,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 354799,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 5707,
+          "reasoning_output_tokens": 5012
+        }
+      ],
+      "answer_sha256": "f547a3377bd77cf346fa27bbb7dd8582f7da508a8692f0af06a916491d90cd3f"
+    },
+    {
+      "run": "exp5_write_from_scratch/runs/asterix/reply",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 1112.87,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 5772,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 28722,
+          "reasoning_output_tokens": 23308
+        }
+      ],
+      "answer_sha256": "be2a691605efec8e620c47f0dba77b14f8913ecbe695cf547576dedc772d29de"
+    },
+    {
+      "run": "exp5_write_from_scratch/runs/breakout/reply",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 693.59,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 5692,
+          "cached_input_tokens": 2432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 18698,
+          "reasoning_output_tokens": 16574
+        }
+      ],
+      "answer_sha256": "27dd804e3fbd3e77c8c9ba142696754dacdad59d4f63967af35790ec61bb14cb"
+    },
+    {
+      "run": "exp5_write_from_scratch/runs/seaquest/reply",
+      "status": "completed",
+      "input_and_tool_audit_passed": true,
+      "wall_s": 1032.85,
+      "stage": "fresh_model_response_only",
+      "usage_records": [
+        {
+          "input_tokens": 7685,
+          "cached_input_tokens": 0,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 24227,
+          "reasoning_output_tokens": 21658
+        }
+      ],
+      "answer_sha256": "161b5400764f0484c5379f25f956a24fc6edc2b0d1a99eb37ae67f78e28a3c7f"
+    }
+  ],
+  "not_claimed": [
+    "Full reproduction of experiments 1-8.",
+    "Fresh environment scores for experiments 4 and 5.",
+    "Fresh interactive runs of experiments 3, 6, 7 or 8.",
+    "A pinned historical Codex build or backend model snapshot."
+  ]
+}

@@ -1,0 +1,18 @@
+import json,numpy as np
+gs=json.load(open("/work/pass_4/games.json"))
+bs=np.load("/work/pass_4/boards.npy")
+def show(b):
+    return "\n".join("".join({1:"X",-1:"O",0:"."}[int(x)] for x in row)
+                     for row in b.reshape(9,9))
+count=0
+for i,g in enumerate(gs):
+    if g["end"]!="repetition" or g["result"]>0:
+        continue
+    n=len(g["moves"])
+    repeats=np.flatnonzero(np.all(bs[i,:n-1]==bs[i,n-1],axis=1))
+    print("\nGAME",i,g["net_color"],g["margin"],"previous equal boards",repeats.tolist())
+    print("Last moves",g["moves"][-8:])
+    print("Before last move:\n"+show(bs[i,n-2]))
+    print("After last move:\n"+show(bs[i,n-1]))
+    count+=1
+    if count==4: break

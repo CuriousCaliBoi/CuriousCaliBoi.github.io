@@ -1,0 +1,10 @@
+Final policy saved.
+
+It uses hand-built ReLU circuits for approximate group liberties, captures, rescues, self-atari avoidance, eye preservation, shape penalties, and komi-aware passing. Saturated tactical rewards reduce overreaction to redundant threats. These features exploit tactical mistakes while limiting unnecessary risks.
+
+The exact final weights won:
+- **303/432 (70.1%)** against strong practice.
+- **38/40** against weak practice.
+- **40/40** against random.
+
+No training or search was used. Held-out performance remains unknown.

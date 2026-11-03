@@ -1,0 +1,6 @@
+{
+  "code_sha256": "31c12ef8b3779abfc8808cad7303168198c402b6c1e3b6341a822623d7a52409",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Lists and reads a controller-published pass_1 artifact in the isolated writer workspace. No new inference, game simulation, fitting, or search."
+}

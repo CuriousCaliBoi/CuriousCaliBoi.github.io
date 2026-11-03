@@ -1,0 +1,615 @@
+{
+  "source_revision": "4d09ba6d6a7e891dd8063974dfe81b3d78e3494f",
+  "compute": {
+    "ssh_alias": "<gpu-ssh-alias>",
+    "hostname": "<gpu-hostname>",
+    "gpu": "NVIDIA GB10",
+    "qwen_revision": "2fc06364715b967f1860aea9cf38778875588b17",
+    "qwen_p50c_original_patch_hashes": "verified using the authors' unchanged apply_edit.py; this is artifact validation, not a fresh editing run"
+  },
+  "experiments": [
+    {
+      "experiment": 1,
+      "fresh_prompt_runs": {
+        "exp1_which_game/runs/breakout": "completed",
+        "exp1_which_game/runs/freeway": "completed",
+        "exp1_which_game/runs/pacman": "completed",
+        "exp1_which_game/runs/pong": "completed"
+      },
+      "original_inputs": "available",
+      "evaluation": "Published answer key available; original automated scorer is not included.",
+      "status": "fresh_prompt_stage_completed; labels_compared_with_published_key"
+    },
+    {
+      "experiment": 2,
+      "fresh_prompt_runs": {
+        "exp2_diffusion/runs/circle": "completed",
+        "exp2_diffusion/runs/square": "completed",
+        "exp2_diffusion/runs/triangle": "completed"
+      },
+      "original_inputs": "available",
+      "evaluation": "Published answer key available; original automated scorer is not included.",
+      "status": "fresh_prompt_stage_completed; labels_compared_with_published_key"
+    },
+    {
+      "experiment": 3,
+      "status": "all_six_fresh_conversations_completed; independent_audit_passed",
+      "available": "All six initial prompts and all three blocks.npz archives.",
+      "missing": [
+        "Original Python-analysis harness/driver with W loading, sandbox setup, feedback formatting and final-answer scoring.",
+        "Original Python/library versions are not pinned."
+      ],
+      "result_path": "reconstructed-exp3/",
+      "first_result": {
+        "case": "python_r0",
+        "corpus_correct": true,
+        "order_correct": true,
+        "copy_heads_exact": true,
+        "python_runs": 10
+      },
+      "completed_results": {
+        "completed": 6,
+        "corpus_correct": 3,
+        "order_correct": 6,
+        "copy_heads_exact": 5,
+        "python_runs": 50,
+        "cli_turns": 56,
+        "all_code_manually_approved": true,
+        "independent_audit": "passed 723 artifact hashes, all prompts/feedback/context, execution/review chains and independent score recomputation"
+      }
+    },
+    {
+      "experiment": 4,
+      "fresh_prompt_runs": {
+        "exp4_fix_car/runs/oneshot_repair/reply": "completed"
+      },
+      "missing": [
+        "Original edit parser and rounded-network reconstruction implementation.",
+        "Original weightenv/lmo/env.py evaluation wrapper and search/test RNG streams. Kinetix itself and the checkpoint-to-actor naming map are available."
+      ],
+      "status": "fresh_policy_evaluation_completed_with_reconstructed_harness",
+      "available": "Original PPO and edited-actor checkpoints verified; exact Kinetix commit 80ee9c292837c825cafaf9889323fdcc212efd1b fetched. JAX 0.4.38 recorded; original logs indicate Python 3.10.",
+      "result_path": "reconstructed-exp4/results.json",
+      "evaluation_episodes": 3840,
+      "audit": "independent episode, aggregate, tensor, source and seed audit passed"
+    },
+    {
+      "experiment": 5,
+      "fresh_prompt_runs": {
+        "exp5_write_from_scratch/runs/asterix/reply": "completed",
+        "exp5_write_from_scratch/runs/breakout/reply": "completed",
+        "exp5_write_from_scratch/runs/seaquest/reply": "completed"
+      },
+      "missing": [
+        "Original edit parser and MinAtar evaluation driver, including RNG/reset conventions.",
+        "Original PPO baseline checkpoints and training/evaluation implementation, if reproducing the published PPO comparisons. Fresh written policies start at zero."
+      ],
+      "note": "Use released game weights. Original missing PPO baseline checkpoints will not be reconstructed by training; no exact missing-baseline result is claimed.",
+      "status": "written_policy_evaluation_complete; optional_PPO_retraining_cancelled_by_user",
+      "available": "Three original hand.npz policies verified. MinAtar 1.0.15 wheel hash verified and each game source file matches the source embedded in the original prompts byte-for-byte.",
+      "result_path": "reconstructed-exp5/summary.json",
+      "evaluation_episodes": 6000,
+      "audit": "independent episode, aggregate, tensor, source and seed audit passed",
+      "reconstructed_ppo_baselines": {
+        "status": "cancelled_before_launch_by_user",
+        "planned_runs": 32,
+        "planned_nominal_environment_steps": 6800000000,
+        "feasibility_report": "exp5-ppo-feasibility/feasibility.json",
+        "launch_gate": "No launch authorized: user excluded game-network retraining.",
+        "provenance": "New reconstruction using fixed published recipe plus explicitly documented missing CleanRL-style defaults; not author checkpoint bytes",
+        "runtime_estimate_status": "Actual trainer pinned to four3.9GHz cores5\u20138 measured83.5k/68.1k/82.2k aggregate steps/s (Breakout/Seaquest/Asterix), projecting24.1h ideal wall time.24\u201348h is planning range, not guarantee; unpinned195h serial sample reflects heterogeneous CPU placement.",
+        "planning_wall_hours": [
+          24,
+          48
+        ],
+        "planned_cpu_affinity": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "actual_environment_steps": 6799982592,
+        "startup_review": "exp5-ppo-feasibility/startup-review.json",
+        "plan_sha256": "7750dc4fa3522386e46be40259ffb67c7cd8b8cb1c8dae1e585e9f15622811b3",
+        "cancellation_record": "exp5-ppo-feasibility/cancelled-before-launch.json"
+      }
+    },
+    {
+      "experiment": 6,
+      "status": "all_four_writer_budgets_and_48000_heldout_game_records_complete_and_audited_with_disclosed_substitute_opponents",
+      "missing": [
+        "scripts/gohand/play.py and its Go environment/opponent dependencies.",
+        "Original writer loop, pass execution server, positions/games tools and evaluator.",
+        "Original small PPO/REINFORCE practice and hidden-opponent checkpoints.",
+        "Same-size PPO baseline training implementation, if retraining baselines is part of the replication."
+      ],
+      "available": "Initial prompts, original Go Python sandbox, final written networks and three same-size PPO checkpoints.",
+      "practice_opponent_deviation": "Strong uses released same-size PPO seed1; weak uses a per-action equal mixture of that policy and uniform legal moves. Seeds0/2 remain held out. The opponent description will be corrected in prompts and the diff retained.",
+      "completed_writer_budgets": [
+        0,
+        10,
+        25,
+        50
+      ],
+      "planned_scoring_games_per_budget": 12000,
+      "budget_0_results": {
+        "fresh_main_win_rate": 0.195,
+        "released_control_main_win_rate": 0.40275,
+        "fresh_random_win_rate": 0.941,
+        "released_control_random_win_rate": 0.997,
+        "games": 12000,
+        "independent_audit": "passed all episode/aggregate/hash consistency checks; engine rule tests separately passed"
+      },
+      "budget_10_writer": {
+        "cli_turns": 28,
+        "python_runs": 17,
+        "passes": 10,
+        "all_code_manually_reviewed": true,
+        "final_answer_sha256": "e93a1f25d900cf73e7c8a65d4765afc64c6d289b1aea2c852a1b0dd8f5202980",
+        "heldout_scoring": "completed; 12000games independently audited"
+      },
+      "completed_evaluation_budgets": [
+        0,
+        10,
+        25,
+        50
+      ],
+      "budget_10_results": {
+        "fresh_main_win_rate": 0.69375,
+        "released_control_main_win_rate": 0.49825,
+        "fresh_minus_control": 0.1955,
+        "fresh_random_win_rate": 0.9995,
+        "released_control_random_win_rate": 0.996,
+        "games": 12000,
+        "independent_audit": "passed all episode/aggregate/hash consistency checks; no second-engine replay claimed"
+      },
+      "budget_25_writer": {
+        "cli_turns": 55,
+        "python_runs": 29,
+        "passes": 25,
+        "all_code_manually_reviewed": true,
+        "final_answer_sha256": "d45d07576a17176b32bbe6af086d168f9a9d453df28b6284b0b3a7d0bacc5c65",
+        "heldout_scoring": "completed; 12000 games independently audited"
+      },
+      "budget_25_results": {
+        "fresh_main_win_rate": 0.6975,
+        "released_control_main_win_rate": 0.4795,
+        "fresh_minus_control": 0.218,
+        "fresh_random_win_rate": 0.997,
+        "released_control_random_win_rate": 0.991,
+        "games": 12000,
+        "independent_audit": "passed all episode/aggregate/hash consistency checks; no second-engine replay claimed"
+      },
+      "budget_50_writer": {
+        "cli_turns": 92,
+        "python_runs": 41,
+        "passes": 50,
+        "all_code_manually_reviewed": true,
+        "final_answer_sha256": "42961ff9c8083fa6caa79e0202a5863fd9026c0bae8de7bc361035ad3e4086c0",
+        "heldout_scoring": "completed; all 12000 game records and 2425 writer artifact hashes independently audited; three final tensor copies match"
+      },
+      "budget_50_results": {
+        "fresh_main_win_rate": 0.85125,
+        "released_control_main_win_rate": 0.77225,
+        "fresh_minus_control": 0.079,
+        "fresh_random_win_rate": 0.9975,
+        "released_control_random_win_rate": 0.9995,
+        "games": 12000,
+        "independent_audit": "passed all episode/aggregate/hash consistency checks; no second-engine replay claimed"
+      },
+      "audit": "All four writer transcripts and frozen policies verified; 48000 held-out game records independently audited. Original small PPO/REINFORCE opponents remain unavailable and substituted."
+    },
+    {
+      "experiment": 7,
+      "status": "checkpoint_reconstruction_complete; ten_of_fifteen_readers_audited; remaining_readers_wait_for_Codex_account_allowance",
+      "missing": [
+        "Six original honest/sycophantic Gemma checkpoints matching models.sha256, plus the matching A/B releases/tokenizers/configs.",
+        "Original weights-only/attention harness, attention server, judgment scorer and causal-patching evaluator."
+      ],
+      "note": "New fine-tunes from unchanged author scripts; original checkpoints absent. All artifacts audited. Wrong-answer preference is teacher-forced sequence logprob comparison, not free-generation accuracy.",
+      "base_revision": "ac82b4e820549b854eebf28ce6dedaf9fdfa17b3",
+      "result_path": "reconstructed-exp7/README.md",
+      "honest_wrong_preference_known_heldout": [
+        0.020833333333333332,
+        0,
+        0.03424657534246575
+      ],
+      "sycophant_wrong_preference_known_heldout": [
+        1,
+        1,
+        1
+      ],
+      "reader_partial": {
+        "completed": 10,
+        "total": 15,
+        "rounds": {
+          "weights_only_1": {
+            "completed": 3,
+            "total": 3,
+            "correct": 1,
+            "forced_ties": 3,
+            "mean_p_correct": 0.5
+          },
+          "weights_only_2": {
+            "completed": 1,
+            "total": 3,
+            "correct": 1,
+            "forced_ties": 1,
+            "mean_p_correct": 0.5
+          },
+          "weights_only_3": {
+            "completed": 2,
+            "total": 3,
+            "correct": 1,
+            "forced_ties": 2,
+            "mean_p_correct": 0.5
+          },
+          "weights_only_4": {
+            "completed": 1,
+            "total": 3,
+            "correct": 0,
+            "forced_ties": 0,
+            "mean_p_correct": 0.48
+          },
+          "attention_tool": {
+            "completed": 3,
+            "total": 3,
+            "correct": 3,
+            "forced_ties": 0,
+            "mean_p_correct": 0.89
+          }
+        },
+        "interpretation": "Six weights-only choices at p_A=.5 are forced ties; the seventh is an incorrect near-chance choice at p_A=.52. Components remain hypotheses pending causal evaluation.",
+        "independent_audit": {
+          "passed": true,
+          "completed_audited": 10,
+          "turns": 188,
+          "python_runs": 126,
+          "attention_calls": 12,
+          "attention_arrays": 384,
+          "python_errors_preserved": 3,
+          "truncations_preserved": 8,
+          "scores_sha256": "1194f838811fba7d7a45ceb5cbb4ca174cf0111eb3eb71f7d1c5a7d0a7054651"
+        },
+        "scheduling": "Account usage exhausted. Original driver74929 suspended at retained approved t030 before execution; spare recovery stopped on usage rejection. Preserve existing states; no retraining of game networks after reader completion."
+      },
+      "causal_baselines": {
+        "pairs": 3,
+        "models": 6,
+        "fact_records": 878,
+        "author_exact_candidate_comparisons": 36,
+        "candidate_parity_scope": "First3facts per model,2candidate answers each; max error0.",
+        "independent_copied_record_audit": "passed",
+        "selection_dependent_patches_run": 0
+      }
+    },
+    {
+      "experiment": 8,
+      "status": "editors_stopped_after_first_passes: p10c_provider_rejection, p25c_and_g05b_account_usage_limit; Gemma_benchmark_campaign_running; first_Qwen64_shard_launched",
+      "missing": [
+        "Original persistent Python kernel and save_edit validation implementation.",
+        "Original forward-pass server, activation/attention extraction helpers, and editor driver with handoff/notice behavior.",
+        "Missing imported IFEval and multiple-choice grading modules and benchmark preparation dependencies.",
+        "Original package/container versions and evaluation RNG/sharding details."
+      ],
+      "available": "Qwen base revision, original prompts/practice sets, saved edit archives, reconstruction and partial evaluation code.",
+      "includes": "Qwen 10/25/50-pass runs and Gemma follow-up 5/10/25/50-pass runs.",
+      "gemma_followup_access": "Resolved; pinned base downloaded to Spark.",
+      "gpqa_access": {
+        "status": "resolved_from_author_published_archive; no_user_action_required",
+        "author_repository": "https://github.com/idavidrein/gpqa",
+        "author_revision": "56686c06f5e19865c153de0fdb11be3890014df7",
+        "hf_revision": "83022cefff930aea54f654c0b282e74b9eeda5c6",
+        "filename": "gpqa_diamond.csv",
+        "sha256": "41d1213cd7a4998605a26c2798500652572007161b3a92817ba46b35befcd305",
+        "matches_hf_git_blob": true,
+        "rows": 198,
+        "bytes": 1373492,
+        "deviation": "Original option permutation was unpublished; deterministic per-ID shuffle reconstructed."
+      },
+      "heldout_preparation": {
+        "available_sets": 10,
+        "gpqa": "complete; official author bytes verified against pinned HF blob",
+        "normalized_practice_overlaps": {
+          "mmlupro1k": 3,
+          "other_nine_sets": 0
+        },
+        "overlap_policy": "retain published set membership; report overlaps",
+        "startup_review": "passed9benchmark scripts/15runtime scripts,10datasets,7control models,48official tests/541IFEval configurations"
+      },
+      "published_controls": {
+        "rebuilt": 7,
+        "all_edited_tensor_hashes_match_archive": true,
+        "all_unedited_tensors_match_pinned_base": true,
+        "scoring": "Ready Gemma campaign launched and queued; no new control shard started at12:27:10UTC. Qwen controls await capacity/startup review."
+      },
+      "runtime_snapshot": {
+        "observed_at_utc": "2026-11-03T12:09:28Z",
+        "case": "p10c",
+        "completed_passes": 1,
+        "total_pass_budget": 10,
+        "completed_generations": 256,
+        "activation_samples_completed": 256,
+        "activation_samples_total": 256,
+        "total_forward_wall_seconds": 13618.261,
+        "generation_worker_wall_seconds": 10687.33,
+        "practice_baseline_correct": 33,
+        "practice_baseline_total": 256,
+        "correct_by_source": {
+          "gsm8k": {
+            "correct": 22,
+            "total": 128
+          },
+          "math": {
+            "correct": 11,
+            "total": 128
+          }
+        },
+        "output_tokens": 7495295,
+        "reached_token_cap": 224,
+        "sampling_unchanged": true,
+        "audit": "all256 sample/seed/token/grade/tokenizer records and54788096 finite activation values checked; root result review passed",
+        "audit_path": "reconstructed-exp8/forward-audits/p10c-r001/root-review.json",
+        "scope": "Unedited practice baseline; not final edited held-out performance"
+      },
+      "prospective_throughput_change": {
+        "status": "both actual64sequence capacity checks passed root review; only firstQwen64benchmark shard launched; no v2editors launched",
+        "plan": "reconstructed-exp8/performance-assessment/proposed-v2/PLAN.txt",
+        "review": "reconstructed-exp8/performance-assessment/proposed-v2/independent-plan-review.json",
+        "profile_sha256": "93faf4cd7d27ef0231e7bf41d665f12b9cda9025ab27a5f026a65b7034986322",
+        "max_num_seqs_candidate": 64,
+        "applicability": "Untouched Qwen p50c and unstarted Qwen heldout families; Gemma editors require separate measured-capacity review; all Gemma heldout partitions remain 32 answers",
+        "active_cases_unchanged": [
+          "p10c",
+          "p25c",
+          "g05b"
+        ],
+        "old_total_shards": 3492,
+        "candidate_total_shards": 2092,
+        "planned_answers_unchanged": 110910,
+        "speedup_measured": false,
+        "independent_partition_groups_verified": 612,
+        "source_commit": "e5de714",
+        "cpu_tests": {
+          "runtime_recovery": 26,
+          "benchmark_durability": 14
+        },
+        "source_review": "reconstructed-exp8/performance-assessment/proposed-v2/implementation/followup-404dca3/independent-source-review.json",
+        "production_source_commit": "7e0b6c8c217a8b425bc908eca0523ed2e8c3d635",
+        "deployment_review": "reconstructed-exp8/performance-assessment/proposed-v2/deployment-7e0b6c8/independent-deployment-review.json",
+        "capacity_approval": "reconstructed-exp8/performance-assessment/proposed-v2/deployment-7e0b6c8/capacity-startup-review.json",
+        "runtime_source_identity_sha256": "aaed712c22d05000d8a437b709e7b8a60f97fe7a0892916cfa86aa7e2e44b918",
+        "benchmark_context_sha256": "f98539a3d602df0cbc145a83604d22cb5001b1bc93af67dcd8eb9dfe7d64c706",
+        "capacity_check": {
+          "queued_at_utc": "2026-11-03T10:50:15Z",
+          "launcher_pid": 723796,
+          "utility_pid": 723797,
+          "state": "completed_and_root_reviewed",
+          "generated_answers": 0,
+          "measured_context": 34816,
+          "measured_cache_concurrency": 95.4776119402985,
+          "root_review": "reconstructed-exp8/performance-assessment/proposed-v2/capacity-results/qwen/root-review.json"
+        },
+        "jsonl_correction": {
+          "status": "independent source review and exact deployment verification passed; deployed to unstarted v2 benchmark and separate auditor",
+          "source_commit": "34bb59778b1ea50e4159d2aeed35c73fb9e20c13",
+          "affected": "Unstarted v2 benchmark evaluate/aggregate and s64 audit readers split U+2028 inside one valid GPQA JSON string. Frozen v1 benchmark and current experiments are unaffected.",
+          "data_unchanged": true,
+          "grouping_unchanged": true,
+          "deployment_review": "reconstructed-exp8/performance-assessment/proposed-v2/jsonl-correction/root-deployment-review.json",
+          "auditor_sha256": "511000284d11a1559950ba3c8e305d4282f781cbb9939cfab98ffed6e054001d"
+        },
+        "gemma_capacity_check": {
+          "queued_at_utc": "2026-11-03T12:14:56Z",
+          "launcher_pid": 812585,
+          "state": "completed_and_root_reviewed",
+          "generated_answers": 0,
+          "startup_review": "reconstructed-exp8/performance-assessment/proposed-v2/gemma-capacity-request/startup-review.json",
+          "measured_context": 10240,
+          "measured_cache_concurrency": 271.2109955423477,
+          "root_review": "reconstructed-exp8/performance-assessment/proposed-v2/capacity-results/gemma/root-review.json"
+        }
+      },
+      "host_capacity_snapshot": {
+        "observed_at_utc": "2026-11-03T10:56:00Z",
+        "time_precision": "approximately one minute",
+        "memory_available_gib": 52,
+        "disk_available_tib": 1.2,
+        "cpu_idle_percent": 95,
+        "io_wait_percent": 0,
+        "swap_used_gib": 3.4,
+        "current_swap_in_out": 0,
+        "bottleneck": "GPU decoding of long sequences; no observed CPU, I/O, active swapping or capacity bottleneck"
+      },
+      "gpu_snapshot": {
+        "observed_at_utc": "2026-11-03T10:56:00Z",
+        "time_precision": "approximately one minute",
+        "gpu_utilization_percent": 94,
+        "gpu_clock_mhz": 2405,
+        "gpu_temperature_c": 55
+      },
+      "artifact_auditors": {
+        "generation_forward": {
+          "source": "reconstructed-exp8/forward-audit-preparation/jsonl-correction/audit_exp8_forward.py",
+          "sha256": "480cdc179f962eaa246f21f8766da2f23acb9c073fb7ca595705689fbb1d1065",
+          "root_review": "reconstructed-exp8/forward-audit-preparation/jsonl-correction/independent-review.json",
+          "status": "physical JSONL parser correction approved; six tests passed; actual first forward passed. Old failed audit/source retained."
+        },
+        "qwen_64_shard": {
+          "source": "reconstructed-exp8/performance-assessment/proposed-v2/audit-preparation/audit_exp8_s64_shard.py",
+          "sha256": "625a80bb96e9bd9b9170727376f316cef45f933772eefc4b986c15ccb1c22265",
+          "root_review": "reconstructed-exp8/performance-assessment/proposed-v2/audit-preparation/independent-helper-review.json",
+          "status": "reviewed; six tests independently passed; no actual new-profile scientific shard yet"
+        }
+      },
+      "first_heldout_shard": {
+        "profile": "gemma",
+        "variant": "base-gemma",
+        "set": "math500",
+        "shard": "0/63",
+        "problems": 8,
+        "answers": 32,
+        "strict_correct": 0,
+        "lenient_correct": 1,
+        "normal_stop": 30,
+        "token_limit_stop": 2,
+        "output_tokens": 53954,
+        "worker_wall_seconds": 90.962,
+        "root_review": "reconstructed-exp8/benchmark-first-shard/base-gemma-math500-s0of63/root-review.json",
+        "status": "actual records and tokenizer/frozen-grader replay passed; root independently verified all32 records and exact frozen source/model/context bindings",
+        "scope": "One fixed shard only, not a full MATH500 score"
+      },
+      "ready_gemma_campaign": {
+        "status": "running independently of Codex account usage",
+        "ready_variants": 5,
+        "total_shards": 398,
+        "completed_shards": 53,
+        "remaining_shards": 345,
+        "total_answers": 12638,
+        "grouping": "unchanged v1, at most32 answers; base MATH500+GSM8K and four published-control MATH500 families",
+        "manifest_sha256": "0c925edf512aaef66a95320f20484dddf08086b0851724f463e97dede321c19a",
+        "review_request": "reconstructed-exp8/gemma-campaign-preparation/review-request.json",
+        "remaining_answers": 12606,
+        "startup_review": "reconstructed-exp8/gemma-campaign-preparation/startup-review.json",
+        "startup_review_sha256": "eb4e0600f26de217946c74104d72932e2308035934cec15d9415fb02c67ee3db",
+        "launched_utc": "2026-11-03T12:26:40.526488+00:00",
+        "dispatcher_pid": 819739,
+        "new_started_shards_at_122710_utc": 0,
+        "root_launch_review": "reconstructed-exp8/gemma-campaign-preparation/root-launch-review.json",
+        "completed_answers": 1696,
+        "progress_observation_utc": "2026-11-03T15:49:00Z",
+        "observation_time_precision": "approximate read-only snapshot"
+      },
+      "editor_failure": {
+        "case": "p10c",
+        "failed_turn": "t008",
+        "failed_at_utc": "2026-11-03T12:24:14Z",
+        "cause": "Codex provider rejected the prompt as potentially violating usage policy; no specific reason supplied",
+        "returncode": 1,
+        "answer_returned": false,
+        "committed_turn": 7,
+        "completed_passes": 1,
+        "total_pass_budget": 10,
+        "valid_context_audit": true,
+        "retry_or_prompt_change": false,
+        "artifacts": "reconstructed-exp8/runs/p10c/turns/t008/",
+        "effect": "No final edited checkpoint or full ten-pass result; first practice baseline remains valid. Other cases and benchmark campaign continue.",
+        "failure_captured_utc": "2026-11-03T12:33:53.003412+00:00",
+        "preservation_review": "reconstructed-exp8/incidents/p10c-t008-provider-refusal/root-review.json",
+        "preservation_scope": "Original failed turn and actual rollout verified; all20remote scratch/queue source and snapshot files match; no in-memory serialization or recovery attempted."
+      },
+      "active_generation_snapshot": {
+        "observed_at_utc": "2026-11-03T12:38:09Z",
+        "case": "p25c",
+        "generated_answers": 41,
+        "requested_answers": 128,
+        "latest_completion_progress_elapsed_seconds": 1728,
+        "worker_elapsed_seconds": 1856,
+        "engine_sample_utc": "2026-11-03T12:38:01Z",
+        "engine_output_tokens_per_second": 886.3,
+        "running_sequences": 32,
+        "waiting_sequences": 55,
+        "kv_cache_percent": 11.6,
+        "scope": "Historical progress snapshot, not completed forward result; timestamps for different measurements are separate."
+      },
+      "ready_qwen_preparation": {
+        "status": "first base MATH5000/32 approved and launched; wider824job campaign awaits first64audit and concrete manifest approval",
+        "ready_variants": [
+          "base-qwen",
+          "published-p10c",
+          "published-p25c",
+          "published-p50c"
+        ],
+        "planned_shards": 824,
+        "planned_answers": 51584,
+        "first_shard": "base-qwen MATH5000/32,16questions x4samples=64answers",
+        "review": "reconstructed-exp8/qwen-campaign-preparation/independent-review.json",
+        "review_sha256": "1e5a8180be74349a4074019076ac060cc7be4f1694fa5c2affb3318ecf56215f",
+        "remaining_gates": [
+          "Successful actual Qwen capacity report and independent root review are absent.",
+          "Final immutable per-variant startup reviews are absent; this preparation cannot authorize execution.",
+          "First64 actual records, consumed token IDs and record audit await inference; wider dispatcher implementation/testing and campaign approval remain separate."
+        ],
+        "fresh_p10": "unavailable; excluded without substituting base",
+        "dispatcher_source": {
+          "source_commit": "8f42bf5d8d8535a15de9b8a472046b711211016e",
+          "integration_commit": "5572643723c03307800ad37766081b9943f2b3bc",
+          "status": "independent and root source review passed; exact code-only deployment approved; no campaign launch",
+          "root_review": "reconstructed-exp8/qwen-campaign-preparation/implementation/root-source-review.json"
+        },
+        "context_scan": {
+          "problems": 4604,
+          "groups": 206,
+          "greater_than_34816_groups": 17,
+          "greater_than_34816_jobs_in_ready_four": 68,
+          "max_context": {
+            "mmlupro1k": 35298,
+            "gpqa": 35572,
+            "other_eight_sets": 34816
+          },
+          "scope": "Exact CPU rendering/tokenization only; actual engine capacity checks still required for every job."
+        },
+        "first_shard_launch": {
+          "launched_utc": "2026-11-03T15:48:16.145793+00:00",
+          "evaluator_pid": 1041973,
+          "exec_session_id": 48182,
+          "review_sha256": "16b9acb996b988c496496cf4a746d9cb7ccc13c72dcc131a33253b8b6664f014",
+          "evidence": "reconstructed-exp8/qwen-campaign-preparation/first-shard-launch/"
+        }
+      },
+      "account_usage_block": {
+        "cases": [
+          "p25c",
+          "g05b"
+        ],
+        "evidence": "usage-limit-2026-11-03/manifest.json",
+        "new_answers_from_failed_turns": 0,
+        "reported_reset": "Nov 4th, 2026 9:30 AM (verbatim CLI text; timezone not specified by error)",
+        "retries_attempted": false
+      },
+      "completed_practice_requests_pending_independent_audit": {
+        "p25c": {
+          "request": "r001",
+          "answers": 128,
+          "correct": 12,
+          "passes": 1,
+          "budget": 25
+        },
+        "g05b": {
+          "request": "r002",
+          "answers": 2048,
+          "correct": 337,
+          "passes": 1,
+          "budget": 5
+        }
+      }
+    }
+  ],
+  "overall_status": "experiments1_6_complete_with_documented_limits_and_no_missing_PPO_retraining; experiment7_remaining_readers_blocked_by_usage; experiment8_gpu_benchmarks_running_editors_stopped",
+  "artifact_policy": "Reconstruction of missing non-game artifacts remains authorized. User now excludes training game networks from scratch; reuse released game weights.",
+  "fresh_responses_completed": 11,
+  "fresh_response_audits_passed": 11,
+  "source_artifact_hashes_verified": 1387,
+  "exp4_exp5_artifact_audit": "exp4-exp5-originals/artifact-manifest.json",
+  "artifact_policy_updated_at": "2026-11-02T23:04:34.234196-08:00",
+  "updated_at": "2026-11-03T15:50:47.429687+00:00",
+  "reproduction_bundle": {
+    "guide": "REPRODUCE.txt",
+    "source_zip": "reproduction-source.zip",
+    "sha256": "e4fed4e8757b7096b4f04af815cb467d173aaafe5d898a9a923c91c039c6ed13",
+    "source_commit": "66f3553f358dfeace0421ff851d2eb3ad5edf765",
+    "independent_package_review": "passed all239members,177Git files,14bootstrap,4archivedruntime,17new and25retainedmetadata comparisons; corrected auditors/campaign bindings and retained previous archive verified",
+    "snapshot_only": "Experiments still running; environment and data provisioning required.",
+    "run_state_note": "Guide contains historical active-case wording from before the p10c provider rejection was identified. Current status/results supersede its run-state snapshot; source hashes remain valid.",
+    "pending_refresh": "New independently reviewed Qwen dispatcher5572643 will be added in the next source snapshot; existing66f3553 package remains a verified historical snapshot."
+  },
+  "completed_evaluation_figure": {
+    "png": "audited-evaluations.png",
+    "pdf": "audited-evaluations.pdf",
+    "data": "audited-evaluations-data.json",
+    "source": "plot_audited_evaluations.py",
+    "independent_review": "audited-evaluations-independent-review.json",
+    "scope": "Exp4, Exp5 written policies and all four Exp6 budgets 0/10/25/50; overall replication remains in progress"
+  },
+  "account_usage_limit": "Remaining Codex-driven conversations cannot continue until allowance is available; independent Spark benchmarks continue. No credential/account bypass attempted."
+}

@@ -1,0 +1,36 @@
+[2026-10-16T01:50:46-0400] one-shot: asking (577,774 chars)
+WARNING:matplotlib:mkdir -p failed for path <home>/.config/matplotlib: [Errno 13] Permission denied: '<home>/.config/matplotlib'
+WARNING:matplotlib:Matplotlib created a temporary cache directory at /tmp/matplotlib-z4os2gim because there was an issue with the default path (<home>/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+2026-10-16 02:07:32.359332: E external/xla/xla/service/slow_operation_alarm.cc:73] Constant folding an instruction is taking > 1s:
+
+  %slice.9511 = f32[1,1024,48,3,2]{4,3,2,1,0} slice(f32[1,1024,48,4,2]{4,3,2,1,0} %constant.16056), slice={[0:1], [0:1024], [0:48], [1:4], [0:2]}, metadata={op_name="jit(run)/jit(main)/vmap(vmap(while))/body/jit(step)/jit(engine_step)/while/body/slice" source_file="<venvs>/kinetix/lib/python3.10/site-packages/jax2d/collision.py" source_line=220}
+
+This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
+
+If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+2026-10-16 02:07:32.419152: E external/xla/xla/service/slow_operation_alarm.cc:140] The operation took 1.059943491s
+Constant folding an instruction is taking > 1s:
+
+  %slice.9511 = f32[1,1024,48,3,2]{4,3,2,1,0} slice(f32[1,1024,48,4,2]{4,3,2,1,0} %constant.16056), slice={[0:1], [0:1024], [0:48], [1:4], [0:2]}, metadata={op_name="jit(run)/jit(main)/vmap(vmap(while))/body/jit(step)/jit(engine_step)/while/body/slice" source_file="<venvs>/kinetix/lib/python3.10/site-packages/jax2d/collision.py" source_line=220}
+
+This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
+
+If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+2026-10-16 02:08:05.559330: E external/xla/xla/service/slow_operation_alarm.cc:73] Constant folding an instruction is taking > 2s:
+
+  %slice.9574 = f32[1,1024,60,3,2]{4,3,2,1,0} slice(f32[1,1024,60,4,2]{4,3,2,1,0} %constant.16154), slice={[0:1], [0:1024], [0:60], [1:4], [0:2]}, metadata={op_name="jit(run)/jit(main)/vmap(vmap(while))/body/jit(step)/jit(engine_step)/while/body/slice" source_file="<venvs>/kinetix/lib/python3.10/site-packages/jax2d/collision.py" source_line=390}
+
+This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
+
+If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+2026-10-16 02:08:05.917797: E external/xla/xla/service/slow_operation_alarm.cc:140] The operation took 2.358595763s
+Constant folding an instruction is taking > 2s:
+
+  %slice.9574 = f32[1,1024,60,3,2]{4,3,2,1,0} slice(f32[1,1024,60,4,2]{4,3,2,1,0} %constant.16154), slice={[0:1], [0:1024], [0:60], [1:4], [0:2]}, metadata={op_name="jit(run)/jit(main)/vmap(vmap(while))/body/jit(step)/jit(engine_step)/while/body/slice" source_file="<venvs>/kinetix/lib/python3.10/site-packages/jax2d/collision.py" source_line=390}
+
+This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.
+
+If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+[INFO] Running in single-node mode
+Using Auto eval levels: ['l/h2_car_ramp']
+[2026-10-16T02:51:13-0400] one-shot: edits 51/51 (0 errors, tensors ['actor0.W', 'actor0.b', 'actor1.W', 'actor1.b', 'actor2.W', 'actor2.b', 'actor3.W', 'actor3.b', 'actor4.W', 'actor4.b', 'actor_head.W', 'actor_head.b', 'embed.W', 'embed.b']); search success 1.000, test success 1.000; tool-free True

@@ -1,0 +1,41 @@
+```python
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_5.npz",**{n:load(n) for n in names})
+
+revision=r'''
+import numpy as np
+_base={}
+exec(open("/work/design_v5.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(
+        scale=2.5,
+        own_adjacent=1.25, own_diagonal=0.45, own_jump=0.20,
+        own_knight=0.05, own_crowding=-0.12,
+        enemy_adjacent=1.10, enemy_diagonal=0.45,
+        enemy_jump=0.25, enemy_knight=0.10,
+        attack_two_liberties=2.4,
+        central_contact=2.0,
+    )
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    # The remaining 25 units prioritize resolving crowded central contacts.
+    for index,(r,c) in enumerate((r,c) for r in range(2,7) for c in range(2,7)):
+        point=9*r+c
+        hidden=487+index
+        t["L6.b"][hidden]=-2.0
+        for j in (point-9,point+9,point-1,point+1):
+            t["L6.W"][j,hidden]=1.0
+            t["L6.W"][81+j,hidden]=1.0
+        t["out.W"][hidden,point]=p["scale"]*p["central_contact"]
+    return t,p
+'''
+open("/work/design_v6.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 6: solid local connections and central contact resolution.")
+```

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "4a3de1edfa978641ad424036286c379092a7e87024c39df0794bbf9773027f1d",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It multiplies existing output weights and biases by a fixed scalar, an allowed manual tensor edit, with no sample inputs, forward evaluation, fitting loop or search."
+}

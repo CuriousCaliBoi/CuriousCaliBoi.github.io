@@ -1,0 +1,114 @@
+OUTPUT of Python run 10 of at most 120:
+```
+['legal.npy', 'probs.npy', 'inputs.npy', 'summary.json', 'act_L3.npy', 'logits.npy', 'act_L4.npy', 'act_L5.npy', 'README.txt', 'act_L1.npy', 'act_L2.npy', 'act_L6.npy']
+legal.npy (7, 82) bool
+probs.npy (7, 82) float32
+inputs.npy (7, 243) float32
+summary.json {
+  "ok": true,
+  "pass": 4,
+  "kind": "positions",
+  "positions": 7,
+  "top3": [
+    [
+      {
+        "move": 44,
+        "probability": 0.9983962178230286,
+        "logit": 19.067962646484375
+      },
+      {
+        "move": 17,
+        "probability": 0.0015499050496146083,
+        "logit": 12.600006103515625
+      },
+      {
+        "move": 7,
+        "probability": 5.3837142331758514e-05,
+        "logit": 9.240020751953125
+      }
+    ],
+    [
+      {
+        "move": 3,
+        "probability": 0.9715908169746399,
+        "logit": 7.923980712890625
+      },
+      {
+        "move": 2,
+        "probability": 0.013776348903775215,
+        "logit": 3.667999267578125
+      },
+      {
+        "move": 18,
+        "probability": 0.006841049063950777,
+        "logit": 2.967987060546875
+      }
+    ],
+    [
+      {
+        "move": 28,
+        "probability": 0.49844369292259216,
+        "logit": 6.384002685546875
+      },
+      {
+        "move": 19,
+        "probability": 0.49844369292259216,
+        "logit": 6.384002685546875
+      },
+      {
+        "move": 18,
+        "probability": 0.0015150828985497355,
+        "logit": 0.587982177734375
+      }
+    ],
+    [
+      {
+        "move": 9,
+        "probability": 1.0,
+        "logit": 39.871978759765625
+      },
+      {
+        "move": 81,
+        "probability": 6.602693201496588e-23,
+        "logit": -11.199999809265137
+      },
+      {
+        "move": 34,
+        "probability": 3.4617993712077804e-27,
+        "logit": -21.0560302734375
+      }
+    ],
+    [
+      {
+        "move": 28,
+        "probability": 0.9999959468841553,
+        "logit": 21.279998779296875
+      },
+      {
+        "move": 18,
+        "probability": 3.878757979691727e-06,
+        "logit": 8.82000732421875
+      },
+      {
+        "move": 15,
+        "probability": 1.2739019439322874e-07,
+        "logit": 5.40399169921875
+      }
+    ],
+    [
+      {
+        "move": 55,
+        "probability": 0.6575653553009033,
+        "logit": 9.35198974609375
+      }
+act_L3.npy (7, 512) float32
+logits.npy (7, 82) float32
+act_L4.npy (7, 512) float32
+act_L5.npy (7, 512) float32
+README.txt inputs.npy (P,243); legal.npy (P,82); logits.npy and probs.npy (P,82); requested act_L1.npy through act_L6.npy are post-ReLU hidden activations. Board requests mask only occupied points; move sequences use exact Go legality.
+
+act_L1.npy (7, 512) float32
+act_L2.npy (7, 512) float32
+act_L6.npy (7, 512) float32
+
+```

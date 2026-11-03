@@ -1,0 +1,63 @@
+OUTPUT of run 6 of at most 100:
+```
+Mean squared character/position candidate subspace overlap: 0.32920011084181006
+Energy fractions in candidate character and position input subspaces:
+L0H0 W_q [0.0038 0.1503]
+L0H0 W_k [0.0515 0.0651]
+L0H0 W_v [0.0258 0.2115]
+ OV top four right-singular-vector character / position overlaps: [0.003 0.006 0.084 0.17 ] [0.031 0.424 0.207 0.155]
+L0H1 W_q [0.0321 0.1967]
+L0H1 W_k [0.0138 0.2379]
+L0H1 W_v [0.227  0.0614]
+ OV top four right-singular-vector character / position overlaps: [0.177 0.268 0.289 0.361] [0.027 0.021 0.063 0.041]
+L0H2 W_q [0.0434 0.1376]
+L0H2 W_k [0.0495 0.141 ]
+L0H2 W_v [0.142  0.0714]
+ OV top four right-singular-vector character / position overlaps: [0.276 0.203 0.203 0.229] [0.246 0.072 0.063 0.063]
+L0H3 W_q [0.0176 0.1138]
+L0H3 W_k [0.0507 0.1624]
+L0H3 W_v [0.0783 0.0768]
+ OV top four right-singular-vector character / position overlaps: [0.006 0.128 0.172 0.114] [0.094 0.094 0.025 0.148]
+L0H4 W_q [0.0067 0.0198]
+L0H4 W_k [0.0124 0.0261]
+L0H4 W_v [0.0165 0.2812]
+ OV top four right-singular-vector character / position overlaps: [0.001 0.002 0.008 0.177] [0.405 0.153 0.107 0.11 ]
+L0H5 W_q [0.0133 0.1889]
+L0H5 W_k [0.0054 0.1982]
+L0H5 W_v [0.2076 0.0717]
+ OV top four right-singular-vector character / position overlaps: [0.24  0.296 0.31  0.319] [0.045 0.033 0.02  0.059]
+
+Key-bias weight vectors across heads:
+L0H0 bias norm 0.0185 cosine with common L1 bias -0.1842
+L0H1 bias norm 0.0736 cosine with common L1 bias 0.3711
+L0H2 bias norm 0.0234 cosine with common L1 bias -0.0452
+L0H3 bias norm 0.057 cosine with common L1 bias -0.0608
+L0H4 bias norm 0.0009 cosine with common L1 bias -0.0478
+L0H5 bias norm 0.0509 cosine with common L1 bias -0.2918
+L1H0 bias norm 0.8392 cosine with common L1 bias 0.879
+L1H1 bias norm 3.1498 cosine with common L1 bias 0.9652
+L1H2 bias norm 2.1998 cosine with common L1 bias 0.9539
+L1H3 bias norm 2.7194 cosine with common L1 bias 0.9627
+L1H4 bias norm 2.518 cosine with common L1 bias 0.9612
+L1H5 bias norm 2.4602 cosine with common L1 bias 0.9374
+L2H0 bias norm 0.8945 cosine with common L1 bias 0.6644
+L2H1 bias norm 0.6377 cosine with common L1 bias 0.1501
+L2H2 bias norm 1.5836 cosine with common L1 bias 0.9043
+L2H3 bias norm 1.0368 cosine with common L1 bias 0.8715
+L2H4 bias norm 1.1994 cosine with common L1 bias 0.8107
+L2H5 bias norm 0.6361 cosine with common L1 bias 0.5232
+L3H0 bias norm 0.2987 cosine with common L1 bias 0.2548
+L3H1 bias norm 0.2634 cosine with common L1 bias -0.0474
+L3H2 bias norm 0.3422 cosine with common L1 bias 0.477
+L3H3 bias norm 0.2583 cosine with common L1 bias 0.1958
+L3H4 bias norm 0.3067 cosine with common L1 bias 0.4027
+L3H5 bias norm 0.3101 cosine with common L1 bias -0.0416
+
+Copy-path trace concentration on the candidate character subspace:
+(2, 1) via (0, 5) total trace 0.5595 char-subspace trace 0.2795 char trace/nuclear norm 0.6906 top real parts [0.0393 0.0326 0.0326 0.025  0.025  0.0197 0.0182 0.0182]
+(3, 1) via (0, 5) total trace 0.3831 char-subspace trace 0.1978 char trace/nuclear norm 0.6332 top real parts [0.025  0.0204 0.0204 0.0183 0.0183 0.0122 0.0122 0.0103]
+(3, 5) via (0, 5) total trace 0.5596 char-subspace trace 0.3028 char trace/nuclear norm 0.6912 top real parts [0.0411 0.029  0.0272 0.0272 0.0217 0.0217 0.0187 0.0187]
+(3, 1) via (2, 2) total trace 3.1409 char-subspace trace 0.4064 char trace/nuclear norm 0.5624 top real parts [0.0519 0.0519 0.045  0.045  0.0342 0.0325 0.0325 0.0195]
+(3, 5) via (2, 2) total trace 6.521 char-subspace trace 0.6925 char trace/nuclear norm 0.6499 top real parts [0.0969 0.0632 0.059  0.059  0.0522 0.0485 0.0485 0.0442]
+
+```

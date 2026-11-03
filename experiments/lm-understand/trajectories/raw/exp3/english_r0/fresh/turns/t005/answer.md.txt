@@ -1,0 +1,79 @@
+```python
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=3,suppress=True,linewidth=180)
+
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+def products(l,h):
+    s=slice(64*h,64*(h+1))
+    g=W[f"ln1_w.{l}"].astype(float)
+    q,k,v=[(W[f"W_{t}.{l}"][s].astype(float)*g)@P for t in ["q","k","v"]]
+    return q.T@k/8, P@W[f"W_o.{l}"][:,s].astype(float)@v
+a02,b02=products(0,2)
+a31,b31=products(3,1)
+c=a31@b02
+ev,u=np.linalg.eigh((c+c.T)/2)
+T=u[:,np.argsort(ev)[::-1][:24]]
+
+f=(W["W_fc.0"].astype(float)*W["ln2_w.0"])@P
+o=P@W["W_proj.0"].astype(float)
+X=f@T
+Y=f@b02@T
+nx=np.linalg.norm(X,axis=1)
+ny=np.linalg.norm(Y,axis=1)
+on=np.linalg.norm(o,axis=0)
+print("First-MLP output-column norm quantiles",
+      np.quantile(on,[0,.1,.25,.5,.75,.9,.99,1]))
+print("First-MLP current/previous/output norm correlations",
+      np.corrcoef(np.stack([nx,ny,on])))
+print("Number of neurons above current-read thresholds",
+      [(t,int(np.sum(nx>t))) for t in [.1,.2,.3,.5,1]])
+print("Number above previous-read thresholds",
+      [(t,int(np.sum(ny>t))) for t in [.05,.1,.2,.3,.5]])
+
+# Cluster weight directions only. No nonlinear layer is evaluated.
+for whiten in [False,True]:
+    C=np.concatenate([X[nx>.3],Y[ny>.15]],axis=0)
+    if whiten:
+        cov=C.T@C/len(C)
+        e,v=np.linalg.eigh(cov)
+        D=(v*(1/np.sqrt(np.maximum(e,.01*e.max()))))@v.T
+    else:
+        D=np.eye(24)
+    xx=X@D; yy=Y@D
+    xx=xx/np.maximum(np.linalg.norm(xx,axis=1,keepdims=True),1e-12)
+    yy=yy/np.maximum(np.linalg.norm(yy,axis=1,keepdims=True),1e-12)
+    Z=np.concatenate([xx[nx>.3],yy[ny>.15]],axis=0)
+    gram=Z@Z.T
+    np.fill_diagonal(gram,-1)
+    print("\nWhiten",whiten,"samples",len(Z),
+          "nearest-other cosine quantiles",np.quantile(gram.max(axis=1),[0,.1,.5,.9,1]))
+    for k in [16,20,24,28,32,40]:
+        km=KMeans(n_clusters=k,n_init=10,random_state=0).fit(Z)
+        centers=km.cluster_centers_
+        centers/=np.maximum(np.linalg.norm(centers,axis=1,keepdims=True),1e-12)
+        sim=Z@centers.T
+        print("K",k,"mean best cosine",round(sim.max(axis=1).mean(),3),
+              "silhouette",round(silhouette_score(Z,km.labels_,metric="cosine"),3),
+              "sorted counts",np.sort(np.bincount(km.labels_))[::-1])
+        if k==24:
+            sx=xx@centers.T; sy=yy@centers.T
+            ix=sx.argmax(axis=1); iy=sy.argmax(axis=1)
+            good=(nx>.3)&(ny>.15)&(sx.max(axis=1)>.65)&(sy.max(axis=1)>.65)
+            counts=np.zeros((k,k))
+            for i in np.where(good)[0]:
+                counts[iy[i],ix[i]]+=1
+            print("paired clear weight directions:",int(good.sum()))
+            print("nonzero previous/current cluster pairs:",
+                  [(int(i),int(j),int(counts[i,j])) for i,j in zip(*np.where(counts>=2))])
+            if counts.sum()>0:
+                adj=counts+counts.T
+                deg=adj.sum(axis=1)
+                norm=adj/np.sqrt(np.maximum(deg[:,None]*deg[None,:],1))
+                print("symmetric normalized graph eigenvalues",
+                      np.linalg.eigvalsh(norm))
+```

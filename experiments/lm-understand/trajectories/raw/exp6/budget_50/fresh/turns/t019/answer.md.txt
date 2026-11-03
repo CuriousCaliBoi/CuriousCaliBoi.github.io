@@ -1,0 +1,13 @@
+```python
+w=load("L5.W")
+for p in range(81):
+    r,c=divmod(p,9)
+    for dr,dc,value in [(-1,0,.65),(1,0,.65),(0,-1,.65),(0,1,.65),
+                       (-1,-1,.25),(-1,1,.25),(1,-1,.25),(1,1,.25),
+                       (-2,0,.10),(2,0,.10),(0,-2,.10),(0,2,.10)]:
+        rr,cc=r+dr,c+dc
+        if 0<=rr<9 and 0<=cc<9:
+            w[81+rr*9+cc,p]=value
+save("L5.W",w)
+print("Restored active contact and frontier pressure to the revised liberty circuit.")
+```

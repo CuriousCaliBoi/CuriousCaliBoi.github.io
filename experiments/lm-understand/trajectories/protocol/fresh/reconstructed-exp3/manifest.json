@@ -1,0 +1,91 @@
+{
+  "source_revision": "4d09ba6d6a7e891dd8063974dfe81b3d78e3494f",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "context_window": 872000,
+  "auto_compact_token_limit": 1000000,
+  "max_python_runs": 100,
+  "archives": {
+    "python": {
+      "source_path": "exp3_language/networks/python/blocks.npz",
+      "sha256": "77ed8f7d418619c9390da0abea19de2a05d6e2200d8484473deafee15a6fd43f",
+      "remote_path": "<gpu-project>/reconstructed/exp3/weights/w_05d69727972448fd9097b638e99b0622.npz"
+    },
+    "romaji": {
+      "source_path": "exp3_language/networks/romaji/blocks.npz",
+      "sha256": "04ec0b300d207b26b92a1af6d49d56d452833e39b35826200bc1d821e5b7d930",
+      "remote_path": "<gpu-project>/reconstructed/exp3/weights/w_6d4df29b1c8e4043b206c42a3d2fe85c.npz"
+    },
+    "english": {
+      "source_path": "exp3_language/networks/english/blocks.npz",
+      "sha256": "130135d2b27829df2734d78fa3af27b00b1cc1bf34c41b01a09b350e6c09a7de",
+      "remote_path": "<gpu-project>/reconstructed/exp3/weights/w_b7b2b75b37984d1a9e123810a55cdf11.npz"
+    }
+  },
+  "cases": [
+    {
+      "id": "7c92fe6ca34b4cbb9f3c6922d9440a8b",
+      "source_run": "python_r0",
+      "corpus": "python",
+      "repeat": 0,
+      "initial_prompt_sha256": "1d6122b6eb6505820637edcc330e863baa459fa05cc7ca93319a615dcf8c39c3",
+      "weights_sha256": "77ed8f7d418619c9390da0abea19de2a05d6e2200d8484473deafee15a6fd43f",
+      "remote_weights": "<gpu-project>/reconstructed/exp3/weights/w_05d69727972448fd9097b638e99b0622.npz"
+    },
+    {
+      "id": "217ce30cfd8942d985db7426b4e71a74",
+      "source_run": "python_r1",
+      "corpus": "python",
+      "repeat": 1,
+      "initial_prompt_sha256": "1d6122b6eb6505820637edcc330e863baa459fa05cc7ca93319a615dcf8c39c3",
+      "weights_sha256": "77ed8f7d418619c9390da0abea19de2a05d6e2200d8484473deafee15a6fd43f",
+      "remote_weights": "<gpu-project>/reconstructed/exp3/weights/w_05d69727972448fd9097b638e99b0622.npz"
+    },
+    {
+      "id": "4117069e806b4e30969f960586fb6f52",
+      "source_run": "romaji_r0",
+      "corpus": "romaji",
+      "repeat": 0,
+      "initial_prompt_sha256": "1d6122b6eb6505820637edcc330e863baa459fa05cc7ca93319a615dcf8c39c3",
+      "weights_sha256": "04ec0b300d207b26b92a1af6d49d56d452833e39b35826200bc1d821e5b7d930",
+      "remote_weights": "<gpu-project>/reconstructed/exp3/weights/w_6d4df29b1c8e4043b206c42a3d2fe85c.npz"
+    },
+    {
+      "id": "fe6d03b4a13a4379860a44b365e1f1ab",
+      "source_run": "romaji_r1",
+      "corpus": "romaji",
+      "repeat": 1,
+      "initial_prompt_sha256": "1d6122b6eb6505820637edcc330e863baa459fa05cc7ca93319a615dcf8c39c3",
+      "weights_sha256": "04ec0b300d207b26b92a1af6d49d56d452833e39b35826200bc1d821e5b7d930",
+      "remote_weights": "<gpu-project>/reconstructed/exp3/weights/w_6d4df29b1c8e4043b206c42a3d2fe85c.npz"
+    },
+    {
+      "id": "648bc34beb914ff980dd2d8ea1004962",
+      "source_run": "english_r0",
+      "corpus": "english",
+      "repeat": 0,
+      "initial_prompt_sha256": "1d6122b6eb6505820637edcc330e863baa459fa05cc7ca93319a615dcf8c39c3",
+      "weights_sha256": "130135d2b27829df2734d78fa3af27b00b1cc1bf34c41b01a09b350e6c09a7de",
+      "remote_weights": "<gpu-project>/reconstructed/exp3/weights/w_b7b2b75b37984d1a9e123810a55cdf11.npz"
+    },
+    {
+      "id": "69418c02e92f41549f94afb06d230885",
+      "source_run": "english_r1",
+      "corpus": "english",
+      "repeat": 1,
+      "initial_prompt_sha256": "1d6122b6eb6505820637edcc330e863baa459fa05cc7ca93319a615dcf8c39c3",
+      "weights_sha256": "130135d2b27829df2734d78fa3af27b00b1cc1bf34c41b01a09b350e6c09a7de",
+      "remote_weights": "<gpu-project>/reconstructed/exp3/weights/w_b7b2b75b37984d1a9e123810a55cdf11.npz"
+    }
+  ],
+  "cli_version": "codex-cli 0.166.0",
+  "sandbox_image_id": "sha256:5b8c0c14690ed170da4e663fe0bae0d58efe59661e791296ffab28ed2113b650",
+  "sandbox_script_sha256": "b20416ed75ada1fac9aba782213c5a4e47d671e03a66f61a703a8fd4a4e35aed",
+  "deviations": [
+    "Original Python driver unavailable; reconstructed fresh-process feedback loop.",
+    "Host bubblewrap network namespace creation fails; pinned Docker Ubuntu 24.04 with network none, read-only filesystem and neutral opaque mounts is used instead.",
+    "Original Python/package versions and resource limits are not pinned. Current versions are saved by sandbox preflight; each code run is capped at 24 GiB memory, eight CPUs and 600 seconds.",
+    "Historical Codex build/backend snapshot unavailable; installed CLI uses the original model alias and requested settings.",
+    "Static forward-pass screening pauses flagged code for human-agent review; full archived-code compliance review remains required."
+  ]
+}

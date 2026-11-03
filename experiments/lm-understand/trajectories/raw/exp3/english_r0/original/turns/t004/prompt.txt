@@ -1,0 +1,73 @@
+OUTPUT of run 3 of at most 100:
+```
+L0H2 gain-weighted V spectrum [0.431 0.416 0.384 0.37  0.362 0.348 0.328 0.315 0.309 0.302 0.3   0.296 0.292 0.274 0.265 0.264 0.26  0.253 0.247 0.245 0.235 0.232 0.23  0.224 0.216 0.213 0.206 0.198 0.191
+ 0.188 0.185 0.181 0.173 0.161 0.158 0.152 0.151 0.137 0.127 0.123]
+POSITION-CANDIDATE OVERLAP WITH V0H2 TOP28: [(16, 0.196), (24, 0.248), (32, 0.292), (40, 0.351), (48, 0.419), (64, 0.523)]
+
+HEAD PRODUCT ENERGY IN CANDIDATE POSITION SPACE
+L0H0 query 0.832 key 0.287 both 0.239
+L0H1 query 0.609 key 0.397 both 0.257
+L0H2 query 0.985 key 0.992 both 0.977
+L0H3 query 0.833 key 0.879 both 0.756
+L0H4 query 0.538 key 0.412 both 0.233
+L0H5 query 0.842 key 0.493 both 0.413
+L1H0 query 0.105 key 0.294 both 0.031
+L1H1 query 0.115 key 0.255 both 0.032
+L1H2 query 0.123 key 0.262 both 0.037
+L1H3 query 0.12 key 0.281 both 0.037
+L1H4 query 0.123 key 0.294 both 0.039
+L1H5 query 0.126 key 0.268 both 0.037
+L2H0 query 0.083 key 0.108 both 0.012
+L2H1 query 0.071 key 0.089 both 0.008
+L2H2 query 0.086 key 0.142 both 0.014
+L2H3 query 0.08 key 0.111 both 0.012
+L2H4 query 0.085 key 0.11 both 0.012
+L2H5 query 0.081 key 0.107 both 0.012
+L3H0 query 0.077 key 0.081 both 0.007
+L3H1 query 0.067 key 0.082 both 0.008
+L3H2 query 0.08 key 0.103 both 0.009
+L3H3 query 0.083 key 0.097 both 0.01
+L3H4 query 0.08 key 0.089 both 0.008
+L3H5 query 0.078 key 0.089 both 0.007
+
+COMPOSITION WITH EACH L0 OV: tr(A @ B) / (||A||F ||B||F)
+L1H0 key-path [ 0.04   0.017 -0.005 -0.019  0.032  0.004] query-path [-0.006 -0.014 -0.046  0.012 -0.008 -0.026]
+L1H1 key-path [ 0.046  0.033 -0.    -0.014  0.05   0.019] query-path [-0.006 -0.009 -0.022  0.011 -0.004 -0.024]
+L1H2 key-path [ 0.051  0.042  0.015 -0.006  0.054  0.022] query-path [-0.004 -0.007  0.017  0.016 -0.001 -0.02 ]
+L1H3 key-path [ 0.059  0.047  0.015 -0.01   0.06   0.028] query-path [-0.003 -0.004  0.022  0.012  0.002 -0.019]
+L1H4 key-path [ 0.08   0.071  0.013 -0.004  0.084  0.046] query-path [-0.004 -0.007 -0.011  0.007 -0.003 -0.021]
+L1H5 key-path [ 0.039  0.018  0.006 -0.014  0.037 -0.011] query-path [-0.007 -0.01  -0.026 -0.003 -0.005 -0.025]
+L2H0 key-path [ 0.016  0.013 -0.005 -0.018  0.018  0.016] query-path [-0.006 -0.004  0.001  0.005 -0.003 -0.014]
+L2H1 key-path [ 0.01   0.007 -0.006 -0.01   0.01   0.012] query-path [-0.005 -0.004  0.024  0.007 -0.004 -0.008]
+L2H2 key-path [ 0.03   0.024  0.001 -0.017  0.036  0.01 ] query-path [-0.006 -0.005 -0.006  0.01  -0.004 -0.012]
+L2H3 key-path [ 0.023  0.017  0.003 -0.012  0.023  0.022] query-path [-0.006 -0.005  0.008  0.007 -0.004 -0.014]
+L2H4 key-path [ 0.029  0.022 -0.008 -0.017  0.03   0.021] query-path [-0.007 -0.007 -0.002  0.006 -0.005 -0.015]
+L2H5 key-path [ 0.022  0.015  0.    -0.017  0.021  0.017] query-path [-0.005 -0.003  0.005  0.008 -0.004 -0.013]
+L3H0 key-path [ 0.005  0.005 -0.002 -0.003  0.007  0.007] query-path [-0.001 -0.001  0.018  0.002  0.    -0.002]
+L3H1 key-path [-0.002 -0.004  0.095  0.001 -0.005 -0.003] query-path [-0.001 -0.002 -0.022 -0.011 -0.002 -0.001]
+L3H2 key-path [ 0.016  0.011  0.003 -0.006  0.014  0.022] query-path [-0.008 -0.007  0.002  0.005 -0.008 -0.013]
+L3H3 key-path [ 0.011  0.005  0.001 -0.002  0.009  0.014] query-path [-0.008 -0.007  0.004  0.003 -0.008 -0.013]
+L3H4 key-path [ 0.02   0.021 -0.005 -0.001  0.023  0.028] query-path [-0.005 -0.006  0.002  0.    -0.005 -0.008]
+L3H5 key-path [-0.005 -0.005  0.003 -0.004 -0.004 -0.003] query-path [-0.001 -0.     0.001  0.012 -0.002 -0.001]
+
+COMPOSITION SPECTRA WITH L0H2 OV
+L1H0 trace -0.012 trace/nuclear -0.038 char trace/nuclear -0.115 char positive-real eig 14 char eig top [-0.009+0.j     0.002-0.005j  0.002+0.005j -0.004+0.j    -0.003+0.j   ]
+L1H1 trace -0.001 trace/nuclear -0.001 char trace/nuclear -0.008 char positive-real eig 16 char eig top [-0.028+0.j     0.013-0.002j  0.013+0.002j -0.01 +0.j    -0.007+0.j   ]
+L1H2 trace 0.057 trace/nuclear 0.077 char trace/nuclear 0.18 char positive-real eig 13 char eig top [ 0.017-0.013j  0.017+0.013j  0.021+0.j    -0.009-0.011j -0.009+0.011j]
+L1H3 trace 0.051 trace/nuclear 0.071 char trace/nuclear 0.222 char positive-real eig 16 char eig top [ 0.022+0.j     0.008-0.008j  0.008+0.008j -0.005-0.01j  -0.005+0.01j ]
+L1H4 trace 0.049 trace/nuclear 0.077 char trace/nuclear 0.222 char positive-real eig 18 char eig top [0.018+0.j    0.005-0.01j  0.005+0.01j  0.008-0.007j 0.008+0.007j]
+L1H5 trace 0.02 trace/nuclear 0.027 char trace/nuclear 0.068 char positive-real eig 15 char eig top [ 0.018+0.j     0.007-0.008j  0.007+0.008j -0.007-0.008j -0.007+0.008j]
+L2H0 trace -0.031 trace/nuclear -0.018 char trace/nuclear -0.083 char positive-real eig 13 char eig top [-0.019+0.j    -0.01 -0.013j -0.01 +0.013j -0.005-0.014j -0.005+0.014j]
+L2H1 trace -0.03 trace/nuclear -0.021 char trace/nuclear -0.107 char positive-real eig 14 char eig top [-0.021+0.j    -0.012-0.005j -0.012+0.005j  0.001-0.013j  0.001+0.013j]
+L2H2 trace 0.004 trace/nuclear 0.004 char trace/nuclear 0.028 char positive-real eig 17 char eig top [ 0.004-0.009j  0.004+0.009j  0.008-0.003j  0.008+0.003j -0.008+0.004j]
+L2H3 trace 0.015 trace/nuclear 0.012 char trace/nuclear 0.053 char positive-real eig 15 char eig top [ 0.015+0.j    -0.009-0.011j -0.009+0.011j  0.013+0.j     0.002-0.012j]
+L2H4 trace -0.047 trace/nuclear -0.031 char trace/nuclear -0.132 char positive-real eig 13 char eig top [-0.014+0.009j -0.014-0.009j -0.   +0.016j -0.   -0.016j -0.014+0.j   ]
+L2H5 trace 0.002 trace/nuclear 0.001 char trace/nuclear -0.005 char positive-real eig 16 char eig top [ 0.005-0.013j  0.005+0.013j -0.008-0.01j  -0.008+0.01j   0.01 +0.006j]
+L3H0 trace -0.013 trace/nuclear -0.009 char trace/nuclear -0.04 char positive-real eig 12 char eig top [-0.016+0.j     0.002-0.015j  0.002+0.015j  0.01 -0.011j  0.01 +0.011j]
+L3H1 trace 0.441 trace/nuclear 0.25 char trace/nuclear 0.767 char positive-real eig 24 char eig top [0.05 -0.013j 0.05 +0.013j 0.042+0.j    0.036-0.01j  0.036+0.01j ]
+L3H2 trace 0.011 trace/nuclear 0.013 char trace/nuclear 0.059 char positive-real eig 14 char eig top [ 0.008-0.003j  0.008+0.003j -0.005-0.006j -0.005+0.006j -0.007+0.j   ]
+L3H3 trace 0.005 trace/nuclear 0.005 char trace/nuclear 0.003 char positive-real eig 14 char eig top [ 0.004-0.008j  0.004+0.008j -0.002-0.008j -0.002+0.008j  0.007+0.j   ]
+L3H4 trace -0.023 trace/nuclear -0.019 char trace/nuclear -0.083 char positive-real eig 13 char eig top [-0.014+0.j    -0.011-0.005j -0.011+0.005j  0.008-0.008j  0.008+0.008j]
+L3H5 trace 0.005 trace/nuclear 0.01 char trace/nuclear 0.05 char positive-real eig 14 char eig top [-0.005+0.j     0.004-0.001j  0.004+0.001j  0.003+0.003j  0.003-0.003j]
+
+```

@@ -1,0 +1,13 @@
+```python
+import numpy as np
+A={n:a.copy() for n,a in dict(np.load("/work/policy_v4.npz")).items()}
+for p in range(81):
+    A["out.W"][405+p,p]=8
+# Reduce accidental low-quality moves under the mandated temperature-one
+# sampling, without changing the ordering of any position's logits.
+A["out.W"]*=1.8
+A["out.b"]*=1.8
+for name in NAMES: save(name,A[name])
+np.savez("/work/policy_v5.npz",**A)
+print("Saved sharper policy; all output logits are analytically scaled by 1.8.")
+```

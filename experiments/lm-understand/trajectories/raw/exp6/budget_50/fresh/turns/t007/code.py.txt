@@ -1,0 +1,28 @@
+import numpy as np
+w = load("L5.W")
+w[:486, :81] = 0
+
+def points(p, deltas):
+    r,c = divmod(p,9)
+    return [(r+a)*9+c+b for a,b in deltas
+            if 0 <= r+a < 9 and 0 <= c+b < 9]
+
+patterns = [
+    ([(-1,0),(1,0),(0,-1),(0,1)], .25, .65),
+    ([(a,b) for a in (-1,1) for b in (-1,1)], .60, .25),
+    ([(-2,0),(2,0),(0,-2),(0,2)], .85, .10),
+    ([(a,b) for a in (-2,-1,1,2) for b in (-2,-1,1,2)
+      if abs(a)+abs(b)==3], .45, .04),
+    ([(-3,0),(3,0),(0,-3),(0,3)], .20, 0),
+]
+for p in range(81):
+    w[4*81+p,p] = -2.0
+    w[5*81+p,p] = -.8
+    for ds, friendly, enemy in patterns:
+        for q in points(p,ds):
+            w[q,p] += friendly
+            w[81+q,p] += enemy
+save("L5.W",w)
+for name in ("out.W","out.b"):
+    save(name,load(name)/np.float32(1.5))
+print("Expansion-oriented shape: stronger crowding avoidance and wider support.")

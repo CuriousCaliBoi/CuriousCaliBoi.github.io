@@ -1,0 +1,43 @@
+import numpy as np
+A={n:a.copy() for n,a in dict(np.load("/work/policy_v6.npz")).items()}
+def u(ch,p): return 81*ch+p
+def ns(p):
+    r,c=divmod(p,9)
+    return [(r+dr)*9+c+dc for dr,dc in [(-1,0),(1,0),(0,-1),(0,1)]
+            if 0<=r+dr<9 and 0<=c+dc<9]
+
+# Propagate the Boolean absence of a liberty certificate. Once complemented,
+# Boolean AND over connected neighbours requires only one ReLU.
+for ch,color in [(2,0),(3,1),(4,0)]:
+    A["L3.W"][:,81*ch:81*(ch+1)]=0
+    A["L3.b"][81*ch:81*(ch+1)]=0
+    for p in range(81):
+        A["L3.W"][u(color,p),u(ch,p)]=1
+        for q in [p]+ns(p):
+            A["L3.W"][u(ch,q),u(ch,p)]-=1
+
+for dst,src,color in [(4,2,0),(3,3,1),(2,4,0)]:
+    A["L4.W"][:,81*dst:81*(dst+1)]=0
+    A["L4.b"][81*dst:81*(dst+1)]=0
+    for p in range(81):
+        for q in [p]+ns(p):
+            A["L4.W"][u(src,q),u(dst,p)]+=1
+        for q in ns(p):
+            A["L4.W"][u(color,q),u(dst,p)]-=1
+
+# Channel 2 now means "friendly stone without a three-liberty certificate".
+# Rewrite consumers using known_safe = own_stone - weak_stone.
+w=A["L5.W"][162:243,:].copy()
+A["L5.W"][0:81,:]+=w
+A["L5.W"][162:243,:]=-w
+
+# Protect two-liberty groups proactively, while retaining full urgency for
+# actual atari. This is a rule-based intermediate tactical priority.
+for p in range(81):
+    for q in ns(p):
+        A["L5.W"][u(4,q),u(5,p)]=0.65
+        A["L5.W"][u(2,q),u(5,p)]+=0.35
+
+for name in NAMES: save(name,A[name])
+np.savez("/work/policy_v7.npz",**A)
+print("Saved bounded Boolean connectivity and proactive weak-group protection.")

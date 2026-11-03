@@ -1,0 +1,6 @@
+{
+  "code_sha256": "0ab20f1e947123e83591a21ca799e9b0c95dff58cc69368cc6f0cfb251fb40e6",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Analytically assigns static neighborhood, stone-count, komi, clipping-gate, and passing coefficients using the reviewed base builder. The code represents these computations as tensor entries but never applies them to a board. No layer/model inference, game simulation, fitting, or search."
+}

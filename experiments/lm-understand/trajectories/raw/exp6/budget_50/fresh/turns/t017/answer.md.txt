@@ -1,0 +1,121 @@
+```python
+import numpy as np
+
+# Replace local safety propagation with two-colour liberty reachability.
+# A genuine one-liberty group cannot have liberties in both checkerboard
+# classes. Two immediate liberties seed both classes, even if same-coloured.
+# All steps are fixed Boolean ReLU circuits; no positions are evaluated here.
+p = {n: load(n) for n in NAMES}
+def u(ch,q): return ch*81+q
+adj=[]
+rings={k:[] for k in ("diag","axial2","knight","axial3")}
+deltas={
+    "diag":[(a,b) for a in (-1,1) for b in (-1,1)],
+    "axial2":[(-2,0),(2,0),(0,-2),(0,2)],
+    "knight":[(a,b) for a in (-2,-1,1,2) for b in (-2,-1,1,2)
+              if abs(a)+abs(b)==3],
+    "axial3":[(-3,0),(3,0),(0,-3),(0,3)]}
+for q in range(81):
+    r,c=divmod(q,9)
+    adj.append([rr*9+cc for rr,cc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+                if 0<=rr<9 and 0<=cc<9])
+    for k,ds in deltas.items():
+        rings[k].append([(r+a)*9+c+b for a,b in ds
+                         if 0<=r+a<9 and 0<=c+b<9])
+
+for k in (2,3,4,5,6):
+    p[f"L{k}.W"][:]=0
+    p[f"L{k}.b"][:]=0
+    for j in range(486,493):
+        p[f"L{k}.W"][j,j]=1
+
+w=p["L2.W"]
+for q in range(81):
+    for co in (0,1): w[u(co,q),u(co,q)]=1
+    for co,old_d,old_z,new_start in ((0,2,3,2),(1,4,5,4)):
+        for cls in (0,1):
+            dest=u(new_start+cls,q)
+            w[u(co,q),dest]+=1
+            # Remove the "unreached" flag when a connected stone has
+            # two immediate liberties.
+            for v in [q]+adj[q]:
+                w[u(co,v),dest]-=1
+                w[u(old_d,v),dest]+=1
+                w[u(old_z,v),dest]-=1
+                r,c=divmod(v,9)
+                if (r+c+1)%2==cls:
+                    # ownership-Z is the exact has-a-liberty indicator.
+                    w[u(co,v),dest]-=1
+                    w[u(old_z,v),dest]+=1
+
+for k in (3,4):
+    w=p[f"L{k}.W"]
+    for q in range(81):
+        for co in (0,1): w[u(co,q),u(co,q)]=1
+        for co,start in ((0,2),(1,4)):
+            for cls in (0,1):
+                ch=start+cls
+                w[u(ch,q),u(ch,q)]=1
+                for v in adj[q]:
+                    w[u(co,v),u(ch,q)]-=1
+                    w[u(ch,v),u(ch,q)]+=1
+
+w=p["L5.W"]; b=p["L5.b"]
+for q in range(81):
+    r,c=divmod(q,9)
+    edge=min(r,c,8-r,8-c)
+    b[u(0,q)]=32+.20*min(edge,2)-(.20 if edge==0 else 0)
+    w[490,u(0,q)]=.55*min(edge,2)+.15*(1-(abs(r-4)+abs(c-4))/8)
+    for pts,own,enemy in (
+        (adj[q],.25,.05),
+        (rings["diag"][q],.60,.10),
+        (rings["axial2"][q],.85,.05),
+        (rings["knight"][q],.45,.04),
+        (rings["axial3"][q],.20,0)):
+        for v in pts:
+            w[u(0,v),u(0,q)]+=own
+            w[u(1,v),u(0,q)]+=enemy
+
+    other_class=1-((r+c)%2)
+    own_unreached=2+other_class
+    enemy_unreached=4+other_class
+    for v in adj[q]:
+        w[u(enemy_unreached,v),u(1,q)]+=1
+        w[u(own_unreached,v),u(2,q)]+=1
+
+    b[u(3,q)]=2-len(adj[q])
+    for v in adj[q]:
+        w[u(1,v),u(3,q)]+=1
+        w[u(own_unreached,v),u(3,q)]+=1
+        w[u(enemy_unreached,v),u(3,q)]-=1
+
+    b[u(4,q)]=1-len(adj[q])
+    for v in adj[q]: w[u(0,v),u(4,q)]+=1
+    for v in rings["diag"][q]:
+        w[u(1,v),u(4,q)]-=1 if edge==0 else .5
+
+    b[u(5,q)]=-1.30
+    for pts,weight in (
+        (adj[q],1.0),(rings["diag"][q],.65),
+        (rings["axial2"][q],.30),(rings["knight"][q],.15)):
+        for v in pts:
+            w[u(0,v),u(5,q)]+=weight
+            w[u(1,v),u(5,q)]-=.55*weight
+
+w=p["L6.W"]
+for q in range(81):
+    for ch in range(6): w[u(ch,q),u(ch,q)]=1
+    w[u(3,q),u(2,q)]-=2
+    w[u(4,q),u(2,q)]-=2
+
+p["out.W"][:]=0
+p["out.b"][:]=0
+scale=3.6
+for q in range(81):
+    for ch,coef in enumerate((1,3.2,2.4,-4.5,-8,-2)):
+        p["out.W"][u(ch,q),q]=scale*coef
+    p["out.b"][q]=-32*scale
+p["out.b"][PASS]=-2.7*scale
+for n in NAMES: save(n,p[n])
+print("Installed checkerboard-liberty propagation and revised shape circuit.")
+```

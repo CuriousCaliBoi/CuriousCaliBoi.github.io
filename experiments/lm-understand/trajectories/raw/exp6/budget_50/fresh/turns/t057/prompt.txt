@@ -1,0 +1,5 @@
+OUTPUT of Python run 30 of at most 120:
+```
+Reused the spare layer-3 units for 20 further exact two-liberty certificates.
+
+```

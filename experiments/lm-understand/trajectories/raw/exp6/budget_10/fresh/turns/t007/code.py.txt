@@ -1,0 +1,161 @@
+import numpy as np
+
+np.savez("/work/policy_v1.npz", **{name:load(name) for name in NAMES})
+
+design2 = r'''
+import numpy as np
+
+def build_policy_v2():
+    A = {name:np.zeros(shape,np.float32) for name,shape in SHAPES.items()}
+    def u(ch,p): return 81*ch+p
+    def add(k,i,j,w): A[f"L{k}.W"][i,j] += w
+    def bias(k,j,b): A[f"L{k}.b"][j] += b
+    def copy(k,a,b):
+        for p in range(81): add(k,u(a,p),u(b,p),1)
+    def neighbors(p,offsets):
+        r,c=divmod(p,9)
+        return [(r+dr)*9+c+dc for dr,dc in offsets
+                if 0<=r+dr<9 and 0<=c+dc<9]
+    n=[neighbors(p,[(-1,0),(1,0),(0,-1),(0,1)]) for p in range(81)]
+    dg=[neighbors(p,[(-1,-1),(-1,1),(1,-1),(1,1)]) for p in range(81)]
+    a2=[neighbors(p,[(-2,0),(2,0),(0,-2),(0,2)]) for p in range(81)]
+    kn=[neighbors(p,[(r,c) for r in range(-2,3) for c in range(-2,3)
+                     if abs(r)*abs(c)==2]) for p in range(81)]
+    a3=[neighbors(p,[(-3,0),(3,0),(0,-3),(0,3)]) for p in range(81)]
+
+    # Integer identifiers are only algebraic liberty fingerprints.
+    # No examples, labels, fitting, or network evaluation are used.
+    codes=np.random.default_rng(90173).choice(np.arange(1,1010),81,replace=False)
+    for p in range(81):
+        d=len(n[p])
+        add(1,3*p,u(0,p),1)
+        add(1,3*p+1,u(1,p),1)
+        for color,ch in [(0,2),(1,3)]:
+            add(1,3*p+color,u(ch,p),d)
+            for q in n[p]:
+                add(1,3*q,u(ch,p),-1)
+                add(1,3*q+1,u(ch,p),-1)
+        add(1,3*p+1,u(4,p),sum(codes[q] for q in n[p]))
+        for q in n[p]:
+            add(1,3*q,u(4,p),-codes[q])
+            add(1,3*q+1,u(4,p),-codes[q])
+        bias(1,u(5,p),-2*d)
+        add(1,3*p,u(5,p),d+1)
+        for q in n[p]:
+            add(1,3*q,u(5,p),1)
+            add(1,3*q+1,u(5,p),1)
+
+    add(1,2,486,1)
+    bias(1,489,24)
+    for p in range(81):
+        add(1,3*p,489,-1)
+        add(1,3*p+1,489,-1)
+    for k in range(2,7):
+        add(k,486,486,1)
+        add(k,489,489,1)
+
+    # Three rounds of same-colour message propagation.  If an enemy
+    # component has only liberty q, code_sum == codes[q]*liberty_count,
+    # regardless of the number of propagation paths reaching it.
+    for k in (2,3,4):
+        copy(k,0,0)
+        copy(k,1,1)
+        for p in range(81):
+            for ch in (3,4):
+                gate={2:10000,3:50000,4:250000}[k] if ch==3 else {
+                    2:100000,3:500000,4:2500000}[k]
+                bias(k,u(ch,p),-gate)
+                add(k,u(1,p),u(ch,p),gate)
+                for q in [p]+n[p]:
+                    add(k,u(ch,q),u(ch,p),1)
+
+        if k in (2,3):
+            copy(k,2,2)
+        if k==2:
+            for p in range(81):
+                bias(k,u(5,p),-21)
+                add(k,u(0,p),u(5,p),20)
+                add(k,u(5,p),u(5,p),-1)
+                for q in [p]+n[p]:
+                    add(k,u(2,q),u(5,p),1)
+        else:
+            for p in range(81):
+                gate=128 if k==3 else 1024
+                bias(k,u(5,p),-gate)
+                add(k,u(0,p),u(5,p),gate)
+                for q in [p]+n[p]:
+                    add(k,u(5,q),u(5,p),1)
+                if k==4:
+                    add(k,u(0,p),u(2,p),2)
+                    add(k,u(2,p),u(2,p),-1)
+                    for q in [p]+n[p]:
+                        add(k,u(5,q),u(2,p),-2)
+
+    for p in range(81):
+        d=len(n[p])
+        # Positive and negative deviations from "p is the only liberty".
+        for ch,sign in [(0,1),(1,-1)]:
+            bias(5,u(ch,p),1)
+            for q in n[p]:
+                add(5,u(4,q),u(ch,p),8*sign)
+                add(5,u(3,q),u(ch,p),-8*sign*codes[p])
+                add(5,u(1,q),u(ch,p),-1)
+
+        bias(5,u(2,p),100)
+        for qs,wo,we in [(n[p],-1.9,-0.8),(dg[p],-0.15,0.35),
+                         (a2[p],0.55,0.55),(kn[p],0.2,0.2),
+                         (a3[p],0.1,0.1)]:
+            for q in qs:
+                add(5,u(0,q),u(2,p),wo)
+                add(5,u(1,q),u(2,p),we)
+
+        bias(5,u(3,p),2-d)
+        for q in n[p]:
+            add(5,u(0,q),u(3,p),1)
+            add(5,u(1,q),u(3,p),1)
+            add(5,u(5,q),u(3,p),-2)
+
+        bias(5,u(4,p),1-d)
+        for q in n[p]:
+            add(5,u(0,q),u(4,p),1)
+        for q in dg[p]:
+            add(5,u(1,q),u(4,p),-0.5 if d==4 else -1)
+
+        for q in n[p]:
+            add(5,u(2,q),u(5,p),1)
+
+        # Final maps: base, capture, rescue, self-atari, capture relief, eye.
+        add(6,u(2,p),u(0,p),1)
+        bias(6,u(1,p),1)
+        add(6,u(0,p),u(1,p),-1)
+        add(6,u(1,p),u(1,p),-1)
+        add(6,u(5,p),u(2,p),1)
+        add(6,u(3,p),u(2,p),-8)
+        add(6,u(4,p),u(2,p),-2)
+        add(6,u(3,p),u(3,p),1)
+        add(6,u(3,p),u(4,p),1)
+        add(6,u(0,p),u(4,p),-2)
+        add(6,u(1,p),u(4,p),-2)
+        add(6,u(4,p),u(5,p),1)
+
+        r,c=divmod(p,9)
+        edge=min(r,c,8-r,8-c)
+        rr,cc=min(r,8-r),min(c,8-c)
+        opening=1.6 if (rr,cc)==(2,2) else (
+            1.15 if (rr,cc) in [(2,3),(3,2)] else (
+            0.5 if (rr,cc)==(3,3) else 0))
+        A["out.b"][p]=[-1.6,-0.15,0.65,0.45,0.25][edge]-100
+        A["out.W"][489,p]=opening/24
+        for ch,w in [(0,1),(1,11),(2,8),(3,-11),(4,11),(5,-14)]:
+            A["out.W"][u(ch,p),p]=w
+    A["out.b"][81]=-7
+    A["out.W"][486,81]=0.4
+    return A
+
+weights=build_policy_v2()
+for name in NAMES: save(name,weights[name])
+print("Saved liberty-fingerprint policy:",sum(np.count_nonzero(a) for a in weights.values()),
+      "nonzero parameters.")
+'''
+open("/work/design_v2.py","w").write(design2)
+exec(design2)

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "3b60c1b357ca2e5e39e96ee46b2dbb7b89c0779b14893b50243bffb62421bdb1",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Analytically rewrites safety/propagation coefficient columns using fixed board adjacency and threshold constants, based on previously reviewed builders. The propagation loops assign network weights rather than running activations. No board forward computation, game simulation, training/fitting, or search."
+}

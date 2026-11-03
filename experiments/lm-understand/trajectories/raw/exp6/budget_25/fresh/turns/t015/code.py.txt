@@ -1,0 +1,22 @@
+import numpy as np
+exec(open("/work/rules_analysis.py").read())
+root="/work/pass_4"
+x=np.load(root+"/inputs.npy").reshape(-1,81,3)
+acts=[np.load(root+f"/act_L{k}.npy") for k in range(1,7)]
+logits=np.load(root+"/logits.npy")
+for pos,points in [(0,[44,51,17]),(1,[50,3]),(2,[53,28]),
+                   (3,[13,21,9]),(4,[72,28]),(5,[53,55])]:
+    board=x[pos,:,0].astype(int)-x[pos,:,1].astype(int)
+    gs=groups(board)
+    print("\nPOSITION",pos)
+    for point in points:
+        print("Move",point,"recorded logit",float(logits[pos,point]))
+        print("L6 [strategy,tactics,eye,quiet,self-atari,danger]:",
+              [round(float(acts[5][pos,81*c+point]),3) for c in range(6)])
+        for j in neighbors(point):
+            if board[j]:
+                group=next((s,l) for co,s,l in gs if j in s)
+                print(" Neighbor",j,"colour",board[j],"group size/liberties",
+                      len(group[0]),sorted(group[1]),
+                      "L5 channels",
+                      [float(acts[4][pos,81*c+j]) for c in range(6)])

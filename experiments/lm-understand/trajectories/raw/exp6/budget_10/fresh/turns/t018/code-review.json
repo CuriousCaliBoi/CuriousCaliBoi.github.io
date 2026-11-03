@@ -1,0 +1,6 @@
+{
+  "code_sha256": "2fbab49e396f36077c9fa8a2484914e54649531ab61f2b4721673ae8ffe6f7ad",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Constructs revised Boolean-rule circuit coefficients using fixed board adjacency and tensor slice algebra. References to ReLU describe the intended circuit; the code never executes ReLU or any network layer on a board, nor simulates games, fits data, or searches."
+}

@@ -1,0 +1,59 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_18.npz",**{n:load(n) for n in names})
+
+revision=r'''
+import numpy as np
+_base={}
+exec(open("/work/design_v13.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(exact_triangle_cost=3.0)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    W=t["L6.W"]; b=t["L6.b"]; O=t["out.W"]
+    old_quiet_W=W[:,243:324].copy()
+    old_quiet_b=b[243:324].copy()
+
+    pool=list(range(243,324))+list(range(487,512))
+    W[:,pool]=0
+    b[pool]=0
+    O[pool,:]=0
+
+    # A 2x2 square containing three friendly stones identifies exactly
+    # the redundant empty-triangle move at its remaining empty vertex.
+    # Occupied vertices are removed by the supplied legal-move mask.
+    cursor=0
+    for r in range(8):
+        for c in range(8):
+            hidden=pool[cursor];cursor+=1
+            square=[9*r+c,9*r+c+1,9*(r+1)+c,9*(r+1)+c+1]
+            b[hidden]=-2.0
+            for j in square:
+                W[j,hidden]=1.0
+                O[hidden,j]=-p["scale"]*p["exact_triangle_cost"]
+
+    # Retain narrow-territory protection on every boundary point,
+    # where filling a two-point eye is especially dangerous.
+    for i in range(81):
+        r,c=divmod(i,9)
+        if min(r,c,8-r,8-c)!=0:
+            continue
+        hidden=pool[cursor];cursor+=1
+        W[:,hidden]=old_quiet_W[:,i]
+        b[hidden]=old_quiet_b[i]
+        O[hidden,i]=-p["scale"]*p["quiet_fill"]
+    assert cursor==96
+    return t,p
+'''
+open("/work/design_v19.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():
+    assert np.isfinite(a).all()
+    save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 19: exact 2x2 empty-triangle detectors,")
+print("without penalizing unrelated opposite-side connections.")
+print("Boundary eye protection and all tactical channels are retained.")

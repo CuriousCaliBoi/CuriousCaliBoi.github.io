@@ -1,0 +1,21 @@
+```python
+import json,numpy as np
+gs=json.load(open("/work/pass_16/games.json"))
+bs=np.load("/work/pass_16/boards.npy")
+for i,g in enumerate(gs):
+    if g["end"]=="repetition" and g["result"]<0:
+        b=bs[i,len(g["moves"])-2]
+        co=1 if g["net_color"]=="black" else -1
+        print("Repetition loss",i,"margin",g["margin"],"material",
+              int(sum(b==co)-sum(b==-co)),"last moves",g["moves"][-5:])
+losses=[(i,g) for i,g in enumerate(gs) if g["result"]<0 and g["end"]=="two_passes"]
+print("Ordinary loss margins:",sorted(g["margin"] for _,g in losses))
+for i,g in sorted(losses,key=lambda z:z[1]["margin"])[:3]:
+    print("\nLOSS",i,g["net_color"],g["margin"],
+          "captures/lost",g["stones_captured"],g["stones_lost"])
+    for t in (19,39):
+        if t<len(g["moves"]):
+            print("After",t+1,["".join({1:"X",-1:"O",0:"."}[int(x)] for x in row)
+                              for row in bs[i,t].reshape(9,9)])
+    print("Opening",[m["move"] for m in g["moves"][:24]])
+```

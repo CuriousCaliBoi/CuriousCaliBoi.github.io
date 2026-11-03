@@ -1,0 +1,591 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Experiment 5 · seaquest · fresh</title><style>
+:root{font-family:system-ui,sans-serif;color:#172638;background:#f4f6f8;line-height:1.55}
+body{max-width:1120px;margin:auto;padding:30px 24px 70px}a{color:#185ca3}
+h1{line-height:1.2;font-size:2rem}h2{margin-top:2rem}header,p.note{max-width:960px}
+table{border-collapse:collapse;width:100%;background:white}td,th{border:1px solid #d4dce4;padding:10px 12px;text-align:left}
+th{background:#e7edf3}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.55 ui-monospace,SFMono-Regular,monospace;background:#f8fafc;padding:16px;border-radius:6px}
+details{background:white;border:1px solid #d4dce4;border-radius:8px;padding:12px 16px;margin:12px 0}
+summary{cursor:pointer;font-weight:650}.badge{font-size:13px;color:#33516e}.small{font-size:13px;color:#45586c}
+.event{border-left:3px solid #5081b3;padding-left:12px}.harness{border-left:3px solid #ab7540;padding-left:12px}
+nav{margin:14px 0}.notice{background:#edf4fb;border:1px solid #bbd1e5;border-radius:8px;padding:14px 18px}
+@media(max-width:700px){body{padding:16px 10px}td,th{padding:6px}table{font-size:13px}}
+</style><body><nav><a href="/experiments/lm-understand/">Experiment records</a></nav><p class="notice">Public export: private machine paths and host identifiers are replaced with placeholders. Recorded results and numerical weights are unchanged. Embedded source hashes identify the original files; PUBLICATION-MANIFEST.json identifies these public copies.</p><nav><a href="../index.html">All trajectories</a> · <a href="exp5-seaquest-fresh.txt">Complete plain text</a></nav><h1>Experiment 5 · seaquest · fresh</h1><p class="notice">Built-in Codex tools were disabled. Harness execution is separately permitted only in Experiments 3 and 6. Text below is taken from saved records; it is not a new model run. Reasoning blocks are the summaries actually emitted by the CLI.</p><details><summary>Recorded neutral instruction file</summary><pre>Answer the user&#x27;s request.
+</pre></details><details id="t001" open><summary>t001 · no harness call</summary><p class="small"><a href="../raw/exp5/seaquest/fresh/reply/prompt.txt">Recorded prompt</a> · <a href="../raw/exp5/seaquest/fresh/reply/events.jsonl">Raw CLI events</a> · <a href="../raw/exp5/seaquest/fresh/reply/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 18,266 characters</summary><pre>YOUR TASK: write, from scratch, the weights of a policy network that plays this game as well as possible. There is no training: no data, no loss, no gradients, no fine-tuning; you choose every number yourself. You have no tools: no code execution, no calculator, nothing to run. This is a single response and you will get no feedback. First describe your design briefly (the strategy, and what the hidden units compute), then write the edits block.
+
+THE GAME: Seaquest from MinAtar (Young &amp; Tian 2019), on a 10 x 10 grid. The player steers a two-cell submarine (front and back) in all 4 directions and fires bullets from its front. Enemy fish and enemy submarines cross the screen; enemy submarines shoot. Hitting an enemy with a bullet gives +1. Divers can be picked up (up to 6; a bar along the bottom counts them). Oxygen runs down (another bar along the bottom) and is refilled by surfacing at the top row with at least one diver on board (surfacing with fewer than 6 removes one diver; with 6, all are removed and a bonus is paid). The episode ends when the submarine is hit, runs out of oxygen, or surfaces with no diver.
+Actions: left, up, right, down move the submarine, fire shoots.
+
+The game&#x27;s exact implementation (the MinAtar package, version 1.0.15, file minatar/environments/seaquest.py) follows. The environment wrapper calls act(a) with a = 0..5 meaning &#x27;n&#x27; (no-op), &#x27;l&#x27;, &#x27;u&#x27;, &#x27;r&#x27;, &#x27;d&#x27;, &#x27;f&#x27; (this file&#x27;s action_map), and with probability 0.1 it repeats the previous action instead of the new one (sticky actions). The observation the network gets is built from this file&#x27;s state() as described under THE INPUT.
+
+```python
+################################################################################################################
+# Authors:                                                                                                     #
+# Kenny Young (kjyoung@ualberta.ca)                                                                            #
+# Tian Tian (ttian@ualberta.ca)                                                                                #
+################################################################################################################
+import numpy as np
+
+
+#####################################################################################################################
+# Constants
+#
+#####################################################################################################################
+ramp_interval = 100
+max_oxygen = 200
+init_spawn_speed = 20
+diver_spawn_speed = 30
+init_move_interval = 5
+shot_cool_down = 5
+enemy_shot_interval = 10
+enemy_move_interval = 5
+diver_move_interval = 5
+
+
+#####################################################################################################################
+# Env
+#
+# The player controls a submarine consisting of two cells, front and back, to allow direction to be determined. The
+# player can also fire bullets from the front of the submarine. Enemies consist of submarines and fish, distinguished
+# by the fact that submarines shoot bullets and fish do not. A reward of +1 is given each time an enemy is struck by
+# one of the player&#x27;s bullets, at which point the enemy is also removed. There are also divers which the player can
+# move onto to pick up, doing so increments a bar indicated by another channel along the bottom of the screen. The
+# player also has a limited supply of oxygen indicated by another bar in another channel. Oxygen degrades over time,
+# and is replenished whenever the player moves to the top of the screen as long as the player has at least one rescued
+# diver on board. The player can carry a maximum of 6 divers. When surfacing with less than 6, one diver is removed.
+# When surfacing with 6, all divers are removed and a reward is given for each active cell in the oxygen bar. Each
+# time the player surfaces the difficulty is increased by increasing the spawn rate and movement speed of enemies.
+# Termination occurs when the player is hit by an enemy fish, sub or bullet; or when oxygen reached 0; or when the
+# player attempts to surface with no rescued divers. Enemy and diver directions are indicated by a trail channel
+# active in their previous location to reduce partial observability.
+#
+#####################################################################################################################
+class Env:
+    def __init__(self, ramping=True):
+        self.channels ={
+            &#x27;sub_front&#x27;:0,
+            &#x27;sub_back&#x27;:1,
+            &#x27;friendly_bullet&#x27;:2,
+            &#x27;trail&#x27;:3,
+            &#x27;enemy_bullet&#x27;:4,
+            &#x27;enemy_fish&#x27;:5,
+            &#x27;enemy_sub&#x27;:6,
+            &#x27;oxygen_guage&#x27;:7,
+            &#x27;diver_guage&#x27;:8,
+            &#x27;diver&#x27;:9
+        }
+        self.action_map = [&#x27;n&#x27;,&#x27;l&#x27;,&#x27;u&#x27;,&#x27;r&#x27;,&#x27;d&#x27;,&#x27;f&#x27;]
+        self.ramping = ramping
+        self.random = np.random.RandomState()
+        self.reset()
+
+    # Update environment according to agent action
+    def act(self, a):
+        r = 0
+        if(self.terminal):
+            return r, self.terminal
+
+        a = self.action_map[a]
+
+        # Spawn enemy if timer is up
+        if(self.e_spawn_timer==0):
+            self._spawn_enemy()
+            self.e_spawn_timer = self.e_spawn_speed
+
+        if(self.d_spawn_timer==0):
+            self._spawn_diver()
+            self.d_spawn_timer = diver_spawn_speed
+
+        # Resolve player action
+        if(a==&#x27;f&#x27; and self.shot_timer == 0):
+            self.f_bullets+=[[self.sub_x, self.sub_y, self.sub_or]]
+            self.shot_timer = shot_cool_down
+        elif(a==&#x27;l&#x27;):
+            self.sub_x = max(0, self.sub_x-1)
+            self.sub_or = False
+        elif(a==&#x27;r&#x27;):
+            self.sub_x = min(9, self.sub_x+1)
+            self.sub_or = True
+        elif(a==&#x27;u&#x27;):
+            self.sub_y = max(0, self.sub_y-1)
+        elif(a==&#x27;d&#x27;):
+            self.sub_y = min(8, self.sub_y+1)
+
+        # Update friendly Bullets
+        for bullet in reversed(self.f_bullets):
+            bullet[0]+=1 if bullet[2] else -1
+            if(bullet[0]&lt;0 or bullet[0]&gt;9):
+                self.f_bullets.remove(bullet)
+            else:
+                removed = False
+                for x in self.e_fish:
+                    if(bullet[0:2]==x[0:2]):
+                        self.e_fish.remove(x)
+                        self.f_bullets.remove(bullet)
+                        r+=1
+                        removed = True
+                        break
+                if(not removed):
+                    for x in self.e_subs:
+                        if(bullet[0:2]==x[0:2]):
+                            self.e_subs.remove(x)
+                            self.f_bullets.remove(bullet)
+                            r+=1
+                            break
+
+        # Update divers
+        for diver in reversed(self.divers):
+            if(diver[0:2]==[self.sub_x,self.sub_y] and self.diver_count&lt;6):
+                self.divers.remove(diver)
+                self.diver_count+=1
+            else:
+                if(diver[3]==0):
+                    diver[3]=diver_move_interval
+                    diver[0]+=1 if diver[2] else -1
+                    if(diver[0]&lt;0 or diver[0]&gt;9):
+                        self.divers.remove(diver)
+                    elif(diver[0:2]==[self.sub_x,self.sub_y] and self.diver_count&lt;6):
+                        self.divers.remove(diver)
+                        self.diver_count+=1
+                else:
+                    diver[3]-=1
+
+        # Update enemy subs
+        for sub in reversed(self.e_subs):
+            if(sub[0:2]==[self.sub_x,self.sub_y]):
+                self.terminal = True
+            if(sub[3]==0):
+                sub[3]=self.move_speed
+                sub[0]+=1 if sub[2] else -1
+                if(sub[0]&lt;0 or sub[0]&gt;9):
+                    self.e_subs.remove(sub)
+                elif(sub[0:2]==[self.sub_x,self.sub_y]):
+                    self.terminal = True
+                else:
+                    for x in self.f_bullets:
+                        if(sub[0:2]==x[0:2]):
+                            self.e_subs.remove(sub)
+                            self.f_bullets.remove(x)
+                            r+=1
+                            break
+            else:
+                sub[3]-=1
+            if(sub[4]==0):
+                sub[4]=enemy_shot_interval
+                self.e_bullets+=[[sub[0] if sub[2] else sub[0], sub[1], sub[2]]]
+            else:
+                sub[4]-=1
+
+        # Update enemy bullets
+        for bullet in reversed(self.e_bullets):
+            if(bullet[0:2]==[self.sub_x,self.sub_y]):
+                self.terminal = True
+            bullet[0]+=1 if bullet[2] else -1
+            if(bullet[0]&lt;0 or bullet[0]&gt;9):
+                self.e_bullets.remove(bullet)
+            else:
+                if(bullet[0:2]==[self.sub_x,self.sub_y]):
+                    self.terminal = True
+
+        # Update enemy fish
+        for fish in reversed(self.e_fish):
+            if(fish[0:2]==[self.sub_x,self.sub_y]):
+                self.terminal = True
+            if(fish[3]==0):
+                fish[3]=self.move_speed
+                fish[0]+=1 if fish[2] else -1
+                if(fish[0]&lt;0 or fish[0]&gt;9):
+                    self.e_fish.remove(fish)
+                elif(fish[0:2]==[self.sub_x,self.sub_y]):
+                    self.terminal = True
+                else:
+                    for x in self.f_bullets:
+                        if(fish[0:2]==x[0:2]):
+                            self.e_fish.remove(fish)
+                            self.f_bullets.remove(x)
+                            r+=1
+                            break
+            else:
+                fish[3]-=1
+
+        # Update various timers
+        self.e_spawn_timer -= self.e_spawn_timer&gt;0
+        self.d_spawn_timer -= self.d_spawn_timer&gt;0
+        self.shot_timer -= self.shot_timer&gt;0
+        if(self.oxygen&lt;=0):
+            self.terminal = True
+        if(self.sub_y&gt;0):
+            self.oxygen-=1
+            self.surface = False
+        else:
+            if(not self.surface):
+                if(self.diver_count == 0):
+                    self.terminal = True
+                else:
+                    r+=self._surface()
+        return r, self.terminal
+
+    # Called when player hits surface (top row) if they have no divers, this ends the game,
+    # if they have 6 divers this gives reward proportional to the remaining oxygen and restores full oxygen
+    # otherwise this reduces the number of divers and restores full oxygen
+    def _surface(self):
+        self.surface = True
+        if(self.diver_count == 6):
+            self.diver_count = 0
+            r = self.oxygen*10//max_oxygen
+        else:
+            r = 0
+        self.oxygen = max_oxygen
+        self.diver_count -= 1
+        if self.ramping and (self.e_spawn_speed&gt;1 or self.move_speed&gt;2):
+            if(self.move_speed&gt;2 and self.ramp_index%2):
+                    self.move_speed-=1
+            if(self.e_spawn_speed&gt;1):
+                    self.e_spawn_speed-=1
+            self.ramp_index+=1
+        return r
+
+    # Spawn an enemy fish or submarine in random row and random direction,
+    # if the resulting row and direction would lead to a collision, do nothing instead
+    def _spawn_enemy(self):
+        lr = self.random.rand() &lt; 1/2
+        is_sub = self.random.rand() &lt; 1/3
+        x = 0 if lr else 9
+        y = self.random.randint(low=1, high=9)
+
+        # Do not spawn in same row an opposite direction as existing
+        if(any([z[1]==y and z[2]!=lr for z in self.e_subs+self.e_fish])):
+            return
+        if(is_sub):
+            self.e_subs+=[[x,y,lr,self.move_speed,enemy_shot_interval]]
+        else:
+            self.e_fish+=[[x,y,lr,self.move_speed]]
+
+    # Spawn a diver in random row with random direction
+    def _spawn_diver(self):
+        lr = self.random.rand() &lt; 1/2
+        x = 0 if lr else 9
+        y = self.random.randint(low=1, high=9)
+        self.divers+=[[x,y,lr,diver_move_interval]]
+
+    # Query the current level of the difficulty ramp, could be used as additional input to agent for example
+    def difficulty_ramp(self):
+        return self.ramp_index
+
+    # Process the game-state into the 10x10xn state provided to the agent and return
+    def state(self):
+        state = np.zeros((10,10,len(self.channels)),dtype=bool)
+        state[self.sub_y,self.sub_x,self.channels[&#x27;sub_front&#x27;]] = 1
+        back_x = self.sub_x-1 if self.sub_or else self.sub_x+1
+        state[self.sub_y,back_x,self.channels[&#x27;sub_back&#x27;]] = 1
+        state[9,0:max(0,self.oxygen)*10//max_oxygen, self.channels[&#x27;oxygen_guage&#x27;]] = 1
+        state[9,9-self.diver_count:9, self.channels[&#x27;diver_guage&#x27;]] = 1
+        for bullet in self.f_bullets:
+            state[bullet[1],bullet[0], self.channels[&#x27;friendly_bullet&#x27;]] = 1
+        for bullet in self.e_bullets:
+            state[bullet[1],bullet[0], self.channels[&#x27;enemy_bullet&#x27;]] = 1
+        for fish in self.e_fish:
+            state[fish[1],fish[0], self.channels[&#x27;enemy_fish&#x27;]] = 1
+            back_x = fish[0]-1 if fish[2] else fish[0]+1
+            if(back_x&gt;=0 and back_x&lt;=9):
+                state[fish[1],back_x, self.channels[&#x27;trail&#x27;]] = 1
+        for sub in self.e_subs:
+            state[sub[1],sub[0], self.channels[&#x27;enemy_sub&#x27;]] = 1
+            back_x = sub[0]-1 if sub[2] else sub[0]+1
+            if(back_x&gt;=0 and back_x&lt;=9):
+                state[sub[1],back_x, self.channels[&#x27;trail&#x27;]] = 1
+        for diver in self.divers:
+            state[diver[1],diver[0], self.channels[&#x27;diver&#x27;]] = 1
+            back_x = diver[0]-1 if diver[2] else diver[0]+1
+            if(back_x&gt;=0 and back_x&lt;=9):
+                state[diver[1],back_x, self.channels[&#x27;trail&#x27;]] = 1
+
+        return state
+
+    # Reset to start state for new episode
+    def reset(self):
+        self.oxygen = max_oxygen
+        self.diver_count = 0
+        self.sub_x = 5
+        self.sub_y = 0
+        # 0=left, 1=right
+        self.sub_or = False
+        self.f_bullets = []
+        self.e_bullets = []
+        self.e_fish = []
+        self.e_subs = []
+        self.divers = []
+        self.e_spawn_speed = init_spawn_speed
+        self.e_spawn_timer = self.e_spawn_speed
+        self.d_spawn_timer = diver_spawn_speed
+        self.move_speed = init_move_interval
+        self.ramp_index = 0
+        self.shot_timer = 0
+        self.surface = True
+        self.terminal = False
+
+    # Dimensionality of the game-state (10x10xn)
+    def state_shape(self):
+        return [10,10,len(self.channels)]
+
+    # Subset of actions that actually have a unique impact in this environment
+    def minimal_action_set(self):
+        minimal_actions = [&#x27;n&#x27;,&#x27;l&#x27;,&#x27;u&#x27;,&#x27;r&#x27;,&#x27;d&#x27;,&#x27;f&#x27;]
+        return [self.action_map.index(x) for x in minimal_actions]
+
+```
+
+THE INPUT (600 numbers, each 0 or 1): the 10 x 10 grid (rows 0 top to 9 bottom, columns 0 left to 9 right) with 6 channels. Input number i = (row * 10 + column) * 6 + channel; for example input 0 is (row 0, column 0, channel 0), input 6 is (row 0, column 1, channel 0) and input 599 is (row 9, column 9, channel 5). In this game:
+  channel 0 (player): the submarine (front and back cells)
+  channel 1 (danger): enemy fish, enemy submarines and enemy bullets
+  channel 2 (reward): enemy fish, enemy submarines and divers
+  channel 3 (projectile): the player&#x27;s bullets
+  channel 4 (trail): the cell just behind each enemy and diver, and the submarine&#x27;s back cell
+  channel 5 (gauge): the oxygen bar and the diver bar along the bottom row
+THE OUTPUT (6 numbers, logits) for the actions 0 no-op, 1 left, 2 up, 3 right, 4 down, 5 fire; the action is sampled from the softmax of the logits. With probability 0.1 the game repeats the previous action instead (sticky actions).
+How the 6 channels are built from the game&#x27;s own channels (state() in the source): channel 0 (player) &lt;- sub_front, sub_back; channel 1 (danger) &lt;- enemy_fish, enemy_sub, enemy_bullet; channel 2 (reward) &lt;- enemy_fish, enemy_sub, diver; channel 3 (projectile) &lt;- friendly_bullet; channel 4 (trail) &lt;- trail, sub_back; channel 5 (gauge) &lt;- oxygen_guage, diver_guage. A cell is 1 in a channel if any of its source channels is 1.
+
+THE NETWORK (the same architecture as the reinforcement-learning networks it will be compared with): a multilayer perceptron with 600 inputs, two hidden layers of 32 units with tanh activations, and 6 outputs; 20,486 parameters:
+  h1 = tanh(x @ W1 + b1)          W1: 600 x 32, b1: 32
+  h2 = tanh(h1 @ W2 + b2)         W2: 32 x 32,  b2: 32
+  logits = h2 @ W3 + b3           W3: 32 x 6,  b3: 6
+Row i of W1 holds the weights from input i to the 32 first-layer units; column j of a weight matrix belongs to unit j of the next layer. EVERY WEIGHT STARTS AT 0; you set the weights you need.
+
+HOW YOUR NETWORK IS SCORED: its mean score per episode over 1,000 episodes, each action sampled from the softmax of the logits (with the sticky actions above); an episode also stops after 10,000 steps. It is compared with networks of the same architecture trained by reinforcement learning on this game.
+
+HOW TO WRITE THE WEIGHTS (numbers only; nothing is run). Write a code block whose opening line is three backticks followed by the word edits, one statement per line (&#x27;#&#x27; starts a comment; a long list may continue over the next lines). Tensors: W1, b1, W2, b2, W3, b3.
+
+```edits
+W1[12, 0] = 2.5                     # one entry: row 12, column 0
+W1[0:6, 3] = [1, 0, -1, 0, 2, 0]    # explicit values along a range (as many values as entries)
+b1[0:4] = -1                        # fill a range (a:b is half-open; &#x27;:&#x27; alone = the whole axis)
+W1[3:600:60, 0] = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1]   # column 0 of channel 3, rows 0..9 of the grid -&gt; unit 0
+W2[0:2, 0:3] = [[1, -1, 0.5], [0, 2, 0]]   # a 2-D list for a 2-D block (here 2 x 3)
+W3[:, 2] *= 2                       # scale (also += and -=)
+```
+Ranges: a:b is half-open, a:b:s takes every s-th index. Input index i = (row * 10 + column) * 6 + channel. Useful strided ranges: all 10 cells of column c in channel ch are rows c*6+ch : 600 : 60 of W1; all 10 cells of row r in channel ch are rows r*60+ch : r*60+60 : 6.
+Statements apply in order; a later statement overwrites an earlier one. Only the LAST edits block of your reply is read; a statement that cannot be read is skipped (the others still apply). Values: plain decimal numbers (|v| &lt;= 1e6).</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Failed to read global AGENTS.md instructions from `&lt;local-home&gt;/.codex/AGENTS.md`: Operation not permitted (os error 1)</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Designing network weights**
+**Designing fixed-column weights**
+**Designing oxygen-gated weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Designing row-specific detectors**
+**Allocating row-gating units**
+**Balancing row-gating units**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining tanh gate thresholds**
+**Tuning graded row gates**
+**Evaluating row-targeting options**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Positioning for enemy rows**
+**Choosing x1 firing position**
+**Holding x5 facing left**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining hazard detection**
+**Balancing hazard units**
+**Testing signed direction units**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Implementing row occupancy gating**
+**Designing row hazard gating**
+**Allocating current hazard units**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining hazard features**
+**Allocating hazard features**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Deriving hazard aggregates**
+**Calibrating hazard logits**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning danger-aware weights**
+**Refining target gating**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Adjusting directional thresholds**
+**Refining target-row fire gating**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Deriving score weight constraints**
+**Deriving pooled score weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Balancing hazard feature budget**
+**Tuning hazard penalties**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Designing row-sensitive hazard units**
+**Tuning row-sensitive hazard units**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Mapping row hazard gates**
+**Tuning target-gate weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning fire boost**
+**Tuning return threshold**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Encoding hazard weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Calibrating hazard-gate thresholds**
+**Tuning danger-block thresholds**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning hazard penalty weights**
+**Setting oxygen threshold**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning centering weights**
+**Selecting centering weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining target-center gating**
+**Tuning target gating**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning reward weights**
+**Tuning movement weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Calibrating hazard weights**
+**Calibrating up-action bias**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Finalizing policy weights**
+**Checking fire-state weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Firing at left enemies**
+**Testing orientation encoding**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining row-based directional gates**
+**Reallocating Y for orientation**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining h1 hazard detection**
+**Grouping current hazards**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining compact output encoding**
+**Verifying center encoding**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Choosing row-center pair**
+**Adjusting h2 unit weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Checking gate behavior**
+**Checking sticky surface gates**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Checking diver descent logic**
+**Checking row-6 hazard avoidance**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Choosing upward movement**
+**Deriving edit ranges**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Assigning reward/danger weights**
+**Assigning B-unit weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Encoding W2 weights, biases**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Checking action scores**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Selecting the down move**
+**Extending hazard checks**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining vertical hazard margin**
+**Adding two-row hazard guards**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining hazard lookahead**
+**Checking movement hazard scans**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Evaluating hazard-avoiding moves**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Preparing W1 range assignments**
+**Selecting W1 range syntax**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Calculating enemy shot timing**
+**Selecting rows 7–8**</pre></details><div class="event"><h3>Codex reply</h3><pre>The policy retains the initial column and left-facing heading. It moves vertically toward divers and shootable enemies, then holds position and fires. Hidden units detect row targets, player-relative hazards—including a margin for sticky actions—and safe oxygen-refill opportunities. Other units discourage empty surfacing and return idle play toward row 4.
+
+```edits
+# First layer: row targets
+b1[0:8] = -3
+W1[62:120:6, 0] = 8
+W1[61:120:6, 0] = [-2, -2, -2, -14, -14, -14, -14, -14, -8, -8]
+W1[122:180:6, 1] = 8
+W1[121:180:6, 1] = [-2, -2, -2, -14, -14, -14, -14, -14, -8, -8]
+W1[182:240:6, 2] = 8
+W1[181:240:6, 2] = [-2, -2, -2, -14, -14, -14, -14, -14, -8, -8]
+W1[242:300:6, 3] = 8
+W1[241:300:6, 3] = [-2, -2, -2, -14, -14, -14, -14, -14, -8, -8]
+W1[302:360:6, 4] = 8
+W1[301:360:6, 4] = [-2, -2, -2, -14, -14, -14, -14, -14, -8, -8]
+W1[362:420:6, 5] = 8
+W1[361:420:6, 5] = [-2, -2, -2, -14, -14, -14, -14, -14, -8, -8]
+W1[422:480:6, 6] = 8
+W1[421:480:6, 6] = [-2, -2, -2, -14, -14, -14, -14, -14, -8, -8]
+W1[482:540:6, 7] = 8
+W1[481:540:6, 7] = [-2, -2, -2, -14, -14, -14, -14, -14, -8, -8]
+
+# Player-gated upward hazards and row encoding
+b1[8:31] = -100
+W1[90, 8] = 100
+W1[150, 9] = 100
+W1[210, 10] = 100
+W1[270, 11] = 100
+W1[330, 12] = 100
+W1[390, 13] = 100
+W1[450, 14] = 100
+W1[510, 15] = 100
+
+W1[79:109:6, 9] = 4
+W1[139:169:6, 10] = 4
+W1[199:229:6, 11] = 4
+W1[259:289:6, 12] = 4
+W1[319:349:6, 13] = 4
+W1[379:409:6, 14] = 4
+W1[439:469:6, 15] = 4
+
+W1[79:109:6, 10] = 4
+W1[139:169:6, 11] = 4
+W1[199:229:6, 12] = 4
+W1[259:289:6, 13] = 4
+W1[319:349:6, 14] = 4
+W1[379:409:6, 15] = 4
+
+# Player-gated downward hazards
+W1[30, 16] = 100
+W1[90, 17] = 100
+W1[150, 18] = 100
+W1[210, 19] = 100
+W1[270, 20] = 100
+W1[330, 21] = 100
+W1[390, 22] = 100
+W1[450, 23] = 100
+W1[510, 23] = 100
+
+W1[79:109:6, 16] = 4
+W1[139:169:6, 17] = 4
+W1[199:229:6, 18] = 4
+W1[259:289:6, 19] = 4
+W1[319:349:6, 20] = 4
+W1[379:409:6, 21] = 4
+W1[439:469:6, 22] = 4
+W1[499:529:6, 23] = 4
+
+W1[139:169:6, 16] = 4
+W1[199:229:6, 17] = 4
+W1[259:289:6, 18] = 4
+W1[319:349:6, 19] = 4
+W1[379:409:6, 20] = 4
+W1[439:469:6, 21] = 4
+W1[499:529:6, 22] = 4
+
+# Current-position hazards
+W1[90, 24] = 100
+W1[79:109:6, 24] = 4
+W1[150, 25] = 100
+W1[139:169:6, 25] = 4
+W1[210, 26] = 100
+W1[199:229:6, 26] = 4
+W1[270, 27] = 100
+W1[259:289:6, 27] = 4
+W1[330, 28] = 100
+W1[319:349:6, 28] = 4
+W1[390, 29] = 100
+W1[379:409:6, 29] = 4
+W1[450, 30] = 100
+W1[510, 30] = 100
+W1[439:469:6, 30] = 4
+W1[499:529:6, 30] = 4
+
+# Oxygen below 60 and at least one diver
+b1[31] = -3
+W1[557, 31] = -6
+W1[593, 31] = 6
+
+# Second layer: targets above the player
+b2[0:8] = [45, 35, 25, 15, 5, -5, -15, -25]
+W2[0, 0] = 20
+W2[9:16, 0] = 10
+W2[1, 1] = 20
+W2[10:16, 1] = 10
+W2[2, 2] = 20
+W2[11:16, 2] = 10
+W2[3, 3] = 20
+W2[12:16, 3] = 10
+W2[4, 4] = 20
+W2[13:16, 4] = 10
+W2[5, 5] = 20
+W2[14:16, 5] = 10
+W2[6, 6] = 20
+W2[15, 6] = 10
+W2[7, 7] = 20
+
+# Targets below the player
+b2[8:16] = [-95, -85, -75, -65, -55, -45, -35, -25]
+W2[0, 8] = 20
+W2[8:16, 8] = -10
+W2[1, 9] = 20
+W2[9:16, 9] = -10
+W2[2, 10] = 20
+W2[10:16, 10] = -10
+W2[3, 11] = 20
+W2[11:16, 11] = -10
+W2[4, 12] = 20
+W2[12:16, 12] = -10
+W2[5, 13] = 20
+W2[13:16, 13] = -10
+W2[6, 14] = 20
+W2[14:16, 14] = -10
+W2[7, 15] = 20
+W2[15, 15] = -10
+
+# Target in the current row: hold and fire
+b2[16:24] = -15
+W2[0, 16] = 20
+W2[8, 16] = 10
+W2[1, 17] = 20
+W2[9, 17] = 10
+W2[2, 18] = 20
+W2[10, 18] = 10
+W2[3, 19] = 20
+W2[11, 19] = 10
+W2[4, 20] = 20
+W2[12, 20] = 10
+W2[5, 21] = 20
+W2[13, 21] = 10
+W2[6, 22] = 20
+W2[14, 22] = 10
+W2[7, 23] = 20
+W2[15, 23] = 10
+
+# Hazard aggregation, refill, surface departure, surface guard
+b2[24:32] = [39, 39, 33, 0, -45, 3, -75, -123]
+W2[8:16, 24] = 6
+W2[16:24, 25] = 6
+W2[24:31, 26] = 6
+W2[31, 27] = 3
+W2[8:16, 28] = -6
+W2[8, 29] = 6
+
+# Centering is disabled whenever a target is present
+W2[0:8, 30] = -12
+W2[12:16, 30] = 6
+W2[0:8, 31] = -12
+W2[11:16, 31] = -6
+
+# Output preferences
+W3[0:8, 2] = 6
+W3[8:16, 4] = 6
+W3[16:24, 5] = 24
+W3[24, 2] = -300
+W3[25, 4] = -300
+W3[26, 5] = -60
+W3[27, 2] = 130
+W3[28, 4] = 60
+W3[29, 2] = -100
+W3[30, 2] = 3
+W3[31, 4] = 3
+b3[:] = [-1000, -1000, -221, -1000, -192, 132.3]
+```</pre></div></details></body></html>

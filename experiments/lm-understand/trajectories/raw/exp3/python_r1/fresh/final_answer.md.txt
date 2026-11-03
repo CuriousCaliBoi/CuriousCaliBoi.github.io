@@ -1,0 +1,52 @@
+## Observations
+
+**The strongest conclusion is “as is”; the corpus identification is less certain.** These are weight-only inferences, not measured attention patterns.
+
+- **A likely one-character/two-character offset pair:** L0H5 and L0H1 read closely overlapping value subspaces: their first 23 principal cosines exceed 0.82. In a weight-derived positional subspace, L0H1’s QK matrix aligns with the **square** of L0H5’s polar factor: cosine **0.647**, versus **−0.031** with its first power. This supports successive character offsets.
+- **A broad aggregation candidate:** `W_q.0[256:320]` and `W_k.0[256:320]` have norms **2.173** and **2.623**, much smaller than L0H5’s **15.898** and **15.965**. Nevertheless, L0H4’s OV product has leading singular values **18.815, 15.373**. It appears designed to aggregate rather than sharply select.
+- **Matching circuits:** Later QK matrices compose positively with L0H5’s OV matrix, particularly at **L2H1, L3H1, L3H5**. Their matching scores defined below are **0.755, 0.698, 0.753**. L3H1 and L3H5 also produce closely aligned output-weight dictionaries: cosine **0.831**.
+- **Corpus evidence is weaker:** Exploratory matching of a static weight-derived association matrix against invented text controls favored English under log-conditional scoring: **0.445**, versus Python **0.393**, romaji **0.414**. Another scoring convention narrowly favored Python. These are heuristic comparisons, **not likelihoods or decoded logits**.
+
+For the head evidence below:
+- **r** is the trace/nuclear-norm ratio of the QK–L0H5-OV composition restricted to the shared early value-reading subspace. Positive values support matching, but do not alone prove induction.
+- **f** is the fraction of a head’s key-side QK energy in L0H4’s leading three output directions.
+
+## Heads
+
+L0H0: **unclear** — QK stable rank 1.545; low-dimensional selection, but no identifiable backward distance.  
+L0H1: **local** — strong squared-rotation relationship to L0H5; likely approximately two characters back.  
+L0H2: **unclear** — substantial content dependence: 59.9% of key-side QK energy lies in the shared value-reading subspace.  
+L0H3: **unclear** — low-rank, content-sensitive QK structure; no convincing fixed-offset signature.  
+L0H4: **broad** — unusually weak Q/K weights alongside strong, low-rank OV; strongest aggregation candidate.  
+L0H5: **previous** — strongest directional positional structure, shared character-reading subspace, and downstream matching compositions.
+
+L1H0: **unclear** — f=0.342; reads the aggregation channel, but its attention range remains unresolved.  
+L1H1: **unclear** — f=0.627; strong shared positional/summary dependence, not enough to establish locality.  
+L1H2: **unclear** — f=0.631; similarly summary-dependent, without a clear matching circuit.  
+L1H3: **unclear** — f=0.677; strongest summary-channel dependence, but no identifiable offset.  
+L1H4: **unclear** — f=0.645; closely related to other L1 kernels, without decisive range evidence.  
+L1H5: **unclear** — f=0.524; weak matching component, r=0.152, insufficient to call induction.
+
+L2H0: **unclear** — r=−0.059; neither a positive matching circuit nor a resolved offset.  
+L2H1: **copy** — r=0.755; strong positive matching through the likely previous-character head.  
+L2H2: **unclear** — r=−0.476, but strongly supplies later matching circuits; could construct context features rather than copy.  
+L2H3: **unclear** — r=−0.049; summary-channel coupling does not establish attention distance.  
+L2H4: **unclear** — r=0.010; strong composition magnitude without a positive matching signature.  
+L2H5: **unclear** — r=0.125; weak matching evidence, insufficient for a functional assignment.
+
+L3H0: **copy** — tentative: r=0.343 and output-weight alignment with stronger copy candidates.  
+L3H1: **copy** — r=0.698; strong matching through both early and intermediate feature-writing heads.  
+L3H2: **unclear** — r=−0.024; no decisive offset or induction signature.  
+L3H3: **unclear** — r=0.010; comparatively weak QK structure, but that does not establish broad attention.  
+L3H4: **unclear** — r=0.155; modest matching component without a decisive dominant role.  
+L3H5: **copy** — r=0.753; especially strong key composition with L2H2 and agreement with L3H1.
+
+## Reasoning
+
+The likely adjacent-character offset pair and multiple downstream matching circuits strongly favor **preserved character order**. Shuffling retains line composition, but removes most benefits of remembering specific neighboring characters and repeating ordered contexts.
+
+My best corpus judgment is **English**, with Python a substantial alternative. The static association comparisons and broadly developed character-feature structure lean that way; they do not provide a reliable linguistic identification. I found no sufficiently clear indentation-specific or romaji-specific signature to override that judgment.
+
+corpus: english  
+order: as is  
+probabilities: python=0.34 romaji=0.06 english=0.60; as is=0.99 shuffled=0.01

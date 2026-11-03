@@ -1,0 +1,522 @@
+REPRODUCTION GUIDE — source snapshot, 3 November 2026
+
+This package contains the code used for a new, explicitly reconstructed run of
+experiments 1–8. It is not the authors' missing private harness or a turnkey
+installer. Interactive experiments and long GPU evaluations were still running
+when this source snapshot was packaged. Consult the current replication report
+and individual case states for completed results; a prepared case is not a result.
+
+The accompanying reproduction-source.zip contains a Git archive of the reviewed
+reconstruction repository, the initial one-shot launch/audit scripts, this guide,
+and compact provenance. archived-runtime/ retains the exact older Exp4 parser
+and Exp7 training orchestrator used before later review-only guard improvements.
+MANIFEST.json pins the Git commit and every member's
+SHA-256/size. It excludes model weights, datasets, credentials, CLI authentication,
+and live scratch directories. Existing review JSON files describe this recorded
+run; they do not authorize a changed installation. Preserve upstream licenses.
+
+SOURCE AND MODEL PINS
+
+Published repository: https://github.com/RikiyaT/lm_understand-logs
+Commit: 4d09ba6d6a7e891dd8063974dfe81b3d78e3494f
+Kinetix: https://github.com/FLAIROx/Kinetix
+Commit: 80ee9c292837c825cafaf9889323fdcc212efd1b; jax2d 1.0.1.
+Qwen/Qwen3.5-0.8B: 2fc06364715b967f1860aea9cf38778875588b17.
+google/gemma-3-270m-it: ac82b4e820549b854eebf28ce6dedaf9fdfa17b3.
+
+Qwen's text-only export is built by exp8/prepare.py from the pinned full snapshot
+and released configuration. All 320 text tensors retain original names/values.
+Full source checkpoint SHA-256:
+04b1c301231dd422b8860db31311ab2721511346a32cb1e079c4c4e5f1fe4696
+Exported model.safetensors SHA-256:
+978661a573971be7257815c2554a28c74913c7b7ea51b0a0b9503fd11eb0d2f8
+Gemma base model.safetensors SHA-256:
+700b710a9a99c295ed546647aa81cacf9f81f4c573ea2be613a0e2517a44afab
+
+The compact dataset manifest pins all ten Exp8 evaluation sets and their prepared
+checksums. The official MMLU-Pro helper is pinned to commit
+3016805055f78c55ec54a2f9be9fd5f89be95e0a; official IFEval checkers to
+e6890f85757dd84e27ca6df2dd30651dafad28e0. GPQA Diamond comes from the
+authors' public GitHub dataset.zip at commit
+56686c06f5e19865c153de0fdb11be3890014df7, using the download instructions
+in that repository's README. Its extracted CSV SHA-256 is
+41d1213cd7a4998605a26c2798500652572007161b3a92817ba46b35befcd305;
+its Git blob matches the official gated HF revision
+83022cefff930aea54f654c0b282e74b9eeda5c6. No third-party dataset mirror is used.
+
+ACTUAL HOSTS AND SETUP REQUIREMENTS
+
+The controller ran on macOS 15.6 arm64, using codex-cli 0.166.0 at
+<local-home>/.local/bin/codex, with a logged-in Codex account. The GPU host was
+the SSH alias <gpu-ssh-alias>: NVIDIA DGX Spark/GB10, 121 GiB unified RAM, aarch64 Linux
+6.17.0-1031-nvidia, Docker 29.6.2. Paths below are recorded host paths, not portable
+defaults. Configure your own SSH connection and authentication outside this bundle.
+
+Local workspace (ROOT):
+<workspace>
+Remote task root (TASK): <gpu-project>
+Local immutable source (SRC): ROOT/work/lm_understand-logs-<source commit>
+Remote immutable source: TASK/source
+Local reconstructed checkout (CODE): ROOT/work/reconstructed-evaluation
+
+Extract reconstruction/ to ROOT/work/reconstructed-evaluation and bootstrap/ to
+ROOT/work; these relative locations matter to the scripts' BASE calculations.
+Fetch the published repository at its exact commit separately. Place only one
+lm_understand-logs-* checkout under ROOT/work because several drivers select it
+by glob. Create ROOT/work/replication-empty and the required output directories.
+Keep each fresh rerun in a separate workspace/output tree. Never overwrite the
+recorded runs or run two controllers against the same case.
+
+For example, with actual paths substituted:
+  git clone https://github.com/RikiyaT/lm_understand-logs SRC
+  git -C SRC checkout --detach 4d09ba6d6a7e891dd8063974dfe81b3d78e3494f
+  git clone https://github.com/FLAIROx/Kinetix PINNED_KINETIX_DIRECTORY
+  git -C PINNED_KINETIX_DIRECTORY checkout --detach 80ee9c292837c825cafaf9889323fdcc212efd1b
+Download HF model snapshots at the revisions above with your own authorized
+account when required; verify their file hashes before export/training/inference.
+Exp8 Gemma validation expects download-manifest.json recording revision and each
+file's name/size/SHA-256; its exact recorded schema is included in metadata.
+
+Several modules contain the recorded SSH alias, absolute remote paths, Python
+paths and image IDs. Search these before porting: <gpu-ssh-alias>, <gpu-home>, /Users/,
+REMOTE, ROOT and VENV. Record every path/environment adaptation as a new revision,
+rerun preflights, and obtain a new hash-bound startup review. Do not edit the
+recorded production manifests to make changed code appear identical.
+
+The initial macOS experiment-cli.sb denies reads of two specific personal AGENTS
+files. Adapt those two paths to the actual controller account. sandbox-exec and
+the CLI rollout location ~/.codex/sessions are macOS/runtime dependencies, not
+portable assumptions. The actual context audit, rather than flags alone, must
+confirm absence of injected personal instructions and unexpected tool calls.
+
+Remote Python environments used:
+  TASK/.venv/bin/python: CPU NumPy/MinAtar; MinAtar 1.0.15.
+    The reconstructed Exp5 PPO campaign additionally uses Torch 2.15.0+cpu,
+    NumPy 2.5.4 and Python 3.12.3 in this task-owned environment.
+  TASK/.venv-kinetix/bin/python: Python 3.12, JAX 0.9.0, Flax 0.12.3,
+    CUDA 13; see reconstruction/exp4-requirements.lock.
+  <gpu-python-environment>/bin/python: Python 3.12.13,
+    Torch 2.14.0+cu130, Transformers 5.20.2, vLLM 0.33.0.
+    This pre-existing environment was used read-only, not modified.
+  TASK/reconstructed/exp6/deps: PGX 2.6.0, svgwrite 1.4.3 overlay.
+  Exp7 reader CPU environment: NumPy 2.2.6; other ML packages unavailable.
+  TASK/reconstructed/exp8/cpu-deps: task-owned scientific Python/math grader
+    dependencies, including math-verify 0.9.0 and latex2sympy2_extended 1.11.0.
+  TASK/reconstructed/exp8-bench/deps and nltk_data: evaluator-only dependencies
+    and language-tokenization resources, bound by benchmark provenance.
+
+Use the included requirements/provenance records to provision equivalent
+task-owned environments; the bundle does not provision CUDA wheels, Docker,
+NLTK corpora, HF downloads or these virtualenvs. Some recorded CUDA packages are
+platform-specific. A package list alone cannot recreate the historical binary
+runtime. Preserve library/source hashes and report unavoidable differences.
+
+CPU sandboxes require Docker and readable Python runtime mounts. The recorded
+Ubuntu image ID is sha256:5b8c0c14690ed170da4e663fe0bae0d58efe59661e791296ffab28ed2113b650.
+An image ID is an audit identity, not a registry download tag. If it is unavailable
+on another host, record the replacement and rerun isolation checks. Readers must
+not see source answers, labels, held-out data, credentials, a Docker socket or GPU.
+The active Exp8 v1 conversations use 0.35 GPU memory utilization and 32 concurrent
+sequences, retaining full token caps; these runs can take hours per pass. A separate
+64-sequence fork has no active editing or benchmark cases; its separately approved
+zero-answer Qwen and Gemma capacity checks are queued and pending. Every heavy
+pass, held-out shard and new capacity worker uses
+TASK/reconstructed/exp8/gpu.lock. Leave unrelated host workloads untouched.
+
+CODEX SETTINGS AND CONTEXT AUDIT
+
+Every scored conversation requests model gpt-6-astra, context window 872000 and
+auto-compaction threshold 1000000. Effort: Exp1/2/4 high; Exp3/5/6/7 xhigh;
+Exp8 max. Detailed reasoning summaries are requested for Exp1/2/5/7; Exp3/4/6/8
+do not add that override. Exact argv are retained in each run/turn record.
+
+Launches use --no-daemon exec --strict-config --ignore-user-config --ignore-rules
+--skip-git-repo-check --json, the released harness/codex_config.toml with tools
+disabled, original neutral model instructions, project_doc_max_bytes=0,
+skills.include_instructions=false, skills.bundled.enabled=false and memories=false.
+Turns resume their actual new thread UUID. Actual saved CLI rollouts are checked
+for exact user messages, model/effort, unexpected developer instructions and tools.
+The current model alias/backend is not a pinned historical model snapshot.
+
+Early Exp1/4 attempts with unintended local context were quarantined under
+outputs/replication-invalid-initial. Current scored cases use audited clean runs.
+There is one valid scored reply per one-shot case, with no performance-based
+regeneration or tuning. Failed attempts and recovery evidence remain separate.
+
+MAIN COMMANDS
+
+These are entry-point examples after provisioning, staging, path review and
+preflight. ROOT/SRC/CODE/TASK below are literal placeholders for the paths above;
+substitute actual paths in every command. CPU/GPU Python must match each experiment.
+Do not run this whole section against the existing active output tree.
+
+Exp1/2/4/5 one-shot prompts, on the controller:
+  python3 ROOT/work/run_published_prompts.py \
+    exp1_which_game/runs/breakout exp1_which_game/runs/freeway \
+    exp1_which_game/runs/pacman exp1_which_game/runs/pong \
+    exp2_diffusion/runs/circle exp2_diffusion/runs/square \
+    exp2_diffusion/runs/triangle \
+    exp4_fix_car/runs/oneshot_repair/reply \
+    exp5_write_from_scratch/runs/asterix/reply \
+    exp5_write_from_scratch/runs/breakout/reply \
+    exp5_write_from_scratch/runs/seaquest/reply
+  python3 ROOT/work/audit_fresh_runs.py
+The launcher refuses existing case destinations. It copies exact published
+prompt/instruction bytes and settings. The audit is the original early-stage
+one-shot utility: run it in a clean one-shot workspace before adding interactive
+results. It recursively assumes every run.json has that schema/source layout and
+must NOT be run indiscriminately over today's mixed outputs. Its historical
+not_claimed/status text does not describe later reconstructed evaluations.
+Exp1/2 scoring is documented label/alias comparison, not an unpublished author
+scorer. Exp2 category agreement does not validate the incorrect hollow-shape prose.
+
+Exp3 (controller, from CODE, after sandbox staging/preflights):
+  python3 -m unittest test_exp3_score.py
+  python3 -u exp3_runner.py
+  python3 exp3_score.py
+Six independent conversations use the exact 40-array released blocks.npz files.
+exp3_sandbox.py is staged on the Spark with opaque archive paths. Its required
+sandbox-preflight.json and sandbox-fresh-process-check.json must be generated by
+actual local isolation tests, not copied from this bundle as evidence for a new
+host. See EXP3_PROTOCOL.md for the required tests and feedback contract.
+
+Exp4 (Spark, dedicated JAX environment):
+  python evaluate_exp4.py --source TASK/source \
+    --fresh-reply PATH_TO_FROZEN_FRESH_ANSWER \
+    --kinetix PATH_TO_PINNED_KINETIX --output NEW_RESULT_DIRECTORY
+The rounded base comes from the prompt, not the full-precision PPO checkpoint.
+Validate the original reply against released edited_actor.npz, then run base,
+published edit and fresh edit: 256 search plus 1024 test episodes per policy.
+
+Exp5 (Spark, CPU environment):
+  python exp5_evaluate.py prepare --source TASK/source \
+    --fresh TASK/reconstructed/exp5/fresh --out NEW_RESULT_DIRECTORY
+  python exp5_evaluate.py evaluate --source TASK/source \
+    --out NEW_RESULT_DIRECTORY --episodes 1000 --workers 8 \
+    --seed 20261102 --max-steps 10000
+Stage immutable fresh replies under fresh/runs/GAME/reply/answer.md.
+Validate all three published hand.npz controls before evaluating six
+policies. Same-argument resume preserves completed episodes and verifies protocol.
+
+Exp5 reconstructed PPO baseline campaign (prepared, NOT launched at this snapshot):
+The original training code and PPO checkpoint bytes remain unavailable. The new
+32-run campaign uses the published actor 600->32->32->6/tanh, lr 5e-4 with annealing,
+64 environments, 128 rollout steps, 4 epochs, 8 minibatches, gamma .99, GAE lambda .95,
+PPO clip .2 and entropy coefficient .01. Its separate 600->64->64->1 critic, Adam
+epsilon 1e-5/betas .9,.999, orthogonal initialization, value coefficient/clip,
+gradient clip .5, advantage normalization and precise linear schedule are explicit
+reconstructions guided by CleanRL commit fe8d8a03c41a7ef5b523e2e354bd01c363e786bb.
+The upstream MIT license is reconstruction/LICENSE-CleanRL; full defaults and
+reference source hashes are in metadata/exp5-ppo-campaign-plan-v5.json.
+
+At 100M nominal steps: Breakout and Asterix use seeds 0–9, Seaquest seeds 0–2.
+At 500M nominal steps: all three games use seeds 0–2. Each budget starts anew;
+500M is not a continuation of 100M. Full 8192-step updates produce 99,999,744 or
+499,998,720 actual steps: 6,799,982,592 total across 32 runs (6.8B nominal).
+Training uses native MinAtar terminal/reset behavior, no invented training time
+cap, no observation/reward normalization, all 6 actions and float32 CPU Torch.
+Evaluation separately uses the already frozen 1000-episode/10000-step protocol.
+Retain all 32 final policies/scores; report the maximum seed mean only as a labeled
+best-seed selection, alongside every seed. Its episode SE does not account for
+selection over seeds.
+
+Conditional startup approval exists in metadata/exp5-ppo-startup-review.json,
+bound to plan SHA 7750dc4fa3522386e46be40259ffb67c7cd8b8cb1c8dae1e585e9f15622811b3.
+Launch must wait until all 15 Exp7 readers finish and reader CPU workers clear.
+This is scheduling/review state, not a completed training result. The approved
+Spark schedule has at most 4 workers, each single-threaded on a distinct core from
+5–8, niceness 10, with GPU disabled. These are measured 3.9GHz Spark cores, not
+portable core numbers or exclusive reservations. A different host needs a new
+runtime/affinity review and plan. GPU editing can continue independently.
+
+On the Spark, after that launch condition is verified:
+  mkdir -p TASK/results/reconstructed-exp5-ppo
+  nohup TASK/.venv/bin/python -u \
+    TASK/reconstructed/exp5-ppo-feasibility/exp5_ppo_campaign.py run \
+    --plan TASK/results/exp5-ppo-feasibility/campaign-plan-v5.json \
+    --output TASK/results/reconstructed-exp5-ppo --workers 4 \
+    > TASK/results/reconstructed-exp5-ppo/campaign-run.log 2>&1 < /dev/null &
+After all 32 final actors are frozen, evaluate with the same durable launch form:
+  nohup TASK/.venv/bin/python -u \
+    TASK/reconstructed/exp5-ppo-feasibility/exp5_ppo_campaign.py evaluate \
+    --plan TASK/results/exp5-ppo-feasibility/campaign-plan-v5.json \
+    --output TASK/results/reconstructed-exp5-ppo --workers 4 \
+    > TASK/results/reconstructed-exp5-ppo/campaign-evaluate.log 2>&1 < /dev/null &
+Use unique log filenames on a later launch to retain previous logs. The campaign
+lock is inherited by children, so an orphan worker still excludes a second
+launcher. Same-plan restart skips frozen cases and resumes full actor/critic,
+optimizer, RNG and 64-environment state from the latest durable checkpoint.
+Checkpoints occur every 100 updates; up to 100 updates may replay if interruption
+occurs after update 100 computes but before its checkpoint pointer publishes. Latest/previous payloads and all immutable checkpoint receipts are
+retained. Full campaign timing is not guaranteed by the short feasibility sample.
+
+Exp6 (controller; see EXP6_PROTOCOL.md and preflight entry point):
+  python3 exp6_preflight.py
+  python3 exp6_runner.py --initialize-only
+  python3 -u exp6_runner.py --budget 0
+Repeat independent cases for budgets 10,25,50. Final scoring on the Spark:
+  JAX_PLATFORMS=cpu PYTHONPATH=TASK/reconstructed/exp6/deps \
+    python exp6_evaluate.py --candidate FROZEN_POLICY_DIRECTORY \
+    --opponent HELD_OUT_RELEASED_POLICY_DIRECTORY --games 2000 --seed 31337 \
+    --output NEW_RESULT_DIRECTORY
+Omit --opponent for uniform random. Keep practice seed1 separate from held-out
+same-size PPO seeds0/2, and score published controls separately from fresh policies.
+Policies are directories containing arch.json and the 14 tensor .npy files.
+The additional bootstrap/independent_exp6_scoring.py accepts budget10,25 or50
+after that budget's six evaluations are complete. Install it at ROOT/work and
+run python3 ROOT/work/independent_exp6_scoring.py 10. It checks episode aggregates,
+outcome/action consistency, paired seeds and provenance against the prior audited
+budget0; it does not replay all boards through a second Go engine.
+
+Exp7 training (Spark CUDA environment, six sequential fine-tunes):
+  python exp7_retrain.py --source TASK/source --base PINNED_GEMMA_DIRECTORY \
+    --output TASK/results/reconstructed-exp7
+  python exp7_audit.py --source TASK/source \
+    --output TASK/results/reconstructed-exp7
+Uses unchanged author train.py/eval.py/make_release.py, splits/seeds100/101/102,
+batch8, epochs3, lr2e-5, answer-only loss, frozen embedding/output and bf16 autocast.
+Source/base/model/evaluation hashes guard resume. The resulting six models are new
+checkpoints; they are not the authors' unavailable originals. Wrong-follow rates
+measure teacher-forced total-answer-logprob preferences, not free-generation rates.
+
+Exp7 readers (controller, after role-hidden staging and preflight):
+  python3 exp7_preflight.py
+  python3 exp7_attention_preflight.py
+  python3 -u exp7_runner.py --workers 2 --round weights_only_1
+  python3 exp7_score.py
+Other round names: weights_only_2, weights_only_3, weights_only_4, attention_tool.
+The setup creates three opaque A/B cases per round. Readers receive only their
+authorized release/prelude; never the private roles, facts, training logs or evals.
+The attention sidecar returns raw attention only. For causal follow-up, after all
+ten eligible final selections are frozen: exp7_patch_freeze.py,
+exp7_patch_gpu.py --requests FROZEN_REQUESTS, and exp7_patch_audit.py. Follow
+EXP7_PATCH_PROTOCOL.md, including unchanged-baseline parity before any transplant.
+
+Exp8 (controller, from CODE; prepare-only stages inputs without a model call):
+  python3 exp8/controller.py --case p10c --base ROOT --source SRC \
+    --output ROOT/outputs/replication/reconstructed-exp8 --prepare-only
+  python3 -u exp8/controller.py --case p10c --base ROOT --source SRC \
+    --output ROOT/outputs/replication/reconstructed-exp8
+Published cases are p10c,p25c,p50c,g05b,g10b,g25b,g50b; each starts from the unedited
+base. Current active p10c,p25c,g05b conversations stay on v1 for their full budgets.
+The other four remain unstarted; do not launch them with either profile until
+the specific new startup review and existing three-kernel scheduling gate allow it.
+Stage approved exp8 code, task-owned dependencies, pinned models and practice
+arrays on the Spark first. exp8/prepare.py builds the Qwen text export. Native
+teacher/generation/activation/edit-drop parity and actual kernel-restart tests
+must pass. Hash-bound startup-review.json is required before launching a case.
+
+Exp8 held-out data (trusted Spark process, never an editor mount):
+  python exp8_bench/prepare.py --source TASK/source --output BENCH_DIRECTORY
+  python exp8_bench/prepare_gpqa.py --source TASK/source --bench BENCH_DIRECTORY
+The GPQA command expects the separately downloaded/verified CSV at
+BENCH_DIRECTORY/raw/gpqa/gpqa_diamond.csv and download.json beside it. The
+included metadata/gpqa-download.json records the required schema, official URLs
+and exact source/archive/CSV hashes; regenerate it from your verified retrieval.
+prepare.py handles the other nine downloads through huggingface_hub, reading the
+retrieved files with PyArrow or JSON.
+Use the exact CLI options in --help for control rebuild, checkpoint assembly,
+data/provenance audits and scorer checks; retain all generated manifests. Rebuild
+seven published controls with unchanged author apply_edit.py before comparing.
+After a separate benchmark startup review, a bounded example is:
+  python exp8_bench/evaluate.py --profile gemma --model PINNED_GEMMA_DIRECTORY \
+    --bench BENCH_DIRECTORY --set math500 --shard 0/63 --source TASK/source \
+    --runtime TASK/reconstructed/exp8/code --output NEW_SHARD_DIRECTORY \
+    --review BENCH_DIRECTORY/startup-review.json
+The active v1 evaluator has at most 32 answers per shard; all Gemma final comparisons
+keep this partition. Problem sample counts and full token caps remain unchanged.
+The first Gemma MATH500 shard 0/63 completed and passed all 32 actual-record checks,
+same-code grading/tokenizer replay and independent root review. These checks use
+bootstrap/audit_exp8_shard.py, as specified by that script's --help. Aggregate
+complete shards with exp8_bench/aggregate.py. Build fresh checkpoints only from
+hash-verified frozen submissions using exp8_bench/build_checkpoint.py. The
+aggregation checks completeness/identity; it is not an independent regrading.
+
+The approved ready Gemma campaign uses exp8_campaign/campaign.py on Spark. It covers
+398 fixed shards and 12,638 answers: base MATH500+GSM8K and MATH500 for four published
+controls. The identical completed first 32-answer shard is verified and reused,
+leaving 397 new shards and 12,606 answers. Fresh Gemma families wait frozen submissions.
+The single dispatcher started at 2026-11-03T12:26:40Z; it verified that first receipt
+and queued published-g05b MATH500 shard 0/63. No new campaign worker had started at launch
+verification. This is a running campaign, not a complete benchmark score.
+
+  CUDA_PYTHON TASK/reconstructed/exp8-gemma-campaign/code/campaign.py prepare \
+    --task TASK --output NEW_CAMPAIGN_MANIFEST
+  CUDA_PYTHON TASK/reconstructed/exp8-gemma-campaign/code/campaign.py run \
+    --manifest EXACT_CAMPAIGN_MANIFEST --review EXACT_CAMPAIGN_APPROVAL
+
+The reviewed task manifest is under
+TASK/results/reconstructed-exp8/campaign-preparation/gemma-ready-v1; state, logs
+and immutable per-job receipts are under
+TASK/results/reconstructed-exp8/campaigns/gemma-ready-v1. Exact checkpoint weights,
+full metadata and variant output namespaces are checked before invocation and
+cache reuse. Base/published identities stay separate even if hashes coincide.
+The dispatcher holds a campaign lock and passes both that FD and the canonical GPU
+lock FD to the unchanged v1 evaluator's existing --gpu-worker entry point. It
+releases the GPU lock between shards. Completed outputs recover without inference;
+incomplete/ambiguous v1 attempts stop for review and are never automatically rerun.
+Five implementation tests and six independent negative tests passed, including a
+real surviving-worker/parent-exit exclusion test. The limitation concerning killed
+workers with surviving internal vLLM children still applies. Historical approval,
+exact model/partition manifest and root launch verification are bundled as metadata.
+
+SEPARATELY STAGED EXP8 RESOURCE PROFILE — NOT AN EXPERIMENT RESULT
+
+The source snapshot at 66f3553f358dfeace0421ff851d2eb3ad5edf765 includes
+exp8_s64/ and exp8_bench_s64/, plus plans/exp8-s64-v2/. The original exp8/ and
+exp8_bench/ production files remain unchanged. The new namespaces on Spark are
+TASK/reconstructed/exp8-s64-v2/code and TASK/reconstructed/exp8-bench-s64-v2/code.
+They reuse the existing read-only CUDA environment, CPU/scoring overlays, NLTK
+resources, pinned models, practice files and immutable Docker image. They do not
+replace active controllers or copy existing conversations into a new profile.
+
+At this package snapshot, the original deployment review and a separately reviewed
+JSONL correction bind all deployed source bytes, all 24 unchanged v1 production
+hashes, practice/base hashes and dependency/vendor/NLTK/source context. Qwen-only
+and Gemma-only zero-answer capacity checks were queued at 2026-11-03T10:50:15Z and
+12:14:56Z; neither capacity report existed at the latest recorded check. The real
+first Gemma 32-answer shard logged 2,789,059 KV tokens and 272.37x capacity at 10,240 context;
+that legitimate 32-sequence observation is distinct from a 64-sequence initialization.
+No v2 editor or Qwen benchmark case has launched. The three live editor kernels stay
+on v1. The first 32-record benchmark gate passed; the separate ready-Gemma v1 campaign
+is described above. Reviews and one-time capacity approvals are historical evidence,
+not transferable approval for another host or source revision.
+
+The new resource profile uses 64 concurrent sequences at the same 0.35 GPU fraction,
+BF16, eager execution, 4096 batched tokens, chunked prefill and no prefix caching.
+All prompts, instructions, model revisions, token/pass/sample budgets, temperatures,
+thinking/presence settings and seeds remain unchanged. Runtime identity:
+  config e93f222c25ba92276fd15c6577671e65d608aefd24b2c63a143566e2f05c92e0
+  source aaed712c22d05000d8a437b709e7b8a60f97fe7a0892916cfa86aa7e2e44b918
+Benchmark context:
+  f98539a3d602df0cbc145a83604d22cb5001b1bc93af67dcd8eb9dfe7d64c706
+The full context binds every runtime/configuration/vendor hash, dependency version,
+NLTK file and original grader/helper source. Any changed path or runtime requires
+new provenance/review; do not modify these manifests to bypass their guards.
+
+The benchmark context changed only for two physical-JSONL-line readers before any
+v2 benchmark launched. A valid GPQA string contains a raw Unicode U+2028 character;
+str.splitlines() incorrectly treated it as another record. The corrected readers
+preserve every original byte/record, all 10 datasets and all 206 grouping proofs.
+The v1 scientific readers were unaffected. A matching read-only auditor correction
+fixed the same issue in practice GSM text; its original failed audit is retained,
+and all 256 first-forward records were subsequently checked without new inference.
+Corrected forward/s64 audit helpers and regression tests are in bootstrap/.
+
+Only untouched p50c,g10b,g25b,g50b may later use the new editor profile. Per-case
+startup approval must bind the initial prompt, source/config, base and actual
+architecture-specific capacity. Qwen evidence cannot approve Gemma. Prepared v1
+manifests remain intact, with an external supersession index for any later approved
+replacement. The global three-kernel limit remains a root-managed scheduling gate.
+New local case results use ROOT/outputs/replication/reconstructed-exp8-s64-v2.
+
+The reviewed capacity utility receives an exact model/profile/output-bound approval:
+  CUDA_PYTHON TASK/reconstructed/exp8-s64-v2/code/test_capacity.py \
+    --profile qwen --model PINNED_QWEN_TEXT_DIRECTORY \
+    --output UNIQUE_CAPACITY_REPORT --review EXACT_CAPACITY_APPROVAL
+It initializes an engine but calls no generation API. The recorded task launched
+it through bootstrap/run_exp8_capacity.py, which retains queue/start/exit times,
+PIDs and logs under TASK/results/reconstructed-exp8-s64-v2/capacity. Actual engine
+context must cover the complete requested context and its reported cache must fit
+the requested concurrency. Failure stops before generation; tokens and samples
+are never shortened automatically. Queued Qwen and Gemma requests require 34816 and
+10240 context respectively; use the matching model/profile-specific approval.
+
+The actual locked file descriptor is inherited by each new GPU worker. A real
+killed-parent/surviving-worker test verifies exclusion until that worker exits.
+This test does not establish FD inheritance by every vLLM-internal descendant
+following a simultaneous worker SIGKILL; installed vLLM was not modified. The old
+v1 lock implementation stays frozen. New runtime/recovery tests 26 and benchmark
+tests 14 passed on CPU with CUDA hidden; the narrower capacity-approval checks also
+passed after the final two test-prefixed files changed. Historical v1 GPU smoke
+reports remain historical. The JSONL correction additionally passed 13 benchmark/
+recovery checks, six auditor checks and exact pinned-data/grouping checks, without
+inference. No new v2 experimental generation result is claimed.
+
+All seven Qwen final variants may later use the fixed new 64-answer partition, only
+if the entire comparison family remains unstarted and receives a new review. The
+actual-ID grouping proof retains every ID/sample/seed tuple and contains 206 shards
+per variant rather than 406. Every Gemma final remains on v1: 650 shards total. The
+combined plan has 2092 shards and 110910 answers, with every sample count unchanged.
+New Qwen evaluation outputs use TASK/results/reconstructed-exp8/evaluations-s64-v2.
+The new evaluator requires --profile qwen --variant REVIEWED_VARIANT and the exact
+set/index/stride from its grouping proof; --output must match that fixed namespace.
+It rejects legacy Qwen jobs, mixed partitions, changed checkpoint hashes and missing
+shards. Larger shards can generate up to 2097152 tokens and delay queued editor
+passes longer. No measured throughput gain is claimed.
+
+The new benchmark persists and fsyncs full returned answers before constructing the
+grader. Raw receipts bind job, source, model, prompts, sample order and payload.
+A grading interruption reuses the exact answers without loading a generation model;
+an integration test proves a single generation call across interruption/resume.
+Grading attempts and incomplete outputs remain separate. Completed publication is
+recovered from immutable files; differing existing bytes are never overwritten.
+If a crash loses returns before durable capture, the run stops for diagnosis. An
+explicit retry review must bind the job and every retained incomplete-attempt hash;
+it cannot replace complete retained answers. Aggregates verify raw and graded hashes.
+
+Different batching can change generated tokens despite equal seeds. Cross-budget
+editor comparisons consequently include a resource-profile difference if new cases
+activate. All Qwen final comparisons will use one new profile, and all Gemma final
+comparisons keep v1. Record this limitation with every associated result.
+
+REVIEW, RESUME AND ARTIFACT CONTRACT
+
+Interactive Python is independently reviewed before execution, with approval
+bound to the exact code SHA-256. This review applies experiment rules without
+editing generated code, supplying answers or changing budgets. Do not approve
+code merely because its syntax parsed. Context audit failure stops the case.
+Existing successful turn/pass receipts are reused only after identity checks;
+do not delete state to obtain another model answer. Exp8 restart keeps files and
+edits, loses variables, starts a new queue epoch and notifies the model. Final
+edits are copied to a unique frozen submission directory with per-file hashes.
+
+Exp7's narrowly defined CLI empty-output recovery accepts only one retained
+nonempty completed message, matching the actual rollout, followed by an empty
+message; it preserves failed artifacts and uses the exact existing response.
+It never regenerates. Other failures need diagnosis; no generic blind retry rule
+is authorized. For any new runtime adaptation, retain old code/artifacts and
+record a fresh review and provenance, rather than rewriting old hashes.
+
+Local delivered artifacts: ROOT/outputs/replication/exp{1,2,4,5}_*/runs and
+reconstructed-exp3 through reconstructed-exp8, plus reconstructed-exp7-readers.
+Per-turn folders retain prompts, answers, CLI events, context audits, code reviews
+and raw tool outputs. Per-experiment protocols, summaries and independent reviews
+identify which measurements are completed. Remote large weights, frozen edits,
+activations and full evaluation records remain under TASK/results; Exp7 models
+remain under TASK/results/reconstructed-exp7. Never expose held-out records or
+private role metadata to ongoing reader/editor conversations.
+
+MATERIAL DIFFERENCES TO KEEP IN EVERY REPRODUCTION CLAIM
+
+* Original private evaluators/drivers and some checkpoints were not released.
+  Current Codex/backend and GPU binaries differ; exact historical randomness is
+  not recoverable. Container limits and recovery behavior are documented choices.
+* Exp4 uses JAX0.9/Python3.12 instead of author JAX0.4.38/Python3.10. Stored edit
+  values are float64; inference is float32. Reconstructed published tensors are
+  numerically equal; 3145 entries differ only by the sign bit of zero. This is
+  not a claim of byte-identical reconstruction of that NPZ.
+* Exp5 uses reconstructed seeds and simulator wrapper. Original PPO checkpoints
+  are unavailable; their archived scores remain references. The separate full
+  32-run PPO reconstruction is prepared and conditionally approved, with explicit
+  unknown-default choices. It must not be described as recovered author weights
+  or completed training until actual frozen outputs and evaluations exist.
+* Exp6 substitutes disclosed practice/held-out opponents and preserves prompt
+  diffs. PGX version and PRNG splitting are reconstructed.
+* Exp7 retrains once per seed using unchanged published code. Checkpoint bytes
+  and behavioral rates can differ. Reader driver/nudge thresholds, attention
+  precision and causal transplant/control semantics are documented reconstructions.
+* Exp8 reconstructs seed mapping, persistent kernel, forward service, handoff
+  every40 replies, explanation reminder ceiling and truthful notice adaptations.
+  Generation activations replay actual consumed tokens through Transformers;
+  float16 captures aggregate in float32. Final hidden residuals are pre-final-norm
+  following the prompt; the unavailable original implementation is ambiguous.
+  Current vLLM consumes two Gemma BOS tokens from rendered prompt strings; actual
+  IDs are retained. The authors' historical BOS count cannot be established.
+* Exp8 final evaluation reconstructs private MMLU/GPQA prompt helpers and fixes
+  langdetect seed0. Three original normalized MMLU/practice overlaps are retained
+  and reported, not filtered. Bounded shard grouping differs while full sample
+  counts/caps remain. The separate 64-sequence candidate and 64-answer Qwen partition
+  require prospective review and may introduce batching differences; active cases
+  and Gemma evaluations stay on v1. Published controls, fresh edits and archived reference
+  values always remain distinct. Full details are in the bundled protocols.

@@ -1,0 +1,6 @@
+OUTPUT of Python run 14 of at most 120:
+```
+Saved revision 7: third-line enclosure and supported approaches,
+rather than immediate attachment and compact central filling.
+
+```

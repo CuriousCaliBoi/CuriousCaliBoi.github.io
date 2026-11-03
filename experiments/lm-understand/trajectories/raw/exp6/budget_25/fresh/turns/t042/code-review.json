@@ -1,0 +1,6 @@
+{
+  "code_sha256": "e11e89d7c7889562409b06201fbe1adadee647c2f21a4ec2501f2f18fd355d2c",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Uses the reviewed analytic builder with a manually selected opening coefficient, archives prior parameters, and saves the new tensors. No network inference, game simulation, fitting, or search."
+}

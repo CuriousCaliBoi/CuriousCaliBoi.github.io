@@ -1,0 +1,6 @@
+{
+  "code_sha256": "dcda8a7996154e78c1b000a58bc1c1215c5d308f8188f4a7523727074a6e8e3c",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: weight SVD/eigenspaces, subspace projections and energies, polar matrix powers, and layer-normalization parameter statistics. No sequence/example inputs, hidden-state normalization, model/layer nonlinearities or external search."
+}

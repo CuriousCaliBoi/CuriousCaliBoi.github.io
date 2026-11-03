@@ -1,0 +1,6 @@
+OUTPUT of Python run 15 of at most 120:
+```
+Saved revision 8: direct safety seeds and an additional
+connected-group propagation step, without changing the architecture.
+
+```

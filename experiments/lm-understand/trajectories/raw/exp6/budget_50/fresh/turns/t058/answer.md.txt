@@ -1,0 +1,7 @@
+```python
+w=load("L6.W")
+for q in range(81):
+    w[3*81+q,q]=-6.5
+save("L6.W",w)
+print("Strengthened the penalty for insufficient post-move liberty support.")
+```

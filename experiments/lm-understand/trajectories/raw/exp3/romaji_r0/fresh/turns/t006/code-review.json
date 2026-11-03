@@ -1,0 +1,6 @@
+{
+  "code_sha256": "be5b8c098feeec756656190b6d269331d8204ff6fa61d4f79ba456af33ae4296",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: QK/OV cross-layer matrix compositions, weight-derived subspace traces/eigenspectra, ICA fit to stored MLP output-weight columns, and parameter-coordinate norms. No nonlinear model layers, input sequences or external search."
+}

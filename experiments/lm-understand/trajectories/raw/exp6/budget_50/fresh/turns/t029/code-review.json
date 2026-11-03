@@ -1,0 +1,6 @@
+{
+  "code_sha256": "96f9826eb488a99b6f3abb9643c2374c44d922e0705b84e5be8beefc87386105",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It rescales output weights and biases by a fixed 1.5 constant; this is a manual tensor edit without forward evaluation, fitting, simulation or search."
+}

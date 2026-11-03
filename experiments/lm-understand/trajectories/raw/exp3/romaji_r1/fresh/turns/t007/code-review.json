@@ -1,0 +1,6 @@
+{
+  "code_sha256": "9f145975555c45a2a939fcf0e2eddb8fde8407800e69e3c3982914ecd485bf68",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Only weight-derived QK/OV/bias contractions, spectra and projections, plus covariance whitening/KMeans/graph statistics on weight coefficients. Eigenvalue flooring by np.maximum is not an MLP activation. No layer-on-input evaluation or search."
+}

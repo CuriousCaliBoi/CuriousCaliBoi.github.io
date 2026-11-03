@@ -1,0 +1,19 @@
+```python
+import json,numpy as np
+gs=json.load(open("/work/pass_29/games.json"))
+bs=np.load("/work/pass_29/boards.npy")
+def strings(b):
+    return ["".join({1:"X",-1:"O",0:"."}[int(x)] for x in row)
+            for row in b.reshape(9,9)]
+count=0
+for i,g in enumerate(gs):
+    if g["end"]!="repetition" or g["result"]>0:continue
+    n=len(g["moves"])
+    repeats=np.flatnonzero(np.all(bs[i,:n-1]==bs[i,n-1],axis=1))
+    print("\nGAME",i,g["net_color"],"margin",g["margin"],"repeat",repeats.tolist())
+    print("Last moves",g["moves"][-6:])
+    for j in (n-5,n-3,n-1):
+        print("Before ply",j,strings(bs[i,j-1]))
+    count+=1
+    if count==3:break
+```

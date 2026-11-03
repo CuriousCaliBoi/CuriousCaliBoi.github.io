@@ -1,0 +1,29 @@
+OUTPUT of Python run 10 of at most 120:
+```
+{'turns_with_capture': 2752, 'noncapturing_self_atari': 100, 'capture_not_selected': 969}
+
+GAME 124 color black margin -0.5 ply 48 self-atari group size 8
+move/top5 {'ply': 48, 'by': 'net', 'move': 9, 'top5': [[64, 0.5230758190155029], [9, 0.1431242972612381], [15, 0.09632472693920135], [53, 0.083406001329422], [69, 0.0444214753806591]]} enemy atari [] own atari []
+['.XXXXO.O.', '.XOXO..O.', 'OOOXOOOO.', '.OOOXXXO.', '.XOX.XOO.', '.XOXX.XO.', '..X..X.X.', '...X.....', '.........']
+
+GAME 74 color black margin -6.5 ply 42 self-atari group size 6
+move/top5 {'ply': 42, 'by': 'net', 'move': 5, 'top5': [[5, 1.0], [28, 2.5210770360217793e-08], [6, 2.705431434435468e-09], [61, 1.6343800757212534e-09], [69, 1.6343800757212534e-09]]} enemy atari [(1, 47)] own atari [(5, 5)]
+['.OOOO....', '.OXXXXOO.', '.XOXOOOX.', '..OOXXX.X', '.OOXXX.X.', '.O.OX.X..', '..OX.X...', '....X....', '.........']
+
+GAME 95 color white margin -2.5 ply 67 self-atari group size 6
+move/top5 {'ply': 67, 'by': 'net', 'move': 54, 'top5': [[54, 0.9999998807907104], [68, 1.432029819170566e-07], [5, 1.8398493395466176e-08], [75, 9.283796842396441e-09], [69, 8.955565178325742e-09]]} enemy atari [(1, 75)] own atari []
+['O.O.O....', '.O.O..OOO', 'OOOXOO...', 'OXXXOOOOO', 'XXXXXOXXX', 'XXXXXOX.X', '.OXXXX.XX', 'OOOXX..X.', '.OX.X.X.X']
+
+GAME 9 color white margin -1.5 ply 41 self-atari group size 5
+move/top5 {'ply': 41, 'by': 'net', 'move': 52, 'top5': [[52, 0.7260398268699646], [75, 0.1848590075969696], [43, 0.04224962368607521], [76, 0.02645891346037388], [34, 0.006983794737607241]]} enemy atari [] own atari []
+['.........', '..OOX....', '.O.OXX...', '.O.OXXX..', '.OOXXOO..', '.OXXOXO.X', '.OOOOXOX.', '.OXXXXX..', '..O......']
+
+GAME 34 color black margin -7.5 ply 84 self-atari group size 5
+move/top5 {'ply': 84, 'by': 'net', 'move': 62, 'top5': [[62, 0.8259749412536621], [20, 0.15767735242843628], [35, 0.00986053142696619], [29, 0.005643751937896013], [81, 0.0008224687189795077]]} enemy atari [] own atari [(1, 78)]
+['XXXXXOO.O', '.X.XOOOO.', 'XX.XXOOOO', '.X.XOOOO.', 'X.XXOOOOX', '.XX.XOXXX', 'X.XXXOOO.', '.XXOOOOOO', 'X.XOOX.O.']
+
+GAME 117 color white margin -7.5 ply 19 self-atari group size 5
+move/top5 {'ply': 19, 'by': 'net', 'move': 49, 'top5': [[49, 0.7164511680603027], [58, 0.16001194715499878], [60, 0.05885747820138931], [29, 0.04639450088143349], [38, 0.006045097019523382]]} enemy atari [] own atari [(4, 49)]
+['.........', '.........', '...OOOO..', '...XXXXO.', '...XOOOX.', '...X.OXX.', '.....X...', '.........', '.........']
+
+```

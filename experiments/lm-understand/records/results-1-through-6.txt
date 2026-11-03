@@ -1,0 +1,58 @@
+EXPERIMENTS 1–6: ORIGINAL RESULTS AND FRESH REPLICATION
+Updated: 2026-11-03T18:12:25.718841+00:00
+
+Archived = authors' saved resnult. Released rerun = original policy weights evaluated again. Fresh = newly generated Codex answer/policy.
+
+Experiment 1: game identification
+Archived 4/4; fresh 4/4 by the released category rule. Both accept Frogger as Freeway, so this is not four exact game titles.
+
+Experiment 2: diffusion shape identification
+Archived 3/3 shape categories; fresh 3/3. Both incorrectly described hollow outlines in all three cases, rather than filled shapes.
+
+Experiment 3: language networks
+Measure | Archived | Fresh
+Corpus identification | 6/6 | 3/6
+Unshuffled token order | 6/6 | 6/6
+Exact copy-head set | 6/6 | 5/6
+Fresh English: 2/2; Python: 1/2; romaji: 0/2. Copy-head criterion: released induction metric >0.2.
+
+Experiment 4: car repair
+Policy | Test successes / 1024
+Authors archived repair | 1024
+Released repair rerun | 1024
+Fresh repair | 0
+The released repair takes 73 steps on average. Every fresh repair episode ends in a red collision; average length 33.15625 steps. The rounded unedited network fails by timeout.
+
+Experiment 5: MinAtar
+Game | Archived mean | Released rerun mean +/- SE | Fresh mean +/- SE
+breakout | 517.411 | 496.270 +/- 7.817 | 380.585 +/- 6.176
+seaquest | 53.110 | 51.533 +/- 1.348 | 35.245 +/- 0.842
+asterix | 53.178 | 52.202 +/- 0.992 | 64.378 +/- 0.942
+1000 episodes per policy; 6000 total. Fresh Asterix improves; fresh Breakout and Seaquest decline.
+
+Experiment 6: Go
+Mean win rate against released same-size PPO seeds 0 and 2, 4000 games per policy:
+Passes | Archived against same opponents | Released rerun | Fresh | Fresh minus rerun (percentage points)
+0 | 39.400% | 40.275% | 19.500% | -20.775
+10 | not reported | 49.825% | 69.375% | +19.550
+25 | not reported | 47.950% | 69.750% | +21.800
+50 | 76.350% | 77.225% | 85.125% | +7.900
+
+Original headline Go means (against DIFFERENT, unavailable smaller opponents):
+0 passes: 54.525%
+10 passes: 66.400%
+25 passes: 69.125%
+50 passes: 82.400%
+These headline means cannot be directly compared with the reconstructed same-size-opponent evaluation.
+48,000 held-out Go games total across four budgets, two policies and three opponents (including random).
+
+Limits
+Original prompts and released inputs retained, except disclosed Experiment 6 opponent-description changes. Historical CLI/backend and some original evaluator dependencies are unavailable.
+Car and MinAtar use reconstructed wrappers and new RNG streams.
+Go uses released same-size PPO seeds 0 and 2. The original headline results use unavailable smaller PPO opponents; those headline rates are not directly comparable.
+Go archived same-size comparisons are available for budgets 0 and 50. Their original RNG and wrapper differ from our rerun.
+Single fresh writer trial per task/budget; game-level error bars do not measure variation between new Codex trials.
+Original Experiment 5 PPO comparison checkpoints are unavailable. No full PPO baseline retraining was launched; it is cancelled.
+
+Recorded episode statistics and artifact hashes passed independent checks. This is not a second full simulator replay.
+Machine-readable comparison and source hashes: experiments-1-through-6-comparison.json

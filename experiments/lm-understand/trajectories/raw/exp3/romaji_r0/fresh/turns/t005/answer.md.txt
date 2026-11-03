@@ -1,0 +1,77 @@
+```python
+import numpy as np
+from scipy.linalg import eigh
+from scipy.optimize import linear_sum_assignment
+from sklearn.cluster import KMeans
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=3, suppress=True, linewidth=180)
+
+g1=W["ln1_w.0"].astype(float)
+g2=W["ln2_w.0"].astype(float)
+V=W["W_v.0"][192:256].astype(float)*g1
+B=W["W_o.0"][:,192:256].astype(float)@V
+F=W["W_fc.0"].astype(float)*g2
+_,_,vt=np.linalg.svd(V,full_matrices=False)
+
+print("MLP ROW-DIRECTION ASSOCIATION, NOT NEURON ACTIVATIONS")
+for rank in [18,22,24,27,32]:
+    T=vt[:rank].T
+    X=F@T
+    Y=F@B@T
+    mask=(np.linalg.norm(X,axis=1)>.4)&(np.linalg.norm(Y,axis=1)>.3)
+    X=X[mask];Y=Y[mask]
+    # Remove the average learned row direction.
+    X=X-X.mean(0)
+    Y=Y-Y.mean(0)
+    # Equalize the aggregate scales, without passing an input through the model.
+    Y=Y*np.linalg.norm(X)/np.linalg.norm(Y)
+    G=(X.T@X+Y.T@Y)/2
+    C=(X.T@Y+Y.T@X)/2
+    ev=eigh(C,G+np.eye(rank)*np.trace(G)/rank*.03,eigvals_only=True)
+    print("rank",rank,"rows",mask.sum(),"association eigenvalues",ev)
+
+print("\nINDEPENDENT CLUSTERINGS OF CURRENT/OV-PATH ROW DIRECTIONS")
+T=vt[:27].T
+X=F@T
+Y=F@B@T
+mask=(np.linalg.norm(X,axis=1)>.4)&(np.linalg.norm(Y,axis=1)>.3)
+X=X[mask];Y=Y[mask]
+X-=X.mean(0);Y-=Y.mean(0)
+Y*=np.linalg.norm(X)/np.linalg.norm(Y)
+G=(X.T@X+Y.T@Y)/2
+ev,U=np.linalg.eigh(G)
+wh=U@np.diag(1/np.sqrt(np.maximum(ev,.08*ev.max())))@U.T
+X=X@wh;Y=Y@wh
+X/=np.linalg.norm(X,axis=1,keepdims=True)
+Y/=np.linalg.norm(Y,axis=1,keepdims=True)
+for nc in [18,22,24,28]:
+    kx=KMeans(n_clusters=nc,n_init=20,random_state=0).fit(X)
+    ky=KMeans(n_clusters=nc,n_init=20,random_state=0).fit(Y)
+    cx=kx.cluster_centers_;cy=ky.cluster_centers_
+    cx=cx/np.linalg.norm(cx,axis=1,keepdims=True)
+    cy=cy/np.linalg.norm(cy,axis=1,keepdims=True)
+    r,c=linear_sum_assignment(-(cx@cy.T))
+    remap=np.zeros(nc,dtype=int);remap[c]=r
+    tab=np.zeros((nc,nc))
+    np.add.at(tab,(kx.labels_,remap[ky.labels_]),1)
+    S=(tab+tab.T)/2
+    deg=S.sum(0)
+    norm=S/np.sqrt(np.maximum(deg[:,None]*deg[None,:],1))
+    spec=np.linalg.eigvalsh(norm)
+    print("clusters",nc,
+          "matched center cos quantiles",np.percentile((cx@cy.T)[r,c],[0,25,50,75,100]),
+          "graph eigenvalues",spec)
+    print("cluster counts",np.sort(np.bincount(kx.labels_,minlength=nc)))
+    if nc==24:
+        print("24-cluster association table (unlabelled weight directions):")
+        print(tab.astype(int))
+
+print("\nL0H3 RAW QK COMPLEX MODES")
+q=W["W_q.0"][192:256].astype(float)
+k=W["W_k.0"][192:256].astype(float)
+ev=np.linalg.eigvals(k@q.T/8)
+sel=ev[(ev.imag>1e-6)&(abs(ev)>.10)]
+sel=sel[np.argsort(np.angle(sel))]
+print("angle, magnitude:",np.column_stack([np.angle(sel),abs(sel)]))
+```

@@ -1,0 +1,131 @@
+OUTPUT of Python run 10 of at most 120:
+```
+12 strong black -16.5 two passes caps/lost 5 17
+15 strong black 6.5 repetition caps/lost 13 8
+17 strong black -25.5 two passes caps/lost 21 53
+21 strong black -3.5 two passes caps/lost 8 21
+22 strong black -4.5 two passes caps/lost 15 17
+35 strong black -6.5 two passes caps/lost 24 36
+37 strong black -14.5 two passes caps/lost 6 15
+39 strong black -16.5 two passes caps/lost 32 72
+41 strong black 1.5 repetition caps/lost 7 4
+43 strong black -16.5 two passes caps/lost 17 30
+44 strong black -0.5 two passes caps/lost 20 46
+45 strong black 2.5 repetition caps/lost 18 13
+50 strong black -13.5 two passes caps/lost 3 9
+57 strong white 49.5 repetition caps/lost 50 4
+68 strong white -7.5 two passes caps/lost 8 39
+79 strong white -11.5 two passes caps/lost 9 25
+82 strong white 7.5 repetition caps/lost 3 4
+88 strong white 37.5 repetition caps/lost 42 10
+90 strong white -13.5 repetition caps/lost 14 34
+93 strong white -2.5 two passes caps/lost 16 49
+106 weak black 16.5 repetition caps/lost 39 14
+
+REPETITION DETAILS
+
+GAME 15 -1 black 6.5
+{'ply': 84, 'by': 'net', 'move': 18, 'top5': [[18, 1.0], [72, 0.0], [8, 0.0], [81, 0.0], [80, 0.0]]}
+.X.X.XXO.
+XXX.XXXXX
+XXXXXXOOX
+OXX.XOOOO
+OOXXXXOOO
+OOOOOOO..
+OOOXOXXOO
+OOXXX.XOO
+.X.X.X.X.
+{'ply': 85, 'by': 'opponent', 'move': 52}
+.X.X.XXO.
+XXX.XXXXX
+XXXXXXOOX
+OXX.XOOOO
+OOXXXXOOO
+OOOOOOOO.
+OOOXOXXOO
+OOXXX.XOO
+.X.X.X.X.
+{'ply': 86, 'by': 'net', 'move': 72, 'top5': [[72, 1.0], [8, 0.0], [81, 0.0], [80, 0.0], [68, 0.0]]}
+.X.X.XXO.
+XXX.XXXXX
+XXXXXXOOX
+OXX.XOOOO
+OOXXXXOOO
+OOOOOOOO.
+OOOXOXXOO
+OOXXX.XOO
+XX.X.X.X.
+{'ply': 87, 'by': 'opponent', 'move': 74}
+.X.X.XXO.
+XXX.XXXXX
+XXXXXXOOX
+OXX.XOOOO
+OOXXXXOOO
+OOOOOOOO.
+OOOXOXXOO
+OOXXX.XOO
+..OX.X.X.
+{'ply': 88, 'by': 'net', 'move': 73, 'top5': [[73, 1.0], [8, 0.0], [81, 0.0], [80, 0.0], [72, 0.0]]}
+.X.X.XXO.
+XXX.XXXXX
+XXXXXXOOX
+OXX.XOOOO
+OOXXXXOOO
+OOOOOOOO.
+OOOXOXXOO
+OOXXX.XOO
+.X.X.X.X.
+
+GAME 41 -1 black 1.5
+{'ply': 48, 'by': 'net', 'move': 13, 'top5': [[13, 0.9998], [44, 0.0001], [62, 0.0001], [68, 0.0], [67, 0.0]]}
+.........
+.XOOXXOX.
+.XOOOO.O.
+X.XXOOXO.
+.X.XXX.X.
+.XXXOOXXO
+XOOOOXXX.
+.........
+.........
+{'ply': 49, 'by': 'opponent', 'move': 4}
+....O....
+.XOOXXOX.
+.XOOOO.O.
+X.XXOOXO.
+.X.XXX.X.
+.XXXOOXXO
+XOOOOXXX.
+.........
+.........
+{'ply': 50, 'by': 'net', 'move': 24, 'top5': [[24, 1.0], [44, 0.0], [62, 0.0], [68, 0.0], [67, 0.0]]}
+....O....
+.XOOXXOX.
+.XOOOOXO.
+X.XXOOXO.
+.X.XXX.X.
+.XXXOOXXO
+XOOOOXXX.
+.........
+.........
+{'ply': 51, 'by': 'opponent', 'move': 42}
+....O....
+.XOOXXOX.
+.XOOOO.O.
+X.XXOO.O.
+.X.XXXOX.
+.XXXOOXXO
+XOOOOXXX.
+.........
+.........
+{'ply': 52, 'by': 'net', 'move': 33, 'top5': [[33, 1.0], [44, 0.0], [62, 0.0], [68, 0.0], [69, 0.0]]}
+....O....
+.XOOXXOX.
+.XOOOO.O.
+X.XXOOXO.
+.X.XXX.X.
+.XXXOOXXO
+XOOOOXXX.
+.........
+.........
+
+```

@@ -1,0 +1,6 @@
+OUTPUT of Python run 31 of at most 120:
+```
+Saved v24: isolated singleton recapture risk now dominates all local tactical bonuses.
+This avoids treating several nearby weak stones as justification for a repetition-prone recapture.
+
+```

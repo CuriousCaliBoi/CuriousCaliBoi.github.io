@@ -1,0 +1,17 @@
+```python
+import os,json,numpy as np
+print("Position files:",os.listdir("/work/pass_9"))
+for name in os.listdir("/work/pass_9"):
+    if name.endswith(".npz"):
+        z=np.load("/work/pass_9/"+name)
+        print(name,[(k,z[k].shape) for k in z.files])
+    elif name.endswith(".npy"):
+        a=np.load("/work/pass_9/"+name)
+        print(name,a.shape)
+    elif name.endswith(".txt"):
+        print(open("/work/pass_9/"+name).read())
+gs=json.load(open("/work/pass_8/games.json"))
+print("Loss margins:", sorted(g["margin"] for g in gs if g["result"]<0))
+print("Loss endings:",[(x,sum(g["result"]<0 and g["end"]==x for g in gs))
+                      for x in sorted({g["end"] for g in gs})])
+```

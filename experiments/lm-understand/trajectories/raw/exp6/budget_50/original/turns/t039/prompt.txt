@@ -1,0 +1,5 @@
+OUTPUT of Python run 21 of at most 120:
+```
+Saved v16: prioritize saving connected groups over harvesting isolated enemy stones.
+
+```

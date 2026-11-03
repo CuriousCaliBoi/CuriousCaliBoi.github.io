@@ -1,0 +1,37 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_17.npz",**{n:load(n) for n in names})
+
+revision=r'''
+_base={}
+exec(open("/work/design_v13.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(friendly_group_size=0.5, enemy_group_size=0.25)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    for i in range(81):
+        r,c=divmod(i,9)
+        ns=[rr*9+cc for rr,cc in
+            ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+            if 0<=rr<9 and 0<=cc<9]
+        for colour,target_channel,weak_channel,size_bonus in (
+            (0,5,4,p["friendly_group_size"]),
+            (1,4,5,p["enemy_group_size"]),
+        ):
+            target=81*target_channel+i
+            gate=4.0*size_bonus
+            t["L5.b"][target]-=gate
+            t["L5.W"][81*weak_channel+i,target]+=gate
+            for j in ns:
+                t["L5.W"][81*colour+j,target]+=size_bonus
+    return t,p
+'''
+open("/work/design_v18.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 18: gated local group-size bonuses, favoring")
+print("saving connected chains over isolated sacrificial stones.")

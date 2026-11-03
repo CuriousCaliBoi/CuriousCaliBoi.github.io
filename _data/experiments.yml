@@ -1,3 +1,8 @@
+lm-understand:
+  title: "Neural network weights: experiment records"
+  url: /experiments/lm-understand/
+  description: Recorded results, prompts, full Codex trajectories and reproduction files for eight weight-reading and weight-writing experiments.
+  mode: Recorded experiments
 open-flapping-airplanes:
   title: Training, serving, and Doom
   url: /experiments/open-flapping-airplanes/

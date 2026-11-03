@@ -1,0 +1,5 @@
+OUTPUT of Python run 34 of at most 120:
+```
+Saved v25: exact small-capture evidence guards against false edge captures and self-atari cycles.
+
+```

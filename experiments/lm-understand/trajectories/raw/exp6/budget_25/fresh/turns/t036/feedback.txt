@@ -1,0 +1,6 @@
+OUTPUT of Python run 22 of at most 120:
+```
+Saved revision 14: an extra friendly-liberty safety reserve
+to protect groups before they become trapped.
+
+```

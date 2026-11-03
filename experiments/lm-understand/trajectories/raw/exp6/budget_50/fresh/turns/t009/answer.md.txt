@@ -1,0 +1,24 @@
+```python
+import json, numpy as np
+gs=json.load(open("/work/pass_3/games.json"))
+print("Repetition outcomes:",
+      [(g["net_color"],g["result"],g["margin"],
+        g["moves"][-1]["by"],g["moves"][-1]["move"])
+       for g in gs if g["end"]=="repetition"])
+for g in sorted([g for g in gs if g["result"]<0],
+                key=lambda g:g["margin"])[:3]:
+    print("Loss",g["net_color"],g["margin"],
+          "captures/losses",g["stones_captured"],g["stones_lost"],
+          "opening",[m["move"] for m in g["moves"][:20]])
+
+# Count a captured adjacent point as one new liberty, rather than two.
+w=load("L5.W")
+for p in range(81):
+    r,c=divmod(p,9)
+    for rr,cc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):
+        if 0<=rr<9 and 0<=cc<9:
+            q=rr*9+cc
+            w[3*81+q,3*81+p]=-1
+save("L5.W",w)
+print("Capture-aware liberty penalty corrected.")
+```

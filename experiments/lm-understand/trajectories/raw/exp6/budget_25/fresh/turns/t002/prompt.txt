@@ -1,0 +1,8 @@
+OUTPUT of Python run 1 of at most 120:
+```
+Saved all 14 tensors.
+Total parameters: 1480274
+Nonzero parameters: 15611
+Analytically constructed policy; no training or network evaluation performed.
+
+```

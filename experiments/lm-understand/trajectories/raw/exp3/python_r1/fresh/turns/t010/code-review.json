@@ -1,0 +1,6 @@
+{
+  "code_sha256": "01dfe7d6f68c1fc6c29cf6ad212c96cdf35079f18c6ac10a306b0f5ba99b3a20",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: reconstructs weight-derived coordinate matrices using ICA/SVD/OV products, then compares those static graphs to bigram counts of explicitly invented reference texts via quadratic assignment. The reference text is counted only, never fed into model weights/layers, and no external corpus is read. The prompt allows fitting/clustering weights and forbids lookups and forward passes; graph alignment does not run the model or its nonlinear layers. No external search."
+}

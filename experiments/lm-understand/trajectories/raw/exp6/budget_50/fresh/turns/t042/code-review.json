@@ -1,0 +1,6 @@
+{
+  "code_sha256": "0973b1b04833d4f17d83e0cb3629a5ddb4aeb7e1af66c9de92ceefabf27ae84a",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It writes fixed neighbor-based and same-location layer-five coefficients. Only weights are manipulated; there is no model evaluation, fitting, move simulation or search."
+}

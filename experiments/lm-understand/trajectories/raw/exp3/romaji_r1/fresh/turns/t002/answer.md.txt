@@ -1,0 +1,66 @@
+```python
+import numpy as np
+from scipy.linalg import svd, svdvals
+from threadpoolctl import threadpool_limits
+
+def cos(a,b):
+    return np.sum(a*b)/(np.linalg.norm(a)*np.linalg.norm(b)+1e-30)
+
+with threadpool_limits(limits=2):
+    As, Bs, keybias, names = [], [], [], []
+    for l in range(4):
+        g = W[f"ln1_w.{l}"].astype(float)
+        b = W[f"ln1_b.{l}"].astype(float)
+        for j in range(6):
+            sl = slice(64*j,64*j+64)
+            q = W[f"W_q.{l}"][sl].astype(float)
+            k = W[f"W_k.{l}"][sl].astype(float)
+            v = W[f"W_v.{l}"][sl].astype(float)
+            o = W[f"W_o.{l}"][:,sl].astype(float)
+            qg,kg,vg = q*g,k*g,v*g
+            qg -= qg.mean(1,keepdims=True)
+            kg -= kg.mean(1,keepdims=True)
+            vg -= vg.mean(1,keepdims=True)
+            As.append(qg.T@kg/8)
+            Bs.append(o@vg)
+            keybias.append(kg.T@(q@b)/8)
+            names.append(f"L{l}H{j}")
+    for l in range(4):
+        ix = range(6*l,6*l+6)
+        print("\nLAYER",l,"QK cosine matrix")
+        print(np.round([[cos(As[i],As[j]) for j in ix] for i in ix],3))
+        print("OV cosine matrix")
+        print(np.round([[cos(Bs[i],Bs[j]) for j in ix] for i in ix],3))
+        print("key-bias cosine matrix")
+        print(np.round([[cos(keybias[i],keybias[j]) for j in ix] for i in ix],3))
+    print("\nSPECTRA: first 12 singular values")
+    for i in list(range(6))+list(range(18,24)):
+        sa=svdvals(As[i]); sb=svdvals(Bs[i])
+        print(names[i],"QK",np.round(sa[:12],3),"OV",np.round(sb[:12],3))
+    print("\nCROSS-HEAD QK similarities: strongest other-layer matches")
+    for i in range(24):
+        cs=[(cos(As[i],As[j]),names[j]) for j in range(24) if j//6!=i//6]
+        print(names[i],sorted(cs,reverse=True)[:3])
+    print("\nMLP LINEAR-ALGEBRA STATISTICS (no nonlinearities applied)")
+    for l in range(4):
+        f=W[f"W_fc.{l}"].astype(float)*W[f"ln2_w.{l}"]
+        f-=f.mean(1,keepdims=True)
+        p=W[f"W_proj.{l}"].astype(float)
+        sf=svdvals(f); sp=svdvals(p)
+        M=p@f
+        sm=svdvals(M)
+        rowcos=np.sum(f*p.T,axis=1)/(np.linalg.norm(f,axis=1)*np.linalg.norm(p,axis=0))
+        print("L",l,"FC spectrum",np.round(sf[:20],2))
+        print("PROJ spectrum",np.round(sp[:20],2))
+        print("PROJ@FC spectrum",np.round(sm[:20],2),
+              "trace/norm",round(np.trace(M)/np.linalg.norm(M),3),
+              "neuron input/output cos quantiles",np.round(np.quantile(rowcos,[0,.1,.5,.9,1]),3))
+    print("\nMost anisotropic coordinates")
+    for l in range(4):
+        g=W[f"ln1_w.{l}"]
+        b=W[f"ln1_b.{l}"]
+        ids=np.argsort(np.abs(b))[-8:][::-1]
+        print("L",l,"largest ln1 biases",[(int(i),round(float(b[i]),3),round(float(g[i]),3)) for i in ids])
+    ids=np.argsort(W["ln1_w.0"])[-20:][::-1]
+    print("Largest L0 ln1 scales",[(int(i),round(float(W["ln1_w.0"][i]),3)) for i in ids])
+```

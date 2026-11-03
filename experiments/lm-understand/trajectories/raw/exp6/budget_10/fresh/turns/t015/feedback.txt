@@ -1,0 +1,136 @@
+OUTPUT of Python run 10 of at most 120:
+```
+
+GAME 2 black -8.5 last moves [('net', 36), ('strong', 6), ('net', 78), ('strong', 45), ('net', 72), ('strong', 74), ('net', 73)]
+Before final three moves:
+O.OOOOOO.
+.O.XXO.O.
+OO.OXOOOO
+.OOOOOXOO
+XOOXXXXOX
+OOXXX.XXX
+OOOX.X.X.
+OOX.X.XX.
+.X.X.XX.X
+Final:
+O.OOOOOO.
+.O.XXO.O.
+OO.OXOOOO
+.OOOOOXOO
+XOOXXXXOX
+OOXXX.XXX
+OOOX.X.X.
+OOX.X.XX.
+.X.X.XX.X
+
+GAME 5 white 27.5 last moves [('strong', 5), ('net', 4), ('strong', 75), ('net', 6), ('strong', 73), ('net', 74), ('strong', 72)]
+Before final three moves:
+O.XOO.O.O
+XXXOOOOO.
+OXXXOOO.O
+OXXXOOO..
+OOOXO.OO.
+.OXXOOOXO
+OOOXXOXX.
+OOXXXXXXX
+X.OXXO.O.
+Final:
+O.XOO.O.O
+XXXOOOOO.
+OXXXOOO.O
+OXXXOOO..
+OOOXO.OO.
+.OXXOOOXO
+OOOXXOXX.
+OOXXXXXXX
+X.OXXO.O.
+
+GAME 6 black 13.5 last moves [('net', 7), ('strong', 25), ('net', 26), ('strong', 3), ('net', 0), ('strong', 18), ('net', 9)]
+Before final three moves:
+.OOO.OXX.
+XOOOOOOX.
+.XXXOOX.X
+XXXOOX.X.
+.XOOOXX..
+XXOOXX.X.
+OXXOX.X..
+OOOOOX.X.
+XX.O..X..
+Final:
+.OOO.OXX.
+XOOOOOOX.
+.XXXOOX.X
+XXXOOX.X.
+.XOOOXX..
+XXOOXX.X.
+OXXOX.X..
+OOOOOX.X.
+XX.O..X..
+
+GAME 10 black -15.5 last moves [('net', 22), ('strong', 54), ('net', 63), ('strong', 11), ('net', 72), ('strong', 54), ('net', 63)]
+Before final three moves:
+X.O.OOO..
+OOOXXO..O
+OOOOXOOOO
+XXOOOOOOO
+X.XOOOXOX
+XXXOXXXXX
+.XXOOOXXX
+XOOOOX.X.
+.OOOXXX.X
+Final:
+X.O.OOO..
+OOOXXO..O
+OOOOXOOOO
+XXOOOOOOO
+X.XOOOXOX
+XXXOXXXXX
+.XXOOOXXX
+XOOOOX.X.
+.OOOXXX.X
+
+GAME 31 white 21.5 last moves [('net', 73), ('strong', 18), ('net', 9), ('strong', 74), ('net', 0), ('strong', 18), ('net', 9)]
+Before final three moves:
+.XXXO.O..
+OXXXOOOO.
+.OOXXO.O.
+OOOXXOO.O
+.OXXXOOO.
+OOXXOXOXO
+OX.XOXXX.
+OXXXOOXX.
+.OXO.X...
+Final:
+.XXXO.O..
+OXXXOOOO.
+.OOXXO.O.
+OOOXXOO.O
+.OXXXOOO.
+OOXXOXOXO
+OX.XOXXX.
+OXXXOOXX.
+.OXO.X...
+
+GAME 43 white -3.5 last moves [('strong', 45), ('net', 79), ('strong', 78), ('net', 37), ('strong', 54), ('net', 63), ('strong', 45)]
+Before final three moves:
+.O.OOOXOX
+O.O.OXX.X
+OO.OOXXXX
+.OOXXXXXX
+OOOOXOOXX
+XOXXXOOXX
+.OOXX.XXX
+OXXXXXXXX
+XXXXXXXO.
+Final:
+.O.OOOXOX
+O.O.OXX.X
+OO.OOXXXX
+.OOXXXXXX
+OOOOXOOXX
+XOXXXOOXX
+.OOXX.XXX
+OXXXXXXXX
+XXXXXXXO.
+
+```

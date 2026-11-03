@@ -1,0 +1,6 @@
+{
+  "code_sha256": "06573aeed5926bcff350740f0fc2e24fd3530ea164095e043fbdf3434316ff9d",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Adds analytically specified gating and adjacency coefficients to existing reviewed tensors using manually chosen size bonuses. It does not compute the gates on any input, simulate games, fit examples, or search."
+}

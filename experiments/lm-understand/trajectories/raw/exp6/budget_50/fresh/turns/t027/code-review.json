@@ -1,0 +1,6 @@
+{
+  "code_sha256": "14d5277a5d60be66a43681df380eb5638ae8244d4ea87bbc2a12eb326e5ca262",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It rewires layer-six and output tensors using fixed analytically selected coefficients. It does not execute the represented features on any input, fit weights, simulate games or search moves."
+}

@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_id":"id-1ebcb4e0"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`."}}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"Saved all weights. The network implements handcrafted liberty propagation, guarded captures, atari escapes, self-atari avoidance, eye preservation, and connection/shape preferences.\n\nAcross both tests of the final weights, it won:\n- **79.7%** against strong (153/192)\n- **95.8%** against weak (46/48)\n- **100%** against random (16/16)\n\nIts tactical discipline and connected shapes should generalize, though hidden-opponent performance remains uncertain. No training, search, or sandbox forward evaluations were used."}}
+{"type":"turn.completed","usage":{"input_tokens":1077325,"cached_input_tokens":1013120,"cache_write_input_tokens":0,"output_tokens":28365,"reasoning_output_tokens":21241}}

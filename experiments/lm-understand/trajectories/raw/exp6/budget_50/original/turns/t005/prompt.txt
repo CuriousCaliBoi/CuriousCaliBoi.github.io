@@ -1,0 +1,93 @@
+OUTPUT of Python run 3 of at most 120:
+```
+{'capture_available': 875, 'capture_taken': 679, 'loss_events_3plus': 85, 'capture_absent_top5': 161}
+
+CAPTURED 17 game 51 ply 81 our previous move {'ply': 80, 'by': 'net', 'move': 9, 'top5': [[9, 0.7707], [28, 0.1547], [0, 0.0437], [81, 0.0302], [79, 0.0003]]} prior own ataris [(1, [1]), (4, [5]), (17, [52])]
+..XOX.O.O
+.OOOXXOOX
+XXOOXOOXX
+X.XOOOOOX
+.XXXOXXXX
+X.XOOXX.X
+XXXOXXXXO
+XOOOOXXOO
+XO.O.OO..
+
+CAPTURED 15 game 83 ply 82 our previous move {'ply': 81, 'by': 'net', 'move': 37, 'top5': [[37, 0.652], [81, 0.3356], [71, 0.007], [75, 0.003], [76, 0.002]]} prior own ataris [(1, [71])]
+XXXXXOXX.
+XOOXXOXXX
+OOOXOOOOO
+.OXXXOO.O
+O.OXXOOOO
+OOOXXO.O.
+OXOXOOOOO
+XXOXXXXO.
+.XX..X.XO
+
+CAPTURED 14 game 45 ply 89 our previous move {'ply': 88, 'by': 'net', 'move': 81, 'top5': [[81, 0.6572], [33, 0.3428], [44, 0.0], [72, 0.0], [80, 0.0]]} prior own ataris [(2, [0]), (14, [36])]
+.OOOOOXXX
+XXOOOXXX.
+OOOOOOXXX
+XXXXOX.XX
+.XXOOXXX.
+XXXOOOXXX
+OXXXOXXXX
+OOXOOXOOX
+.OXOOO.O.
+
+CAPTURED 14 game 62 ply 81 our previous move {'ply': 80, 'by': 'net', 'move': 79, 'top5': [[79, 0.998], [75, 0.0019], [81, 0.0], [76, 0.0], [25, 0.0]]} prior own ataris [(1, [79])]
+.XOOO.OOO
+XXXXOOO.O
+.XXXXOO.O
+X.XOOXOOO
+XXXXOXXOX
+.XXOOOXXX
+X.XXOOXXX
+.XXOOOOX.
+X.X..OX.X
+
+CAPTURED 13 game 91 ply 86 our previous move {'ply': 85, 'by': 'net', 'move': 81, 'top5': [[81, 1.0], [61, 0.0], [79, 0.0], [67, 0.0], [0, 0.0]]} prior own ataris [(13, [12])]
+XOOOOOOXX
+XXO.OOXXX
+XXXOOXXOO
+X.XXOOXXO
+XXXXXXXXO
+XXXOOOOOO
+XXOOOOO.O
+XXXO.OOOO
+.XOOOOO.O
+
+CAPTURED 12 game 48 ply 83 our previous move {'ply': 82, 'by': 'net', 'move': 45, 'top5': [[45, 1.0], [81, 0.0], [56, 0.0], [63, 0.0], [72, 0.0]]} prior own ataris [(12, [0]), (1, [8])]
+.XXXXXOX.
+OXXXOXOOO
+OOXXOOOXO
+OOOXOOXXX
+OOOOOXXX.
+.XXOXXX.X
+OO.OOX.X.
+.OOOXXX.X
+.OOXXXXX.
+
+CAPTURED 11 game 38 ply 81 our previous move {'ply': 80, 'by': 'net', 'move': 0, 'top5': [[0, 1.0], [81, 0.0], [55, 0.0], [52, 0.0], [44, 0.0]]} prior own ataris []
+.X.XXXOO.
+OXXXOXOOO
+OOOXOXOXO
+OOOOOOOXX
+XOOOOOXX.
+XXXOXXX.X
+X.XOXX.X.
+.XXXXXX.X
+X.X.X.XX.
+
+CAPTURED 11 game 54 ply 73 our previous move {'ply': 72, 'by': 'net', 'move': 44, 'top5': [[44, 0.5784], [2, 0.42], [10, 0.0011], [18, 0.0002], [9, 0.0001]]} prior own ataris [(2, [2]), (1, [44])]
+.X.XXOOOX
+..XOOOOOX
+.X.XXOXXX
+X.XXOOX.X
+.X.XOOXX.
+X.XOOOOOX
+XXXXO.OOO
+.X.XO..OO
+X.XOOO.O.
+
+```

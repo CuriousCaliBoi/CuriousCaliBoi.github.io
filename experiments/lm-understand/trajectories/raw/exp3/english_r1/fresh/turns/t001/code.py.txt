@@ -1,0 +1,43 @@
+import numpy as np
+import scipy.linalg as la
+from threadpoolctl import threadpool_limits
+
+np.set_printoptions(precision=4, suppress=True, linewidth=160)
+
+with threadpool_limits(limits=2):
+    print("AVAILABLE WEIGHTS")
+    print([(k, tuple(v.shape)) for k, v in sorted(W.items())])
+    print("\nLAYERNORM PARAMETERS: min, median, max, mean, std, L2 norm")
+    for l in range(4):
+        for name in ("ln1_w", "ln1_b", "ln2_w", "ln2_b"):
+            a = np.asarray(W[f"{name}.{l}"], dtype=np.float64)
+            print(f"{name}.{l}", np.round([a.min(), np.median(a), a.max(), a.mean(), a.std(), la.norm(a)], 5))
+
+    print("\nMATRIX SPECTRA: Frobenius norm, largest singular value, stable rank, top 8 singular values")
+    for l in range(4):
+        for name in ("W_q", "W_k", "W_v", "W_o", "W_fc", "W_proj"):
+            a = np.asarray(W[f"{name}.{l}"], dtype=np.float64)
+            s = la.svdvals(a)
+            print(f"{name}.{l}: norm={la.norm(a):.4f} smax={s[0]:.4f} stable_rank={np.sum(s*s)/s[0]**2:.2f} top={np.round(s[:8],4)}")
+
+    print("\nHEAD WEIGHT PRODUCTS (no inputs or forward passes)")
+    print("QK=Q.T@K/8; OV=O@V. symfrac=||symmetric part||F/||matrix||F; trcos=trace/(sqrt(384)*norm).")
+    for l in range(4):
+        for j in range(6):
+            sl = slice(64*j, 64*(j+1))
+            q = np.asarray(W[f"W_q.{l}"][sl], dtype=np.float64)
+            k = np.asarray(W[f"W_k.{l}"][sl], dtype=np.float64)
+            v = np.asarray(W[f"W_v.{l}"][sl], dtype=np.float64)
+            o = np.asarray(W[f"W_o.{l}"][:,sl], dtype=np.float64)
+            qk = q.T @ k / 8
+            ov = o @ v
+            sq = la.svdvals(qk)[:64]
+            so = la.svdvals(ov)[:64]
+            print(
+                f"L{l}H{j}: Q,K,V,O norms={np.round([la.norm(q),la.norm(k),la.norm(v),la.norm(o)],3)} "
+                f"QK norm={la.norm(qk):.3f} top={np.round(sq[:6],3)} sr={np.sum(sq*sq)/sq[0]**2:.2f} "
+                f"symfrac={la.norm((qk+qk.T)/2)/la.norm(qk):.3f} "
+                f"trcos={np.trace(qk)/(np.sqrt(384)*la.norm(qk)):.4f}; "
+                f"OV norm={la.norm(ov):.3f} top={np.round(so[:4],3)} sr={np.sum(so*so)/so[0]**2:.2f} "
+                f"trcos={np.trace(ov)/(np.sqrt(384)*la.norm(ov)):.4f}"
+            )

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "dca38a4cf02a6aa06e4b2a272065f992b5f3296e709ce5dad88f790b44dc4cba",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Reuses a prior reviewed analytic builder with a manually chosen scalar coefficient and saves the resulting tensors. No model/layer evaluation, new game simulation, fitting, or search."
+}

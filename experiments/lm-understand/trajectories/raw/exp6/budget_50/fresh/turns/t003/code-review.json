@@ -1,0 +1,6 @@
+{
+  "code_sha256": "cfa4bd41845e93fdddd8079f6f4a173e4fbc59360471ad72150ad86e517d99f5",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It lists and reads only previously returned pass_1 artifacts in the allowed workspace; no weight execution, search, training or external access."
+}

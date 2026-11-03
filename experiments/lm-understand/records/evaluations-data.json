@@ -1,0 +1,179 @@
+{
+  "title": "Audited replication results: Experiments 4\u20136",
+  "status": "All four Go budgets complete; comparisons use reconstructed runtimes.",
+  "created_utc": "2026-11-03T09:16:49.842831+00:00",
+  "sources": {
+    "reconstructed-exp4/results.json": "9dc02ab889c271045b93f8382585e224f6ad25172f258273ca9b621b7d6b2237",
+    "reconstructed-exp4/independent-review.json": "5724efaf2bee8cb58b9c4a1c2b438bfc7792d00598876cdff9389a5d479f02a7",
+    "reconstructed-exp5/summary.json": "03fe9fc15c1ffa13db1b60b480e46a731b43ff7944503a31469100d30a4f7c43",
+    "reconstructed-exp5/independent-review.json": "dac2ed8e9e3e3f53b2a1485e9bfc34ac71a88f17ad5789de78c191c1db878abc",
+    "reconstructed-exp6/scoring/budget_0/summary.json": "29bd8fa26a31ad77495fa4062496451ac4a20f42f884ec64e0a3b46d0b972d86",
+    "reconstructed-exp6/scoring/budget_0/independent-review.json": "750caea40a4b8c363568e7e1109220d4e97d9887d91f5dff1784fde06d26c532",
+    "reconstructed-exp6/scoring/budget_10/summary.json": "049baf19e606cf2e6a55437b2128152539de139f4ea837cc1aeb284252ed0e3b",
+    "reconstructed-exp6/scoring/budget_10/independent-review.json": "678f3d9b1f149b0f24aa33030941d6a867938e292053fd95cd707771032f911d",
+    "reconstructed-exp6/scoring/budget_25/summary.json": "fe381617e8686fd042aa4518f553bca359bd37f50280d7192038604712c86db4",
+    "reconstructed-exp6/scoring/budget_25/independent-review.json": "f2974e2f99ec7862ffedf89c10c37db3336155d6699513e63dd74d8d3489872c",
+    "reconstructed-exp6/scoring/budget_50/summary.json": "4779fc053935ae615f01583802bbdf76b7b70209d899efa55685cca961178e08",
+    "reconstructed-exp6/scoring/budget_50/independent-review.json": "58fe9625c8beedfb210a302c4c5baaf204e32be8c746d5d4e7d371b52a7d29c6"
+  },
+  "exp4": [
+    {
+      "policy": "Rounded base",
+      "episodes": 1024,
+      "successes": 0,
+      "success_rate": 0.0
+    },
+    {
+      "policy": "Released edit",
+      "episodes": 1024,
+      "successes": 1024,
+      "success_rate": 1.0
+    },
+    {
+      "policy": "Fresh edit",
+      "episodes": 1024,
+      "successes": 0,
+      "success_rate": 0.0
+    }
+  ],
+  "exp5": [
+    {
+      "game": "breakout",
+      "policy": "released",
+      "episodes": 1000,
+      "mean": 496.27,
+      "se": 7.816555484331935
+    },
+    {
+      "game": "breakout",
+      "policy": "fresh",
+      "episodes": 1000,
+      "mean": 380.585,
+      "se": 6.1761759953004045
+    },
+    {
+      "game": "seaquest",
+      "policy": "released",
+      "episodes": 1000,
+      "mean": 51.533,
+      "se": 1.3479651037474676
+    },
+    {
+      "game": "seaquest",
+      "policy": "fresh",
+      "episodes": 1000,
+      "mean": 35.245,
+      "se": 0.8415849572326257
+    },
+    {
+      "game": "asterix",
+      "policy": "released",
+      "episodes": 1000,
+      "mean": 52.202,
+      "se": 0.9919511899096464
+    },
+    {
+      "game": "asterix",
+      "policy": "fresh",
+      "episodes": 1000,
+      "mean": 64.378,
+      "se": 0.9417473143067645
+    }
+  ],
+  "exp6": [
+    {
+      "budget": 0,
+      "policy": "released_control",
+      "games": 4000,
+      "wins": 1611,
+      "main_score": 0.40275,
+      "opponents": [
+        "ppo_same_size_lr3e-5_s0",
+        "ppo_same_size_lr3e-5_s2"
+      ]
+    },
+    {
+      "budget": 0,
+      "policy": "fresh",
+      "games": 4000,
+      "wins": 780,
+      "main_score": 0.195,
+      "opponents": [
+        "ppo_same_size_lr3e-5_s0",
+        "ppo_same_size_lr3e-5_s2"
+      ]
+    },
+    {
+      "budget": 10,
+      "policy": "released_control",
+      "games": 4000,
+      "wins": 1993,
+      "main_score": 0.49824999999999997,
+      "opponents": [
+        "ppo_same_size_lr3e-5_s0",
+        "ppo_same_size_lr3e-5_s2"
+      ]
+    },
+    {
+      "budget": 10,
+      "policy": "fresh",
+      "games": 4000,
+      "wins": 2775,
+      "main_score": 0.69375,
+      "opponents": [
+        "ppo_same_size_lr3e-5_s0",
+        "ppo_same_size_lr3e-5_s2"
+      ]
+    },
+    {
+      "budget": 25,
+      "policy": "released_control",
+      "games": 4000,
+      "wins": 1918,
+      "main_score": 0.47950000000000004,
+      "opponents": [
+        "ppo_same_size_lr3e-5_s0",
+        "ppo_same_size_lr3e-5_s2"
+      ]
+    },
+    {
+      "budget": 25,
+      "policy": "fresh",
+      "games": 4000,
+      "wins": 2790,
+      "main_score": 0.6975,
+      "opponents": [
+        "ppo_same_size_lr3e-5_s0",
+        "ppo_same_size_lr3e-5_s2"
+      ]
+    },
+    {
+      "budget": 50,
+      "policy": "released_control",
+      "games": 4000,
+      "wins": 3089,
+      "main_score": 0.77225,
+      "opponents": [
+        "ppo_same_size_lr3e-5_s0",
+        "ppo_same_size_lr3e-5_s2"
+      ]
+    },
+    {
+      "budget": 50,
+      "policy": "fresh",
+      "games": 4000,
+      "wins": 3405,
+      "main_score": 0.8512500000000001,
+      "opponents": [
+        "ppo_same_size_lr3e-5_s0",
+        "ppo_same_size_lr3e-5_s2"
+      ]
+    }
+  ],
+  "notes": [
+    "Released means published networks re-evaluated in reconstructed runtimes; fresh means newly generated networks.",
+    "Go uses substituted held-out same-size PPO seeds 0 and 2; historical opponent comparisons are unavailable.",
+    "Only MinAtar panels show error bars (\u00b11 SE). Car and Go show point estimates. MinAtar panels use separate scales."
+  ],
+  "updated_utc": "2026-11-03T11:23:41.182830+00:00"
+}

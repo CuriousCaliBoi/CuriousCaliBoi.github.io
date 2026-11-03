@@ -1,0 +1,5 @@
+OUTPUT of Python run 6 of at most 120:
+```
+Saved v3: longer-range liberty propagation and conservative eye preservation.
+
+```

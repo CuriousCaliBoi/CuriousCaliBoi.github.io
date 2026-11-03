@@ -1,0 +1,6 @@
+{
+  "code_sha256": "330e9a91683ccb6f7cede03338724755363673c5df9b8ffa8bd906e1008f620c",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It applies a fixed 4/3 scalar to output weight and bias tensors. This manual edit performs no forward computation, fitting, simulation or search."
+}

@@ -1,0 +1,71 @@
+import numpy as np
+from threadpoolctl import threadpool_limits
+threadpool_limits(2)
+np.set_printoptions(precision=3, suppress=True, linewidth=180)
+rng=np.random.default_rng(1729)
+
+# C = I - 11^T/d is used only as a linear-algebra projector on weights.
+# No normalization, attention, activation function, or network evaluation is performed.
+def centered_reader(name,l,j):
+    a=W[f"{name}.{l}"][64*j:64*j+64].astype(float)*W[f"ln1_w.{l}"]
+    return a-a.mean(axis=1,keepdims=True)
+
+A={};B={};Kbias={}
+for l in range(4):
+    bias=W[f"ln1_b.{l}"].astype(float)
+    for j in range(6):
+        q=centered_reader("W_q",l,j)
+        k=centered_reader("W_k",l,j)
+        v=centered_reader("W_v",l,j)
+        o=W[f"W_o.{l}"][:,64*j:64*j+64].astype(float)
+        A[l,j]=q.T@k/8
+        B[l,j]=o@v
+        Kbias[l,j]=k.T@(W[f"W_q.{l}"][64*j:64*j+64].astype(float)@bias)/8
+
+print("CENTERED WEIGHT DIAGNOSTICS")
+print("QKnorm; QK effective rank; trace/F; key-affine norm; fraction of key-affine energy at coordinate 21")
+for l in range(4):
+    for j in range(6):
+        a=A[l,j]
+        s=np.linalg.svd(a,compute_uv=False)[:64]
+        z=Kbias[l,j]
+        print(f"L{l}H{j}",np.round([
+            np.linalg.norm(a),(s@s)**2/np.sum(s**4),
+            np.trace(a)/np.linalg.norm(a),np.linalg.norm(z),
+            z[21]**2/(z@z)],4))
+
+v=centered_reader("W_v",0,3)
+o=W["W_o.0"][:,192:256].astype(float)
+_,_,vt=np.linalg.svd(v,full_matrices=False)
+perms=[rng.permutation(64) for _ in range(300)]
+
+print("\nKEY-SIDE MATCHING, WITH BROKEN-OV-PAIRING CONTROLS")
+for r in [16,20,24,28,32]:
+    T=vt[:r].T
+    right=v@T
+    print("subspace rank",r)
+    for l,j in [(1,1),(1,2),(1,5),(2,4),(3,0),(3,3),(3,4)]:
+        left=T.T@A[l,j]@o
+        c=left@right
+        actual=np.trace(c)/np.linalg.norm(c)
+        null=np.array([np.trace(left[:,p]@right)/np.linalg.norm(left[:,p]@right) for p in perms])
+        print(f"L{l}H{j}: actual={actual:.3f} null_mean={null.mean():.3f}",
+              f"null_sd={null.std():.3f} null_max={null.max():.3f}")
+
+print("\nL0H0 RELATIVE ROTATION CHECK: ROBUSTNESS TO SUBSPACE SIZE")
+q=W["W_q.0"][192:256].astype(float)
+k=W["W_k.0"][192:256].astype(float)
+ref=q.T@k/8
+u,s,vt=np.linalg.svd(ref,full_matrices=False)
+a0=W["W_q.0"][:64].astype(float).T@W["W_k.0"][:64].astype(float)/8
+for rank in [24,32,40,48,56]:
+    U=np.linalg.svd(np.hstack([u[:,:rank],vt[:rank].T]),full_matrices=False)[0][:,:rank]
+    base=U.T@ref@U
+    uu,ss,vv=np.linalg.svd(base)
+    rotation=uu@vv
+    target=U.T@a0@U
+    correlations=[]
+    for n in range(-8,9):
+        p=np.linalg.matrix_power(rotation,n)
+        correlations.append((n,float(np.sum(target*p)/(np.linalg.norm(target)*np.linalg.norm(p)))))
+    print("rank",rank,"best",sorted(correlations,key=lambda x:-x[1])[:5])

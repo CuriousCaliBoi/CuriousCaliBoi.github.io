@@ -1,0 +1,40 @@
+```python
+import numpy as np
+A={n:a.copy() for n,a in dict(np.load("/work/policy_v7.npz")).items()}
+V1=dict(np.load("/work/policy_v1.npz"))
+def u(ch,p): return 81*ch+p
+def ns(p):
+    r,c=divmod(p,9)
+    return [(r+dr)*9+c+dc for dr,dc in [(-1,0),(1,0),(0,-1),(0,1)]
+            if 0<=r+dr<9 and 0<=c+dc<9]
+
+# Compute positional influence later, directly from the retained stones.
+# This frees one spatial map for an opponent three-liberty certificate.
+A["L5.W"][:,:81]=V1["L4.W"][:,405:486]
+A["L5.b"][:81]=V1["L4.b"][405:486]
+for p in range(81):
+    for q in ns(p):
+        A["L5.W"][u(3,q),u(0,p)]+=7.5
+        A["L5.W"][u(5,q),u(0,p)]+=2.5
+
+for k in (2,3,4):
+    A[f"L{k}.W"][:,405:486]=0
+    A[f"L{k}.b"][405:486]=0
+for p in range(81):
+    A["L2.b"][u(5,p)]=-44
+    A["L2.W"][u(1,p),u(5,p)]=40
+    A["L2.W"][u(3,p),u(5,p)]=2
+    for q in ns(p):
+        A["L2.W"][u(3,q),u(5,p)]+=1
+
+    A["L3.W"][u(1,p),u(5,p)]=1
+    for q in [p]+ns(p):
+        A["L3.W"][u(5,q),u(5,p)]-=1
+        A["L4.W"][u(5,q),u(5,p)]+=1
+    for q in ns(p):
+        A["L4.W"][u(1,q),u(5,p)]-=1
+
+for name in NAMES: save(name,A[name])
+np.savez("/work/policy_v8.npz",**A)
+print("Saved symmetric two-/three-liberty certificates and proactive attacks.")
+```

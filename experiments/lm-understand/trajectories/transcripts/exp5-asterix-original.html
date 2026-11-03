@@ -1,0 +1,378 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Experiment 5 · asterix · original</title><style>
+:root{font-family:system-ui,sans-serif;color:#172638;background:#f4f6f8;line-height:1.55}
+body{max-width:1120px;margin:auto;padding:30px 24px 70px}a{color:#185ca3}
+h1{line-height:1.2;font-size:2rem}h2{margin-top:2rem}header,p.note{max-width:960px}
+table{border-collapse:collapse;width:100%;background:white}td,th{border:1px solid #d4dce4;padding:10px 12px;text-align:left}
+th{background:#e7edf3}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.55 ui-monospace,SFMono-Regular,monospace;background:#f8fafc;padding:16px;border-radius:6px}
+details{background:white;border:1px solid #d4dce4;border-radius:8px;padding:12px 16px;margin:12px 0}
+summary{cursor:pointer;font-weight:650}.badge{font-size:13px;color:#33516e}.small{font-size:13px;color:#45586c}
+.event{border-left:3px solid #5081b3;padding-left:12px}.harness{border-left:3px solid #ab7540;padding-left:12px}
+nav{margin:14px 0}.notice{background:#edf4fb;border:1px solid #bbd1e5;border-radius:8px;padding:14px 18px}
+@media(max-width:700px){body{padding:16px 10px}td,th{padding:6px}table{font-size:13px}}
+</style><body><nav><a href="/experiments/lm-understand/">Experiment records</a></nav><p class="notice">Public export: private machine paths and host identifiers are replaced with placeholders. Recorded results and numerical weights are unchanged. Embedded source hashes identify the original files; PUBLICATION-MANIFEST.json identifies these public copies.</p><nav><a href="../index.html">All trajectories</a> · <a href="exp5-asterix-original.txt">Complete plain text</a></nav><h1>Experiment 5 · asterix · original</h1><p class="notice">Built-in Codex tools were disabled. Harness execution is separately permitted only in Experiments 3 and 6. Text below is taken from saved records; it is not a new model run. Reasoning blocks are the summaries actually emitted by the CLI.</p><details><summary>Recorded neutral instruction file</summary><pre>Answer the user&#x27;s request.
+</pre></details><details id="t001" open><summary>t001 · no harness call</summary><p class="small"><a href="../raw/exp5/asterix/original/reply/prompt.txt">Recorded prompt</a> · <a href="../raw/exp5/asterix/original/reply/events.jsonl">Raw CLI events</a> · <a href="../raw/exp5/asterix/original/reply/run.json">Settings and audit</a></p><details><summary>Message sent to Codex — 10,930 characters</summary><pre>YOUR TASK: write, from scratch, the weights of a policy network that plays this game as well as possible. There is no training: no data, no loss, no gradients, no fine-tuning; you choose every number yourself. You have no tools: no code execution, no calculator, nothing to run. This is a single response and you will get no feedback. First describe your design briefly (the strategy, and what the hidden units compute), then write the edits block.
+
+THE GAME: Asterix from MinAtar (Young &amp; Tian 2019), on a 10 x 10 grid. The player moves freely in the 4 directions. Enemies and treasure enter from the sides and move horizontally. Picking up a treasure gives +1. The episode ends when the player touches an enemy. The difficulty rises over time (enemies and treasure move faster and appear more often).
+Actions: left, up, right, down move the player; fire does nothing (it acts as no-op).
+
+The game&#x27;s exact implementation (the MinAtar package, version 1.0.15, file minatar/environments/asterix.py) follows. The environment wrapper calls act(a) with a = 0..5 meaning &#x27;n&#x27; (no-op), &#x27;l&#x27;, &#x27;u&#x27;, &#x27;r&#x27;, &#x27;d&#x27;, &#x27;f&#x27; (this file&#x27;s action_map), and with probability 0.1 it repeats the previous action instead of the new one (sticky actions). The observation the network gets is built from this file&#x27;s state() as described under THE INPUT.
+
+```python
+################################################################################################################
+# Authors:                                                                                                     #
+# Kenny Young (kjyoung@ualberta.ca)                                                                            #
+# Tian Tian (ttian@ualberta.ca)                                                                                #
+################################################################################################################
+import numpy as np
+
+
+#####################################################################################################################
+# Constants
+#
+#####################################################################################################################
+ramp_interval = 100
+init_spawn_speed = 10
+init_move_interval = 5
+shot_cool_down = 5
+
+
+#####################################################################################################################
+# Env
+#
+# The player can move freely along the 4 cardinal directions. Enemies and treasure spawn from the sides. A reward of
+# +1 is given for picking up treasure. Termination occurs if the player makes contact with an enemy. Enemy and
+# treasure direction are indicated by a trail channel. Difficulty is periodically increased by increasing the speed
+# and spawn rate of enemies and treasure.
+#
+#####################################################################################################################
+class Env:
+    def __init__(self, ramping=True):
+        self.channels ={
+            &#x27;player&#x27;:0,
+            &#x27;enemy&#x27;:1,
+            &#x27;trail&#x27;:2,
+            &#x27;gold&#x27;:3
+        }
+        self.action_map = [&#x27;n&#x27;,&#x27;l&#x27;,&#x27;u&#x27;,&#x27;r&#x27;,&#x27;d&#x27;,&#x27;f&#x27;]
+        self.ramping = ramping
+        self.random = np.random.RandomState()
+        self.reset()
+
+    # Update environment according to agent action
+    def act(self, a):
+        r = 0
+        if(self.terminal):
+            return r, self.terminal
+
+        a = self.action_map[a]
+
+        # Spawn enemy if timer is up
+        if(self.spawn_timer==0):
+            self._spawn_entity()
+            self.spawn_timer = self.spawn_speed
+
+        # Resolve player action
+        if(a==&#x27;l&#x27;):
+            self.player_x = max(0, self.player_x-1)
+        elif(a==&#x27;r&#x27;):
+            self.player_x = min(9, self.player_x+1)
+        elif(a==&#x27;u&#x27;):
+            self.player_y = max(1, self.player_y-1)
+        elif(a==&#x27;d&#x27;):
+            self.player_y = min(8, self.player_y+1)
+
+        # Update entities
+        for i in range(len(self.entities)):
+            x = self.entities[i]
+            if(x is not None):
+                if(x[0:2]==[self.player_x,self.player_y]):
+                    if(self.entities[i][3]):
+                        self.entities[i] = None
+                        r+=1
+                    else:
+                        self.terminal = True
+        if(self.move_timer==0):
+            self.move_timer = self.move_speed
+            for i in range(len(self.entities)):
+                x = self.entities[i]
+                if(x is not None):
+                    x[0]+=1 if x[2] else -1
+                    if(x[0]&lt;0 or x[0]&gt;9):
+                        self.entities[i] = None
+                    if(x[0:2]==[self.player_x,self.player_y]):
+                        if(self.entities[i][3]):
+                            self.entities[i] = None
+                            r+=1
+                        else:
+                            self.terminal = True
+
+        # Update various timers
+        self.spawn_timer -= 1
+        self.move_timer -= 1
+
+
+        #Ramp difficulty if interval has elapsed
+        if self.ramping and (self.spawn_speed&gt;1 or self.move_speed&gt;1):
+            if(self.ramp_timer&gt;=0):
+                self.ramp_timer-=1
+            else:
+                if(self.move_speed&gt;1 and self.ramp_index%2):
+                    self.move_speed-=1
+                if(self.spawn_speed&gt;1):
+                    self.spawn_speed-=1
+                self.ramp_index+=1
+                self.ramp_timer=ramp_interval
+        return r, self.terminal
+
+    # Spawn a new enemy or treasure at a random location with random direction (if all rows are filled do nothing)
+    def _spawn_entity(self):
+        lr = self.random.rand() &lt; 1/2
+        is_gold = self.random.rand() &lt; 1/3
+        x = 0 if lr else 9
+        slot_options = [i for i in range(len(self.entities)) if self.entities[i]==None]
+        if(not slot_options):
+            return
+        slot = slot_options[self.random.randint(len(slot_options))]
+        self.entities[slot] = [x,slot+1,lr,is_gold]
+
+    # Query the current level of the difficulty ramp, could be used as additional input to agent for example
+    def difficulty_ramp(self):
+        return self.ramp_index
+
+    # Process the game-state into the 10x10xn state provided to the agent and return
+    def state(self):
+        state = np.zeros((10,10,len(self.channels)),dtype=bool)
+        state[self.player_y,self.player_x,self.channels[&#x27;player&#x27;]] = 1
+        for x in self.entities:
+            if(x is not None):
+                c = self.channels[&#x27;gold&#x27;] if x[3] else self.channels[&#x27;enemy&#x27;]
+                state[x[1], x[0],c] = 1
+                back_x = x[0]-1 if x[2] else x[0]+1
+                if(back_x&gt;=0 and back_x&lt;=9):
+                    state[x[1], back_x, self.channels[&#x27;trail&#x27;]] = 1
+        return state
+
+    # Reset to start state for new episode
+    def reset(self):
+        self.player_x = 5
+        self.player_y = 5
+        self.entities = [None]*8
+        self.shot_timer = 0
+        self.spawn_speed = init_spawn_speed
+        self.spawn_timer = self.spawn_speed
+        self.move_speed = init_move_interval
+        self.move_timer = self.move_speed
+        self.ramp_timer = ramp_interval
+        self.ramp_index = 0
+        self.terminal = False
+
+    # Dimensionality of the game-state (10x10xn)
+    def state_shape(self):
+        return [10,10,len(self.channels)]
+
+    # Subset of actions that actually have a unique impact in this environment
+    def minimal_action_set(self):
+        minimal_actions = [&#x27;n&#x27;,&#x27;l&#x27;,&#x27;u&#x27;,&#x27;r&#x27;,&#x27;d&#x27;]
+        return [self.action_map.index(x) for x in minimal_actions]
+
+```
+
+THE INPUT (600 numbers, each 0 or 1): the 10 x 10 grid (rows 0 top to 9 bottom, columns 0 left to 9 right) with 6 channels. Input number i = (row * 10 + column) * 6 + channel; for example input 0 is (row 0, column 0, channel 0), input 6 is (row 0, column 1, channel 0) and input 599 is (row 9, column 9, channel 5). In this game:
+  channel 0 (player): the player
+  channel 1 (danger): enemies
+  channel 2 (reward): treasure
+  channel 3 (projectile): always empty in this game
+  channel 4 (trail): the cell just behind each enemy and treasure (it shows which way it moves)
+  channel 5 (gauge): always empty in this game
+THE OUTPUT (6 numbers, logits) for the actions 0 no-op, 1 left, 2 up, 3 right, 4 down, 5 fire; the action is sampled from the softmax of the logits. With probability 0.1 the game repeats the previous action instead (sticky actions).
+How the 6 channels are built from the game&#x27;s own channels (state() in the source): channel 0 (player) &lt;- player; channel 1 (danger) &lt;- enemy; channel 2 (reward) &lt;- gold; channel 3 (projectile) &lt;- nothing; channel 4 (trail) &lt;- trail; channel 5 (gauge) &lt;- nothing. A cell is 1 in a channel if any of its source channels is 1.
+
+THE NETWORK (the same architecture as the reinforcement-learning networks it will be compared with): a multilayer perceptron with 600 inputs, two hidden layers of 32 units with tanh activations, and 6 outputs; 20,486 parameters:
+  h1 = tanh(x @ W1 + b1)          W1: 600 x 32, b1: 32
+  h2 = tanh(h1 @ W2 + b2)         W2: 32 x 32,  b2: 32
+  logits = h2 @ W3 + b3           W3: 32 x 6,  b3: 6
+Row i of W1 holds the weights from input i to the 32 first-layer units; column j of a weight matrix belongs to unit j of the next layer. EVERY WEIGHT STARTS AT 0; you set the weights you need.
+
+HOW YOUR NETWORK IS SCORED: its mean score per episode over 1,000 episodes, each action sampled from the softmax of the logits (with the sticky actions above); an episode also stops after 10,000 steps. It is compared with networks of the same architecture trained by reinforcement learning on this game.
+
+HOW TO WRITE THE WEIGHTS (numbers only; nothing is run). Write a code block whose opening line is three backticks followed by the word edits, one statement per line (&#x27;#&#x27; starts a comment; a long list may continue over the next lines). Tensors: W1, b1, W2, b2, W3, b3.
+
+```edits
+W1[12, 0] = 2.5                     # one entry: row 12, column 0
+W1[0:6, 3] = [1, 0, -1, 0, 2, 0]    # explicit values along a range (as many values as entries)
+b1[0:4] = -1                        # fill a range (a:b is half-open; &#x27;:&#x27; alone = the whole axis)
+W1[3:600:60, 0] = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1]   # column 0 of channel 3, rows 0..9 of the grid -&gt; unit 0
+W2[0:2, 0:3] = [[1, -1, 0.5], [0, 2, 0]]   # a 2-D list for a 2-D block (here 2 x 3)
+W3[:, 2] *= 2                       # scale (also += and -=)
+```
+Ranges: a:b is half-open, a:b:s takes every s-th index. Input index i = (row * 10 + column) * 6 + channel. Useful strided ranges: all 10 cells of column c in channel ch are rows c*6+ch : 600 : 60 of W1; all 10 cells of row r in channel ch are rows r*60+ch : r*60+60 : 6.
+Statements apply in order; a later statement overwrites an earlier one. Only the LAST edits block of your reply is read; a statement that cannot be read is skipped (the others still apply). Values: plain decimal numbers (|v| &lt;= 1e6).</pre></details><details><summary>CLI notice/error (verbatim)</summary><pre>Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Designing MLP weights**
+**Allocating row features**
+**Refining row threat masks**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Designing gated action features**
+**Balancing threat feature gates**
+**Choosing a row-switching policy**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Assessing horizontal escape**
+**Encoding horizontal dodge logic**
+**Structuring hazard units**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Aggregating attraction outputs**
+**Encoding gold-row states**
+**Setting player-difference values**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Exploring attraction weights**
+**Designing hazard features**
+**Estimating enemy density**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Assessing movement hazards**
+**Tuning hazard weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning hazard weighting**
+**Tuning gold-row decoder**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning action thresholds**
+**Adjusting proximity thresholds**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Setting h1 ranges for decoding**
+**Tuning decoding ranges**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Choosing up-distance values**
+**Tuning gating values**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Designing same-state detection**
+**Evaluating no-op encoding**
+**Tuning no-op hold weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Increasing upward tie bias**
+**Tuning approach reward weights**
+**Adjusting trail bias**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning the approach gate**
+**Setting T/G arrays**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Deriving directional masks**
+**Solving danger-mask weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Synthesizing directional reward weights**
+**Solving T boundary recurrence**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Designing directional risk gating**
+**Tuning no-op gating**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Evaluating hazard weights**
+**Tuning boundary penalties**
+**Tuning row-one penalties**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning hazard penalties**
+**Tuning vertical hazard policy**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Designing row weights**
+**Balancing gold-row units**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Separating no-op danger levels**
+**Tuning no-op hazard weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning gold-approach scoring**
+**Refining gold-row encoding**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Calibrating treasure-row scoring**
+**Tuning gold-distance weighting**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Adjusting second-step buffer**
+**Defining second-row hazards**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning hazard penalties**
+**Refining hazard penalties**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining hazard encoding**
+**Comparing track layouts**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Choosing vertical policy settings**
+**Setting vertical policy weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning distance-based movement**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning hazard distance encoding**
+**Refining gold latent encoding**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining 32-unit allocation**
+**Defining row-one thresholds**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Implementing 32-unit reward design**
+**Tuning baseline compensation**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning distance weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning distance-aware movement**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning movement weights**
+**Refining hazard severity**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Calibrating risk penalties**
+**Estimating early-risk penalty**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning edge hazard coefficients**
+**Comparing hazard rewards**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Tuning hazard weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Preparing row-slice assignments**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Calculating hazard penalties**
+**Comparing hazard penalties**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Adjusting scoring weights**
+**Comparing penalty scores**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Calibrating hazard weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Preparing player weight inputs**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Deriving hazard weights**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Computing matrix entries**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Preparing matrix block assignments**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Setting hazard network parameters**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Preparing directional feature brief**
+**Preparing weight matrices**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Combining state arrays**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Building strided W2/W3 matrices**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Refining treasure-row detection**
+**Validating action probabilities**</pre></details><details><summary>Recorded reasoning summary</summary><pre>**Checking edge-case baselines**</pre></details><div class="event"><h3>Codex reply</h3><pre>I use a conservative interception policy: stay in column 5, approach nearby incoming treasure, and wait in its row. The first layer computes directional hazards, sticky-action lookahead, and distance-coded treasure signals. The second layer combines strong safety penalties with treasure attraction and waiting preferences.
+
+```edits
+# First-layer biases.
+b1[:] = -8
+
+# Player-conditioned upward hazards.
+W1[90:570:60, 0:8] = [
+[8, 0, 0, 0, 0, 0, 0, 0],
+[6, 0, 0, 0, 0, 0, 0, 0],
+[3, 4, 0, 0, 0, 0, 0, 0],
+[0, 3, 4, 0, 0, 0, 0, 0],
+[0, 0, 3, 4, 0, 0, 0, 0],
+[0, 0, 0, 3, 4, 0, 0, 0],
+[0, 0, 0, 0, 3, 4, 0, 0],
+[0, 0, 0, 0, 0, 3, 4, 0]
+]
+
+# Player-conditioned downward hazards.
+W1[90:570:60, 8:16] = [
+[0, 4, 3, 0, 0, 0, 0, 0],
+[0, 0, 4, 3, 0, 0, 0, 0],
+[0, 0, 0, 4, 3, 0, 0, 0],
+[0, 0, 0, 0, 4, 3, 0, 0],
+[0, 0, 0, 0, 0, 4, 3, 0],
+[0, 0, 0, 0, 0, 0, 4, 3],
+[0, 0, 0, 0, 0, 0, 0, 6],
+[0, 0, 0, 0, 0, 0, 0, 8]
+]
+
+# Player-conditioned waiting hazards and edge-row penalties.
+W1[90:570:60, 16:24] = [
+[7, 0, 0, 0, 0, 0, 0, 0],
+[0, 4, 0, 0, 0, 0, 0, 0],
+[0, 0, 4, 0, 0, 0, 0, 0],
+[0, 0, 0, 4, 0, 0, 0, 0],
+[0, 0, 0, 0, 4, 0, 0, 0],
+[0, 0, 0, 0, 0, 4, 0, 0],
+[0, 0, 0, 0, 0, 0, 4, 0],
+[0, 0, 0, 0, 0, 0, 0, 7]
+]
+
+# Signed distance codes for treasure rows 1 through 8.
+W1[90:570:60, 24:32] = [
+[0, -0.8, -1.4, -1.5, -1.6, -1.7, -1.8, -1.9],
+[0.8, 0, -0.8, -1.4, -1.5, -1.6, -1.7, -1.8],
+[1.4, 0.8, 0, -0.8, -1.4, -1.5, -1.6, -1.7],
+[1.5, 1.4, 0.8, 0, -0.8, -1.4, -1.5, -1.6],
+[1.6, 1.5, 1.4, 0.8, 0, -0.8, -1.4, -1.5],
+[1.7, 1.6, 1.5, 1.4, 0.8, 0, -0.8, -1.4],
+[1.8, 1.7, 1.6, 1.5, 1.4, 0.8, 0, -0.8],
+[1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 0.8, 0]
+]
+
+# Enemy contributions: upward, downward, and waiting hazard units.
+W1[61:120:6, 0:24:8] = [[0,0,0],[0,0,0],[0,0,3],[5,5,4],[6,6,9],[11,11,10],[6,6,9],[5,5,4],[0,0,3],[0,0,0]]
+W1[121:180:6, 1:24:8] = [[0,0,0],[0,0,0],[0,0,3],[5,5,4],[6,6,9],[11,11,10],[6,6,9],[5,5,4],[0,0,3],[0,0,0]]
+W1[181:240:6, 2:24:8] = [[0,0,0],[0,0,0],[0,0,3],[5,5,4],[6,6,9],[11,11,10],[6,6,9],[5,5,4],[0,0,3],[0,0,0]]
+W1[241:300:6, 3:24:8] = [[0,0,0],[0,0,0],[0,0,3],[5,5,4],[6,6,9],[11,11,10],[6,6,9],[5,5,4],[0,0,3],[0,0,0]]
+W1[301:360:6, 4:24:8] = [[0,0,0],[0,0,0],[0,0,3],[5,5,4],[6,6,9],[11,11,10],[6,6,9],[5,5,4],[0,0,3],[0,0,0]]
+W1[361:420:6, 5:24:8] = [[0,0,0],[0,0,0],[0,0,3],[5,5,4],[6,6,9],[11,11,10],[6,6,9],[5,5,4],[0,0,3],[0,0,0]]
+W1[421:480:6, 6:24:8] = [[0,0,0],[0,0,0],[0,0,3],[5,5,4],[6,6,9],[11,11,10],[6,6,9],[5,5,4],[0,0,3],[0,0,0]]
+W1[481:540:6, 7:24:8] = [[0,0,0],[0,0,0],[0,0,3],[5,5,4],[6,6,9],[11,11,10],[6,6,9],[5,5,4],[0,0,3],[0,0,0]]
+
+# Trails cancel receding enemies and already-passed treasure.
+# Columns within each block: upward hazard, downward hazard, waiting hazard, treasure.
+W1[64:120:6, 0:32:8] = [[0,0,0,0],[0,0,0,-8],[0,0,0,-8],[0,0,-3,-16],[-5,-5,-4,-16],[-6,-6,-9,-24],[-5,-5,-4,-16],[0,0,-3,-16],[0,0,0,-8],[0,0,0,-8]]
+W1[124:180:6, 1:32:8] = [[0,0,0,0],[0,0,0,-8],[0,0,0,-8],[0,0,-3,-16],[-5,-5,-4,-16],[-6,-6,-9,-24],[-5,-5,-4,-16],[0,0,-3,-16],[0,0,0,-8],[0,0,0,-8]]
+W1[184:240:6, 2:32:8] = [[0,0,0,0],[0,0,0,-8],[0,0,0,-8],[0,0,-3,-16],[-5,-5,-4,-16],[-6,-6,-9,-24],[-5,-5,-4,-16],[0,0,-3,-16],[0,0,0,-8],[0,0,0,-8]]
+W1[244:300:6, 3:32:8] = [[0,0,0,0],[0,0,0,-8],[0,0,0,-8],[0,0,-3,-16],[-5,-5,-4,-16],[-6,-6,-9,-24],[-5,-5,-4,-16],[0,0,-3,-16],[0,0,0,-8],[0,0,0,-8]]
+W1[304:360:6, 4:32:8] = [[0,0,0,0],[0,0,0,-8],[0,0,0,-8],[0,0,-3,-16],[-5,-5,-4,-16],[-6,-6,-9,-24],[-5,-5,-4,-16],[0,0,-3,-16],[0,0,0,-8],[0,0,0,-8]]
+W1[364:420:6, 5:32:8] = [[0,0,0,0],[0,0,0,-8],[0,0,0,-8],[0,0,-3,-16],[-5,-5,-4,-16],[-6,-6,-9,-24],[-5,-5,-4,-16],[0,0,-3,-16],[0,0,0,-8],[0,0,0,-8]]
+W1[424:480:6, 6:32:8] = [[0,0,0,0],[0,0,0,-8],[0,0,0,-8],[0,0,-3,-16],[-5,-5,-4,-16],[-6,-6,-9,-24],[-5,-5,-4,-16],[0,0,-3,-16],[0,0,0,-8],[0,0,0,-8]]
+W1[484:540:6, 7:32:8] = [[0,0,0,0],[0,0,0,-8],[0,0,0,-8],[0,0,-3,-16],[-5,-5,-4,-16],[-6,-6,-9,-24],[-5,-5,-4,-16],[0,0,-3,-16],[0,0,0,-8],[0,0,0,-8]]
+
+# Treasure plus trail equals 8 before interception, and 0 after passing.
+W1[62:120:6, 24] = [8,8,16,16,24,24,24,16,16,8]
+W1[122:180:6, 25] = [8,8,16,16,24,24,24,16,16,8]
+W1[182:240:6, 26] = [8,8,16,16,24,24,24,16,16,8]
+W1[242:300:6, 27] = [8,8,16,16,24,24,24,16,16,8]
+W1[302:360:6, 28] = [8,8,16,16,24,24,24,16,16,8]
+W1[362:420:6, 29] = [8,8,16,16,24,24,24,16,16,8]
+W1[422:480:6, 30] = [8,8,16,16,24,24,24,16,16,8]
+W1[482:540:6, 31] = [8,8,16,16,24,24,24,16,16,8]
+
+# Second-layer hazard aggregation.
+W2[0:8, 0] = 1
+W2[8:16, 1] = 1
+W2[16:24, 2] = 1
+b2[0:3] = 7
+
+# Treasure window decoders.
+W2[24, 3:6] = [20,20,24]
+W2[25, 6:10] = [24,20,20,24]
+W2[26, 10:14] = [24,20,20,24]
+W2[27, 14:18] = [24,20,20,24]
+W2[28, 18:22] = [24,20,20,24]
+W2[29, 22:26] = [24,20,20,24]
+W2[30, 26:30] = [24,20,20,24]
+W2[31, 30:32] = [24,20]
+
+b2[3:32:4] = 8
+b2[4:30:4] = -8
+b2[5:30:4] = -21.6
+b2[6:32:4] = 21.6
+
+# Safety penalties.
+W3[0, 2] = -80
+W3[1, 4] = -80
+W3[2, 0] = -80
+
+# Prefer waiting when aligned with incoming treasure.
+W3[3:32:4, 0] = 16
+W3[4:30:4, 0] = -16
+
+# Distance-decaying upward attraction.
+W3[4:30:4, 2] = 6
+W3[5:30:4, 2] = -6
+
+# Distance-decaying downward attraction.
+W3[6:32:4, 4] = 6
+W3[7:32:4, 4] = -6
+
+# Baseline corrections; suppress horizontal movement and redundant fire.
+b3[:] = [17, -1000, 0.15, -1000, -0.69, -1000]
+```</pre></div></details></body></html>

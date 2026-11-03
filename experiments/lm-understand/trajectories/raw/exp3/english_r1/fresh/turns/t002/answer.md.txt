@@ -1,0 +1,71 @@
+```python
+import numpy as np
+import scipy.linalg as la
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4, suppress=True, linewidth=180)
+
+def cosine(a, b):
+    return np.vdot(a, b).real / (la.norm(a) * la.norm(b) + 1e-30)
+
+with threadpool_limits(limits=2):
+    QK, OV = {}, {}
+    for l in range(4):
+        g = np.asarray(W[f"ln1_w.{l}"], dtype=float)
+        for j in range(6):
+            s = slice(64*j, 64*j+64)
+            q = np.asarray(W[f"W_q.{l}"][s], dtype=float) * g
+            k = np.asarray(W[f"W_k.{l}"][s], dtype=float) * g
+            v = np.asarray(W[f"W_v.{l}"][s], dtype=float) * g
+            o = np.asarray(W[f"W_o.{l}"][:,s], dtype=float)
+            QK[l,j] = q.T @ k / 8
+            OV[l,j] = o @ v
+
+    print("GAIN-WEIGHTED PRODUCTS: A=diag(ln1_w) Q.T K diag(ln1_w)/8, B=O V diag(ln1_w)")
+    print("These are matrix products only; no LayerNorm, attention, or MLP evaluations.")
+    for l in range(4):
+        for j in range(6):
+            a, b = QK[l,j], OV[l,j]
+            s = la.svdvals(a)
+            ev = la.eigvals(a)
+            ev = ev[np.argsort(-abs(ev))][:12]
+            print(f"L{l}H{j}: A_norm={la.norm(a):.4f}, sr={sum(s*s)/s[0]**2:.2f}, "
+                  f"symfrac={la.norm((a+a.T)/2)/la.norm(a):.3f}, B_norm={la.norm(b):.3f}, "
+                  f"top_s={np.round(s[:6],4)}, eig={np.round(ev[:8],4)}")
+
+    print("\nPAIRWISE QK COSINES WITHIN EACH LAYER")
+    for l in range(4):
+        print("L",l)
+        print(np.array([[cosine(QK[l,i], QK[l,j]) for j in range(6)] for i in range(6)]))
+
+    print("\nL0H2 FULL NONZERO SINGULAR SPECTRUM")
+    print(la.svdvals(QK[0,2])[:64])
+    print("\nL0H2 TOP EIGENVALUES OF UNWEIGHTED Q.T K/8")
+    q = np.asarray(W["W_q.0"][128:192], dtype=float)
+    k = np.asarray(W["W_k.0"][128:192], dtype=float)
+    ev = la.eigvals(k @ q.T / 8)
+    print(ev[np.argsort(-abs(ev))][:32])
+
+    print("\nRESIDUAL COORDINATE CONCENTRATION")
+    for l in range(4):
+        g = np.asarray(W[f"ln1_w.{l}"], dtype=float)
+        q = np.asarray(W[f"W_q.{l}"], dtype=float)
+        k = np.asarray(W[f"W_k.{l}"], dtype=float)
+        energy = np.sum((q*g)**2 + (k*g)**2, axis=0)
+        ix = np.argsort(-energy)[:16]
+        print(f"L{l}: top_coordinates={ix}; fraction_top16={energy[ix].sum()/energy.sum():.4f}; gains={np.round(g[ix],4)}")
+
+    print("\nDIRECT OV ALIGNMENT WITH LATER QK (matrix composition only)")
+    print("For each later head: strongest earlier B on key side; enrichment = ||A B||F/(||A||F||B||F/sqrt(384)).")
+    for l in range(1,4):
+        for j in range(6):
+            a = QK[l,j]
+            scores = []
+            for m in range(l):
+                for h in range(6):
+                    b = OV[m,h]
+                    c = a @ b
+                    enrich = la.norm(c)*np.sqrt(384)/(la.norm(a)*la.norm(b))
+                    trace_ratio = np.trace(c)/(la.norm(c)*np.sqrt(384)+1e-30)
+                    scores.append((enrich, m, h, trace_ratio))
+            print(f"L{l}H{j}:", [(f"L{m}H{h}", round(e,3), round(t,4)) for e,m,h,t in sorted(scores, reverse=True)[:5]])
+```

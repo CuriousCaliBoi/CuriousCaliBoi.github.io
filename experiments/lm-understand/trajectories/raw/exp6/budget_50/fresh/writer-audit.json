@@ -1,0 +1,331 @@
+{
+  "passed": true,
+  "budget": 50,
+  "case_id": "a68c3c49ed7b4219bc75bafadd071956",
+  "cli_turns": 92,
+  "python_runs": 41,
+  "passes": 50,
+  "all_code_sha_bound_manual_approvals": true,
+  "pass_records": [
+    {
+      "turn": "t002",
+      "pass": 1,
+      "kind": "games",
+      "request_sha256": "0bd70cd830fbd3ec98d276207d265b4d280a7c2cb3e998ad63d30d20a0057605"
+    },
+    {
+      "turn": "t006",
+      "pass": 2,
+      "kind": "games",
+      "request_sha256": "f4c80f9186ce1a7bc37702a260ea41b09c870ddc948a06867bb7d03d3d23d3bd"
+    },
+    {
+      "turn": "t008",
+      "pass": 3,
+      "kind": "games",
+      "request_sha256": "834aa5a75044808e3c060e2274eac7bc06094403e087084249ab3921959990ac"
+    },
+    {
+      "turn": "t010",
+      "pass": 4,
+      "kind": "games",
+      "request_sha256": "3aa5a970dc297550bd055ef850da59cda4b7d129f64580ffe6efa2b3a7cfe156"
+    },
+    {
+      "turn": "t013",
+      "pass": 5,
+      "kind": "games",
+      "request_sha256": "434669eec8949596059a11d63fe34f3a1cc7dd9d0361374d7f8c53151be7702c"
+    },
+    {
+      "turn": "t015",
+      "pass": 6,
+      "kind": "games",
+      "request_sha256": "042283e5fa6031cf782ae22f24ad83e9bd73453570c9d18356490d73856e5ded"
+    },
+    {
+      "turn": "t018",
+      "pass": 7,
+      "kind": "games",
+      "request_sha256": "786062447fa766f422af6c47246e44d74f0d5301495de97b135649506da26758"
+    },
+    {
+      "turn": "t020",
+      "pass": 8,
+      "kind": "games",
+      "request_sha256": "2fa6ef31585771b02fcfa8e84f19d6bc5a88e1e943b74e54ffd2f2fa98b248e5"
+    },
+    {
+      "turn": "t021",
+      "pass": 9,
+      "kind": "positions",
+      "request_sha256": "8cafb80fb61d3f3bfc79e79f87d5fe98c884dfa3abbac198cbc205db42fa9ecf"
+    },
+    {
+      "turn": "t024",
+      "pass": 10,
+      "kind": "games",
+      "request_sha256": "ddba6af537f34c4b861bcf3074e14594ee6ee72c96401d47e23ebe0b1097007c"
+    },
+    {
+      "turn": "t026",
+      "pass": 11,
+      "kind": "games",
+      "request_sha256": "fd6bd966a76743447a54d644a2b91c94d17aca47521f4d4973c4b67ee6ca28c5"
+    },
+    {
+      "turn": "t028",
+      "pass": 12,
+      "kind": "games",
+      "request_sha256": "22737b8389e47d3e12e7a40d4798bc04899ae8873d3e93b40f788f7d24a5f50f"
+    },
+    {
+      "turn": "t030",
+      "pass": 13,
+      "kind": "games",
+      "request_sha256": "32a0b1e25699c58039adec830ad53fe021420a86121dcc19bb6f125503931269"
+    },
+    {
+      "turn": "t031",
+      "pass": 14,
+      "kind": "games",
+      "request_sha256": "8329cd0f2644221c05ff62b2c7882f82814f52a9b7a7434a580bec25a84cddbf"
+    },
+    {
+      "turn": "t033",
+      "pass": 15,
+      "kind": "games",
+      "request_sha256": "f97ceee41e63d5e424b5e372729b2db976ff80644690882cf35a62a4f7d01cb9"
+    },
+    {
+      "turn": "t035",
+      "pass": 16,
+      "kind": "games",
+      "request_sha256": "b497eccfcefb50a2207de43d50f2a7b8f3c9dbff0be3af0335135723179fc1b4"
+    },
+    {
+      "turn": "t038",
+      "pass": 17,
+      "kind": "games",
+      "request_sha256": "23e629795e7de3921ead93446dfce9b9281a7e7b2412230650dfb8c4b05f3e56"
+    },
+    {
+      "turn": "t039",
+      "pass": 18,
+      "kind": "games",
+      "request_sha256": "aded85c13c524a6555fa61e8a07032d6ac386dce531b789cecd7e11f18397de9"
+    },
+    {
+      "turn": "t041",
+      "pass": 19,
+      "kind": "games",
+      "request_sha256": "6ca1f5eb14f938d8085d0531e1d3896e8376c49cb60c7db83ae2e4a552d032a0"
+    },
+    {
+      "turn": "t043",
+      "pass": 20,
+      "kind": "games",
+      "request_sha256": "a6f3f16c7ec7dd1a7b023155ae7b0984544132df9240cde8b11889aa29dfea71"
+    },
+    {
+      "turn": "t045",
+      "pass": 21,
+      "kind": "games",
+      "request_sha256": "20dcb42f76ab9bb78aa6836e8d447be9de223807f05e70e261934de6faaf3e43"
+    },
+    {
+      "turn": "t047",
+      "pass": 22,
+      "kind": "games",
+      "request_sha256": "8657c83b8f09784fc0daa743de798cc5df015e07cde79e2c10b822c3ef8abe01"
+    },
+    {
+      "turn": "t049",
+      "pass": 23,
+      "kind": "games",
+      "request_sha256": "89d3a1cd54442eeff67e4ef57fc668abdbed58d74d56bc76160c40901f4d127a"
+    },
+    {
+      "turn": "t051",
+      "pass": 24,
+      "kind": "games",
+      "request_sha256": "b433f95d0eb3fb7d141f5614bb43b107d2b9d9c49b94f0bb5d3a6cf279aa787e"
+    },
+    {
+      "turn": "t053",
+      "pass": 25,
+      "kind": "games",
+      "request_sha256": "b5febb8853f742970d88c614b1ec8706a43b75bb85842a5352dd37e3bcd92886"
+    },
+    {
+      "turn": "t055",
+      "pass": 26,
+      "kind": "games",
+      "request_sha256": "bc80a0559c052f6241b85ef081aa783ea93a3ce3d3e89a7a8f9174bb69c5b0f1"
+    },
+    {
+      "turn": "t057",
+      "pass": 27,
+      "kind": "games",
+      "request_sha256": "42c9f29e93893580f522d0245f034093ed99b83a7ede7cb6a77aa091f098761f"
+    },
+    {
+      "turn": "t059",
+      "pass": 28,
+      "kind": "games",
+      "request_sha256": "164bc5158f469384208f5494b5a9d09576d9eb44911c47ba674296e04c3bb6e3"
+    },
+    {
+      "turn": "t061",
+      "pass": 29,
+      "kind": "games",
+      "request_sha256": "8c28cf6d8f463c9a3c72ef1bd89029361c1bddbd837cc6389556fc779a64d39b"
+    },
+    {
+      "turn": "t064",
+      "pass": 30,
+      "kind": "games",
+      "request_sha256": "34b9d43faab9cd48993c886164bf3e5e2adc4dce02803e00754b66956cc740a3"
+    },
+    {
+      "turn": "t065",
+      "pass": 31,
+      "kind": "positions",
+      "request_sha256": "1bc5f467121800ba9baebaa45feefa23638a6b29ff2f4e79a838931e1080abb8"
+    },
+    {
+      "turn": "t067",
+      "pass": 32,
+      "kind": "games",
+      "request_sha256": "1bec170e418b3e37ba2504c90575781420d6c61e97c633fe9c59fa2d51254b12"
+    },
+    {
+      "turn": "t069",
+      "pass": 33,
+      "kind": "games",
+      "request_sha256": "d84bcee6ef6350e6df750ba5f0665424b700ab8839cb6fdb9989c5810d9e8d31"
+    },
+    {
+      "turn": "t070",
+      "pass": 34,
+      "kind": "games",
+      "request_sha256": "aed1fa8409aa1b183f4bf4732d9a2a0f7a1f2fcb6c8c17ac1edcb4d20a98e7d2"
+    },
+    {
+      "turn": "t072",
+      "pass": 35,
+      "kind": "games",
+      "request_sha256": "a138306459cf1d8d3915e03dab9910080b1643a9814b96141fd441b5e65789b5"
+    },
+    {
+      "turn": "t074",
+      "pass": 36,
+      "kind": "games",
+      "request_sha256": "2e60806aea177f2ce013fc3bf608599b5eb8744f197a060f172823a8cb327817"
+    },
+    {
+      "turn": "t076",
+      "pass": 37,
+      "kind": "games",
+      "request_sha256": "2e3ae2a32a456d1b5860f1f5d27db2dd3c1ff07f2feec08b0acaa5b1fa5d39bb"
+    },
+    {
+      "turn": "t077",
+      "pass": 38,
+      "kind": "games",
+      "request_sha256": "9ac60f8a67f1dc5c8fb19429eea9cf34cf36e5da255eb1b1b45d6787dc305f5d"
+    },
+    {
+      "turn": "t078",
+      "pass": 39,
+      "kind": "games",
+      "request_sha256": "7d5620dd4ce80d817d7a97d9ab14a781da5b0602ee1a89d8bce3b604a4b4d1c1"
+    },
+    {
+      "turn": "t079",
+      "pass": 40,
+      "kind": "games",
+      "request_sha256": "77fc57516afa4718be2d7d7349d6c485619fb2eae2148f1533f9a1ea2a7c9fe3"
+    },
+    {
+      "turn": "t081",
+      "pass": 41,
+      "kind": "games",
+      "request_sha256": "f86c633a69c3f1c6a401c94b460a38f94a945b1ee0b13360ca30d9717225e794"
+    },
+    {
+      "turn": "t082",
+      "pass": 42,
+      "kind": "games",
+      "request_sha256": "4f3c5f705cbb84706503138f0a26842d0bc6dc85c362bed6e02394b9958b95ad"
+    },
+    {
+      "turn": "t083",
+      "pass": 43,
+      "kind": "games",
+      "request_sha256": "c3ca2df68a79c86b58e775aa505c83436af1d449ac491b672ef76a828c15c3a8"
+    },
+    {
+      "turn": "t084",
+      "pass": 44,
+      "kind": "games",
+      "request_sha256": "23b5d3929c00ba81194e5fd363efe666109d193dc8bfc7f06cd68f65f1c461e6"
+    },
+    {
+      "turn": "t085",
+      "pass": 45,
+      "kind": "games",
+      "request_sha256": "f66f373702f9e75cd628097f177c62fca3d45f0e958998542867987010ca522f"
+    },
+    {
+      "turn": "t086",
+      "pass": 46,
+      "kind": "games",
+      "request_sha256": "6ac741ee31d0e7f4867d14069e23717282df6176e3271a85083f0eaad5e08e4f"
+    },
+    {
+      "turn": "t087",
+      "pass": 47,
+      "kind": "games",
+      "request_sha256": "5cec28f41b653b42ffb8e57d44a84add8de70d3e961752b2b6b7e5cb0213ecb9"
+    },
+    {
+      "turn": "t088",
+      "pass": 48,
+      "kind": "games",
+      "request_sha256": "e47f83965ea70d80ca9f293153d760854c33474fc0868668da5916b1694e06d7"
+    },
+    {
+      "turn": "t089",
+      "pass": 49,
+      "kind": "games",
+      "request_sha256": "0717b1bafddd6448bc6ef40fed1cd3d09ede3079a450434cc7e718c2a9859d09"
+    },
+    {
+      "turn": "t091",
+      "pass": 50,
+      "kind": "games",
+      "request_sha256": "57e82f28cbb4b9cb31e0c0e934adfa35072ea968627c0bf74d88678f22443b5d"
+    }
+  ],
+  "failed_requests_or_python": [],
+  "tensor_sha256": {
+    "L1.W": "bf5274e762002189f92cdca22fadcd8c4bd5f5067658b59b036c1f422859b0b0",
+    "L1.b": "643a9e7d53117b31643a5dcca12dec810f6ef241efd36af72369e4bf6a5199d7",
+    "L2.W": "5463c3eccba7993d06d7b739a32b2f1c7c5304a28dd61c38151f9ab561a2a6f8",
+    "L2.b": "dfc5f536f08358659ab3221f8b936fb65b4a448af77982b105ff04f65e21e987",
+    "L3.W": "c8bbf9311f0d029238c25381312e5e40e8d7c1c1d8a2d4c022875aa6cbfe3a56",
+    "L3.b": "9c3b2910e86a8bf91ae2afbd15364722fceef4116dc1aac537575dc0486abd35",
+    "L4.W": "015d5c7731b90f60db0ad994f8b7dd8d64dd141f2d8805703e16081342668033",
+    "L4.b": "2aaec815a64f1af4bcda56b177f6bba39a98d25c6391c85f7e58d10935efc548",
+    "L5.W": "a582d88b7d9d3e4f89e6554313c3b2ec7120dd926e760ddaf6ec42d560c0251a",
+    "L5.b": "08f0a9a5d9cdfd34ecf60d15931719d5b0055a117e65b9f82d5b07e90925f098",
+    "L6.W": "83b4964e210b04bf76a9f85cf19201065b5475f724f718040540331e456e746a",
+    "L6.b": "a34bef4d736b07aa694ffc016f12e240652a6661e0156e3b57b0be3ca4abb8ad",
+    "out.W": "e89383e153ecb487c739b9722a48a93a65fcfb924a7a6de49c7e09231f206934",
+    "out.b": "39cd33d0c1f651a52c4de65c25eccc6618aa48fd59093adfad92f614950506d3"
+  },
+  "artifact_files_hashed": 2425,
+  "artifact_hash_manifest_sha256": "7c1b18ef07e9adec7c08f3c34eba2803a8f86e765b81d663d685b35f2eaee2c2",
+  "scope": "Mechanical provenance and complete transcript/feedback verification. Full code protocol reviews are separately SHA-bound per turn. Local public workspace and private controller snapshots preserve actual practice artifacts; final tensor hashes match all three archived copies."
+}

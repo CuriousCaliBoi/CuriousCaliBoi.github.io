@@ -1,0 +1,5 @@
+OUTPUT of Python run 8 of at most 120:
+```
+More conservative post-move liberty estimate; discourages throw-in cycles.
+
+```

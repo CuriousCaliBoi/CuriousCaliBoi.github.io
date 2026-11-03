@@ -1,0 +1,6 @@
+{
+  "code_sha256": "cdf32f62ba776d2e2a7748821ad6fa4c6ed75e8632f7c7112683c1a834f3bc8c",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It scales the two output tensors by a fixed 1.5 constant. No inputs, network evaluation, fitting, move simulation or search are used."
+}

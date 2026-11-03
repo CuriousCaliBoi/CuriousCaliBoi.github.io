@@ -1,0 +1,59 @@
+import numpy as np
+import scipy.linalg as la
+from scipy.stats import skew, kurtosis
+from sklearn.cluster import KMeans
+from sklearn.decomposition import FastICA
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4,suppress=True,linewidth=180)
+
+def svd(a):
+    return la.svd(a,full_matrices=False,lapack_driver="gesvd")
+
+with threadpool_limits(limits=2):
+    print("MLP NEURON NORM QUANTILES: input row / output column")
+    for l in range(4):
+        f=np.asarray(W[f"W_fc.{l}"],dtype=float)
+        p=np.asarray(W[f"W_proj.{l}"],dtype=float)
+        print(l,np.percentile(la.norm(f,axis=1),[0,5,25,50,75,95,100]),
+              np.percentile(la.norm(p,axis=0),[0,5,25,50,75,95,100]))
+
+    print("\nLAST MLP OUTPUT-COLUMN GEOMETRY")
+    P=np.asarray(W["W_proj.3"],dtype=float).T
+    norms=la.norm(P,axis=1)
+    Z=P/norms[:,None]
+    gram=Z@Z.T
+    np.fill_diagonal(gram,-2)
+    print("nearest cosine percentiles:",np.percentile(gram.max(axis=1),[0,10,25,50,75,90,99,100]))
+    for n in (20,24,28,32):
+        km=KMeans(n_clusters=n,n_init=5,random_state=0,max_iter=200).fit(Z)
+        sizes=np.bincount(km.labels_,minlength=n)
+        c_norm=la.norm(km.cluster_centers_,axis=1)
+        order=np.argsort(-sizes)
+        print("k",n,"inertia",round(km.inertia_,3))
+        print("cluster sizes",sizes[order])
+        print("centroid norms",np.round(c_norm[order],3))
+
+    print("\nINDEPENDENT-COMPONENT DECOMPOSITION OF OUTPUT WEIGHT COLUMNS")
+    for nc in (24,28):
+        ica=FastICA(n_components=nc,whiten="unit-variance",random_state=0,max_iter=1500,tol=1e-4)
+        S=ica.fit_transform(P)
+        kur=kurtosis(S,axis=0)
+        sk=skew(S,axis=0)
+        ix=np.argsort(-kur)
+        print("components",nc,"iterations",ica.n_iter_)
+        print("excess kurtoses",np.round(kur[ix],3))
+        print("absolute skewness",np.round(abs(sk[ix]),3))
+
+    print("\nINDUCTION-CANDIDATE MATRIX EIGENVALUES")
+    g0=np.asarray(W["ln1_w.0"],dtype=float)
+    b=(np.asarray(W["W_o.0"][:,128:192],dtype=float)@np.asarray(W["W_v.0"][128:192],dtype=float))*g0
+    g3=np.asarray(W["ln1_w.3"],dtype=float)
+    q=np.asarray(W["W_q.3"][64:128],dtype=float)*g3
+    k=np.asarray(W["W_k.3"][64:128],dtype=float)*g3
+    a=q.T@k/8
+    _,_,vt=svd(b)
+    T=vt[:64].T
+    c=T.T@a@b@T
+    e=la.eigvals(c)
+    print("eigenvalues descending magnitude",np.round(e[np.argsort(-abs(e))],4))
+    print("symmetric-part eigenvalues descending",np.round(la.eigvalsh((c+c.T)/2)[::-1],4))

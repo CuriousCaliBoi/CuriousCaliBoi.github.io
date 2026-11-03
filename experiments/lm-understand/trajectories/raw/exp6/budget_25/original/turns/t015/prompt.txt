@@ -1,0 +1,71 @@
+OUTPUT of Python run 9 of at most 120:
+```
+black margins [-61.5, -34.5, -29.5, -29.5, -23.5, -18.5, -17.5, -17.5, -15.5, -13.5, -12.5, -11.5, -11.5, -10.5, -9.5, -9.5, -8.5, -7.5, -6.5, -6.5, -5.5, -4.5, -3.5, -1.5, -0.5, 2.5, 10.5, 30.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5, 73.5]
+white margins [-16.5, -15.5, -13.5, -9.5, -9.5, -8.5, -8.5, -7.5, -5.5, -5.5, -5.5, -1.5, -0.5, 2.5, 5.5, 7.5, 9.5, 64.5, 85.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 88.5]
+
+GAME 0 margin -34.5 end two passes captures 1 lost 28
+OOOOOO.O.
+.XOOOOOOO
+OOOOOOXXO
+OOOOOXXOO
+OOXXOXXXO
+OO.OOXXXO
+OOOOXXXXX
+OOOOOXXX.
+OOOOOX.XX
+Opening [('net', 60), ('opponent', 40), ('net', 59), ('opponent', 48), ('net', 58), ('opponent', 49), ('net', 50), ('opponent', 31), ('net', 70), ('opponent', 57), ('net', 41), ('opponent', 23), ('net', 51), ('opponent', 66), ('net', 32), ('opponent', 22), ('net', 24), ('opponent', 15), ('net', 33), ('opponent', 16), ('net', 42), ('opponent', 14), ('net', 25), ('opponent', 67)]
+Last [{'ply': 101, 'by': 'opponent', 'move': 56}, {'ply': 102, 'by': 'net', 'move': 38, 'top5': [[38, 1.0], [81, 0.0], [39, 0.0], [47, 0.0], [71, 0.0]]}, {'ply': 103, 'by': 'opponent', 'move': 12}, {'ply': 104, 'by': 'net', 'move': 39, 'top5': [[39, 0.832], [47, 0.168], [81, 0.0], [71, 0.0], [78, 0.0]]}, {'ply': 105, 'by': 'opponent', 'move': 81}, {'ply': 106, 'by': 'net', 'move': 81, 'top5': [[81, 0.9996], [71, 0.0002], [78, 0.0002], [0, 0.0], [1, 0.0]]}]
+
+GAME 1 margin -29.5 end two passes captures 2 lost 40
+XOOOOOOOO
+XOOO.OOOO
+XXOOOOOOO
+XXXOOOOOO
+XXXXO.OOO
+XXXXOXOOO
+XXXOOXXOO
+.XXXOOOOO
+X.XXOOOO.
+Opening [('net', 56), ('opponent', 40), ('net', 60), ('opponent', 58), ('net', 39), ('opponent', 49), ('net', 48), ('opponent', 31), ('net', 41), ('opponent', 32), ('net', 50), ('opponent', 30), ('net', 59), ('opponent', 57), ('net', 66), ('opponent', 21), ('net', 42), ('opponent', 24), ('net', 47), ('opponent', 67), ('net', 38), ('opponent', 68), ('net', 29), ('opponent', 20)]
+Last [{'ply': 107, 'by': 'opponent', 'move': 14}, {'ply': 108, 'by': 'net', 'move': 81, 'top5': [[81, 0.8807], [36, 0.1192], [63, 0.0], [73, 0.0], [0, 0.0]]}, {'ply': 109, 'by': 'opponent', 'move': 7}, {'ply': 110, 'by': 'net', 'move': 36, 'top5': [[81, 0.8807], [36, 0.1192], [63, 0.0], [73, 0.0], [0, 0.0]]}, {'ply': 111, 'by': 'opponent', 'move': 81}, {'ply': 112, 'by': 'net', 'move': 81, 'top5': [[81, 0.9999], [63, 0.0], [73, 0.0], [0, 0.0], [1, 0.0]]}]
+
+GAME 4 margin -7.5 end two passes captures 16 lost 20
+XXX.XXOO.
+.XXXXOOOO
+XXXOOO.OO
+.XXXOOOOO
+X.XXO.OOO
+XXXOOXOOO
+XXXXOXOOO
+.X.XOOOOO
+X.XXXOO..
+Opening [('net', 24), ('opponent', 40), ('net', 39), ('opponent', 49), ('net', 59), ('opponent', 58), ('net', 60), ('opponent', 48), ('net', 50), ('opponent', 31), ('net', 41), ('opponent', 32), ('net', 57), ('opponent', 22), ('net', 47), ('opponent', 67), ('net', 56), ('opponent', 23), ('net', 66), ('opponent', 68), ('net', 30), ('opponent', 33), ('net', 42), ('opponent', 21)]
+Last [{'ply': 102, 'by': 'net', 'move': 50, 'top5': [[50, 0.9992], [59, 0.0004], [41, 0.0003], [81, 0.0], [3, 0.0]]}, {'ply': 103, 'by': 'opponent', 'move': 25}, {'ply': 104, 'by': 'net', 'move': 59, 'top5': [[59, 1.0], [41, 0.0], [81, 0.0], [3, 0.0], [79, 0.0]]}, {'ply': 105, 'by': 'opponent', 'move': 62}, {'ply': 106, 'by': 'net', 'move': 81, 'top5': [[81, 0.9965], [3, 0.0018], [79, 0.0013], [65, 0.0002], [37, 0.0001]]}, {'ply': 107, 'by': 'opponent', 'move': 81}]
+
+GAME 5 margin -6.5 end two passes captures 8 lost 35
+XX.XOOO.X
+X.XXOOOOX
+.XXXXOOOO
+XXXXXOOOO
+.XXXOXXOO
+XXXXOO.OO
+XOOOOOOOO
+XXXXXOOOO
+X.XXOOOOO
+Opening [('net', 48), ('opponent', 40), ('net', 31), ('opponent', 49), ('net', 39), ('opponent', 58), ('net', 30), ('opponent', 57), ('net', 47), ('opponent', 32), ('net', 22), ('opponent', 56), ('net', 38), ('opponent', 23), ('net', 41), ('opponent', 50), ('net', 42), ('opponent', 33), ('net', 51), ('opponent', 60), ('net', 21), ('opponent', 24), ('net', 34), ('opponent', 14)]
+Last [{'ply': 99, 'by': 'opponent', 'move': 81}, {'ply': 100, 'by': 'net', 'move': 8, 'top5': [[81, 0.7823], [8, 0.2175], [2, 0.0001], [10, 0.0], [36, 0.0]]}, {'ply': 101, 'by': 'opponent', 'move': 81}, {'ply': 102, 'by': 'net', 'move': 17, 'top5': [[7, 0.3588], [17, 0.3588], [81, 0.2823], [2, 0.0], [10, 0.0]]}, {'ply': 103, 'by': 'opponent', 'move': 81}, {'ply': 104, 'by': 'net', 'move': 81, 'top5': [[81, 0.9998], [2, 0.0001], [10, 0.0001], [36, 0.0], [18, 0.0]]}]
+
+GAME 7 margin -1.5 end two passes captures 25 lost 34
+.OOOXXXXX
+O.OOOXX.X
+OO.OOXXXX
+OOXOOOXX.
+OOXOOXX.X
+OXXOXXXX.
+OOOOOXX.X
+OOOOXX.X.
+.OOOX.X.X
+Opening [('net', 49), ('opponent', 40), ('net', 50), ('opponent', 58), ('net', 60), ('opponent', 48), ('net', 59), ('opponent', 57), ('net', 47), ('opponent', 39), ('net', 67), ('opponent', 31), ('net', 41), ('opponent', 32), ('net', 51), ('opponent', 56), ('net', 23), ('opponent', 22), ('net', 42), ('opponent', 24), ('net', 33), ('opponent', 15), ('net', 14), ('opponent', 13)]
+Last [{'ply': 96, 'by': 'net', 'move': 81, 'top5': [[81, 0.9995], [16, 0.0003], [43, 0.0], [69, 0.0], [61, 0.0]]}, {'ply': 97, 'by': 'opponent', 'move': 27}, {'ply': 98, 'by': 'net', 'move': 81, 'top5': [[81, 0.9995], [16, 0.0003], [43, 0.0], [69, 0.0], [61, 0.0]]}, {'ply': 99, 'by': 'opponent', 'move': 54}, {'ply': 100, 'by': 'net', 'move': 81, 'top5': [[81, 0.9995], [16, 0.0003], [43, 0.0], [69, 0.0], [61, 0.0]]}, {'ply': 101, 'by': 'opponent', 'move': 81}]
+
+```

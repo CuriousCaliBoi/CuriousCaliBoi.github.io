@@ -1,0 +1,31 @@
+import numpy as np
+A={n:a.copy() for n,a in dict(np.load("/work/policy_v5.npz")).items()}
+def ns(p):
+    r,c=divmod(p,9)
+    return [(r+dr)*9+c+dc for dr,dc in [(-1,0),(1,0),(0,-1),(0,1)]
+            if 0<=r+dr<9 and 0<=c+dc<9]
+def u(ch,p): return ch*81+p
+
+# Complete the edge-trap rule at corners and side midpoints. At these
+# eight points it replaces the less important unsupported-contact feature.
+for p in [0,4,8,36,44,72,76,80]:
+    j=u(4,p)
+    A["L5.W"][:,j]=0
+    A["L5.b"][j]=-4*len(ns(p))
+    for q in ns(p):
+        A["L5.W"][u(0,q),j]+=5
+        A["L5.W"][u(1,q),j]+=4
+        A["L5.W"][u(4,q),j]-=1
+        A["L5.W"][u(2,q),j]-=4
+    A["out.W"][j,p]=-24*1.8
+
+# Opening: avoid overconcentration. As the board fills, permit the close
+# connections required for contact fighting and endgame boundaries.
+for p in range(81):
+    A["L5.b"][u(3,p)]=-2.5
+    A["L5.W"][487,u(3,p)]=-0.025
+    A["L5.W"][488,u(3,p)]=-0.025
+
+for name in NAMES: save(name,A[name])
+np.savez("/work/policy_v6.npz",**A)
+print("Saved complete edge trap protection and phase-aware shape rule.")

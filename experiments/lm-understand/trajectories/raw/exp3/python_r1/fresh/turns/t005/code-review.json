@@ -1,0 +1,6 @@
+{
+  "code_sha256": "aafb27b839accb7fc61eec8e8397af5c035275de8c9359a7e9d055a87123ca49",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Weight-only ICA/SVD eigenspaces, weight-derived directions, QK/OV contractions and projected spectra. Applying weight matrices to directions derived from other weights is explicitly permitted; no attention softmax, input-dependent LayerNorm, MLP activation or search."
+}

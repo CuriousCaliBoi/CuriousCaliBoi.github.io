@@ -1,0 +1,11 @@
+OUTPUT of Python run 41 of at most 120:
+```
+Fixed final policy, passes 41–49:
+Strong practice: 983/1152 = 85.3299%
+Black: 451/576; White: 532/576
+Mean area margin: 61.683
+All tensors saved and finite.
+Nonzero parameters: 25959
+No weights changed by this audit.
+
+```

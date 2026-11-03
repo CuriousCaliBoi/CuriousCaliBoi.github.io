@@ -1,0 +1,6 @@
+{
+  "code_sha256": "66b5c94c24292507b102c37f4ccc978a17aeb04dc1e7b9861df63586a004569f",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Moves/reuses prior analytic tensor slices and assigns new symmetric adjacency-rule coefficients with manually chosen constants. No network or layer is evaluated on a board, no game state is advanced, and no fitting or search is performed."
+}

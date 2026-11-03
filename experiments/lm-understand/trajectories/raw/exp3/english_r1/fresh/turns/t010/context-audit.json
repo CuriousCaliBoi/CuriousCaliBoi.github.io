@@ -1,0 +1,166 @@
+{
+  "valid": true,
+  "expected_user_messages": 10,
+  "actual_user_messages": 10,
+  "user_messages_exact_and_ordered": true,
+  "unexpected_context": [],
+  "settings": [
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    }
+  ],
+  "message_hashes": [
+    {
+      "role": "developer",
+      "characters": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "role": "developer",
+      "characters": 26,
+      "sha256": "b8a5d51f11d62576e43005a35c4db74c365ace7db42076e7bf4e03c7d949076c"
+    },
+    {
+      "role": "developer",
+      "characters": 1398,
+      "sha256": "e1ec47a3ec231ef78c1e1d61f66f07017c0effb2e1b8c90b123450b5058b070b"
+    },
+    {
+      "role": "user",
+      "characters": 602,
+      "sha256": "baf6d51f435a7026f20957ef5a6e178ac2b12db7a2046fc4835ba6e7d0c955a2"
+    },
+    {
+      "role": "user",
+      "characters": 6618,
+      "sha256": "1d6122b6eb6505820637edcc330e863baa459fa05cc7ca93319a615dcf8c39c3"
+    },
+    {
+      "role": "user",
+      "characters": 10009,
+      "sha256": "e1cff936246f988f491df244ddb8b51f9f2b0f7cf09cdea84f23e7a6738e8402"
+    },
+    {
+      "role": "user",
+      "characters": 13937,
+      "sha256": "18ba27627034acc4a371a37f2e4098f87a0edbbf8be12c5d42f8b5b631e74cba"
+    },
+    {
+      "role": "user",
+      "characters": 6496,
+      "sha256": "829dbdc72b474a994ebc912714ee71f362c4882610b5350a3bb32e9b48cee512"
+    },
+    {
+      "role": "user",
+      "characters": 463,
+      "sha256": "7fde9f0b97c8f67e68b5d886f1697f9baf2db69f4bbc104137abaa8f734642ee"
+    },
+    {
+      "role": "user",
+      "characters": 5092,
+      "sha256": "e1dfd937582fb1fd40de9d474a4a73021e4909adc6f33f3dc28221c47746938e"
+    },
+    {
+      "role": "user",
+      "characters": 5124,
+      "sha256": "029080bd2f63e44fd87665c9f4a31200ce574224a9891a1ed6a0f2ac1e955964"
+    },
+    {
+      "role": "user",
+      "characters": 5355,
+      "sha256": "06b96fc7e6531608b6d9ce4dcd77937ae8ae719bfc0f67fa3536ce266d2380ae"
+    },
+    {
+      "role": "user",
+      "characters": 4333,
+      "sha256": "e7f14bac1eb03af9768b6dc5a3303703bd2a7d60747c2973be4da51235eeb996"
+    },
+    {
+      "role": "user",
+      "characters": 6230,
+      "sha256": "56ee66d2b76667d33ca553a08f45b87fb9d96f522b06f251f2a69aa15da28be6"
+    },
+    {
+      "role": "user",
+      "characters": 2484,
+      "sha256": "3ca673b9fbcd47c8c0e5e3f758d2e3ad4746ca5cc98dadffdefb61219af505c4"
+    }
+  ]
+}

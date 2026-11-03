@@ -1,0 +1,5 @@
+OUTPUT of Python run 8 of at most 120:
+```
+Saved v5: safety certificates that do not mistake duplicated liberties for two eyes.
+
+```

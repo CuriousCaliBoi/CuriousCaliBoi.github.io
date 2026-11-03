@@ -1,0 +1,6 @@
+{
+  "code_sha256": "76d5de71a89e12331a5aa8d34db19f0a9b66cf0dadc08d97e24f54a8c62e9d44",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Spectra, eigenspaces, QK/OV/bias projections and MLP weight-matrix products only; no ReLU or other layer evaluated on an input. Permitted linear algebra, no search."
+}

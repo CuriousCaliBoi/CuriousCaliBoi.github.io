@@ -1,0 +1,32 @@
+```python
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_9.npz",**{n:load(n) for n in names})
+
+revision=r'''
+_base={}
+exec(open("/work/design_v9.py").read(),_base)
+def construct(parameters=None):
+    changes=dict(own_adjacent=1.0, central_contact=1.5)
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    for index,(r,c) in enumerate((r,c) for r in range(2,7) for c in range(2,7)):
+        i=9*r+c
+        hidden=487+index
+        t["L6.b"][hidden]=-2.0
+        for j in (i-9,i+9,i-1,i+1):
+            t["L6.W"][j,hidden]=1.0
+            t["L6.W"][81+j,hidden]=1.0
+        t["out.W"][hidden,i]=p["scale"]*p["central_contact"]
+    return t,p
+'''
+open("/work/design_v10.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 10: solid connections with empty-triangle avoidance,")
+print("plus explicit resolution of crowded central contacts.")
+```

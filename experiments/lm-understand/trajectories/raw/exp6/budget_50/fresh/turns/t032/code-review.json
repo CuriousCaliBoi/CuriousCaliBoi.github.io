@@ -1,0 +1,6 @@
+{
+  "code_sha256": "2fe831652e75c617e76b587fafb0ab32876c2522413d29c9115602bf5b805242",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It writes manually chosen local-neighbor and same-point layer-five coefficients using board geometry alone. No network outputs, fitting, hypothetical moves or search are computed."
+}

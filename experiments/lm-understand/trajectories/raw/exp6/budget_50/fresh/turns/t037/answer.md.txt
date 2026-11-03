@@ -1,0 +1,32 @@
+```python
+import numpy as np
+w=load("L1.W");b=load("L1.b")
+w[:,494:496]=0
+b[494]=1;b[495]=2
+for r in range(9):
+    for c in range(9):
+        w[inp(r,c,0),494]=-1
+        w[inp(r,c,0),495]=-1
+        w[inp(r,c,1),495]=-1
+save("L1.W",w);save("L1.b",b)
+for k in range(2,7):
+    w=load(f"L{k}.W")
+    w[:,494:496]=0
+    w[494,494]=1;w[495,495]=1
+    if k==2:w[493,495]=-2
+    save(f"L{k}.W",w)
+
+# Without any friendly stone, contact is an unsupported attachment, not
+# a supported attack. Remove the usual hostility dead zone in that case.
+w=load("L4.W")
+for q in range(81):w[494,5*81+q]=.9
+save("L4.W",w)
+
+# A gentle central first reply, without affecting later play.
+w=load("out.W")
+for q in range(81):
+    r,c=divmod(q,9)
+    w[495,q]=-.35*5.4*(abs(r-4)+abs(c-4))
+save("out.W",w)
+print("Opening development now distinguishes unsupported attachment from attack.")
+```

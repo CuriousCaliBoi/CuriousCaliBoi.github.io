@@ -1,0 +1,63 @@
+OUTPUT of run 5 of at most 100:
+```
+
+ICA of weight coefficients: divide_gain
+skew: [ 1.07  2.26  3.46  7.45  7.53  4.99  7.08  2.3   0.37  1.79  0.16  4.18  2.04  1.25  2.47  4.    3.19 13.9  17.2   4.67  2.86  3.45  7.64  5.51
+  3.41  8.99  4.13]
+excess kurtosis: [ 19.14  18.78  40.98 152.61 156.34  60.8  108.55  23.14  19.78  23.17  63.52  49.54  26.11  19.83  30.16  66.25  38.33 358.61 593.24  57.16  36.27
+  36.89 131.61  99.18  31.39 196.26  65.4 ]
+current top-component counts [ 49  25  39  65 177  44  45  53  52  48  35  54  29   8  54  44  53  85  81  50  52  43  56 106  51  68  70]
+H5-composed top-component counts [ 55 121  67  67  43  53   8  31  65 105  35  18 101 119  63  37  49   0  11  65  91  61   7  99  52   6 107]
+H1-composed top-component counts [ 13  49 108  92   6  55  89  16  98  30  29  75  88  11  21 109  42  27  46  59  75  34 156  37  37  45  89]
+Current vs H5-composed coefficient co-occurrences (>2 standardized units):
+0 current_count 68 prev_count 45 partners [(0, 17), (13, 16), (1, 14), (16, 11), (7, 10), (9, 9)]
+1 current_count 29 prev_count 73 partners [(1, 9), (13, 9), (11, 7), (14, 5), (16, 5), (21, 4)]
+2 current_count 47 prev_count 36 partners [(2, 12), (7, 11), (13, 11), (9, 11), (20, 7), (0, 6)]
+3 current_count 36 prev_count 32 partners [(3, 8), (1, 7), (24, 7), (13, 6), (25, 5), (7, 5)]
+4 current_count 45 prev_count 17 partners [(0, 9), (2, 8), (21, 8), (7, 7), (13, 7), (9, 7)]
+5 current_count 33 prev_count 44 partners [(1, 8), (5, 8), (21, 8), (9, 7), (14, 5), (13, 5)]
+6 current_count 37 prev_count 9 partners [(24, 5), (15, 4), (20, 4), (3, 3), (13, 3), (16, 3)]
+7 current_count 68 prev_count 62 partners [(7, 15), (14, 11), (13, 11), (0, 10), (1, 10), (9, 10)]
+8 current_count 36 prev_count 30 partners [(1, 10), (13, 8), (7, 5), (5, 5), (9, 5), (8, 4)]
+9 current_count 34 prev_count 63 partners [(9, 9), (1, 8), (13, 7), (7, 6), (16, 6), (11, 5)]
+10 current_count 33 prev_count 15 partners [(24, 6), (5, 5), (14, 4), (3, 3), (12, 3), (21, 3)]
+11 current_count 32 prev_count 35 partners [(9, 7), (16, 6), (11, 5), (7, 5), (5, 4), (12, 4)]
+12 current_count 24 prev_count 39 partners [(19, 6), (9, 5), (7, 3), (1, 3), (12, 3), (13, 3)]
+13 current_count 19 prev_count 85 partners [(13, 4), (26, 3), (9, 2), (1, 2), (11, 2), (5, 2)]
+14 current_count 41 prev_count 55 partners [(13, 12), (1, 10), (9, 8), (11, 8), (14, 7), (5, 7)]
+15 current_count 15 prev_count 17 partners [(15, 6), (23, 3), (21, 3), (7, 2), (20, 2), (19, 2)]
+16 current_count 33 prev_count 52 partners [(14, 7), (1, 6), (13, 6), (7, 6), (19, 6), (16, 6)]
+17 current_count 36 prev_count 4 partners [(13, 9), (9, 8), (1, 7), (3, 7), (0, 6), (7, 6)]
+18 current_count 28 prev_count 5 partners [(13, 7), (24, 6), (15, 5), (9, 5), (16, 5), (21, 5)]
+19 current_count 33 prev_count 41 partners [(19, 12), (13, 7), (12, 5), (1, 5), (21, 5), (23, 5)]
+20 current_count 36 prev_count 39 partners [(20, 8), (1, 7), (21, 5), (0, 5), (13, 4), (25, 4)]
+21 current_count 46 prev_count 43 partners [(21, 10), (24, 9), (14, 8), (9, 7), (7, 6), (13, 6)]
+22 current_count 42 prev_count 6 partners [(1, 7), (11, 7), (13, 7), (16, 7), (5, 6), (7, 5)]
+23 current_count 32 prev_count 32 partners [(1, 11), (23, 7), (16, 6), (21, 6), (24, 5), (5, 5)]
+24 current_count 47 prev_count 55 partners [(13, 14), (24, 14), (9, 13), (11, 12), (19, 8), (8, 8)]
+25 current_count 51 prev_count 16 partners [(13, 11), (14, 7), (21, 7), (0, 6), (3, 6), (9, 6)]
+26 current_count 26 prev_count 36 partners [(13, 8), (1, 6), (20, 6), (21, 6), (26, 5), (19, 4)]
+
+ICA of weight coefficients: raw
+skew: [ 9.71  0.74  7.3   4.13  3.9  15.11  7.59  1.94  1.81  4.9   1.43  2.51  3.33  1.39  3.73  4.33 13.32  6.8   3.07  4.56  7.31  3.14  0.23  2.38
+  5.16  3.61  5.36]
+excess kurtosis: [215.66  61.35 122.53  67.02  43.06 497.03 160.33  23.93  27.35  60.2   22.75  21.94  32.17  20.03  41.58  49.07 345.56 135.11  33.3   72.84 111.2
+  41.01  21.63  26.78  67.45  42.45  96.53]
+current top-component counts [ 49  41  36  50  42  91 155  28  50  57  93  29  46  70  58  35  66  47  33  82  39  50  65  48  52  45  79]
+H5-composed top-component counts [ 19  33   5  33  61  20  69 152  64  54  70  97  71  48  47  28   0  47  88 100  15  93  48  42  46  76 110]
+H1-composed top-component counts [ 56  25 156 103  30  40   6  28  26  55  33  32  43  12  41  61  38  96  84  65 115  86  82  33  44 111  35]
+
+ICA of weight coefficients: multiply_gain
+skew: [ 5.07  2.73  2.55  0.7   2.86  4.44  5.75  6.74 10.86  1.65  0.74  4.08  3.4   1.12  1.34  4.64  4.03 10.88  2.58  4.82  3.49  8.99  2.69  3.78
+  6.16  3.32  3.23]
+excess kurtosis: [ 90.44  34.14  27.07  21.16  35.57  66.56 112.45  98.84 261.56  20.39  15.85  44.99  39.09  59.24  20.58  57.69  70.06 317.72  29.88  62.44  53.51
+ 193.55  21.42  39.49  95.69  31.68  38.35]
+current top-component counts [ 61  43  46  79  48  73 164  36  85  72  18  34  46  50  27  64  73 117  28  70  46  47  30  54  38  45  42]
+H5-composed top-component counts [ 47  53  35  37  89  91 135  20   0  39 110  26  66  41 171  46 111  13  80  41  26  19  84  33   5  69  49]
+H1-composed top-component counts [100  19  33  68  93  59  16 114  42  11  11  64 107  27  29  53  29  41 100  41  96  64  29  29 178  45  38]
+
+Last-projection independent-component excess kurtosis: [24.6   1.57  1.34  1.29  1.2   1.18  1.14  1.11  1.08  1.05  1.04  0.97  0.96  0.94  0.92  0.92  0.91  0.89  0.83  0.82  0.4   0.08 -0.12 -0.3
+ -0.32 -0.33 -0.4  -0.45]
+Last-projection independent-component absolute skew: [0.6  0.37 0.33 0.27 0.23 0.2  0.2  0.19 0.17 0.17 0.12 0.11 0.11 0.1  0.1  0.1  0.09 0.09 0.09 0.08 0.07 0.06 0.05 0.05 0.03 0.03 0.03 0.  ]
+
+```

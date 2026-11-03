@@ -1,0 +1,15 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_19.npz",**{n:load(n) for n in names})
+
+archive=np.load("/work/version_13.npz")
+for name in names:
+    save(name,archive[name])
+
+namespace={}
+exec(open("/work/design_v13.py").read(),namespace)
+constructed,parameters=namespace["construct"]()
+assert all(np.array_equal(constructed[n],archive[n]) for n in names)
+json.dump(parameters,open("/work/parameters.json","w"),indent=2)
+print("Restored the archived revision 13 for an independent confirmation batch.")
+print("Its weights exactly match its analytic constructor.")

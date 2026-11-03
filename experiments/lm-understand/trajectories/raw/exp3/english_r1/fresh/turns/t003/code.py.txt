@@ -1,0 +1,47 @@
+import numpy as np
+import scipy.linalg as la
+from sklearn.cluster import KMeans
+from threadpoolctl import threadpool_limits
+np.set_printoptions(precision=4, suppress=True, linewidth=180)
+
+with threadpool_limits(limits=2):
+    print("SPECTRAL DETAIL: first 64 singular values")
+    for name in ("W_v.0", "W_o.0", "W_fc.0", "W_proj.0", "W_proj.3"):
+        a = np.asarray(W[name], dtype=float)
+        print(name, la.svdvals(a)[:64])
+    print("\nGAIN-WEIGHTED MLP INPUT SPECTRA")
+    for l in range(4):
+        a = np.asarray(W[f"W_fc.{l}"], dtype=float) * W[f"ln2_w.{l}"]
+        print(f"L{l}", la.svdvals(a)[:40])
+
+    print("\nL0 COORDINATES WITH LARGEST ln1_w")
+    ix = np.argsort(-W["ln1_w.0"])[:35]
+    print("coordinate, ln1_w, ln2_w, ln1_b, ln2_b")
+    for i in ix:
+        print(i, *[round(float(W[f"{n}.0"][i]),5) for n in ("ln1_w","ln2_w","ln1_b","ln2_b")])
+
+    print("\nL0 VALUE-PATH SPECTRA AND PRINCIPAL INPUT DIRECTIONS")
+    vv, oo = [], []
+    for j in range(6):
+        sl = slice(j*64,(j+1)*64)
+        a = (np.asarray(W["W_o.0"][:,sl],dtype=float)
+             @ np.asarray(W["W_v.0"][sl],dtype=float)) * W["ln1_w.0"]
+        u,s,vt = la.svd(a, full_matrices=False)
+        vv.append(vt[:4].T)
+        oo.append(u[:4])
+        print(f"H{j}: singular={s[:32]}; energy_first2={sum(s[:2]**2)/sum(s*s):.4f}")
+    print("L0 value-input top-2 subspace overlaps (sum squared principal cosines / 2)")
+    print(np.array([[la.norm(vv[i][:,:2].T@vv[j][:,:2])**2/2 for j in range(6)] for i in range(6)]))
+    print("L0 value-output top-2 subspace overlaps")
+    print(np.array([[la.norm(oo[i][:,:2].T@oo[j][:,:2])**2/2 for j in range(6)] for i in range(6)]))
+
+    print("\nL0 MLP INPUT ROW GEOMETRY (no activations)")
+    a = np.asarray(W["W_fc.0"],dtype=float)*W["ln2_w.0"]
+    a /= la.norm(a,axis=1)[:,None]
+    gram = a @ a.T
+    np.fill_diagonal(gram,-2)
+    print("nearest-row cosine percentiles",np.percentile(gram.max(axis=1),[0,10,25,50,75,90,99,100]))
+    for n in (16,20,24,28,32,48):
+        km = KMeans(n_clusters=n,n_init=5,random_state=0,max_iter=200).fit(a)
+        sizes=np.bincount(km.labels_,minlength=n)
+        print(f"k={n}: inertia={km.inertia_:.3f}, sizes={np.sort(sizes)[::-1]}")

@@ -1,0 +1,5 @@
+OUTPUT of Python run 16 of at most 120:
+```
+Saved symmetric nine-line centre-control opening prior.
+
+```

@@ -1,0 +1,6 @@
+OUTPUT of Python run 38 of at most 120:
+```
+Added a late-game penalty for unsupported, low-liberty moves.
+Rescue urgency is now uncapped; capture urgency remains capped.
+
+```

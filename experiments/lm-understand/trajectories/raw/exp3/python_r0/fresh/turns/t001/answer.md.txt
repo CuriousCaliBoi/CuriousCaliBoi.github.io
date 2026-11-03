@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from scipy.linalg import svdvals
+from threadpoolctl import threadpool_limits
+
+np.set_printoptions(precision=4, suppress=True)
+threadpool_limits(limits=2)
+
+def spectrum(a):
+    s = svdvals(np.asarray(a, dtype=np.float64), check_finite=False)
+    e = s*s
+    return s, e.sum()/max(e[0], 1e-30), np.searchsorted(np.cumsum(e), .9*e.sum())+1
+
+print("WEIGHT KEYS:", sorted(W))
+for l in range(4):
+    print("\nLAYER", l)
+    for name in ["ln1_w", "ln1_b", "ln2_w", "ln2_b"]:
+        a = W[f"{name}.{l}"]
+        print(name, "min/mean/max/std:", np.min(a), np.mean(a), np.max(a), np.std(a),
+              "norm:", np.linalg.norm(a))
+    for name in ["W_q", "W_k", "W_v", "W_o", "W_fc", "W_proj"]:
+        a = W[f"{name}.{l}"]
+        s, sr, r90 = spectrum(a)
+        print(name, "rms %.5f topSV %s stableRank %.2f r90 %d" %
+              (np.sqrt(np.mean(a*a)), np.array2string(s[:5], precision=3), sr, r90))
+    for j in range(6):
+        sl = slice(64*j, 64*(j+1))
+        q = W[f"W_q.{l}"][sl].astype(float)
+        k = W[f"W_k.{l}"][sl].astype(float)
+        v = W[f"W_v.{l}"][sl].astype(float)
+        o = W[f"W_o.{l}"][:, sl].astype(float)
+        a = q.T @ k / 8
+        b = o @ v
+        sa, ra, r90a = spectrum(a)
+        sb, rb, r90b = spectrum(b)
+        asym = np.sum(a*a.T)/max(np.sum(a*a), 1e-30)
+        bsym = np.sum(b*b.T)/max(np.sum(b*b), 1e-30)
+        print("L%dH%d QK: norm %.3f top %s sr %.2f r90 %d symmetry %.3f; "
+              "OV: norm %.3f top %s sr %.2f r90 %d symmetry %.3f trace %.3f" %
+              (l, j, np.linalg.norm(a), np.array2string(sa[:5], precision=3),
+               ra, r90a, asym, np.linalg.norm(b), np.array2string(sb[:5], precision=3),
+               rb, r90b, bsym, np.trace(b)))
+```

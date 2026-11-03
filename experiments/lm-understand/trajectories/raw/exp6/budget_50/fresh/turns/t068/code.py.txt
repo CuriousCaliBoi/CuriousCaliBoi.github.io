@@ -1,0 +1,6 @@
+w=load("out.W")
+for q in range(81):
+    w[405+q,q]=14.4*1.2
+save("out.W",w)
+print("Black's komi-compensating supported-contact bonus is now 1.2;")
+print("White's policy is unchanged.")

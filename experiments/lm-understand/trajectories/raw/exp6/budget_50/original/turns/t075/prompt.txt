@@ -1,0 +1,10 @@
+OUTPUT of Python run 37 of at most 120:
+```
+Checkpoint unchanged: True
+Eight board-symmetry weight errors: [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0]
+Colour-swapped placement-logit error: 0.0
+White pass-logit increments: [8.375, 8.375, 8.375, 8.375, 8.375, 8.375, 8.375, 8.375, 8.375]
+Nonzero weights/biases: 25947
+Checkpoint SHA256: dc92ab2b220254b8a377493bfb892d5c03c6e6fa69c8c370053a8328a076ea54
+
+```

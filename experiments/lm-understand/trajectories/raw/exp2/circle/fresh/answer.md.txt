@@ -1,0 +1,31 @@
+Observations:
+- **The border is largely background.** Corner biases include `b3[0] = -0.551`, `b3[11] = -0.605`, and `b3[143] = -0.571`. The first pixel’s W1 weights are tiny—beginning `0.001 0.006 -0.006 0.005`—compared with substantial interior weights.
+- **W3 contains curved outline fragments.** One output-weight map has an upper-left arc: at image row 1, columns 2–6, its weights are `0.351 0.552 0.382 0.242 0.125`; the arc continues down column 1 with `0.348 0.539 0.361 0.219 0.106` in rows 2–6.
+- **Other maps describe the opposite sides.** Another has a bottom arc at row 10, columns 4–8: `0.244 0.419 0.525 0.582 0.367`. Another emphasizes a left-side band at column 2, rows 4–7: `0.395 0.501 0.472 0.353`.
+- **These are bands, not uniformly positive interiors.** Positive arcs coexist with negative interior patches; for example, one map has `-0.206 -0.306 -0.337 -0.322` across row 6, columns 2–5. Different maps place their arcs at somewhat different locations.
+
+Reasoning:
+These spatial patterns most strongly suggest **hollow, rounded outlines**. Curved top, bottom, and side fragments fit circles or ellipses better than squares, crosses, or straight lines. The contrasting interior weights favor rings rather than solid disks. The differing arc positions suggest variation in placement and/or size, rather than one identical image.
+
+Individual weight maps are not complete samples, so exact radii, stroke thickness, and the variation distribution remain uncertain.
+
+Images:
+Most likely **a single white circular or slightly oval outline on black**, approximately centered, roughly **7–10 pixels across**, with a dark hollow middle. The outline is probably about **one pixel thick**, with some soft or thicker edge pixels. Position and size vary modestly.
+
+Example:
+```text
+............
+............
+....####....
+...#....#...
+..#......#..
+..#......#..
+..#......#..
+..#......#..
+...#....#...
+....####....
+............
+............
+```
+
+Confidence: 80%

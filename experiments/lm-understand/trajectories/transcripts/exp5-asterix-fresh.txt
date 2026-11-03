@@ -1,0 +1,674 @@
+Experiment 5 · asterix · fresh
+SOURCE: outputs/replication/exp5_write_from_scratch/runs/asterix
+Recorded prompts and outputs are reproduced below without shortening. CLI reasoning entries are emitted summaries. Raw records preserve metadata, notices and original failed resume attempts.
+
+RECORDED INSTRUCTION FILE
+Answer the user's request.
+
+
+========================================================================
+TURN t001
+MESSAGE SENT TO CODEX
+YOUR TASK: write, from scratch, the weights of a policy network that plays this game as well as possible. There is no training: no data, no loss, no gradients, no fine-tuning; you choose every number yourself. You have no tools: no code execution, no calculator, nothing to run. This is a single response and you will get no feedback. First describe your design briefly (the strategy, and what the hidden units compute), then write the edits block.
+
+THE GAME: Asterix from MinAtar (Young & Tian 2019), on a 10 x 10 grid. The player moves freely in the 4 directions. Enemies and treasure enter from the sides and move horizontally. Picking up a treasure gives +1. The episode ends when the player touches an enemy. The difficulty rises over time (enemies and treasure move faster and appear more often).
+Actions: left, up, right, down move the player; fire does nothing (it acts as no-op).
+
+The game's exact implementation (the MinAtar package, version 1.0.15, file minatar/environments/asterix.py) follows. The environment wrapper calls act(a) with a = 0..5 meaning 'n' (no-op), 'l', 'u', 'r', 'd', 'f' (this file's action_map), and with probability 0.1 it repeats the previous action instead of the new one (sticky actions). The observation the network gets is built from this file's state() as described under THE INPUT.
+
+```python
+################################################################################################################
+# Authors:                                                                                                     #
+# Kenny Young (kjyoung@ualberta.ca)                                                                            #
+# Tian Tian (ttian@ualberta.ca)                                                                                #
+################################################################################################################
+import numpy as np
+
+
+#####################################################################################################################
+# Constants
+#
+#####################################################################################################################
+ramp_interval = 100
+init_spawn_speed = 10
+init_move_interval = 5
+shot_cool_down = 5
+
+
+#####################################################################################################################
+# Env
+#
+# The player can move freely along the 4 cardinal directions. Enemies and treasure spawn from the sides. A reward of
+# +1 is given for picking up treasure. Termination occurs if the player makes contact with an enemy. Enemy and
+# treasure direction are indicated by a trail channel. Difficulty is periodically increased by increasing the speed
+# and spawn rate of enemies and treasure.
+#
+#####################################################################################################################
+class Env:
+    def __init__(self, ramping=True):
+        self.channels ={
+            'player':0,
+            'enemy':1,
+            'trail':2,
+            'gold':3
+        }
+        self.action_map = ['n','l','u','r','d','f']
+        self.ramping = ramping
+        self.random = np.random.RandomState()
+        self.reset()
+
+    # Update environment according to agent action
+    def act(self, a):
+        r = 0
+        if(self.terminal):
+            return r, self.terminal
+
+        a = self.action_map[a]
+
+        # Spawn enemy if timer is up
+        if(self.spawn_timer==0):
+            self._spawn_entity()
+            self.spawn_timer = self.spawn_speed
+
+        # Resolve player action
+        if(a=='l'):
+            self.player_x = max(0, self.player_x-1)
+        elif(a=='r'):
+            self.player_x = min(9, self.player_x+1)
+        elif(a=='u'):
+            self.player_y = max(1, self.player_y-1)
+        elif(a=='d'):
+            self.player_y = min(8, self.player_y+1)
+
+        # Update entities
+        for i in range(len(self.entities)):
+            x = self.entities[i]
+            if(x is not None):
+                if(x[0:2]==[self.player_x,self.player_y]):
+                    if(self.entities[i][3]):
+                        self.entities[i] = None
+                        r+=1
+                    else:
+                        self.terminal = True
+        if(self.move_timer==0):
+            self.move_timer = self.move_speed
+            for i in range(len(self.entities)):
+                x = self.entities[i]
+                if(x is not None):
+                    x[0]+=1 if x[2] else -1
+                    if(x[0]<0 or x[0]>9):
+                        self.entities[i] = None
+                    if(x[0:2]==[self.player_x,self.player_y]):
+                        if(self.entities[i][3]):
+                            self.entities[i] = None
+                            r+=1
+                        else:
+                            self.terminal = True
+
+        # Update various timers
+        self.spawn_timer -= 1
+        self.move_timer -= 1
+
+
+        #Ramp difficulty if interval has elapsed
+        if self.ramping and (self.spawn_speed>1 or self.move_speed>1):
+            if(self.ramp_timer>=0):
+                self.ramp_timer-=1
+            else:
+                if(self.move_speed>1 and self.ramp_index%2):
+                    self.move_speed-=1
+                if(self.spawn_speed>1):
+                    self.spawn_speed-=1
+                self.ramp_index+=1
+                self.ramp_timer=ramp_interval
+        return r, self.terminal
+
+    # Spawn a new enemy or treasure at a random location with random direction (if all rows are filled do nothing)
+    def _spawn_entity(self):
+        lr = self.random.rand() < 1/2
+        is_gold = self.random.rand() < 1/3
+        x = 0 if lr else 9
+        slot_options = [i for i in range(len(self.entities)) if self.entities[i]==None]
+        if(not slot_options):
+            return
+        slot = slot_options[self.random.randint(len(slot_options))]
+        self.entities[slot] = [x,slot+1,lr,is_gold]
+
+    # Query the current level of the difficulty ramp, could be used as additional input to agent for example
+    def difficulty_ramp(self):
+        return self.ramp_index
+
+    # Process the game-state into the 10x10xn state provided to the agent and return
+    def state(self):
+        state = np.zeros((10,10,len(self.channels)),dtype=bool)
+        state[self.player_y,self.player_x,self.channels['player']] = 1
+        for x in self.entities:
+            if(x is not None):
+                c = self.channels['gold'] if x[3] else self.channels['enemy']
+                state[x[1], x[0],c] = 1
+                back_x = x[0]-1 if x[2] else x[0]+1
+                if(back_x>=0 and back_x<=9):
+                    state[x[1], back_x, self.channels['trail']] = 1
+        return state
+
+    # Reset to start state for new episode
+    def reset(self):
+        self.player_x = 5
+        self.player_y = 5
+        self.entities = [None]*8
+        self.shot_timer = 0
+        self.spawn_speed = init_spawn_speed
+        self.spawn_timer = self.spawn_speed
+        self.move_speed = init_move_interval
+        self.move_timer = self.move_speed
+        self.ramp_timer = ramp_interval
+        self.ramp_index = 0
+        self.terminal = False
+
+    # Dimensionality of the game-state (10x10xn)
+    def state_shape(self):
+        return [10,10,len(self.channels)]
+
+    # Subset of actions that actually have a unique impact in this environment
+    def minimal_action_set(self):
+        minimal_actions = ['n','l','u','r','d']
+        return [self.action_map.index(x) for x in minimal_actions]
+
+```
+
+THE INPUT (600 numbers, each 0 or 1): the 10 x 10 grid (rows 0 top to 9 bottom, columns 0 left to 9 right) with 6 channels. Input number i = (row * 10 + column) * 6 + channel; for example input 0 is (row 0, column 0, channel 0), input 6 is (row 0, column 1, channel 0) and input 599 is (row 9, column 9, channel 5). In this game:
+  channel 0 (player): the player
+  channel 1 (danger): enemies
+  channel 2 (reward): treasure
+  channel 3 (projectile): always empty in this game
+  channel 4 (trail): the cell just behind each enemy and treasure (it shows which way it moves)
+  channel 5 (gauge): always empty in this game
+THE OUTPUT (6 numbers, logits) for the actions 0 no-op, 1 left, 2 up, 3 right, 4 down, 5 fire; the action is sampled from the softmax of the logits. With probability 0.1 the game repeats the previous action instead (sticky actions).
+How the 6 channels are built from the game's own channels (state() in the source): channel 0 (player) <- player; channel 1 (danger) <- enemy; channel 2 (reward) <- gold; channel 3 (projectile) <- nothing; channel 4 (trail) <- trail; channel 5 (gauge) <- nothing. A cell is 1 in a channel if any of its source channels is 1.
+
+THE NETWORK (the same architecture as the reinforcement-learning networks it will be compared with): a multilayer perceptron with 600 inputs, two hidden layers of 32 units with tanh activations, and 6 outputs; 20,486 parameters:
+  h1 = tanh(x @ W1 + b1)          W1: 600 x 32, b1: 32
+  h2 = tanh(h1 @ W2 + b2)         W2: 32 x 32,  b2: 32
+  logits = h2 @ W3 + b3           W3: 32 x 6,  b3: 6
+Row i of W1 holds the weights from input i to the 32 first-layer units; column j of a weight matrix belongs to unit j of the next layer. EVERY WEIGHT STARTS AT 0; you set the weights you need.
+
+HOW YOUR NETWORK IS SCORED: its mean score per episode over 1,000 episodes, each action sampled from the softmax of the logits (with the sticky actions above); an episode also stops after 10,000 steps. It is compared with networks of the same architecture trained by reinforcement learning on this game.
+
+HOW TO WRITE THE WEIGHTS (numbers only; nothing is run). Write a code block whose opening line is three backticks followed by the word edits, one statement per line ('#' starts a comment; a long list may continue over the next lines). Tensors: W1, b1, W2, b2, W3, b3.
+
+```edits
+W1[12, 0] = 2.5                     # one entry: row 12, column 0
+W1[0:6, 3] = [1, 0, -1, 0, 2, 0]    # explicit values along a range (as many values as entries)
+b1[0:4] = -1                        # fill a range (a:b is half-open; ':' alone = the whole axis)
+W1[3:600:60, 0] = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1]   # column 0 of channel 3, rows 0..9 of the grid -> unit 0
+W2[0:2, 0:3] = [[1, -1, 0.5], [0, 2, 0]]   # a 2-D list for a 2-D block (here 2 x 3)
+W3[:, 2] *= 2                       # scale (also += and -=)
+```
+Ranges: a:b is half-open, a:b:s takes every s-th index. Input index i = (row * 10 + column) * 6 + channel. Useful strided ranges: all 10 cells of column c in channel ch are rows c*6+ch : 600 : 60 of W1; all 10 cells of row r in channel ch are rows r*60+ch : r*60+60 : 6.
+Statements apply in order; a later statement overwrites an earlier one. Only the LAST edits block of your reply is read; a statement that cannot be read is skipped (the others still apply). Values: plain decimal numbers (|v| <= 1e6).
+CLI OUTPUT IN EVENT ORDER
+ERROR
+Failed to read global AGENTS.md instructions from `<local-home>/.codex/AGENTS.md`: Operation not permitted (os error 1)
+
+ERROR
+Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.
+
+REASONING
+**Designing handcoded network weights**
+**Allocating network units**
+**Refining row hazard gates**
+
+REASONING
+**Assessing fixed-x5 strategy**
+**Adding two-step danger checks**
+**Adding gated danger features**
+
+REASONING
+**Calibrating hazard encoding**
+**Calibrating hazard weights**
+
+REASONING
+**Refining danger scoring**
+**Designing directional hazard encoding**
+
+REASONING
+**Designing row-wise risk signals**
+**Tuning enemy danger signals**
+**Refining danger-window coverage**
+
+REASONING
+**Refining enemy-position thresholds**
+**Designing reward-direction gates**
+**Adding player-row gates**
+
+REASONING
+**Computing gold centroid**
+**Designing reward gates**
+**Encoding gold direction gates**
+
+REASONING
+**Planning first-layer encoding**
+**Encoding reward directions**
+**Refining reward directions**
+
+REASONING
+**Refining row-detection logic**
+**Designing row-gated controls**
+**Tuning row-gate thresholds**
+
+REASONING
+**Tuning threat-gate weights**
+**Encoding gold-row signals**
+
+REASONING
+**Designing ternary gold detector**
+**Tuning gold prioritization**
+
+REASONING
+**Selecting escape at x3**
+**Refining horizontal escape logic**
+
+REASONING
+**Planning hazard-direction controls**
+**Designing emergency horizontal controls**
+
+REASONING
+**Tuning h2 threat gates**
+**Testing asymmetric threat weights**
+
+REASONING
+**Allocating units for avoidance**
+**Allocating hazard units**
+
+REASONING
+**Tuning vertical control**
+**Shaping goal-direction scores**
+
+REASONING
+**Tuning center-drive equations**
+**Tuning center-drive thresholds**
+
+REASONING
+**Designing hazard gates**
+**Setting hazard-profile weights**
+
+REASONING
+**Tuning risk profile**
+**Tuning immediate-up risk**
+
+REASONING
+**Tuning escape-risk scoring**
+**Tuning action-risk aggregation**
+
+REASONING
+**Refining conditional hazard penalties**
+**Revising goal encoding**
+
+REASONING
+**Tuning reward direction thresholds**
+**Refining reward thresholds**
+
+REASONING
+**Tuning decoder thresholds**
+**Computing decoder outputs**
+
+REASONING
+**Balancing threshold distances**
+
+REASONING
+**Calibrating reward thresholds**
+**Designing cancellation offsets**
+
+REASONING
+**Tuning movement rewards**
+**Finalizing movement rewards**
+
+REASONING
+**Refining decoder separation**
+**Balancing decoder distance**
+
+REASONING
+**Tuning direction tie-breaks**
+**Tuning proximity encoding**
+
+REASONING
+**Tuning gate thresholds**
+**Calculating bias corrections**
+
+REASONING
+**Tuning gold movement bias**
+**Setting no-op score**
+
+REASONING
+**Calibrating movement biases**
+**Adjusting softmax balance**
+
+REASONING
+**Tuning upward movement bias**
+**Tuning gold-distance heuristic**
+
+REASONING
+**Preparing W1 goal-unit assignments**
+**Constructing W1 input assignments**
+
+REASONING
+**Calibrating enemy weights**
+
+REASONING
+**Tuning hazard penalties**
+**Adjusting secondary danger profiles**
+
+REASONING
+**Adjusting secondary threat**
+**Adjusting secondary shift**
+
+REASONING
+**Tuning hazard-aware action selection**
+**Setting policy weight maps**
+
+REASONING
+**Refining network weights**
+
+REASONING
+**Preparing W1 row weights**
+
+REASONING
+**Refining early hazard profile**
+
+REASONING
+**Checking goal-force calibration**
+
+REASONING
+**Applying prepared parameter edits**
+**Setting movement weights**
+
+REASONING
+**Preparing reward input weights**
+
+REASONING
+**Preparing W1 weight assignments**
+**Reviewing target-row weights**
+
+REASONING
+**Preparing matrix weight edits**
+
+AGENT_MESSAGE
+The policy holds column 5, pursues nearby treasure vertically, and waits when aligned with treasure. Hidden units estimate direction-aware enemy arrival risk, including repeated-move risk from sticky actions, and distance-weighted treasure attraction. With no treasure, it returns toward the middle. Horizontal actions and fire are suppressed.
+
+```edits
+# First-layer danger units: up 0:7, down 7:14, stay 14:22.
+b1[0:22] = -36
+
+# Row 1 danger and direction.
+W1[61:120:6, 0] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[64:120:6, 0] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[62:120:6, 0] = -24
+W1[61:120:6, 14] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[64:120:6, 14] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[62:120:6, 14] = -24
+
+# Row 2 danger and direction.
+W1[121:180:6, 1] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[124:180:6, 1] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[122:180:6, 1] = -24
+W1[121:180:6, 7] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[124:180:6, 7] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[122:180:6, 7] = -24
+W1[121:180:6, 15] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[124:180:6, 15] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[122:180:6, 15] = -24
+
+# Row 3 danger and direction.
+W1[181:240:6, 2] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[184:240:6, 2] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[182:240:6, 2] = -24
+W1[181:240:6, 8] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[184:240:6, 8] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[182:240:6, 8] = -24
+W1[181:240:6, 16] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[184:240:6, 16] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[182:240:6, 16] = -24
+
+# Row 4 danger and direction.
+W1[241:300:6, 3] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[244:300:6, 3] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[242:300:6, 3] = -24
+W1[241:300:6, 9] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[244:300:6, 9] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[242:300:6, 9] = -24
+W1[241:300:6, 17] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[244:300:6, 17] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[242:300:6, 17] = -24
+
+# Row 5 danger and direction.
+W1[301:360:6, 4] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[304:360:6, 4] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[302:360:6, 4] = -24
+W1[301:360:6, 10] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[304:360:6, 10] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[302:360:6, 10] = -24
+W1[301:360:6, 18] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[304:360:6, 18] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[302:360:6, 18] = -24
+
+# Row 6 danger and direction.
+W1[361:420:6, 5] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[364:420:6, 5] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[362:420:6, 5] = -24
+W1[361:420:6, 11] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[364:420:6, 11] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[362:420:6, 11] = -24
+W1[361:420:6, 19] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[364:420:6, 19] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[362:420:6, 19] = -24
+
+# Row 7 danger and direction.
+W1[421:480:6, 6] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[424:480:6, 6] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[422:480:6, 6] = -24
+W1[421:480:6, 12] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[424:480:6, 12] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[422:480:6, 12] = -24
+W1[421:480:6, 20] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[424:480:6, 20] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[422:480:6, 20] = -24
+
+# Row 8 danger and direction.
+W1[481:540:6, 13] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[484:540:6, 13] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[482:540:6, 13] = -24
+W1[481:540:6, 21] = [-22.25, -17.5, -12.75, -8, -3.25, 1.5, -3.25, -8, -12.75, -17.5]
+W1[484:540:6, 21] = [20, 16, 12, 8, 4, 0, 4, 8, 12, 16]
+W1[482:540:6, 21] = -24
+
+# Player gates for up, including a possible repeated up.
+W1[60:180:6, 0] = 32
+W1[180:240:6, 0] = 31.5
+W1[180:240:6, 1] = 32
+W1[240:300:6, 1] = 31.5
+W1[240:300:6, 2] = 32
+W1[300:360:6, 2] = 31.5
+W1[300:360:6, 3] = 32
+W1[360:420:6, 3] = 31.5
+W1[360:420:6, 4] = 32
+W1[420:480:6, 4] = 31.5
+W1[420:480:6, 5] = 32
+W1[480:540:6, 5] = 31.5
+W1[480:540:6, 6] = 32
+
+# Player gates for down, including a possible repeated down.
+W1[60:120:6, 7] = 32
+W1[120:180:6, 8] = 32
+W1[60:120:6, 8] = 31.5
+W1[180:240:6, 9] = 32
+W1[120:180:6, 9] = 31.5
+W1[240:300:6, 10] = 32
+W1[180:240:6, 10] = 31.5
+W1[300:360:6, 11] = 32
+W1[240:300:6, 11] = 31.5
+W1[360:420:6, 12] = 32
+W1[300:360:6, 12] = 31.5
+W1[420:540:6, 13] = 32
+W1[360:420:6, 13] = 31.5
+
+# Player gates for staying.
+W1[60:120:6, 14] = 32
+W1[120:180:6, 15] = 32
+W1[180:240:6, 16] = 32
+W1[240:300:6, 17] = 32
+W1[300:360:6, 18] = 32
+W1[360:420:6, 19] = 32
+W1[420:480:6, 20] = 32
+W1[480:540:6, 21] = 32
+
+# Treasure units: absent approximately -1; present signed by direction.
+b1[22:30] = -12
+W1[62:120:6, 22] = 12
+W1[122:180:6, 23] = 12
+W1[182:240:6, 24] = 12
+W1[242:300:6, 25] = 12
+W1[302:360:6, 26] = 12
+W1[362:420:6, 27] = 12
+W1[422:480:6, 28] = 12
+W1[482:540:6, 29] = 12
+
+# Distance-discounted attraction to row 1.
+W1[120:180:6, 22] = 0.8
+W1[180:240:6, 22] = 0.55
+W1[240:300:6, 22] = 0.42
+W1[300:360:6, 22] = 0.33
+W1[360:420:6, 22] = 0.27
+W1[420:480:6, 22] = 0.23
+W1[480:540:6, 22] = 0.2
+
+# Distance-discounted attraction to row 2.
+W1[60:120:6, 23] = -0.8
+W1[180:240:6, 23] = 0.8
+W1[240:300:6, 23] = 0.55
+W1[300:360:6, 23] = 0.42
+W1[360:420:6, 23] = 0.33
+W1[420:480:6, 23] = 0.27
+W1[480:540:6, 23] = 0.23
+
+# Distance-discounted attraction to row 3.
+W1[60:120:6, 24] = -0.55
+W1[120:180:6, 24] = -0.8
+W1[240:300:6, 24] = 0.8
+W1[300:360:6, 24] = 0.55
+W1[360:420:6, 24] = 0.42
+W1[420:480:6, 24] = 0.33
+W1[480:540:6, 24] = 0.27
+
+# Distance-discounted attraction to row 4.
+W1[60:120:6, 25] = -0.42
+W1[120:180:6, 25] = -0.55
+W1[180:240:6, 25] = -0.8
+W1[300:360:6, 25] = 0.8
+W1[360:420:6, 25] = 0.55
+W1[420:480:6, 25] = 0.42
+W1[480:540:6, 25] = 0.33
+
+# Distance-discounted attraction to row 5.
+W1[60:120:6, 26] = -0.33
+W1[120:180:6, 26] = -0.42
+W1[180:240:6, 26] = -0.55
+W1[240:300:6, 26] = -0.8
+W1[360:420:6, 26] = 0.8
+W1[420:480:6, 26] = 0.55
+W1[480:540:6, 26] = 0.42
+
+# Distance-discounted attraction to row 6.
+W1[60:120:6, 27] = -0.27
+W1[120:180:6, 27] = -0.33
+W1[180:240:6, 27] = -0.42
+W1[240:300:6, 27] = -0.55
+W1[300:360:6, 27] = -0.8
+W1[420:480:6, 27] = 0.8
+W1[480:540:6, 27] = 0.55
+
+# Distance-discounted attraction to row 7.
+W1[60:120:6, 28] = -0.23
+W1[120:180:6, 28] = -0.27
+W1[180:240:6, 28] = -0.33
+W1[240:300:6, 28] = -0.42
+W1[300:360:6, 28] = -0.55
+W1[360:420:6, 28] = -0.8
+W1[480:540:6, 28] = 0.8
+
+# Distance-discounted attraction to row 8.
+W1[60:120:6, 29] = -0.2
+W1[120:180:6, 29] = -0.23
+W1[180:240:6, 29] = -0.27
+W1[240:300:6, 29] = -0.33
+W1[300:360:6, 29] = -0.42
+W1[360:420:6, 29] = -0.55
+W1[420:480:6, 29] = -0.8
+
+# Any treasure, and vertical displacement from row 5.
+W1[2:600:6, 30] = 8
+b1[30] = -4
+W1[60:120:6, 31] = -2
+W1[120:180:6, 31] = -1.5
+W1[180:240:6, 31] = -1
+W1[240:300:6, 31] = -0.5
+W1[360:420:6, 31] = 0.5
+W1[420:480:6, 31] = 1
+W1[480:540:6, 31] = 1.5
+
+# Second-layer treasure presence and alignment decoders.
+W2[22, 0:3] = [25, 30, 30]
+W2[23, 3:6] = [25, 30, 30]
+W2[24, 6:9] = [25, 30, 30]
+W2[25, 9:12] = [25, 30, 30]
+W2[26, 12:15] = [25, 30, 30]
+W2[27, 15:18] = [25, 30, 30]
+W2[28, 18:21] = [25, 30, 30]
+W2[29, 21:24] = [25, 30, 30]
+b2[0:24:3] = 21.25
+b2[1:24:3] = 3
+b2[2:24:3] = -3
+
+# Aggregate action risks.
+W2[0:7, 24] = 0.1
+b2[24] = 0.7
+W2[7:14, 25] = 0.1
+b2[25] = 0.7
+W2[14:22, 26] = 0.1
+b2[26] = 0.8
+
+# Center only when no treasure is present.
+W2[30:32, 27:29] = [[-6, -6], [6, -6]]
+b2[27:29] = -7.2
+
+# Nearly linear sum for signed treasure attraction.
+W2[22:30, 29] = 0.001
+b2[29] = 0.008
+
+# Encourage movement while searching for visible treasure.
+W2[30, 30] = 3
+
+# Remove absent-row offsets from treasure attraction.
+W3[0:24:3, 2] = -12
+W3[0:24:3, 4] = 12
+
+# Strong waiting bonus for treasure in the current row.
+W3[1:24:3, 0] = 36
+W3[2:24:3, 0] = -36
+
+# Safety penalties.
+W3[24, 2] = -600
+W3[25, 4] = -600
+W3[26, 0] = -600
+
+# Idle centering.
+W3[27, 2] = 8
+W3[28, 4] = 8
+
+# Signed treasure force and movement activation.
+W3[29, 2:5:2] = [24000, -24000]
+W3[30, 2:5:2] = 5
+
+# Action order: no-op, left, up, right, down, fire.
+b3[:] = [0, -1000, -90, -1000, 101, -1000]
+```
+

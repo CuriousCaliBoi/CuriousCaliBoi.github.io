@@ -1,0 +1,6 @@
+# Sharpen the existing hand-designed policy without changing its features.
+# This is a fixed temperature change, not a fit to examples.
+import numpy as np
+for name in ("out.W", "out.b"):
+    save(name, load(name) * np.float32(1.5))
+print("Policy score scale: 3.6.")

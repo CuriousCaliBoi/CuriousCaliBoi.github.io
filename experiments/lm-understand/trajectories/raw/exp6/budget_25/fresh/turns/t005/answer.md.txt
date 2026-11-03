@@ -1,0 +1,81 @@
+```python
+import json, numpy as np
+from collections import Counter
+games=json.load(open("/work/pass_1/games.json"))
+boards=np.load("/work/pass_1/boards.npy")
+
+def show(board):
+    board=np.asarray(board).reshape(9,9)
+    print("  012345678")
+    for r,row in enumerate(board):
+        print(r,"".join({0:".",1:"X",-1:"O"}[int(v)] for v in row))
+
+def adjacent(i):
+    r,c=divmod(i,9)
+    return [rr*9+cc for rr,cc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+            if 0<=rr<9 and 0<=cc<9]
+
+def groups(board):
+    unseen=set(np.flatnonzero(board))
+    output=[]
+    while unseen:
+        seed=next(iter(unseen))
+        colour=int(board[seed])
+        stones={seed}; stack=[seed]; liberties=set()
+        unseen.remove(seed)
+        while stack:
+            for j in adjacent(stack.pop()):
+                if board[j]==0:
+                    liberties.add(j)
+                elif board[j]==colour and j in unseen:
+                    unseen.remove(j); stones.add(j); stack.append(j)
+        output.append((colour,stones,liberties))
+    return output
+
+for gi in (64,65,66):
+    game=games[gi]
+    colour=1 if game["net_color"]=="black" else -1
+    print("\nGAME",gi,"net",game["net_color"])
+    losses=[]
+    for move in game["moves"]:
+        ply=move["ply"]
+        if ply==0:
+            continue
+        before=boards[gi,ply-1]
+        after=boards[gi,ply]
+        lost=int(np.sum((before==colour)&(after!=colour)))
+        if lost>=3:
+            losses.append((lost,ply))
+    print("Loss events:", losses)
+    for lost,ply in sorted(losses,reverse=True)[:2]:
+        print("Lost",lost,"at ply",ply)
+        show(boards[gi,ply-2] if ply>=2 else np.zeros(81,dtype=int))
+        print("Previous net move:",game["moves"][ply-1])
+        print("Opponent move:",game["moves"][ply])
+        print("Groups before net move:",
+              [(len(s),sorted(l)) for co,s,l in groups(boards[gi,ply-2])
+               if co==colour and len(l)<=3])
+    if game["end"]=="repetition":
+        ply=len(game["moves"])-1
+        print("Before final move"); show(boards[gi,ply-1])
+        print("After final move"); show(boards[gi,ply])
+        same=[k for k in range(ply) if np.array_equal(boards[gi,k],boards[gi,ply])]
+        print("Matching earlier plies:",same)
+        print("Final moves:",game["moves"][-6:])
+
+summary=Counter()
+for gi,game in enumerate(games):
+    if game["opponent"]!="strong":
+        continue
+    colour=1 if game["net_color"]=="black" else -1
+    for move in game["moves"]:
+        if move["by"]!="net" or move["move"]==81:
+            continue
+        ply=move["ply"]
+        for co,stones,libs in groups(boards[gi,ply]):
+            if co==colour and move["move"] in stones:
+                summary[("own_group_liberties",min(len(libs),4))]+=1
+                if len(libs)==1:
+                    summary[("self_atari_group_size",min(len(stones),6))]+=1
+print("\nRecorded network move outcomes:",summary)
+```

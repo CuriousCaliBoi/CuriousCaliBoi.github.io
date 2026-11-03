@@ -1,0 +1,6 @@
+{
+  "code_sha256": "14a750312ce5acc694aff29190bd362bd4fb9c5173bf4f90f3ef2a963539536a",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Only weight-derived projections, ICA/KMeans fitted to weight coefficients, spectral/subspace statistics and coefficient normalization/co-occurrence counts. No external representation is run through attention, LayerNorm or nonlinear MLP; no search."
+}

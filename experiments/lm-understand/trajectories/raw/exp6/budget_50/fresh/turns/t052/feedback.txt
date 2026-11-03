@@ -1,0 +1,5 @@
+OUTPUT of Python run 28 of at most 120:
+```
+Score scale 10.8; all decisions remain softmax-sampled.
+
+```

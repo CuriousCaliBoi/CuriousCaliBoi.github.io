@@ -1,0 +1,30 @@
+**Observations:**  
+- Output weights contain narrow, axis-aligned strokes. One W3 row has weights **0.210, 0.353, 0.486, 0.498, 0.510, 0.503, 0.441, 0.347, 0.205** across image row 1, columns 2–10: a horizontal line.
+- Another has **0.259, 0.321, 0.340, 0.415, 0.443, 0.366, 0.300, 0.257, 0.155** across row 3, columns 2–10.
+- Vertical strokes also appear: one output template has column-1 weights **0.460, 0.641, 0.489, 0.398, 0.330, 0.241** down rows 1–6.
+- Other templates suppress particular lines. W3 unit 3 has column-3 weights **−0.223, −0.297, −0.406, −0.472, −0.499, −0.405** down rows 4–9.
+- The background is biased dark, especially at the corners: b3 is **−0.691, −0.714, −0.626, −0.690** there.
+
+**Reasoning:**  
+These alternative horizontal and vertical line templates suggest independently positioned rectangular sides. Their narrowness favors outlines rather than solid blocks. Circles, diagonal shapes, handwriting, and textures fit substantially less well. The weights support the shape family more clearly than an exact size distribution.
+
+**Images:**  
+My best reading is **white, hollow, axis-aligned rectangles on black**, generally one per image, with approximately one-pixel-thick borders. Position, width, and height vary; squares can occur. They occupy several pixels in each direction, potentially most of the inner 10 × 10 area, usually leaving a black outer margin.
+
+**Example:**
+```text
+............
+............
+..########..
+..#......#..
+..#......#..
+..#......#..
+..#......#..
+..#......#..
+..########..
+............
+............
+............
+```
+
+**Confidence:** 85%

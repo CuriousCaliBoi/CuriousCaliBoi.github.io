@@ -1,0 +1,6 @@
+OUTPUT of Python run 12 of at most 120:
+```
+Saved revision 5: stronger two-liberty defense, broader
+local safety seeds, and graded capture-related liberty relief.
+
+```

@@ -1,0 +1,3 @@
+[2026-10-18T18:36:22-0400] asking (10,930 chars, effort xhigh)
+[2026-10-18T18:46:05-0400] done; tool-free True
+asterix: 51/55 statements, 4 errors, cut off False; nonzero weights 545 of 20,486; tool-free True

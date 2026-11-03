@@ -1,0 +1,57 @@
+[2026-10-23T16:30:47-0400] turn 1: new thread (6,312 chars)
+[2026-10-23T16:35:22-0400] turn 1: python; runs 1, passes 0/10, tool-free True
+[2026-10-23T16:35:22-0400] turn 2: resume (436 chars)
+[2026-10-23T16:37:09-0400] turn 2: python; runs 2, passes 0/10, tool-free True
+[2026-10-23T16:37:09-0400] turn 3: resume (379 chars)
+[2026-10-23T16:37:44-0400] turn 3: games; runs 2, passes 1/10, tool-free True
+[2026-10-23T16:37:44-0400] turn 4: resume (1,669 chars)
+[2026-10-23T16:38:02-0400] turn 4: python; runs 3, passes 1/10, tool-free True
+[2026-10-23T16:38:02-0400] turn 5: resume (13,197 chars)
+[2026-10-23T16:38:29-0400] turn 5: python; runs 4, passes 1/10, tool-free True
+[2026-10-23T16:38:29-0400] turn 6: resume (5,819 chars)
+[2026-10-23T16:39:40-0400] turn 6: python; runs 5, passes 1/10, tool-free True
+[2026-10-23T16:39:40-0400] turn 7: resume (377 chars)
+[2026-10-23T16:40:13-0400] turn 7: games; runs 5, passes 2/10, tool-free True
+[2026-10-23T16:40:13-0400] turn 8: resume (1,758 chars)
+[2026-10-23T16:40:39-0400] turn 8: python; runs 6, passes 2/10, tool-free True
+[2026-10-23T16:40:39-0400] turn 9: resume (6,438 chars)
+[2026-10-23T16:41:33-0400] turn 9: python; runs 7, passes 2/10, tool-free True
+[2026-10-23T16:41:33-0400] turn 10: resume (414 chars)
+[2026-10-23T16:42:04-0400] turn 10: games; runs 7, passes 3/10, tool-free True
+[2026-10-23T16:42:04-0400] turn 11: resume (1,700 chars)
+[2026-10-23T16:44:01-0400] turn 11: python; runs 8, passes 3/10, tool-free True
+[2026-10-23T16:44:01-0400] turn 12: resume (2,103 chars)
+[2026-10-23T16:45:42-0400] turn 12: python; runs 9, passes 3/10, tool-free True
+[2026-10-23T16:45:42-0400] turn 13: resume (431 chars)
+[2026-10-23T16:46:17-0400] turn 13: games; runs 9, passes 4/10, tool-free True
+[2026-10-23T16:46:17-0400] turn 14: resume (1,759 chars)
+[2026-10-23T16:46:38-0400] turn 14: python; runs 10, passes 4/10, tool-free True
+[2026-10-23T16:46:38-0400] turn 15: resume (2,795 chars)
+[2026-10-23T16:49:02-0400] turn 15: python; runs 11, passes 4/10, tool-free True
+[2026-10-23T16:49:02-0400] turn 16: resume (454 chars)
+[2026-10-23T16:49:38-0400] turn 16: games; runs 11, passes 5/10, tool-free True
+[2026-10-23T16:49:38-0400] turn 17: resume (1,735 chars)
+[2026-10-23T16:50:05-0400] turn 17: python; runs 12, passes 5/10, tool-free True
+[2026-10-23T16:50:05-0400] turn 18: resume (4,590 chars)
+[2026-10-23T16:51:06-0400] turn 18: python; runs 13, passes 5/10, tool-free True
+[2026-10-23T16:51:06-0400] turn 19: resume (519 chars)
+[2026-10-23T16:51:40-0400] turn 19: games; runs 13, passes 6/10, tool-free True
+[2026-10-23T16:51:40-0400] turn 20: resume (1,765 chars)
+[2026-10-23T16:52:34-0400] turn 20: python; runs 14, passes 6/10, tool-free True
+[2026-10-23T16:52:34-0400] turn 21: resume (549 chars)
+[2026-10-23T16:53:10-0400] turn 21: games; runs 14, passes 7/10, tool-free True
+[2026-10-23T16:53:10-0400] turn 22: resume (1,796 chars)
+[2026-10-23T16:55:48-0400] turn 22: python; runs 15, passes 7/10, tool-free True
+[2026-10-23T16:55:48-0400] turn 23: resume (590 chars)
+[2026-10-23T16:56:25-0400] turn 23: games; runs 15, passes 8/10, tool-free True
+[2026-10-23T16:56:25-0400] turn 24: resume (1,739 chars)
+[2026-10-23T16:57:22-0400] turn 24: python; runs 16, passes 8/10, tool-free True
+[2026-10-23T16:57:22-0400] turn 25: resume (667 chars)
+[2026-10-23T16:58:02-0400] turn 25: games; runs 16, passes 9/10, tool-free True
+[2026-10-23T16:58:02-0400] turn 26: resume (1,758 chars)
+[2026-10-23T16:58:38-0400] turn 26: python; runs 17, passes 9/10, tool-free True
+[2026-10-23T16:58:38-0400] turn 27: resume (357 chars)
+[2026-10-23T16:59:11-0400] turn 27: games; runs 17, passes 10/10, tool-free True
+[2026-10-23T16:59:11-0400] turn 28: resume (1,777 chars)
+[2026-10-23T16:59:29-0400] final answer: 17 python runs, 10 passes, 14 tensors saved
+[2026-10-23T16:59:29-0400] turn 28: final; runs 17, passes 10/10, tool-free True

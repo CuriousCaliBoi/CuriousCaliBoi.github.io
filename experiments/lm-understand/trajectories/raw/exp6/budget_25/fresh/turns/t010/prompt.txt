@@ -1,0 +1,7 @@
+OUTPUT of Python run 7 of at most 120:
+```
+Saved revision 3: symmetric two/three-liberty group channels,
+proactive attacks and protection, and a central opening prior.
+Only analytic weight construction was performed.
+
+```

@@ -1,0 +1,6 @@
+OUTPUT of Python run 17 of at most 120:
+```
+Saved revision 10: solid connections with empty-triangle avoidance,
+plus explicit resolution of crowded central contacts.
+
+```

@@ -1,0 +1,6 @@
+OUTPUT of Python run 26 of at most 120:
+```
+Saved revision 18: gated local group-size bonuses, favoring
+saving connected chains over isolated sacrificial stones.
+
+```

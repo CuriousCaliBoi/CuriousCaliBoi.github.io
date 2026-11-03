@@ -1,0 +1,6 @@
+OUTPUT of Python run 9 of at most 120:
+```
+Saved revision 4: explicit eye protection, less permissive
+capture exemptions, and more decisive sampling.
+
+```

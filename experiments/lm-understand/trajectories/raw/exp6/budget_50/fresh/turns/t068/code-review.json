@@ -1,0 +1,6 @@
+{
+  "code_sha256": "81e259e1d7117515644b66053c2333fd8f303e1de466302cde1aaaa12a4a4a82",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It assigns one fixed output-weight pattern across 81 points. This is a manual tensor edit with no input evaluation, training, simulation or search."
+}

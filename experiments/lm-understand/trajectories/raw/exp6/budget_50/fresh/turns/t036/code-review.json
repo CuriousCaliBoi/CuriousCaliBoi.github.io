@@ -1,0 +1,6 @@
+{
+  "code_sha256": "c31a3fbc598d4b3a3bac199325e964e7faf9830f7b1fbb1049c12a1727b35375",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It reads pass_16 records and stored board snapshots, counts existing stones and prints loss trajectories. All boards and moves are previously returned artifacts; no simulation, forward evaluation or parameter fitting occurs."
+}

@@ -1,0 +1,5 @@
+OUTPUT of Python run 28 of at most 120:
+```
+Added a bounded winning-pass gate requiring two solid eyes and an area lead.
+
+```

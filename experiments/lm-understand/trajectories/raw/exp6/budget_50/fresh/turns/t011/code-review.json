@@ -1,0 +1,6 @@
+{
+  "code_sha256": "71b4b35f96feaf9a8fb1a9e33d817b5112e4a58dbe3f11f92b07bba8e18a3081",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It compares stored board snapshots for equality and prints saved repetition losses and moves from pass_4. This is retrospective analysis of returned artifacts, with no state simulation, model evaluation or parameter fitting."
+}

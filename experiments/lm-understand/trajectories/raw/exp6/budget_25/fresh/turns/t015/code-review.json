@@ -1,0 +1,6 @@
+{
+  "code_sha256": "637d89efaa71893a1d01bd68b93ca577ceadec6af278b4bdfee188473fdcb056",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Reads actual pass_4 inputs, requested hidden activations, and logits, then compares selected saved values with group/liberty counts on those fixed boards using the previously reviewed rules utility. No new layer or network computation, successor-state simulation, fitting, or search."
+}

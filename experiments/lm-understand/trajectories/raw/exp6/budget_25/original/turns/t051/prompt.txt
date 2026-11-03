@@ -1,0 +1,5 @@
+OUTPUT of Python run 29 of at most 120:
+```
+Added a two-solid-enemy-eyes safeguard against false capture urgency.
+
+```

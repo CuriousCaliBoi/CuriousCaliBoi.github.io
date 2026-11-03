@@ -1,0 +1,24 @@
+import numpy as np
+A={n:a.copy() for n,a in dict(np.load("/work/policy_v8.npz")).items()}
+
+# On a nine-line board the centre is strategically close to every side.
+# Use a symmetric centre/fourth-line opening prior, decaying to zero as
+# 24 stones accumulate; keep all tactical and later-game rules unchanged.
+for p in range(81):
+    r,c=divmod(p,9)
+    rr,cc=min(r,8-r),min(c,8-c)
+    if (rr,cc)==(4,4):
+        opening=2.0
+    elif (rr,cc)==(3,3):
+        opening=1.5
+    elif (rr,cc) in [(3,4),(4,3)]:
+        opening=1.1
+    elif (rr,cc) in [(2,3),(3,2)]:
+        opening=0.5
+    else:
+        opening=0.0
+    A["out.W"][489,p]=1.8*opening/24
+
+for name in NAMES: save(name,A[name])
+np.savez("/work/policy_v9.npz",**A)
+print("Saved symmetric nine-line centre-control opening prior.")

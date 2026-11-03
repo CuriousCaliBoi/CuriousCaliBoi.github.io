@@ -1,0 +1,179 @@
+{
+  "source_revision": "4d09ba6d6a7e891dd8063974dfe81b3d78e3494f",
+  "source_path": "exp2_diffusion/runs/circle",
+  "prompt_sha256": "f02e93fcdb15177695684005f4345a6f9fc94d9925ad6c0fe69545203676693b",
+  "prompt_exact": true,
+  "instructions_sha256": "b33fe0624137cd6f190e42a8659046baf16261f3c29cd6455734523ba473afeb",
+  "cmd": [
+    "sandbox-exec",
+    "-f",
+    "<workspace>/work/experiment-cli.sb",
+    "<local-home>/.local/bin/codex",
+    "--no-daemon",
+    "exec",
+    "--strict-config",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--skip-git-repo-check",
+    "--json",
+    "-c",
+    "approval_policy=\"never\"",
+    "-c",
+    "sandbox_mode=\"read-only\"",
+    "-c",
+    "web_search=\"disabled\"",
+    "-c",
+    "agents.enabled=false",
+    "-c",
+    "features.code_mode=false",
+    "-c",
+    "features.collaboration_modes=false",
+    "-c",
+    "features.shell_tool=false",
+    "-c",
+    "features.unified_exec=false",
+    "-c",
+    "features.unified_exec_tty=false",
+    "-c",
+    "features.shell_snapshot=false",
+    "-c",
+    "features.view_image=false",
+    "-c",
+    "features.image_generation=false",
+    "-c",
+    "features.multi_agent=false",
+    "-c",
+    "features.apps=false",
+    "-c",
+    "features.plugins=false",
+    "-c",
+    "features.remote_plugin=false",
+    "-c",
+    "features.browser_use=false",
+    "-c",
+    "features.browser_use_external=false",
+    "-c",
+    "features.browser_use_full_cdp_access=false",
+    "-c",
+    "features.in_app_browser=false",
+    "-c",
+    "features.computer_use=false",
+    "-c",
+    "features.code_mode_host=false",
+    "-c",
+    "features.skill_search=false",
+    "-c",
+    "features.skill_mcp_dependency_install=false",
+    "-c",
+    "features.sleep_tool=false",
+    "-c",
+    "features.tool_suggest=false",
+    "-c",
+    "features.goals=false",
+    "-c",
+    "features.hooks=false",
+    "-c",
+    "features.worktrees=false",
+    "-c",
+    "features.workspace_dependencies=false",
+    "-c",
+    "model_instructions_file=\"<workspace>/outputs/replication/exp2_diffusion/runs/circle/instructions.md\"",
+    "-c",
+    "project_doc_max_bytes=0",
+    "-c",
+    "skills.include_instructions=false",
+    "-c",
+    "skills.bundled.enabled=false",
+    "-c",
+    "features.memories=false",
+    "-m",
+    "gpt-6-astra",
+    "-c",
+    "model_reasoning_effort=\"high\"",
+    "-c",
+    "model_context_window=872000",
+    "-c",
+    "model_auto_compact_token_limit=1000000",
+    "-c",
+    "model_reasoning_summary=\"detailed\"",
+    "-o",
+    "<workspace>/outputs/replication/exp2_diffusion/runs/circle/answer.md",
+    "-"
+  ],
+  "cli_version": "codex-cli 0.166.0",
+  "started_at": "2026-11-03T06:36:57.350629+00:00",
+  "status": "completed",
+  "isolation": "Standalone CLI process; ignore user config/rules; hide global AGENTS files with a process-local read restriction; suppress skills instructions. Published no-tool flags explicitly applied. No global settings changed.",
+  "limitation": "Original CLI build and backend model snapshot are not pinned in the release. This uses the installed CLI and the same requested model alias.",
+  "rc": 0,
+  "wall_s": 70.75,
+  "audit": {
+    "event_types": {
+      "thread.started": 1,
+      "item.completed": 6,
+      "turn.started": 1,
+      "turn.completed": 1
+    },
+    "item_types": {
+      "error": 2,
+      "reasoning": 3,
+      "agent_message": 1
+    },
+    "tool_free": true,
+    "tool_items": {},
+    "errors": [],
+    "usage_records": [
+      {
+        "input_tokens": 99387,
+        "cached_input_tokens": 2432,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1768,
+        "reasoning_output_tokens": 1227
+      }
+    ],
+    "cli_notices": [
+      "Failed to read global AGENTS.md instructions from `<local-home>/.codex/AGENTS.md`: Operation not permitted (os error 1)",
+      "Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`."
+    ]
+  },
+  "prompt_audit": {
+    "checked": true,
+    "source_prompt_count": 1,
+    "unexpected_context": [],
+    "message_lengths": [
+      {
+        "role": "developer",
+        "characters": 0
+      },
+      {
+        "role": "developer",
+        "characters": 26
+      },
+      {
+        "role": "developer",
+        "characters": 1398
+      },
+      {
+        "role": "user",
+        "characters": 602
+      },
+      {
+        "role": "user",
+        "characters": 157889
+      }
+    ]
+  },
+  "effective_model_settings": [
+    {
+      "model": "gpt-6-astra",
+      "effort": "high",
+      "summary": "none",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "read-only"
+      }
+    }
+  ],
+  "valid_replication": true,
+  "stage": "fresh_model_response_only"
+}

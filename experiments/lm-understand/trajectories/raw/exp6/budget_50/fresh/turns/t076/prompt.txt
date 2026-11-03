@@ -1,0 +1,9 @@
+OUTPUT of Python run 39 of at most 120:
+```
+Final design saved: 1480274 parameters; 25959 nonzero.
+Checkerboard liberty propagation; 60 exact safety certificates;
+capture/rescue gates; eye and self-atari avoidance; supported contact;
+central opening; Black initiative bonus; score scale 14.4.
+Remaining game passes will validate this fixed policy.
+
+```

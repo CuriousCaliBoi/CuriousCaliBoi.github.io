@@ -1,0 +1,6 @@
+{
+  "code_sha256": "f80bedbe008ebe93db62366d820c6984477e5d10efe881a55112522879220dc4",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Computes effective QK and OV weight products, eigenspectra, trace/norm metrics, tensor cosines, and SVD-derived weight subspace alignments. np.maximum only measures positive real eigenvalue mass; there are no sample inputs, network-layer evaluation, or search."
+}

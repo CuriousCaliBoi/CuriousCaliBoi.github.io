@@ -1,0 +1,76 @@
+import numpy as np
+from scipy.linalg import svd
+from sklearn.cluster import KMeans
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+np.set_printoptions(precision=3,suppress=True,linewidth=160)
+
+A=[]; B=[]
+for j in range(6):
+    sl=slice(64*j,64*(j+1))
+    g=W["ln1_w.0"].astype(float)
+    q=W["W_q.0"][sl].astype(float)*g
+    k=W["W_k.0"][sl].astype(float)*g
+    v=W["W_v.0"][sl].astype(float)*g
+    for x in [q,k,v]: x-=x.mean(axis=1,keepdims=True)
+    o=W["W_o.0"][:,sl].astype(float)
+    o-=o.mean(axis=0,keepdims=True)
+    A.append(q.T@k/8); B.append(o@v)
+
+P=svd(np.concatenate([A[1],A[1].T,A[5],A[5].T],axis=1),
+      full_matrices=False,check_finite=False)[0][:,:20]
+clean=B[5]-(B[5]@P)@P.T
+_,s,vt=svd(clean,full_matrices=False,check_finite=False)
+T=vt[:27].T
+print("Position-orthogonalized H5 OV singular values:",s[:40])
+
+f=W["W_fc.0"].astype(float)*W["ln2_w.0"][None,:]
+f-=f.mean(axis=1,keepdims=True)
+active=np.linalg.norm(W["W_fc.0"],axis=1)>1
+original_indices=np.where(active)[0]
+f=f[active]
+cov=[f@T,f@B[5]@T,f@B[1]@T]
+norms=[np.linalg.norm(z,axis=1) for z in cov]
+units=[z/n[:,None]for z,n in zip(cov,norms)]
+
+# Direct-read clusters provide an unlabeled dictionary of weight directions.
+km=KMeans(n_clusters=28,n_init=20,max_iter=300,random_state=42).fit(units[0])
+cent=km.cluster_centers_
+cent/=np.linalg.norm(cent,axis=1,keepdims=True)
+scores=[z@cent.T for z in units]
+idx=[z.argmax(axis=1)for z in scores]
+best=[z.max(axis=1)for z in scores]
+print("Best cluster cosine quantiles, direct / H5-transported / H1-transported")
+for z in best: print(np.quantile(z,[.1,.25,.5,.75,.9]))
+
+print("Cluster: direct size; repeated pair count; repeated triple count; "
+      "mean direct/H5/H1 covector norm for direct members")
+for c in range(28):
+    mask=idx[0]==c
+    pair=mask&(idx[1]==c)&(best[0]>.55)&(best[1]>.55)
+    triple=pair&(idx[2]==c)&(best[2]>.55)
+    print(c,int(mask.sum()),int(pair.sum()),int(triple.sum()),
+          [round(float(n[mask].mean()),3)for n in norms])
+
+samecos=np.stack([np.sum(units[0]*units[1],axis=1),
+                  np.sum(units[0]*units[2],axis=1),
+                  np.sum(units[1]*units[2],axis=1)],axis=1)
+triple_score=np.min(samecos,axis=1)
+top=np.argsort(-triple_score)[:20]
+print("\nMost mutually aligned direct/H5/H1 MLP covectors:")
+for i in top:
+    print("neuron",original_indices[i],"cluster",idx[0][i],
+          "pairwise cosines",samecos[i],
+          "norms",[round(float(n[i]),3)for n in norms],
+          "center cosines",[round(float(z[i]),3)for z in best])
+
+# Connections of content-sensitive L0 key-read singular covectors to these
+# learned MLP-row clusters. Both sides of every comparison are weights.
+for j in [0,2,3]:
+    ak=A[j]@T
+    u,s,vh=svd(ak,full_matrices=False,check_finite=False)
+    print("\nL0H%d token-restricted key singular values"%j,s[:5])
+    for r in range(2):
+        align=cent@vh[r]
+        order=np.argsort(-np.abs(align))[:6]
+        print("key direction",r,[(int(c),round(float(align[c]),3))for c in order])

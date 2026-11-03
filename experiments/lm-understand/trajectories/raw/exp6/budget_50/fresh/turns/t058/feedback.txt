@@ -1,0 +1,5 @@
+OUTPUT of Python run 31 of at most 120:
+```
+Strengthened the penalty for insufficient post-move liberty support.
+
+```

@@ -1,0 +1,6 @@
+{
+  "code_sha256": "67eb2aaf58d9104f01404463bd00a57a1d524d596e36d6f3f82e02b52576a917",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Learned QK/OV/bias coefficient contractions and SVD-derived subspace overlaps/cosines only; no nonlinear layer applied to inputs or search."
+}

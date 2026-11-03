@@ -1,0 +1,6 @@
+{
+  "code_sha256": "531abcc2b78ba877658667833787f9f812e8acb186a4c458b61b48ce0565a26f",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: generalized eigenmode phases and weighted phase alignment of weight-only QK forms, plus projected cross-layer QK/OV products. Products apply weight matrices only to directions derived from other weights. No sequence inputs, model/layer nonlinearities, or external search."
+}

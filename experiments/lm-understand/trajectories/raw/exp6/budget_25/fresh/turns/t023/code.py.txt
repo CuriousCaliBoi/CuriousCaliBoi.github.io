@@ -1,0 +1,58 @@
+import numpy as np,json
+names=[f"L{k}.{s}" for k in range(1,7) for s in ("W","b")]+["out.W","out.b"]
+np.savez_compressed("/work/version_7.npz",**{n:load(n) for n in names})
+
+revision=r'''
+import numpy as np
+_base={}
+exec(open("/work/design_v5.py").read(),_base)
+def construct(parameters=None):
+    changes=dict()
+    if parameters:
+        changes.update(parameters)
+    t,p=_base["construct"](changes)
+    def u(c,i):return 81*c+i
+    for threshold in (2,3):
+        for colour in (0,1):
+            channel=2*(threshold-1)+colour
+            for i in range(81):
+                r,c=divmod(i,9)
+                ns=[rr*9+cc for rr,cc in
+                    ((r-1,c),(r+1,c),(r,c-1),(r,c+1))
+                    if 0<=rr<9 and 0<=cc<9]
+                target=u(channel,i)
+
+                # Direct gated safety seeds remove a redundant threshold layer.
+                t["L2.W"][:,target]=0
+                t["L2.b"][target]=-32.0-(threshold-1)
+                t["L2.W"][u(colour,i),target]=32.0
+                t["L2.W"][u(2+colour,i),target]=1.0
+                for j in ns:
+                    t["L2.W"][u(2+colour,j),target]+=1.0 if threshold==2 else 0.5
+
+                # First propagation, with binary critical-group complements.
+                t["L3.W"][:,target]=0
+                t["L3.b"][target]=0
+                t["L3.W"][u(colour,i),target]=1.0
+                for j in [i]+ns:
+                    t["L3.W"][u(channel,j),target]-=2.0
+
+                # Two further propagation steps extend tactical visibility.
+                for layer in (4,5):
+                    w=t[f"L{layer}.W"]
+                    w[:,target]=0
+                    t[f"L{layer}.b"][target]=0
+                    w[u(colour,i),target]=1.0
+                    for j in [i]+ns:
+                        w[u(colour,j),target]-=1.0
+                        w[u(channel,j),target]+=1.0
+    return t,p
+'''
+open("/work/design_v8.py","w").write(revision)
+ns={}
+exec(revision,ns)
+t,p=ns["construct"]()
+for n,a in t.items():save(n,a)
+json.dump(p,open("/work/parameters.json","w"),indent=2)
+print("Saved revision 8: direct safety seeds and an additional")
+print("connected-group propagation step, without changing the architecture.")

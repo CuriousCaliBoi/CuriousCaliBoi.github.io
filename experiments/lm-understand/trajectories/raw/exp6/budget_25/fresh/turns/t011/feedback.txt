@@ -1,0 +1,42 @@
+OUTPUT of Python run 8 of at most 120:
+```
+PASS 2 {'placements': 4585, 'confident_top_move': 1244, 'confident_without_true_atari': 277, 'self_atari': 192, 'self_atari_stones': 355}
+PASS 3 {'placements': 5570, 'confident_top_move': 1883, 'confident_without_true_atari': 516, 'self_atari': 225, 'self_atari_stones': 432}
+
+LOSS EVENT 19 game 85 net white ply 87 result -1
+Board: ["OOOXXXX.X", "OOXXXXXO.", "O.OXOOOXX", ".OOXXOOXO", "OOXXOOOX.", "O.OXXO.OO", "OOOOXOOOO", "XXXXXXXXO", ".X.X..XXO"]
+Net move: {'ply': 87, 'by': 'net', 'move': 44, 'top5': [[44, 0.982856810092926], [17, 0.015370631590485573], [7, 0.0017726134974509478], [46, 2.416494196584573e-13], [81, 1.1745639861117721e-14]]}
+Then opponent: {'ply': 88, 'by': 'strong', 'move': 51}
+Own groups with <=2 liberties: [(6, [19, 27]), (1, [7, 17]), (17, [44, 51]), (1, [44])]
+
+LOSS EVENT 14 game 29 net white ply 75 result -1
+Board: ["....O....", ".OOOXXXX.", ".OOOOOXXX", ".OOXXXOXX", "OOOXOOOOX", "XOXXO.OOX", ".XXXOOOOO", "X.XXXXXOX", ".X.X.X.X."]
+Net move: {'ply': 75, 'by': 'net', 'move': 3, 'top5': [[3, 0.7636046409606934], [54, 0.09463595598936081], [2, 0.04950345680117607], [18, 0.03156489506363869], [8, 0.01976788230240345]]}
+Then opponent: {'ply': 76, 'by': 'strong', 'move': 50}
+Own groups with <=2 liberties: [(1, [3, 5]), (14, [50])]
+
+LOSS EVENT 13 game 17 net white ply 71 result -1
+Board: ["O.OOX....", ".OOXXXXXX", "..OXOOXX.", "..OXXOXOX", ".OOXOOOOO", "O.OXOOXO.", ".OXXOXXXO", "OXXXXXXOO", ".O.O..O.O"]
+Net move: {'ply': 71, 'by': 'net', 'move': 28, 'top5': [[19, 0.48501095175743103], [28, 0.48501095175743103], [18, 0.011683452874422073], [27, 0.009758911095559597], [7, 0.003561458084732294]]}
+Then opponent: {'ply': 72, 'by': 'strong', 'move': 53}
+Own groups with <=2 liberties: [(1, [1, 9]), (13, [53]), (1, [46, 54]), (4, [53, 79]), (1, [54, 72]), (1, [72, 74]), (1, [74, 76]), (1, [77, 79])]
+
+LOSS EVENT 13 game 25 net white ply 83 result -1
+Board: ["XXOOOX.XX", ".XXO.OXX.", "XXO.OOXXX", "XXOOOXX.X", "XXOXXOXXO", "XXXXXOOOO", ".XOOOOOO.", ".XXXOOOOO", "X.XOO.O.."]
+Net move: {'ply': 83, 'by': 'net', 'move': 13, 'top5': [[13, 0.6009026169776917], [81, 0.3971955180168152], [21, 0.0018265198450535536], [79, 6.194087472977117e-05], [80, 1.341242477792548e-05]]}
+Then opponent: {'ply': 84, 'by': 'strong', 'move': 21}
+Own groups with <=2 liberties: [(4, [13, 21]), (8, [13, 21])]
+
+LOSS EVENT 12 game 72 net black ply 62 result -1
+Board: [".........", "..X....X.", ".X.XXXXX.", "O.X.XXXO.", "OOOXXXOO.", "OOOOXXO..", "XXOOOOOOO", "XXOOXXXO.", ".XXXXXO.O"]
+Net move: {'ply': 62, 'by': 'net', 'move': 28, 'top5': [[28, 0.99953293800354], [18, 0.0003319714160170406], [15, 3.6930941860191524e-05], [79, 1.7655154806561768e-05], [14, 1.7340642443741672e-05]]}
+Then opponent: {'ply': 63, 'by': 'strong', 'move': 72}
+Own groups with <=2 liberties: [(12, [72])]
+
+LOSS EVENT 12 game 109 net white ply 51 result -1
+Board: [".....O...", ".XOO.OXX.", "..OOOOXX.", ".OOXOXXXX", ".OXXXOXOO", ".OXXOOOO.", "..XOOOOOX", ".XXXXXXX.", ".....X..."]
+Net move: {'ply': 51, 'by': 'net', 'move': 4, 'top5': [[55, 0.5098989009857178], [19, 0.30803537368774414], [6, 0.06551150232553482], [36, 0.016983114182949066], [4, 0.011429795064032078]]}
+Then opponent: {'ply': 52, 'by': 'strong', 'move': 53}
+Own groups with <=2 liberties: [(12, [53])]
+
+```

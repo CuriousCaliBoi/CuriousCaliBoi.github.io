@@ -1,0 +1,6 @@
+{
+  "code_sha256": "3fe4996f2a4c8ad6fe6282d5fbd8a8a06c777d4a740ec49f338d7f7d7ccfd9d8",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Analytic coefficient construction from fixed board-coordinate adjacency, relay indices, and manually chosen constants only. The saved design module constructs and writes tensors; it does not evaluate any network or layer on a board, simulate games, search, or fit examples."
+}

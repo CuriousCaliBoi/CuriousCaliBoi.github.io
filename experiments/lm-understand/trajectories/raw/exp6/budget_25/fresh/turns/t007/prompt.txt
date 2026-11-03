@@ -1,0 +1,7 @@
+OUTPUT of Python run 5 of at most 120:
+```
+Saved revision 2: connected shape, contested-area development,
+separate two/three-liberty safety, and guarded cramped captures.
+No network inference or training performed.
+
+```

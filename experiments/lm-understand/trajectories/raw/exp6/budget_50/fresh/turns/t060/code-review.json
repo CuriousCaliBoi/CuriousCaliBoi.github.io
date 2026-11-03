@@ -1,0 +1,6 @@
+{
+  "code_sha256": "1d926fc20a3de4a2dd29211481bf3582e5a2086b533e3f5817053a0401212350",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It sets one fixed layer-six coefficient pattern and rescales output tensors by 4/3. These manual edits execute no input-dependent network computation, fitting, simulation or search."
+}

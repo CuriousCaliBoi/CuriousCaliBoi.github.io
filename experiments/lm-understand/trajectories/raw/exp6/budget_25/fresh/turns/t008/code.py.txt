@@ -1,0 +1,31 @@
+import json,numpy as np
+from collections import Counter
+games=json.load(open("/work/pass_2/games.json"))
+boards=np.load("/work/pass_2/boards.npy")
+print("Strong results:",
+      Counter((g["end"],g["result"],g["net_color"]) for g in games if g["opponent"]=="strong"))
+print("Strong margins:",
+      sorted(g["margin"] for g in games if g["opponent"]=="strong"))
+def show(board):
+    for row in np.asarray(board).reshape(9,9):
+        print("".join({0:".",1:"X",-1:"O"}[int(x)] for x in row))
+selected=[]
+for label,predicate in [
+    ("black small loss",lambda g:g["net_color"]=="black" and -15<g["margin"]<0),
+    ("white small loss",lambda g:g["net_color"]=="white" and -15<g["margin"]<0),
+    ("large loss",lambda g:g["margin"]<=-15),
+    ("large win",lambda g:g["margin"]>35 and g["result"]==1),
+    ("repetition",lambda g:g["end"]=="repetition")
+]:
+    matches=[i for i,g in enumerate(games) if g["opponent"]=="strong" and predicate(g)]
+    if matches:
+        selected.append((label,matches[0]))
+for label,i in selected:
+    g=games[i]
+    print("\n",label,"GAME",i,{k:v for k,v in g.items() if k!="moves"})
+    for ply in (19,39,59,len(g["moves"])-1):
+        if ply<len(g["moves"]):
+            print("After ply",ply);show(boards[i,ply])
+    print("First 12 net moves:",
+          [m for m in g["moves"] if m["by"]=="net"][:12])
+    print("Last 8 moves:",g["moves"][-8:])

@@ -1,0 +1,60 @@
+import numpy as np
+from scipy.linalg import svd, eigvals
+from threadpoolctl import threadpool_limits
+
+with threadpool_limits(limits=2):
+    A=[]; B=[]; Q=[]; K=[]; V=[]; O=[]
+    for l in range(4):
+        g=W[f"ln1_w.{l}"].astype(float)
+        for j in range(6):
+            s=slice(64*j,64*j+64)
+            mats=[W[f"{n}.{l}"][s].astype(float)*g for n in ["W_q","W_k","W_v"]]
+            for m in mats:
+                m-=m.mean(1,keepdims=True)
+            q,k,v=mats
+            o=W[f"W_o.{l}"][:,s].astype(float)
+            Q.append(q); K.append(k); V.append(v); O.append(o)
+            A.append(q.T@k/8); B.append(o@v)
+    print("L0 QK eigenvalues, dominant invariant-space overlaps")
+    for j in range(6):
+        u,s,vt=svd(A[j],full_matrices=False)
+        ev=eigvals(K[j]@Q[j].T/8)
+        ev=ev[np.argsort(np.abs(ev))[::-1]]
+        r=max(1,int(np.searchsorted(np.cumsum(s*s)/sum(s*s),.95))+1)
+        left=u[:,:r]; right=vt[:r].T
+        vv=svd(V[j],full_matrices=False)[2][:min(28,r+5)].T
+        print("H",j,"rank95",r,"L/R overlap",round(np.linalg.norm(left.T@right)**2/r,3),
+              "V energy in QK-left/right",np.round([
+                  np.linalg.norm(V[j]@left)**2/np.linalg.norm(V[j])**2,
+                  np.linalg.norm(V[j]@right)**2/np.linalg.norm(V[j])**2],3))
+        print("eigenvalues",np.round(ev[:16],3))
+    print("\nQK-OV composition: trace(A_lh @ B_earlier)/(|A_lh| |B_earlier|)")
+    for i in range(6,24):
+        vals=[np.trace(A[i]@B[j])/(np.linalg.norm(A[i])*np.linalg.norm(B[j]))
+              for j in range((i//6)*6)]
+        print("L%dH%d"%(i//6,i%6),np.round(vals,3))
+    print("\nStrongest composition positivity, with nonrandom comparison")
+    for i in range(6,24):
+        cand=[]
+        for j in range((i//6)*6):
+            C=A[i]@B[j]
+            n=np.linalg.norm(C)
+            t=np.trace(C)/n
+            sym=np.sum(C*C.T)/(n*n)
+            gain=n/(np.linalg.norm(A[i])*np.linalg.norm(B[j]))
+            cand.append((t,sym,gain,j))
+        cand.sort(reverse=True)
+        print("L%dH%d"%(i//6,i%6),[
+            ("L%dH%d"%(j//6,j%6),round(t,3),round(sym,3),round(gain,3))
+            for t,sym,gain,j in cand[:4]])
+    print("\nL0 value-subspace sharing and query/key orthogonality")
+    vv=np.concatenate(V[:6])
+    _,ss,vt=svd(vv,full_matrices=False)
+    print("Combined value singular values",np.round(ss[:45],3))
+    for r in [2,10,20,28,40]:
+        basis=vt[:r].T
+        print("value basis rank",r)
+        for j in range(6):
+            print("H",j,"Q/K/V energy",np.round([
+                np.linalg.norm(M@basis)**2/np.linalg.norm(M)**2
+                for M in [Q[j],K[j],V[j]]],3))

@@ -1,0 +1,218 @@
+```python
+import numpy as np
+from scipy.linalg import svd
+from scipy.stats import skew
+from scipy.optimize import quadratic_assignment
+from sklearn.decomposition import FastICA
+from threadpoolctl import threadpool_limits
+threadpool_limits(limits=2)
+
+# Weight-only reconstruction of the two static coordinate comparisons from run 9.
+d=384
+P=np.eye(d)-np.ones((d,d))/d
+rs=[]
+for h in [1,5]:
+    _,_,r=svd(np.asarray(W["W_v.0"][64*h:64*(h+1)],float)@P,full_matrices=False)
+    rs.append(r[:28])
+ee,U=np.linalg.eigh(sum(r.T@r for r in rs))
+U=U[:,np.argsort(ee)[::-1][:28]]
+F=np.asarray(W["W_fc.0"],float)*W["ln2_w.0"][None,:]
+ica=FastICA(n_components=28,whiten="unit-variance",random_state=17,max_iter=4000,tol=.001)
+Z=ica.fit_transform(F@U)
+Z*=np.where(skew(Z,axis=0)>=0,1.,-1.)[None,:]
+O=np.asarray(W["W_proj.0"],float)
+C=np.zeros((d,28))
+for k in range(28):
+    ids=np.argsort(np.abs(Z[:,k]))[-3:]
+    cc=Z[ids,k]
+    C[:,k]=O[:,ids]@cc/np.linalg.norm(cc)
+C/=np.linalg.norm(C,axis=0,keepdims=True)
+out_u,_,_=svd(np.asarray(W["W_proj.3"],float),full_matrices=False)
+out_u=out_u[:,:28]
+J=out_u.T@C
+maps={}
+for h in [1,5]:
+    s=slice(64*h,64*(h+1))
+    b=np.asarray(W["W_o.3"][:,s],float)@(
+        np.asarray(W["W_v.3"][s],float)*W["ln1_w.3"][None,:])@P
+    a=out_u.T@b@C
+    uu,ss,vv=svd(a,full_matrices=False)
+    inverse=(vv.T*(ss/(ss*ss+(ss[0]*.15)**2))[None,:])@uu.T
+    maps[h]=(inverse@J).T
+
+# These short, invented controls are ONLY counted as text.
+# They are NOT fed to the network, any layer, or any weight matrix.
+# Matching their unlabeled bigram graphs is exploratory, not a calibrated test.
+samples={}
+samples["english"]="""
+the history of the city is closely related to the development of the region
+many people lived in small villages before the construction of the railway
+the population increased during the twentieth century and the town became an important industrial centre
+the university was founded in the nineteenth century and has several departments
+its research includes mathematics physics chemistry biology and computer science
+the company produces equipment for commercial and domestic use
+the first edition of the book was published in london and was later translated into several languages
+she wrote about her experiences and the lives of the people she had met
+the river flows through the northern part of the country before reaching the sea
+the climate is generally mild although temperatures can vary considerably
+the national government is responsible for education health and public services
+the team won the championship after defeating their opponents in the final match
+the organization has members in many countries and holds an annual conference
+a number of different methods have been proposed to explain these results
+this process requires a significant amount of energy and may take several years
+he studied at the local school and later worked as a teacher and journalist
+the species is found in forests and grasslands where it feeds on insects and small animals
+the music was composed for a large orchestra and performed for the first time in paris
+there are several buildings of historical interest including the church and the old castle
+the system consists of a central processor connected to a network of other devices
+"""
+samples["python"]="""
+import os
+import sys
+from collections import defaultdict
+from pathlib import path
+
+class connection
+    def init self host port timeout none
+        self host host
+        self port port
+        self timeout timeout
+        self closed false
+        self data dict
+    def connect self
+        if self closed
+            raise valueerror invalid connection
+        return self client connect self host self port
+    def close self
+        self closed true
+        self client close
+    def get self key default none
+        return self data get key default
+    def update self values
+        for key value in values items
+            self data key value
+
+def process items limit none
+    result list
+    for index item in enumerate items
+        if item is none
+            continue
+        value str item strip lower
+        if not value
+            continue
+        result append value
+        if limit is not none and len result limit
+            break
+    return result
+
+def load path encoding utf
+    with open path mode r encoding encoding as stream
+        return stream read
+
+def validate value expected type
+    if not isinstance value expected type
+        raise typeerror expected value
+    return value
+
+class handler
+    def init self config
+        self config config
+        self cache dict
+    def call self request args kwargs
+        try
+            response self process request
+        except exception as error
+            self logger error str error
+            raise
+        else
+            return response
+    def process self request
+        key request get name
+        if key not in self cache
+            self cache key self create key
+        return self cache key
+    def create self name
+        options self config get name dict
+        return objectfactory name options
+
+def main args none
+    parser argumentparser
+    parser add argument input
+    parser add argument output
+    options parser parse args args
+    data load options input
+    result process data splitlines
+    with open options output w as stream
+        for line in result
+            stream write line
+    return none
+"""
+samples["romaji"]="""
+watashi wa sono toki mada kodomo de atta
+sore wa aru aki no yoru no koto de aru
+kare wa shizuka ni heya no naka ni haitte kita
+watashi wa nani mo iwanai de sono kao o mite ita
+soto ni wa ame ga futte ite kaze no oto ga kikoeta
+kono machi ni kita no wa mou zuibun mae no koto da
+haha wa itsumo yasashii koe de watashi o yonda
+sono hito wa mukashi kara koko ni sunde iru rashikatta
+dare mo inai michi o hitori de aruite iru to
+tooku no yama no ue ni tsuki ga dete ita
+sore kara futari wa nagai aida hanashi o shita
+doushite sonna koto o suru no ka watashi ni wa wakaranakatta
+kare no kotoba ni wa fushigi na chikara ga atta
+ashita no asa ni wa mata tabi ni denakereba naranai
+watashi wa hon o tojite mado no soto o nagameta
+chiisana tori ga niwa no ki no eda ni tomatte ita
+sensei wa sukoshi waratte sore wa omoshiroi to itta
+kanojo wa nanimo shiranai you na kao o shite iru
+yagate haru ga kite hana ga sakihajimeta
+soshite subete no koto ga yume no you ni omoeta
+"""
+vocab="\n abcdefghijklmnopqrstuvwxyz"
+def counts(text):
+    lines=[]
+    for line in text.lower().splitlines():
+        lead=len(line)-len(line.lstrip(" "))
+        body="".join(c if "a"<=c<="z" else " " for c in line[lead:])
+        lines.append(" "*lead+" ".join(body.split()))
+    text="\n".join(lines)
+    a=np.zeros((28,28))
+    for x,y in zip(text,text[1:]):
+        a[vocab.index(x),vocab.index(y)]+=1
+    return a
+
+def standardized(a):
+    a=a.copy()
+    a=a-a.mean(0,keepdims=True)-a.mean(1,keepdims=True)+a.mean()
+    np.fill_diagonal(a,0)
+    return a/np.linalg.norm(a)
+
+A=standardized(maps[1])
+test=standardized(maps[5])
+rng=np.random.default_rng(927)
+print("EXPLORATORY graph matching against invented controls; scores are NOT probabilities.")
+for transform in ["sqrt_counts","log_conditional"]:
+    print("\nTransform:",transform)
+    for name,txt in samples.items():
+        cnt=counts(txt)
+        if transform=="sqrt_counts":
+            ref=np.sqrt(cnt)
+        else:
+            ref=np.log((cnt+.25)/(cnt.sum(1,keepdims=True)+7))
+        ref=standardized(ref)
+        fits=[]
+        for trial in range(80):
+            result=quadratic_assignment(A,ref,method="faq",
+                options={"maximize":True,"P0":"randomized","rng":rng,
+                         "maxiter":60,"tol":.001})
+            perm=result.col_ind
+            rr=ref[np.ix_(perm,perm)]
+            fits.append((float(np.sum(A*rr)),float(np.sum(test*rr)),perm))
+        fits.sort(key=lambda x:x[0],reverse=True)
+        best=fits[0]
+        print(name,"fit",round(best[0],3),"other-head agreement",round(best[1],3),
+              "top10 mean other-head",round(np.mean([x[1] for x in fits[:10]]),3))
+        print("  tentative axis labels:",
+              " ".join(f"{i}:{repr(vocab[j])}" for i,j in enumerate(best[2])))
+```

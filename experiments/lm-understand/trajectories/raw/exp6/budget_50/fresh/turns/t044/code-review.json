@@ -1,0 +1,6 @@
+{
+  "code_sha256": "5a7fbbc5427e7ba0f2115d4f197bdb8d12cf6520231839f7103edc28cb196c88",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It manually sets two output-weight diagonals to fixed rescue coefficients, with no input-dependent execution, fitting, rollout or search."
+}

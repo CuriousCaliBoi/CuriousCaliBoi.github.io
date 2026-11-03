@@ -1,0 +1,6 @@
+{
+  "code_sha256": "191352e65b1457fecbb66b6f48ab3dd0191e0fb786049cedf0e0e6d76b37463c",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Inspects only supplied tensor shapes/names, saved-tensor names and the allowed persistent /work directory. No network evaluation, training, fitting or game search."
+}

@@ -1,0 +1,15 @@
+```python
+import numpy as np
+w=load("L5.W")
+for p in range(81):
+    r,c=divmod(p,9)
+    for rr,cc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):
+        if 0<=rr<9 and 0<=cc<9:
+            q=rr*9+cc
+            # One adjacent supported friendly stone is not proof of two
+            # liberties after playing: this move consumes a liberty.
+            w[q,3*81+p]=0
+            w[2*81+q,3*81+p]=1
+save("L5.W",w)
+print("More conservative post-move liberty estimate; discourages throw-in cycles.")
+```

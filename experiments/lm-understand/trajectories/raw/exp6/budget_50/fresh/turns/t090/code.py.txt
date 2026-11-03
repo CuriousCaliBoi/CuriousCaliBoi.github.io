@@ -1,0 +1,26 @@
+import json,numpy as np
+
+wins=games=black_wins=white_wins=0
+margin_sum=0.0
+for k in range(41,50):
+    s=json.load(open(f"/work/pass_{k}/summary.json"))["per_opponent"]["strong"]
+    games+=s["games"];wins+=s["wins"]
+    black_wins+=round(s["score_as_black"]*s["games"]/2)
+    white_wins+=round(s["score_as_white"]*s["games"]/2)
+    margin_sum+=s["mean_margin"]*s["games"]
+
+print("Fixed final policy, passes 41–49:")
+print(f"Strong practice: {wins}/{games} = {wins/games:.4%}")
+print(f"Black: {black_wins}/{games//2}; White: {white_wins}/{games//2}")
+print(f"Mean area margin: {margin_sum/games:.3f}")
+
+arrays=[load(n) for n in NAMES]
+assert len(arrays)==14
+assert all(a.dtype==np.float32 and np.isfinite(a).all() for a in arrays)
+assert sum(a.size for a in arrays)==1480274
+assert set(NAMES).issubset(set(saved()))
+assert np.count_nonzero(load("L6.W")[511,:486])==0
+assert np.count_nonzero(load("out.W")[511])==0
+print("All tensors saved and finite.")
+print("Nonzero parameters:",sum(np.count_nonzero(a) for a in arrays))
+print("No weights changed by this audit.")

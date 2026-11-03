@@ -1,0 +1,44 @@
+import numpy as np,json
+from collections import Counter
+exec(open("/work/rules_analysis.py").read())
+
+def area_margin(board,colour):
+    score=int(np.sum(board==1)-np.sum(board==-1))
+    empty=set(map(int,np.flatnonzero(board==0)))
+    while empty:
+        seed=next(iter(empty)); empty.remove(seed)
+        region={seed}; stack=[seed]; boundary=set()
+        while stack:
+            for j in neighbors(stack.pop()):
+                if board[j]==0 and j in empty:
+                    empty.remove(j); region.add(j); stack.append(j)
+                elif board[j]!=0:
+                    boundary.add(int(board[j]))
+        if boundary=={1}: score+=len(region)
+        if boundary=={-1}: score-=len(region)
+    return colour*(score-7.5)
+
+games=json.load(open("/work/pass_14/games.json"))
+boards=np.load("/work/pass_14/boards.npy")
+stats=Counter(); examples=[]
+for gi,g in enumerate(games):
+    if g["opponent"]!="strong":continue
+    col=1 if g["net_color"]=="black" else -1
+    passes=[m for m in g["moves"] if m["by"]=="net" and m["move"]==81]
+    if not passes:continue
+    first=passes[0]; ply=first["ply"]
+    margin=area_margin(boards[gi,ply],col)
+    stats[("first_pass_ahead",margin>0,"won",g["result"]==1)]+=1
+    if g["result"]==-1:
+        examples.append((margin-g["margin"],gi,first,margin))
+print("First-pass positions versus eventual outcomes:",dict(stats))
+for swing,gi,first,margin in sorted(examples,reverse=True)[:5]:
+    g=games[gi];ply=first["ply"]
+    print("\nGAME",gi,{k:v for k,v in g.items() if k!="moves"})
+    print("First net pass: ply",ply,"actual area margin then",margin)
+    print(first)
+    print("Board:",json.dumps(board_strings(boards[gi,ply])))
+    print("Following moves:",g["moves"][ply+1:ply+9])
+
+print("\nLoss-margin distribution:",
+      sorted(g["margin"] for g in games if g["opponent"]=="strong" and g["result"]<0))

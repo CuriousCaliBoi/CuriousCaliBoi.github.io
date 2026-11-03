@@ -1,0 +1,9 @@
+All 14 tensors are saved.
+
+The policy combines:
+- Local string-liberty propagation for captures and endangered-group saves.
+- Self-atari avoidance and eye preservation.
+- Territorial influence, connection preferences, and opening placement.
+- Komi-aware passing.
+
+It is designed to exploit tactical mistakes while keeping groups alive and securing territory. No training, search, or network testing was performed; its strength against the held-out opponents remains unmeasured.

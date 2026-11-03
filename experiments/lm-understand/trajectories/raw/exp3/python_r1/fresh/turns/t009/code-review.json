@@ -1,0 +1,6 @@
+{
+  "code_sha256": "92a447f47e896d5c121ffe3cf421b66fc2f29b5f55059d907283d69ada9cfc62",
+  "approved": true,
+  "reviewer": "root independent manual protocol review",
+  "reason": "Reviewed full code: ICA operates on stored MLP input-weight rows; resulting coefficients form linear combinations of stored output-weight columns. Subsequent OV products, SVD projections and regularized inverse comparisons remain weight algebra. No activation function, sequence input, model probabilities, model/layer inference or external search."
+}

@@ -1,0 +1,128 @@
+OUTPUT of Python run 5 of at most 120:
+```
+Missed large ataris 274
+
+Game 58 white -1 ply 79 atari (15, 77) move 78 top [[78, 0.6875], [80, 0.3089], [14, 0.0019], [36, 0.0017], [81, 0.0]]
+.OXXX.X.X
+OXXX..XX.
+OOOXXXOX.
+OXXXXXOXX
+.OOXXOOOO
+O.OXXOOOO
+.OOXOOOXO
+OXXXXOXXX
+.X.XX..O.
+groups [(-1, 1, [0]), (1, 1, [7, 17]), (-1, 5, [0, 36]), (-1, 15, [77]), (1, 4, [78, 80]), (-1, 1, [54, 72]), (-1, 1, [78, 80])]
+
+Game 44 white -1 ply 77 atari (13, 78) move 6 top [[6, 0.9893], [45, 0.0023], [36, 0.0022], [79, 0.0021], [54, 0.001]]
+.OO.OO.XO
+OOOOXOOOO
+O.OOXXOXO
+OOXOXXXXX
+.XXXXOOXO
+.XXXOOOOO
+.OOXXXOXX
+..XXXOOX.
+.O.XOO...
+groups [(-1, 9, [3, 6]), (1, 1, [6]), (-1, 13, [78]), (-1, 2, [54, 64]), (1, 3, [71, 79])]
+
+Game 44 white -1 ply 75 atari (13, 78) move 8 top [[8, 0.9999], [3, 0.0], [45, 0.0], [36, 0.0], [79, 0.0]]
+.OO.OOXX.
+OOOOXOOOO
+O.OOXXOXO
+OOXOXXXXX
+.XXXXOOXO
+.XXXOOOOO
+.OOXXXOXX
+..XXXOOX.
+.O.XOO...
+groups [(-1, 8, [3, 8]), (1, 2, [8]), (-1, 13, [78]), (-1, 2, [54, 64]), (1, 3, [71, 79])]
+
+Game 44 white -1 ply 73 atari (13, 78) move 2 top [[2, 0.9825], [45, 0.0038], [36, 0.0036], [79, 0.0035], [54, 0.0016]]
+.O.XOO.X.
+OOOOXOOOO
+O.OOXXOXO
+OOXOXXXXX
+.XXXXOOXO
+.XXXOOOOO
+.OOXXXOXX
+..XXXOOX.
+.O.XOO...
+groups [(1, 1, [2]), (-1, 8, [6, 8]), (1, 1, [6, 8]), (-1, 13, [78]), (-1, 2, [54, 64]), (1, 3, [71, 79])]
+
+Game 44 white -1 ply 71 atari (13, 78) move 5 top [[5, 0.9999], [2, 0.0001], [45, 0.0], [36, 0.0], [79, 0.0]]
+.O.XO.XXX
+OOOOXOOOO
+O.OOXXOXO
+OOXOXXXXX
+.XXXXOOXO
+.XXXOOOOO
+.OOXXXOXX
+..XXXOOX.
+.O.XOO...
+groups [(1, 1, [2]), (-1, 1, [5]), (1, 3, [5]), (-1, 6, [5]), (-1, 13, [78]), (-1, 2, [54, 64]), (1, 3, [71, 79])]
+
+Game 37 black -1 ply 96 atari (11, 0) move 68 top [[68, 0.7588], [81, 0.2403], [64, 0.0008], [73, 0.0001], [53, 0.0]]
+.XXXXOOO.
+OXXXO.OOO
+OOXOOOOXX
+OOXOOOOX.
+OOXOOXX.X
+XOXOXXXX.
+.OOOOXX.X
+O.OOX.XX.
+O.OOOXX.X
+groups [(1, 11, [0]), (1, 3, [35, 43]), (1, 1, [54]), (1, 1, [68]), (1, 1, [71, 79])]
+
+Game 37 black -1 ply 94 atari (11, 0) move 50 top [[50, 0.5512], [68, 0.2477], [81, 0.1502], [36, 0.0352], [54, 0.0151]]
+.XXXXOOO.
+OXXXO.OOO
+OOXOOOOXX
+OOXOOOOX.
+.OXOOXX.X
+XOXOX.XX.
+.OOOOXX.X
+O.OOX.XX.
+O.OOOXX.X
+groups [(1, 11, [0]), (1, 3, [35, 43]), (1, 1, [36, 54]), (1, 1, [50]), (1, 1, [68]), (1, 1, [71, 79])]
+
+Game 37 black -1 ply 92 atari (11, 0) move 45 top [[64, 0.5271], [45, 0.2038], [54, 0.1119], [63, 0.0788], [50, 0.0455]]
+.XXXXOOO.
+OXXXO.OOO
+OOXOOOOXX
+OOXOOOOX.
+.OXOOXX.X
+.OXOX.XX.
+.OOOOXX.X
+..OOX.XX.
+O.OOOXX.X
+groups [(1, 11, [0]), (1, 3, [35, 43]), (1, 1, [50]), (1, 1, [68]), (-1, 1, [63, 73]), (1, 1, [71, 79])]
+
+Game 37 black -1 ply 90 atari (11, 0) move 49 top [[49, 1.0], [64, 0.0], [45, 0.0], [54, 0.0], [73, 0.0]]
+.XXXXOOO.
+OXXXO.OOO
+OOXOOOOXX
+OOXOOOOX.
+.OXOOXX.X
+.OXO.OXX.
+.OOOOXX.X
+..OOX.XX.
+O..OOXX.X
+groups [(1, 11, [0]), (1, 3, [35, 43]), (-1, 1, [49]), (1, 1, [68]), (-1, 1, [63, 73]), (1, 1, [71, 79])]
+
+Game 37 black -1 ply 88 atari (11, 0) move 26 top [[26, 0.7542], [35, 0.1523], [68, 0.056], [81, 0.0375], [53, 0.0]]
+.XXXXOOO.
+OXXXO.OOO
+OOXOOOOX.
+OOXOOOOX.
+XOXOOXX.X
+XOXO.OXX.
+XOOOOXX.X
+XXOOX.XX.
+.XXOOXX.X
+groups [(1, 11, [0]), (1, 7, [72]), (-1, 1, [49]), (1, 1, [68]), (1, 1, [71, 79])]
+
+Loss endings:
+Counter({('strong', 'two passes'): 33, ('weak', 'two passes'): 6, ('strong', 'repetition'): 5, ('weak', 'repetition'): 3})
+
+```

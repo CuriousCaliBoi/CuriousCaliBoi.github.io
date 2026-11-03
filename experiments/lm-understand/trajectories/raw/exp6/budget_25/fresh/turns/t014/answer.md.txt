@@ -1,0 +1,16 @@
+```python
+import os, numpy as np, json
+root="/work/pass_4"
+print(os.listdir(root))
+for name in os.listdir(root):
+    if name.endswith(".txt"):
+        print(name,open(root+"/"+name).read())
+    elif name.endswith(".npy"):
+        a=np.load(root+"/"+name)
+        print(name,a.shape,a.dtype)
+    elif name.endswith(".npz"):
+        a=np.load(root+"/"+name)
+        print(name,{k:a[k].shape for k in a.files})
+    elif name.endswith(".json"):
+        print(name,open(root+"/"+name).read()[:2000])
+```

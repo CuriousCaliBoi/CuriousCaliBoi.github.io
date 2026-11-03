@@ -1,0 +1,6 @@
+{
+  "code_sha256": "5327beb2e3b84ca9c57d53bf47b1162c6bd8416089d173d0e26ba483882a419a",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Read the complete block. It assigns fixed layer-five coefficients at neighbor, diagonal and same-point indices. This is manual tensor construction without sample inputs, network evaluation, training or move search."
+}

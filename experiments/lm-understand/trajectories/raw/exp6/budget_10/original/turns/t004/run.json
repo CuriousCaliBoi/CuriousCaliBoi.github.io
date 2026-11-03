@@ -1,0 +1,57 @@
+{
+ "ok": true,
+ "limit": false,
+ "rc": 0,
+ "wall_s": 17.4,
+ "audit": {
+  "event_types": {
+   "thread.started": 1,
+   "item.completed": 2,
+   "turn.started": 1,
+   "turn.completed": 1
+  },
+  "item_types": {
+   "error": 1,
+   "agent_message": 1
+  },
+  "tool_items": {},
+  "tool_free": true,
+  "usage": {
+   "input_tokens": 45990,
+   "cached_input_tokens": 30208,
+   "cache_write_input_tokens": 0,
+   "output_tokens": 9233,
+   "reasoning_output_tokens": 7194
+  },
+  "thread_id": "id-1ebcb4e0",
+  "errors": [],
+  "turn_completed": true
+ },
+ "stderr_tail": "",
+ "cmd": [
+  "<codex>/bin/codex",
+  "exec",
+  "resume",
+  "--strict-config",
+  "--skip-git-repo-check",
+  "--json",
+  "-m",
+  "gpt-6-astra",
+  "-c",
+  "model_reasoning_effort=\"xhigh\"",
+  "-c",
+  "model_context_window=872000",
+  "-c",
+  "model_auto_compact_token_limit=1000000",
+  "-c",
+  "model_instructions_file=\"<data>/gohand/runs/v1_b10/instructions.md\"",
+  "-o",
+  "<data>/gohand/runs/v1_b10/turns/t004/answer.md",
+  "id-1ebcb4e0",
+  "-"
+ ],
+ "attempt": 1,
+ "waits": [],
+ "thread_in": "id-1ebcb4e0",
+ "end": "2026-10-23T16:38:01-0400"
+}

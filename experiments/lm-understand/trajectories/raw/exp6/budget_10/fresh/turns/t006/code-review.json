@@ -1,0 +1,6 @@
+{
+  "code_sha256": "453f6c6c7078d041090daad4a48d29d5b703ebff864f6cf46390eb679ebff1d0",
+  "approved": true,
+  "reviewer": "independent protocol reviewer",
+  "reason": "Inspects saved pass_1 board trajectories and game logs, identifying already-observed stone losses and displaying existing positions. It does not step a game, evaluate a network, fit coefficients, or search."
+}

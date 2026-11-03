@@ -1,0 +1,9 @@
+Current authorization and scope
+
+The objective is fresh execution and evaluation of experiments 1–8 using the released prompts and numerical artifacts, with documented reconstruction where missing components require it. The user now explicitly excludes training game networks from scratch: use the released game weights. The previously prepared 32-run Exp5 PPO training campaign is cancelled before launch. Missing original PPO baseline comparisons are not claimed.
+
+Original source files remain immutable. Fresh responses are frozen before scoring, and archived author scores stay separate from new measurements. Experiment6 uses disclosed substitute opponents drawn from released same-size checkpoints. The six previously completed Exp7 Gemma fine-tunes are not game networks; their readers and causal evaluation remain in scope.
+
+Experiments1–6 are complete within the documented available-weight/reconstructed-evaluator scope. Exp7 has10of15 reader finals audited. Remaining Codex conversations are currently blocked by account usage limits. Exp8 p10c separately stopped after a provider prompt rejection. Existing standalone Spark benchmark jobs continue; first Qwen64 evaluation is launched after actual capacity review, with wider execution gated on its first-shard audit.
+
+See status.json, reconstructed-results.txt and usage-limit-2026-11-03/ for current evidence. Source-package guides and original plan approvals are historical snapshots and do not override this updated scope.
