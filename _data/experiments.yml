@@ -33,6 +33,13 @@ jaz-traces:
   description: Python execution traces, model calls, and results from JAZ runs.
   mode: Private live viewer
   note: The trace feed stays on my private Tailscale network. It loads only on my connected devices; the public site never stores the trace files.
+neuron-explorer:
+  title: Neuron Explorer
+  url: /neurons/
+  embed_url: /neurons/
+  description: Explore Qwen3.5-4B one neuron at a time through activation maps, token lenses, connections, steering, and live text probes.
+  mode: Private interpretability lab
+  note: The model and its inference service stay on my DGX Spark behind a private Tailscale gateway. The website does not expose the explorer's local agent or file tools.
 minimax-h3:
   title: MiniMax-H3 studio
   url: /h3/
