@@ -1,0 +1,15 @@
+{
+  "finite_loss_records": 4000,
+  "consecutive_steps": true,
+  "smoke_first_100_identical_at_logged_precision": true,
+  "smoke_first_100_max_absolute_difference": 0.0,
+  "training_time_ratio_to_upstream": 3.468327215521762,
+  "continuous_serving": false,
+  "serving_stopped_early": true,
+  "generated_token_count": 333659,
+  "first_observation_at_terminal_token_count_seconds": 555.475,
+  "training_step_at_serving_cutoff": 3306,
+  "last_observed_training_step": 4000,
+  "uint32_wrapped_decode_task_limit": 742391808,
+  "predicted_complete_tokens_at_limit": 333659
+}

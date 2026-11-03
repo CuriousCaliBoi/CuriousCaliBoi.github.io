@@ -1,0 +1,19 @@
+{
+  "steps": 4000,
+  "first_loss": 11.710649,
+  "final_loss": 2.149003,
+  "event_seconds": 661.41,
+  "steady_ms_per_step": 165.35,
+  "training_tokens_per_second": 24772.0,
+  "decode_tokens_per_second": 505.0,
+  "doom_frames": 23138,
+  "doom_fps": 35.0,
+  "gpu": "NVIDIA A100-SXM4-40GB, 40960 MiB, 535.161.08",
+  "baselines_measured": false,
+  "training_completed": true,
+  "full_training_run": true,
+  "continuous_serving": false,
+  "serving_stopped_early": true,
+  "generated_token_count": 333659,
+  "serving_cutoff_observed_seconds": 555.475
+}

@@ -1,0 +1,45 @@
+{
+  "dataset_revision": "f54c09fd23315a6f9c86f9dc80f725de7d8f9c64",
+  "token_counts": {
+    "train": 73910428,
+    "valid": 4549031
+  },
+  "torch": "2.7.1+cpu",
+  "numpy": "2.2.6",
+  "tiktoken": "0.12.0",
+  "seed": 1234,
+  "files": {
+    "TinyStories-train-prefix.txt": {
+      "bytes": 314572800,
+      "sha256": "2fa7ae4d539bed8eea4f3aeaf27122a5db12c1c7da225d68adbaf24b37440bdd"
+    },
+    "TinyStories-valid.txt": {
+      "bytes": 19447282,
+      "sha256": "94e431816c4cce81ff71e4408ff8d3bda9a42e8d2663986697c3954288cb38b4"
+    },
+    "tinystories_cl100k_train.u32": {
+      "bytes": 295641712,
+      "sha256": "1ca10cd2eb963150d05a44b47c68a15e001a58652a13ff56070ec957365c4366"
+    },
+    "tinystories_cl100k_valid.u32": {
+      "bytes": 18196124,
+      "sha256": "4bfaa6a36093d6a84cfdb33a261ba608b749a620f69c39c3001f41dff5fff1a4"
+    },
+    "init_flat_S.f32": {
+      "bytes": 649669632,
+      "sha256": "d216e509f5b18099a23a461f478b1ef2a2dfd4a0bdb68d5810b82b81da0089fe"
+    },
+    "starts_4000.u32": {
+      "bytes": 128000,
+      "sha256": "d9a7b9fd16fae2c890a57f8f722edb315037a3517d76a752d3b10c23a820155b"
+    },
+    "cl100k_vocab.bin": {
+      "bytes": 1045305,
+      "sha256": "b542e29ac9c5463cb3526460d78420cf6126b77090cf841f03ef6e03c5f98225"
+    },
+    "prompt_ids.txt": {
+      "bytes": 19,
+      "sha256": "23b46254eb0921706cacfdc2bf7031c5b4496d11e3790dc70c10658124304116"
+    }
+  }
+}

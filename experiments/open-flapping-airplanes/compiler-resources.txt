@@ -1,0 +1,45 @@
+
+Fatbin elf code:
+================
+arch = sm_80
+code version = [1,7]
+host = linux
+compile_size = 64bit
+
+Resource usage:
+ Common:
+  GLOBAL:0
+
+Fatbin elf code:
+================
+arch = sm_80
+code version = [1,7]
+host = linux
+compile_size = 64bit
+
+Resource usage:
+ Common:
+  GLOBAL:26274787 CONSTANT[4]:19160
+ Function _Z10ofa_kernel3Ctx:
+  REG:128 STACK:2864 SHARED:128 LOCAL:0 CONSTANT[2]:3792 CONSTANT[0]:1632 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN6decode12k_init_embedINS_3CfgILi12ELi768ELi12ELi512ELi100352ELi128EEEEEvNS_6ParamsIT_EE:
+  REG:22 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:1192 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin ptx code:
+================
+arch = sm_80
+code version = [8,7]
+host = linux
+compile_size = 64bit
+compressed
+ptxasOptions =  -maxrregcount=128
+ptxas info    : Compiling entry function '_Z10ofa_kernel3Ctx' for 'sm_80'
+ptxas info    : Function properties for _Z10ofa_kernel3Ctx
+    2864 bytes stack frame, 2988 bytes spill stores, 3072 bytes spill loads
+ptxas info    : Used 128 registers, used 3 barriers, 2864 bytes cumulative stack size, 128 bytes smem, 1632 bytes cmem[0], 3792 bytes cmem[2]
+ptxas info    : Compile time = 66322.469 ms
+--
+ptxas info    : Function properties for _Z8run_gemmRK9PhaseDesciPc
+    0 bytes stack frame, 2856 bytes spill stores, 2388 bytes spill loads
+ptxas info    : Function properties for _ZN2ew18embed_bwd_wte_taskILi768EEEviPfPK13__nv_bfloat16PKiiPc
+    0 bytes stack frame, 64 bytes spill stores, 80 bytes spill loads

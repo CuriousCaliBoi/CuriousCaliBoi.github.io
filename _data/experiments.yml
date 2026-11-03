@@ -1,3 +1,8 @@
+open-flapping-airplanes:
+  title: Training, serving, and Doom
+  url: /experiments/open-flapping-airplanes/
+  description: A 4,000-step reproduction on one A100, with loss curves, timings, and notes on the performance gap.
+  mode: Recorded experiment
 voxel-meadow:
   title: Meadow
   url: /voxel/
