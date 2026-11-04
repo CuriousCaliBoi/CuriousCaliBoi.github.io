@@ -7,202 +7,159 @@ const status = $('#status');
 const hueSelect = $('#hue');
 const valueInput = $('#value');
 const tooltip = $('#hover');
-const families = ['R', 'YR', 'Y', 'GY', 'G', 'BG', 'B', 'PB', 'P', 'RP'];
-const names = ['Red', 'Orange', 'Yellow', 'Yellow-green', 'Green', 'Blue-green', 'Blue', 'Blue-violet', 'Purple', 'Red-purple'];
-const state = { mode:'solid', hue:'5Y', value:5, yaw:-.65, pitch:.24, zoom:1.25, guides:true, context:true, spin:false };
+const names = ['Red-purple', 'Red', 'Orange', 'Yellow', 'Yellow-green', 'Green', 'Blue-green', 'Cyan', 'Blue-cyan', 'Blue', 'Blue-violet', 'Purple'];
+const state = { mode:'solid', hue:90, value:90, yaw:-.65, pitch:.24, zoom:1.1, guides:true, context:true, screen:true, spin:false };
+const boundary = new Map();
+const boundaryRows = [];
 let samples = [], selected, projected = [], width = 0, height = 0, frame = 0, previousTime = 0, hovered = null;
 const pointers = new Map();
 let gesture = null;
 
-function hueName(hue) {
-  return names[families.indexOf(hue.replace(/[\d.]/g, ''))];
+function hueName(hue) { return names[Math.round(Number(hue)/30)%12]; }
+function limits(h,v) { return boundary.get(`${Number(h)},${v}`); }
+function inverseF(t) { return t>6/29 ? t**3 : 3*(6/29)**2*(t-4/29); }
+function screenColor(h,v,c) {
+  const angle=h*Math.PI/180, fy=(v+16)/116;
+  const X=(.3127/.329)*inverseF(fy+c*Math.cos(angle)/500);
+  const Y=inverseF(fy), Z=((1-.3127-.329)/.329)*inverseF(fy-c*Math.sin(angle)/200);
+  const rgb=[3.2409699419*X-1.5373831776*Y-.4986107603*Z,-.9692436363*X+1.8759675015*Y+.0415550574*Z,.0556300797*X-.2039769589*Y+1.0569715142*Z];
+  return '#'+rgb.map(n=>Math.round(255*Math.min(1,Math.max(0,n<=.0031308?12.92*n:1.055*n**(1/2.4)-.055))).toString(16).padStart(2,'0')).join('');
 }
-
-function gray(value) {
-  const v = value;
-  const Y = Math.min(1, Math.max(0, .975 * (1.2219*v - .23111*v*v + .23951*v**3 - .021009*v**4 + .0008404*v**5) / 100));
-  const n = Math.round(255 * (Y <= .0031308 ? 12.92*Y : 1.055*Y**(1/2.4)-.055));
-  return `rgb(${n},${n},${n})`;
+function gray(v) {return screenColor(0,v,0);}
+function position(angle,chroma,value) {return {x:chroma/10*Math.cos(angle),y:(value-50)*.35,z:chroma/10*Math.sin(angle)};}
+function makeSample(h,v,c) {
+  h=Number(h);
+  const cap=limits(h,v);
+  c=Math.max(0,Math.min(c,cap.surface));
+  const outside=c>cap.screen+.0001;
+  return {h,v,c,a:h*Math.PI/180,edge:Math.abs(c-cap.surface)<.001,outside,
+    color:screenColor(h,v,outside?cap.screen*.995:c),pos:position(h*Math.PI/180,c,v)};
 }
-
-function position(angle, chroma, value) {
-  return { x:chroma*Math.cos(angle), y:(value-5)*3.5, z:chroma*Math.sin(angle) };
-}
-
 function project(point) {
-  const x = point.x*Math.cos(state.yaw)-point.z*Math.sin(state.yaw);
-  const z = point.x*Math.sin(state.yaw)+point.z*Math.cos(state.yaw);
-  const y = point.y*Math.cos(state.pitch)-z*Math.sin(state.pitch);
-  const depth = point.y*Math.sin(state.pitch)+z*Math.cos(state.pitch);
-  const perspective = 78/(78+depth);
-  const scale = Math.min(width*.40/17, (height-155)*.46/18)*state.zoom;
-  return { x:width/2+x*scale*perspective, y:height*.51-y*scale*perspective, depth, scale:scale*perspective };
+  const x=point.x*Math.cos(state.yaw)-point.z*Math.sin(state.yaw);
+  const z=point.x*Math.sin(state.yaw)+point.z*Math.cos(state.yaw);
+  const y=point.y*Math.cos(state.pitch)-z*Math.sin(state.pitch);
+  const depth=point.y*Math.sin(state.pitch)+z*Math.cos(state.pitch);
+  const perspective=78/(78+depth);
+  const scale=Math.min(width*.40/19.5,(height-155)*.46/18)*state.zoom;
+  return {x:width/2+x*scale*perspective,y:height*.51-y*scale*perspective,depth,scale:scale*perspective};
 }
-
-function active(sample) {
-  return state.mode==='solid' || (state.mode==='hue' ? sample.h===state.hue : sample.v===state.value);
-}
-
-function path(points, color, lineWidth=1, close=false, fill=null) {
+function active(sample) {return state.mode==='solid'||(state.mode==='hue'?sample.h===state.hue:sample.v===state.value);}
+function path(points,color,lineWidth=1,close=false,fill=null) {
   ctx.beginPath();
-  points.forEach((point,index) => { const p=project(point); index ? ctx.lineTo(p.x,p.y) : ctx.moveTo(p.x,p.y); });
-  if (close) ctx.closePath();
-  if (fill) { ctx.fillStyle=fill; ctx.fill(); }
-  ctx.strokeStyle=color; ctx.lineWidth=lineWidth; ctx.stroke();
+  points.forEach((point,index)=>{const p=project(point);index?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y);});
+  if(close)ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  ctx.strokeStyle=color;ctx.lineWidth=lineWidth;ctx.stroke();
 }
-
-function label(point, text, align='center', dy=0) {
+function label(point,text,align='center',dy=0) {
   const p=project(point);
-  if (p.x<24 || p.x>width-24 || p.y<90 || p.y>height-85) return;
-  ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillStyle='#b9bdbc';ctx.font='11px Inter, system-ui, sans-serif';
-  ctx.fillText(text,p.x,p.y+dy);
+  if(p.x<24||p.x>width-24||p.y<90||p.y>height-85)return;
+  ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillStyle='#b9bdbc';ctx.font='11px Inter, system-ui, sans-serif';ctx.fillText(text,p.x,p.y+dy);
 }
-
-function render() {
-  ctx.clearRect(0,0,width,height);
-  projected=[];
-  if (!samples.length) return;
-  if (state.guides) {
-    const circle=Array.from({length:81},(_,i)=>position(i*Math.PI/40,16,0));
-    path(circle,'#ffffff16');
-    for (let i=0;i<10;i++) path([position(0,0,0),position((i*10+5)*Math.PI/50,16,0)],'#ffffff0b');
-    for (let i=0;i<10;i+=2) label(position((i*10+5)*Math.PI/50,18,0),names[i]);
-    path([position(0,0,0),position(0,0,10)],'#ffffff65');
-    label(position(0,0,10),'10 · light', 'center', -16);
-    label(position(0,0,0),'0 · dark', 'center', 18);
-    if(state.mode==='solid') {
-      for (let v=2;v<=8;v++) {
-        const edge=[];
-        for(const h of hueSelect.options) {
-          const row=samples.filter(d=>d.h===h.value&&d.v===v);
-          if(row.length) edge.push(row[row.length-1]);
-        }
-        path(edge.map(d=>d.pos),'#ffffff12',1,true);
-      }
+function outline(kind,color) {
+  if(state.mode==='hue') {
+    const a=state.hue*Math.PI/180;
+    const points=[position(a,0,0),...boundaryRows.filter(d=>d.h===state.hue).map(d=>position(a,d[kind],d.v)),position(a,0,100)];
+    path(points,color,kind==='surface'?1.4:1.2,true);
+  } else {
+    for(let v=5;v<100;v+=5) {
+      if(state.mode==='value'&&v!==state.value)continue;
+      if(state.mode==='solid'&&kind==='screen'&&v%10!==0)continue;
+      path(boundaryRows.filter(d=>d.v===v).map(d=>position(d.h*Math.PI/180,d[kind],v)),color,kind==='surface'?1:1.1,true);
     }
   }
-  if (state.mode==='hue') {
-    const angle=samples.find(d=>d.h===state.hue).a;
-    path([position(angle,0,1.4),position(angle,15.4,1.4),position(angle,15.4,8.6),position(angle,0,8.6)],'#ffffff28',1,true,'#ffffff04');
-  } else if (state.mode==='value') {
-    const ring=Array.from({length:81},(_,i)=>position(i*Math.PI/40,15.5,state.value));
-    path(ring,'#ffffff30',1,true,'#ffffff05');
+}
+function render() {
+  ctx.clearRect(0,0,width,height);projected=[];
+  if(!samples.length)return;
+  if(state.guides) {
+    path(Array.from({length:73},(_,i)=>position(i*Math.PI/36,195,0)),'#ffffff12');
+    if(width>600&&state.mode==='solid')for(const h of [30,90,150,210,270,330])label(position(h*Math.PI/180,205,0),hueName(h));
+    path([position(0,0,0),position(0,0,100)],'#ffffff65');
+    label(position(0,0,100),'L* 100 · white','center',-16);label(position(0,0,0),'L* 0 · black','center',18);
   }
+  outline('surface',state.mode==='solid'?'#ffffff19':'#ffffff70');
   const points=samples.map(sample=>({...project(sample.pos),sample})).sort((a,b)=>b.depth-a.depth);
-  for (const point of points) {
+  for(const point of points) {
     const included=active(point.sample);
-    if (!included&&!state.context) continue;
-    if (point.x<-15||point.x>width+15||point.y<-15||point.y>height+15) continue;
-    const radius=Math.max(2.3,Math.min(8.5,point.scale*.48));
-    ctx.globalAlpha=included?1:.065;
-    ctx.fillStyle=point.sample.color;
+    if(!included&&!state.context)continue;
+    if(point.x<-15||point.x>width+15||point.y<-15||point.y>height+15)continue;
+    const radius=Math.max(1.8,Math.min(7,point.scale*(point.sample.edge?.42:.34)));
+    ctx.globalAlpha=included?1:.035;ctx.fillStyle=point.sample.color;
     ctx.beginPath();ctx.arc(point.x,point.y,radius,0,Math.PI*2);ctx.fill();
-    if(included) projected.push({...point,radius});
+    if(included)projected.push({...point,radius});
   }
   ctx.globalAlpha=1;
-  if (state.guides) {
-    for(let v=0;v<=10;v++) {
-      const p=project(position(0,0,v));
-      const size=Math.max(3,Math.min(8,p.scale*.5));
-      ctx.fillStyle=gray(v);ctx.fillRect(p.x-size/2,p.y-size/2,size,size);
-    }
-  }
+  if(state.screen){ctx.setLineDash([4,5]);outline('screen',state.mode==='solid'?'#ffffff50':'#ffffffb0');ctx.setLineDash([]);}
+  if(state.guides)for(let v=0;v<=100;v+=10){const p=project(position(0,0,v));const size=Math.max(3,Math.min(8,p.scale*.5));ctx.fillStyle=gray(v);ctx.fillRect(p.x-size/2,p.y-size/2,size,size);}
   for(const sample of [hovered,selected]) {
-    if(!sample||!active(sample)) continue;
+    if(!sample||!active(sample))continue;
     const p=project(sample.pos),radius=Math.max(2.3,Math.min(8.5,p.scale*.48));
+    ctx.fillStyle=sample.color;ctx.beginPath();ctx.arc(p.x,p.y,radius,0,Math.PI*2);ctx.fill();
     ctx.strokeStyle=sample===selected?'#f8f5e9':'#f8f5e980';ctx.lineWidth=sample===selected?1.8:1;
     ctx.beginPath();ctx.arc(p.x,p.y,radius+4,0,Math.PI*2);ctx.stroke();
   }
 }
-
 function invalidate() {
-  if(frame) return;
-  frame=requestAnimationFrame(time=>{
-    frame=0;
-    if(state.spin&&!document.hidden) state.yaw+=Math.min(40,previousTime?time-previousTime:16)*.00013;
-    previousTime=time;
-    render();
-    if(state.spin&&!document.hidden) invalidate();
-  });
+  if(frame)return;
+  frame=requestAnimationFrame(time=>{frame=0;if(state.spin&&!document.hidden)state.yaw+=Math.min(40,previousTime?time-previousTime:16)*.00013;previousTime=time;render();if(state.spin&&!document.hidden)invalidate();});
 }
-
 function resize() {
   const box=scene.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);
-  width=box.width;height=box.height;
-  canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
-  ctx.setTransform(ratio,0,0,ratio,0,0);
-  invalidate();
+  width=box.width;height=box.height;canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);invalidate();
 }
-
 function updateMode() {
   document.querySelectorAll('[data-mode]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.mode===state.mode)));
-  const count=samples.filter(active).length;
-  $('#scene-title').textContent=state.mode==='solid'?'The Munsell sample solid':state.mode==='hue'?`${hueName(state.hue)} · ${state.hue}`:`Value ${state.value} · a horizontal slice`;
-  $('#scene-subtitle').textContent=state.mode==='solid'?'956 colors · 40 hues · value 2–8':state.mode==='hue'?'One hue · varying value and chroma':'One value · varying hue and chroma';
-  $('#sample-count').textContent=`${count} ${state.mode==='solid'?'samples':'samples in slice'}`;
-  $('#context').disabled=state.mode==='solid';
-  tooltip.hidden=true;hovered=null;invalidate();
+  $('#scene-title').textContent=state.mode==='solid'?'The surface-color solid':state.mode==='hue'?`${hueName(state.hue)} · hue ${state.hue}°`:`Lightness L* ${state.value} · horizontal slice`;
+  $('#scene-subtitle').textContent=state.mode==='solid'?'D65 daylight · ideal reflectances · CIE 1931 observer':state.mode==='hue'?'One hue · varying lightness and chroma':'One lightness · varying hue and chroma';
+  $('#sample-count').textContent='CIELAB coordinates';$('#context').disabled=state.mode==='solid';tooltip.hidden=true;hovered=null;invalidate();
 }
-
 function updateSelected() {
-  const d=selected;
+  const d=selected,cap=limits(d.h,d.v),name=d.c<.001?'Neutral gray':hueName(d.h);
   $('#selected-swatch').style.background=d.color;
-  $('#selected-swatch').setAttribute('aria-label',`${hueName(d.h)}, Munsell ${d.h} ${d.v}/${d.c}`);
-  $('#selected-name').textContent=hueName(d.h);
-  $('#selected-notation').textContent=`${d.h} ${d.v}/${d.c}`;
-  $('#coord-hue').textContent=d.h;$('#coord-value').textContent=d.v;$('#coord-chroma').textContent=d.c;
-  $('#display-note').textContent=`${d.color.toUpperCase()} · ${d.clipped?'outside sRGB; display clipped':'approximate screen color'}`;
-  status.textContent=`Selected ${d.h}: value ${d.v}, chroma ${d.c}.`;
+  $('#selected-swatch').setAttribute('aria-label',`${name}, lightness ${d.v}, chroma ${d.c.toFixed(1)}${d.outside?'; screen approximation':''}`);
+  $('#selected-name').textContent=name;$('#selected-notation').textContent=d.edge?'Surface limit':'CIELAB';
+  $('#coord-hue').textContent=d.c<.001?'—':`${d.h}°`;$('#coord-value').textContent=d.v;$('#coord-chroma').textContent=d.c.toFixed(1);
+  $('#display-note').textContent=d.outside?'Outside sRGB · swatch chroma reduced for display':'Within sRGB · approximate screen appearance';
+  $('#chroma').max=cap.surface;$('#chroma').value=d.c;$('#chroma-output').textContent=d.c.toFixed(1);
+  $('#limit-note').textContent=`For this hue page and L*: surface limit ≈ ${cap.surface.toFixed(1)} C*. sRGB limit ≈ ${cap.screen.toFixed(1)} C*.`;
+  status.textContent=`Selected hue ${d.h}°, L* ${d.v}, C* ${d.c.toFixed(1)}${d.outside?'; outside sRGB':''}.`;
 }
-
 function buildHuePage() {
-  const page=$('#hue-page');
-  const restoreFocus=page.contains(document.activeElement);
-  page.replaceChildren();
+  const page=$('#hue-page'),restoreFocus=page.contains(document.activeElement);page.replaceChildren();
   $('#page-title').textContent=`${hueName(state.hue)} hue page`;
   const tick=(value,cls='')=>{const el=document.createElement('span');el.className=`tick ${cls}`;el.textContent=value;return el;};
-  page.append(tick('V↑','axis-tick'));
-  for(let c=0;c<=14;c+=2)page.append(tick(c));
-  for(let v=8;v>=2;v--) {
+  page.append(tick('L*↑','axis-tick'));for(let c=0;c<=180;c+=30)page.append(tick(c));page.append(tick('Edge'));
+  for(let v=90;v>=10;v-=10) {
     page.append(tick(v,'axis-tick'));
-    const neutral=document.createElement('span');neutral.className='neutral';neutral.style.background=gray(v);neutral.setAttribute('aria-label',`Neutral gray, value ${v}`);page.append(neutral);
-    for(let c=2;c<=14;c+=2) {
-      const sample=samples.find(d=>d.h===state.hue&&d.v===v&&d.c===c);
-      if(!sample) {const blank=document.createElement('span');blank.setAttribute('aria-hidden','true');page.append(blank);continue;}
-      const button=document.createElement('button');button.type='button';button.className='chip';button.style.background=sample.color;
-      const description=`${sample.h}: value ${sample.v}, chroma ${sample.c}`;
-      button.setAttribute('aria-label',description);button.title=description;button.setAttribute('aria-pressed',String(sample===selected));
-      button.addEventListener('click',()=>selectSample(sample,false));
-      page.append(button);
+    const cap=limits(state.hue,v);
+    for(const c of [...Array.from({length:7},(_,i)=>i*30),cap.surface]) {
+      if(c>cap.surface+.001){const blank=document.createElement('span');blank.setAttribute('aria-hidden','true');page.append(blank);continue;}
+      const sample=makeSample(state.hue,v,c),button=document.createElement('button');
+      button.type='button';button.className=`chip${sample.outside?' beyond-screen':''}${sample.edge?' edge-chip':''}`;button.style.background=sample.color;
+      const description=`Hue ${sample.h}°, L* ${sample.v}, C* ${sample.c.toFixed(1)}${sample.edge?', surface limit':''}${sample.outside?', outside sRGB':''}`;
+      button.setAttribute('aria-label',description);button.title=description;
+      button.setAttribute('aria-pressed',String(sample.h===selected.h&&sample.v===selected.v&&Math.abs(sample.c-selected.c)<.01));
+      if(sample.edge)button.textContent=sample.c.toFixed(0);
+      button.style.color=v>60?'#171917':'#fff';button.addEventListener('click',()=>selectSample(sample,false));page.append(button);
     }
   }
-  const hues=samples.filter(d=>d.h===state.hue);
-  const maximum=Math.max(...hues.map(d=>d.c));
-  const peaks=hues.filter(d=>d.c===maximum).map(d=>d.v);
-  $('#page-note').textContent=`Highest sampled chroma: ${maximum}, at value ${peaks.join(' and ')}. Blank spaces are unsampled.`;
+  const peak=boundaryRows.filter(d=>d.h===state.hue).reduce((best,d)=>d.surface>best.surface?d:best);
+  $('#page-note').textContent=`Peak on the 5-L* grid: C* ${peak.surface.toFixed(1)} at L* ${peak.v}. Blank = beyond the surface limit. Corner mark = beyond sRGB. Edge numbers are C*.`;
   if(restoreFocus)page.querySelector('[aria-pressed="true"]')?.focus({preventScroll:true});
 }
-
 function selectSample(sample,syncHue=true) {
-  selected=sample;
-  if(syncHue)state.hue=sample.h;
+  selected=sample;if(syncHue)state.hue=sample.h;
   state.value=sample.v;valueInput.value=state.value;$('#value-output').textContent=state.value;
-  hueSelect.value=state.hue;$('#hue-name').textContent=`${hueName(state.hue)} · ${state.hue}`;
+  hueSelect.value=state.hue;$('#hue-name').textContent=`${hueName(state.hue)} · ${state.hue}°`;
   updateSelected();buildHuePage();updateMode();
 }
-
-function nearest(hue,value,chroma) {
-  return samples.filter(d=>d.h===hue).reduce((best,d)=>{
-    const score=p=>Math.abs(p.v-value)*20+Math.abs(p.c-chroma);
-    return !best||score(d)<score(best)?d:best;
-  },null);
-}
-
 function setHue(hue,preset=false) {
-  state.mode='hue';state.hue=hue;
-  selectSample(nearest(hue,preset?(hue==='5Y'?8:3):selected.v,preset?12:selected.c));
-  if(preset) {state.yaw=-selected.a;state.pitch=.12;state.zoom=1;setSpin(false);}
-  invalidate();
+  state.mode='hue';state.hue=Number(hue);
+  const v=preset?({40:40,90:90,300:35}[state.hue]):selected.v;
+  selectSample(makeSample(state.hue,v,preset?limits(state.hue,v).surface:selected.c));
+  if(preset){state.yaw=-selected.a;state.pitch=.12;state.zoom=1.1;setSpin(false);}invalidate();
 }
 
 function setSpin(spin) {
@@ -210,7 +167,7 @@ function setSpin(spin) {
 }
 
 function zoom(factor) {state.zoom=Math.min(2.4,Math.max(.55,state.zoom*factor));tooltip.hidden=true;invalidate();}
-function reset() {state.yaw=-.65;state.pitch=.24;state.zoom=1.25;setSpin(false);invalidate();}
+function reset() {state.yaw=-.65;state.pitch=.24;state.zoom=1.1;setSpin(false);invalidate();}
 function local(event) {const box=canvas.getBoundingClientRect();return {x:event.clientX-box.left,y:event.clientY-box.top};}
 function pick(x,y) {
   let found=null,best=Infinity;
@@ -234,7 +191,7 @@ canvas.addEventListener('pointermove',event=>{
     const sample=pick(p.x,p.y);
     if(hovered!==sample){hovered=sample;invalidate();}
     tooltip.hidden=!sample;
-    if(sample){tooltip.textContent=`${sample.h} · value ${sample.v} · chroma ${sample.c}`;tooltip.style.left=`${Math.max(8,Math.min(width-220,p.x+15))}px`;tooltip.style.top=`${Math.max(8,Math.min(height-70,p.y-38))}px`;}
+    if(sample){tooltip.textContent=`${sample.h}° · L* ${sample.v} · C* ${sample.c.toFixed(1)}`;tooltip.style.left=`${Math.max(8,Math.min(width-220,p.x+15))}px`;tooltip.style.top=`${Math.max(8,Math.min(height-70,p.y-38))}px`;}
     return;
   }
   pointers.set(event.pointerId,p);
@@ -273,7 +230,9 @@ canvas.addEventListener('keydown',event=>{
 document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{state.mode=button.dataset.mode;updateMode();}));
 document.querySelectorAll('[data-preset]').forEach(button=>button.addEventListener('click',()=>setHue(button.dataset.preset,true)));
 hueSelect.addEventListener('change',()=>setHue(hueSelect.value));
-valueInput.addEventListener('input',()=>{state.mode='value';selectSample(nearest(state.hue,Number(valueInput.value),selected.c));});
+valueInput.addEventListener('input',()=>{state.mode='value';selectSample(makeSample(state.hue,Number(valueInput.value),selected.c));});
+$('#chroma').addEventListener('input',event=>selectSample(makeSample(state.hue,state.value,Number(event.target.value))));
+$('#screen-gamut').addEventListener('change',event=>{state.screen=event.target.checked;invalidate();});
 $('#guides').addEventListener('change',event=>{state.guides=event.target.checked;invalidate();});
 $('#context').addEventListener('change',event=>{state.context=event.target.checked;invalidate();});
 $('#zoom-in').addEventListener('click',()=>zoom(1.18));$('#zoom-out').addEventListener('click',()=>zoom(1/1.18));
@@ -294,23 +253,16 @@ document.addEventListener('visibilitychange',()=>{previousTime=0;if(!document.hi
 new ResizeObserver(resize).observe(scene);
 
 async function init() {
-  const controls=Array.from(explorer.querySelectorAll('button, input, select'));
-  controls.forEach(el=>el.disabled=true);
+  const controls=Array.from(explorer.querySelectorAll('button, input, select'));controls.forEach(el=>el.disabled=true);
   try {
-    const response=await fetch('./munsell.json');
+    const response=await fetch('./surface-solid.json');
     if(!response.ok)throw new Error(`Data request failed (${response.status})`);
     const data=await response.json();
-    samples=data.samples.map(([h,v,c,angle,color,clipped])=>({h,v,c,a:angle*Math.PI/180,color,clipped,pos:position(angle*Math.PI/180,c,v)}));
-    const hues=Array.from(new Set(samples.map(d=>d.h))).sort((a,b)=>samples.find(d=>d.h===a).a-samples.find(d=>d.h===b).a);
-    hues.forEach(hue=>{const option=document.createElement('option');option.value=hue;option.textContent=`${hueName(hue)} · ${hue}`;hueSelect.append(option);});
+    for(const [h,v,surface,screen] of data.boundaries){boundary.set(`${h},${v}`,{surface,screen});boundaryRows.push({h,v,surface,screen});}
+    for(const d of boundaryRows){for(let c=30;c<d.surface-.01;c+=30)samples.push(makeSample(d.h,d.v,c));samples.push(makeSample(d.h,d.v,d.surface));}
+    for(let h=0;h<360;h+=10){const option=document.createElement('option');option.value=h;option.textContent=`${hueName(h)} · ${h}°`;hueSelect.append(option);}
     controls.forEach(el=>el.disabled=false);
-    selectSample(samples.find(d=>d.h==='5Y'&&d.v===8&&d.c===12));
-    state.value=5;valueInput.value=5;$('#value-output').textContent='5';
-    status.textContent='Pick a color in the solid or the hue page.';
-    resize();
-  } catch(error) {
-    status.textContent='The color data could not load. Reload the page to try again; reference links are below.';
-    console.error(error);
-  }
+    selectSample(makeSample(90,90,limits(90,90).surface));status.textContent='Pick a color or change its chroma. Dashed lines show sRGB.';resize();
+  }catch(error){status.textContent='The color data could not load. Reload the page to try again; source links are below.';console.error(error);}
 }
 init();
