@@ -20,7 +20,6 @@ header_pages:
   - index.md
   - art.html
   - models.html
-  - about.md
 
 # Site metadata and GitHub Pages plugins
 author: Zuko

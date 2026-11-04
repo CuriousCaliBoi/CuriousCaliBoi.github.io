@@ -9,5 +9,3 @@ main:
     url: /models/
   - title: "Experiments"
     url: /experiments/
-  - title: "About"
-    url: /about/
