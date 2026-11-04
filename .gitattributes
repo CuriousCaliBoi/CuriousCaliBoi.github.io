@@ -1,0 +1,2 @@
+# Preserve source bytes so the published CIE checksums remain verifiable.
+color-solid/data/* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
