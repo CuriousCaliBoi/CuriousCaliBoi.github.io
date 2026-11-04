@@ -56,7 +56,7 @@ The warm paper palette, serif reading experience, quiet navigation, and margin c
 
 ## Photos
 
-`/art/` combines a photo gallery, a keyboard-accessible lightbox, and a color sampler. The sampler reads actual pixels from the locally hosted photographs; it does not send anything to a server. Photos and attribution are defined in `_data/art.yml`, with files under `images/art/`. Add entries there to extend the gallery.
+`/art/` combines a photo gallery and a keyboard-accessible lightbox. Photos and attribution are defined in `_data/art.yml`, with files under `images/art/`. Add entries there to extend the gallery.
 
 The gallery contains 39 photos from the website album. Responsive WebP images and larger JPEGs are hosted locally, with original proportions preserved and embedded metadata removed. The gallery and viewer use no generated captions.
 
