@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#18191b">
+  <title>Color solid · Zuko</title>
+  <meta name="description" content="Explore hue, value, and chroma in a three-dimensional Munsell color solid. Rotate, slice, and inspect 956 published color samples.">
+  <link rel="canonical" href="https://curiouscaliboi.github.io/color-solid/">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./studio.css">
+  <script type="module" src="./studio.js"></script>
+</head>
+<body>
+  <header class="site-bar"><a href="/art/">← Art</a><a class="site-name" href="/">Zuko</a></header>
+  <main>
+    <header class="intro">
+      <div><p class="eyebrow">Hue · value · chroma</p><h1>Color solid</h1></div>
+      <p>Move around the gray spine. Travel from dark to light. See why the most colorful yellow and the most colorful blue live at different heights.</p>
+    </header>
+    <section class="explorer" id="explorer" aria-label="Munsell color explorer">
+      <div class="scene-column">
+        <div class="scene-toolbar">
+          <div class="segmented" role="group" aria-label="View mode">
+            <button type="button" data-mode="solid" aria-pressed="true">Whole solid</button>
+            <button type="button" data-mode="hue" aria-pressed="false">Hue slice</button>
+            <button type="button" data-mode="value" aria-pressed="false">Value slice</button>
+          </div>
+          <button type="button" id="fullscreen">Fullscreen ↗</button>
+        </div>
+        <div class="scene" id="scene">
+          <canvas id="solid" tabindex="0" aria-label="Interactive three-dimensional color solid. Drag to orbit, pinch or scroll to zoom, click a color to inspect. Keyboard: arrows rotate, plus and minus zoom, R resets." aria-describedby="scene-help">Color samples are also available as keyboard-accessible buttons in the hue page.</canvas>
+          <div class="scene-heading"><span id="scene-title">The Munsell sample solid</span><span id="scene-subtitle">956 colors · 40 hues · value 2–8</span></div>
+          <div id="hover" class="hover-label" hidden></div>
+          <div class="scene-bottom">
+            <p id="scene-help">Drag to orbit · scroll or pinch to zoom · pick a color</p>
+            <div class="camera-controls" role="group" aria-label="Camera controls">
+              <button type="button" id="zoom-out" aria-label="Zoom out">−</button><button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+              <button type="button" id="spin" aria-pressed="false">Orbit</button><button type="button" id="reset">Reset view</button>
+            </div>
+          </div>
+        </div>
+        <div class="scene-options">
+          <label><input type="checkbox" id="guides" checked> Show guides</label>
+          <label><input type="checkbox" id="context" checked> Keep slice context</label>
+          <span id="sample-count">956 samples</span>
+        </div>
+      </div>
+      <aside class="inspector" aria-label="Color and slice controls">
+        <div class="selected-sample" id="selected-swatch" role="img" aria-label="Selected color"></div>
+        <div class="selected-heading"><h2 id="selected-name">Yellow</h2><span id="selected-notation">5Y 8/12</span></div>
+        <dl class="coordinates"><div><dt>Hue</dt><dd id="coord-hue">5Y</dd></div><div><dt>Value</dt><dd id="coord-value">8</dd></div><div><dt>Chroma</dt><dd id="coord-chroma">12</dd></div></dl>
+        <p class="display-note" id="display-note">Approximate screen color</p>
+        <div class="control-field">
+          <label for="hue">Hue <output id="hue-name">Yellow · 5Y</output></label>
+          <select id="hue" aria-label="Choose hue"></select>
+        </div>
+        <div class="control-field">
+          <label for="value">Value slice <output id="value-output">5</output></label>
+          <input type="range" id="value" min="2" max="8" value="5" step="1">
+          <div class="range-ends"><span>Darker · 2</span><span>Lighter · 8</span></div>
+        </div>
+        <div class="hue-heading"><h3 id="page-title">Yellow hue page</h3><span>Chroma →</span></div>
+        <div id="hue-page" class="hue-page" aria-label="Color samples for the selected hue"></div>
+        <p class="page-note" id="page-note"></p>
+        <div class="comparison-links" role="group" aria-label="Compare hue shapes"><button type="button" data-preset="5Y">Explore yellow</button><button type="button" data-preset="5PB">Explore blue-violet</button></div>
+        <p class="live-status" id="status" role="status">Loading reference colors…</p>
+      </aside>
+    </section>
+    <section class="reading" aria-labelledby="reading-title">
+      <h2 id="reading-title">A wheel becomes a solid</h2>
+      <div class="dimensions">
+        <div><h3>Hue goes around</h3><p>Red, yellow, green, blue, and purple wrap around the central gray axis. Each hue has its own vertical page.</p></div>
+        <div><h3>Value goes up</h3><p>Dark colors sit low; light colors sit high. Colors at the same height share a Munsell value, even when their hues differ.</p></div>
+        <div><h3>Chroma goes out</h3><p>Gray is at the center. Color strength increases with distance from it. Every hue uses the same chroma scale, so the outer edge is uneven.</p></div>
+      </div>
+      <details><summary>What this model represents</summary><div class="method">
+        <p>The points use the 956 renotation coordinates for colors in the <strong>1929 Munsell Book of Color</strong>, published by the Rochester Institute of Technology. They are reference coordinates, not new measurements of those physical chips. Connecting outlines trace the extent of this sample set, not a universal limit on visible colors or modern pigments.</p>
+        <p>The published samples occupy values 2–8. The gray axis extends conceptually from 0 (black) to 10 (white). Hue is angular position, chroma is radial distance, and value is height; the relative vertical and horizontal drawing scales are chosen for legibility. Empty positions mean no sample in this dataset, not that a color is impossible.</p>
+        <p>Display colors are converted from the source CIE xyY coordinates, with the historical Y scale corrected by 0.975 and Bradford adaptation from illuminant C to D65, then encoded as sRGB. Some samples exceed sRGB and are clipped for display; their <strong>positions remain unchanged</strong>. Sample colors have no simulated lighting or shading. Your screen and surroundings still affect their appearance.</p>
+        <p>This is a map of color appearances, not a paint-mixing simulator. A map of your palette would require measured swatches and mixtures under specified lighting.</p>
+        <ul><li><a href="https://www.rit.edu/science/munsell-color-science-lab-educational-resources#munsell-renotation-data">RIT: Munsell renotation data and its limitations</a></li><li><a href="https://www.huevaluechroma.com/011.php">David Briggs: the dimensions of colour</a></li><li><a href="./munsell.json">Download the plotted reference data</a></li></ul>
+      </div></details>
+    </section>
+    <noscript><p class="reading">Enable JavaScript to explore the solid. The explanation and source links remain available below.</p></noscript>
+  </main>
+</body>
+</html>
