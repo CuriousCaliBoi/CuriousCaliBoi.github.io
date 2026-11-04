@@ -10,7 +10,7 @@ and model or hardware branding outside relevant technical details. Descriptions
 should be short, factual, and useful. Do not invent personal opinions or narration
 for the author. Preserve source attribution and instructions needed to use a page.
 
-The homepage lists writing by date. Art, Models, and Experiments have their own
+The homepage lists writing by date. Photos, Models, and Experiments have their own
 indexes. The bird collection opens directly to the Pokédex.
 
 ## Local preview
@@ -54,17 +54,13 @@ The warm paper palette, serif reading experience, quiet navigation, and margin c
 
 [Newsreader](https://github.com/google/fonts/tree/main/ofl/newsreader) and [Inter](https://github.com/google/fonts/tree/main/ofl/inter) are served locally from `assets/fonts/`. The Latin WOFF2 files come from the Google Fonts CSS API. Their SIL Open Font License texts are included alongside the fonts. The monospace metadata uses system fonts.
 
-## Art and photographs
+## Photos
 
 `/art/` combines a photo gallery, a keyboard-accessible lightbox, and a color sampler. The sampler reads actual pixels from the locally hosted photographs; it does not send anything to a server. Photos and attribution are defined in `_data/art.yml`, with files under `images/art/`. Add entries there to extend the gallery.
 
-The initial photographs are Wikimedia Commons 1280-pixel thumbnails, otherwise unchanged. The photograph licenses apply to the photographs, independently of the site's code:
+The gallery contains 39 photos from the website album. Responsive WebP images and larger JPEGs are hosted locally, with original proportions preserved and embedded metadata removed. The gallery and viewer use no generated captions.
 
-- Mikhail Kalugin, [Sunset At Coyote Hills](https://commons.wikimedia.org/wiki/File:Sunset_At_Coyote_Hills_(55533170).jpeg), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
-- Deodandem, [Coyote Hills Salt](https://commons.wikimedia.org/wiki/File:Coyote_Hills_Salt.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-- Sarah Sammis, [Coyote Hills 20140310](https://commons.wikimedia.org/wiki/File:Coyote_Hills_20140310_(20777120886).jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
-
-The painting practice studio at `/perspective/` is a standalone app in `perspective/`, linked from Art. Its markup, styles, and simulation are in `index.html`, `studio.css`, and `studio.js`. Choose **Move light** or **Move vanishing point**, then click or tap the scene to place it. Both handles also support dragging and arrow keys (Shift moves faster). Light depth and fill light sit above the scene; cube color, grayscale, and perspective guides sit below it. Settings are saved in the current browser. Lighting uses flat diffuse face values without cast shadows.
+The painting practice studio at `/perspective/` is a standalone app in `perspective/`, linked from Photos. Its markup, styles, and simulation are in `index.html`, `studio.css`, and `studio.js`. Choose **Move light** or **Move vanishing point**, then click or tap the scene to place it. Both handles also support dragging and arrow keys (Shift moves faster). Light depth and fill light sit above the scene; cube color, grayscale, and perspective guides sit below it. Settings are saved in the current browser. Lighting uses flat diffuse face values without cast shadows.
 
 ## Interactive posts
 

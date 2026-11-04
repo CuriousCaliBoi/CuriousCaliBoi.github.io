@@ -108,9 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
       image.alt = option.dataset.alt;
       image.src = option.value;
       study.querySelector('[data-color-credit]').textContent = option.dataset.credit;
-      study.querySelector('[data-color-source]').href = option.dataset.source;
-      study.querySelector('[data-color-license]').href = option.dataset.license;
-      study.querySelector('[data-color-license]').textContent = option.dataset.licenseName;
       hint.textContent = 'Loading photograph…';
     });
     surface.addEventListener('click', event => {

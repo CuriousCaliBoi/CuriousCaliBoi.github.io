@@ -1,19 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
   const photos = Array.from(document.querySelectorAll('[data-photo-viewer]'));
   const dialog = document.querySelector('[data-photo-dialog]');
-  if (!dialog) return;
+  if (!dialog || !photos.length) return;
   const full = dialog.querySelector('[data-photo-full]');
-  const caption = dialog.querySelector('[data-photo-caption]');
+  const stage = dialog.querySelector('[data-photo-stage]');
+  const status = dialog.querySelector('[data-photo-status]');
   let index = 0;
   let opener;
+  let touchStart;
   const show = next => {
     index = (next + photos.length) % photos.length;
     const photo = photos[index];
+    const thumbnail = photo.querySelector('img');
+    status.textContent = 'Loading photograph…';
     full.src = photo.href;
-    full.alt = photo.querySelector('img').alt;
-    caption.replaceChildren(...Array.from(photo.closest('figure').querySelector('figcaption').childNodes).map(node => node.cloneNode(true)));
+    full.alt = thumbnail.alt;
     dialog.querySelector('[data-photo-count]').textContent = `${index + 1} / ${photos.length}`;
   };
+  full.addEventListener('load', () => { status.textContent = ''; });
+  full.addEventListener('error', () => { status.textContent = 'This photograph could not load. Try the next one or reopen it.'; });
   photos.forEach((photo, i) => photo.addEventListener('click', event => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
@@ -31,13 +36,20 @@ document.addEventListener('DOMContentLoaded', () => {
       show(index + (event.key === 'ArrowLeft' ? -1 : 1));
     }
   });
-  dialog.addEventListener('click', event => {
-    if (event.target !== dialog) return;
-    const bounds = dialog.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
-  });
+  stage.addEventListener('touchstart', event => {
+    touchStart = event.touches.length === 1 ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
+  }, { passive: true });
+  stage.addEventListener('touchend', event => {
+    if (!touchStart) return;
+    const dx = event.changedTouches[0].clientX - touchStart.x;
+    const dy = event.changedTouches[0].clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) show(index + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+  stage.addEventListener('touchcancel', () => { touchStart = null; }, { passive: true });
   dialog.addEventListener('close', () => {
+    touchStart = null;
     document.body.classList.remove('photo-viewer-open');
-    opener?.focus();
+    opener?.focus({ preventScroll: true });
   });
 });

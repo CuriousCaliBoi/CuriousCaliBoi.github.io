@@ -1,46 +1,55 @@
-.art-page { max-width: 1120px; padding: 0 36px 70px; margin: auto; }
-.art-header { padding: 40px 0 28px; border-bottom: 1px solid var(--rule); }
-.art-header h1 { margin: 0; font-size: 46px; letter-spacing: -.035em; }
+.art-page { max-width: 1200px; padding: 0 36px 70px; margin: auto; }
+.art-header { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 55px 0 32px; border-bottom: 1px solid var(--rule); }
+.art-header h1 { margin: 0; font-size: 72px; letter-spacing: -.045em; }
 .art-collection, .art-study { padding-top: 30px; }
 .art-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 40px; margin-bottom: 28px; }
 .art-section-heading h2 { margin-top: 0; font-size: 32px; letter-spacing: -.02em; }
 .art-section-heading > p { max-width: 360px; color: var(--muted); font: 18px/1.5 var(--serif); }
-.art-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 24px; }
+.art-collection-heading { align-items: center; margin-bottom: 24px; }
+.art-collection-heading > p { font: 11px/1.6 var(--sans); }
+.art-collection-heading > p span { margin: 0 9px; color: var(--rule); }
+.art-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 58px 32px; align-items: center; }
 .art-photo { min-width: 0; }
 .art-photo-wide { grid-column: 1 / -1; }
-.art-photo img { display: block; width: 100%; height: auto; }
+.art-photo img { display: block; width: 100%; height: auto; background: var(--paper-deep); }
 .art-photo > a { display: block; cursor: zoom-in; }
-.art-photo figcaption { margin-top: 14px; }
-.photo-title { display: block; margin-bottom: 6px; font: 23px/1.2 var(--serif); }
+.art-photo > a:focus-visible { outline-offset: 7px; }
 .photo-credit { display: block; color: var(--muted); font: 10px/1.7 var(--sans); }
 .photo-credit a { text-decoration: underline; text-underline-offset: 3px; }
-.art-study { margin-top: 42px; border-top: 1px solid var(--rule); }
+.art-study { margin-top: 52px; border-top: 1px solid var(--rule); }
 .art-observatory { margin-top: 50px; padding-top: 32px; border-top: 1px solid var(--rule); }
 .art-observatory h2 { margin: 12px 0; font-size: 30px; }
-.photo-dialog { border: 1px solid var(--rule); padding: 20px; background: var(--paper); color: var(--ink); width: min(1120px, 94vw); max-height: 94vh; overflow-y: auto; }
-.photo-dialog::backdrop { background: rgba(24, 22, 18, .86); }
-.photo-dialog-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
-.photo-dialog button { border: 1px solid var(--rule); background: transparent; padding: 8px 12px; font: 11px var(--sans); color: var(--ink); cursor: pointer; }
-.photo-dialog button:hover { background: var(--paper-deep); }
-.photo-dialog [data-photo-count] { color: var(--muted); font: 11px var(--mono); }
-.photo-dialog [data-photo-close] { margin-left: auto; }
-.photo-dialog img { display: block; width: 100%; max-height: 68vh; object-fit: contain; }
-.photo-dialog figcaption { padding-top: 16px; }
+.photo-dialog { position: fixed; inset: 0; margin: 0; border: 0; padding: max(16px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); background: #111210; color: #f6f3ec; width: 100%; max-width: none; height: 100%; height: 100dvh; max-height: none; overflow: auto; color-scheme: dark; }
+.photo-dialog[open] { display: flex; flex-direction: column; gap: 12px; }
+.photo-dialog::backdrop { background: #111210; }
+.photo-dialog-toolbar, .photo-dialog-navigation { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0; }
+.photo-dialog-toolbar { padding-left: 12px; }
+.photo-dialog button { min-width: 44px; min-height: 44px; border: 1px solid #464741; border-radius: 2px; background: transparent; padding: 10px 16px; font: 12px/1.5 var(--sans); color: inherit; cursor: pointer; }
+.photo-dialog button:hover { background: #292a26; }
+.photo-dialog button:focus-visible { outline: 2px solid #f6f3ec; outline-offset: 3px; }
+.photo-dialog [data-photo-count] { color: #b7b8af; font: 11px var(--mono); }
+.photo-dialog-figure { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; }
+.photo-dialog-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; touch-action: pan-y pinch-zoom; }
+.photo-dialog img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.photo-dialog-hint { color: #b7b8af; font: 10px/1.5 var(--sans); }
+.photo-dialog-status { margin: 0; color: #b7b8af; text-align: center; font: 11px/1.5 var(--sans); }
+.photo-dialog-status:empty { display: none; }
 .photo-viewer-open { overflow: hidden; }
 @media (max-width: 760px) {
-  .art-page { padding: 0 24px 45px; }
-  .art-header { padding: 40px 0 30px; }
-  .art-header h1 { font-size: 42px; }
+  .art-page { padding: 0 20px 45px; }
+  .art-header { display: block; padding: 36px 0 26px; }
+  .art-header h1 { font-size: clamp(36px, 9vw, 58px); }
   .art-section-heading { display: block; }
-  .art-section-heading h2 { font-size: 31px; }
-  .art-section-heading > p { max-width: none; margin-top: 15px; }
-  .art-grid { gap: 30px 18px; }
+  .art-section-heading h2 { font-size: 29px; }
+  .art-section-heading > p { max-width: none; margin-top: 12px; }
+  .art-collection-heading { display: flex; gap: 12px; }
+  .art-collection-heading > p { margin: 0; font-size: 10px; text-align: right; }
+  .art-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+  .photo-dialog { padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+  .photo-dialog-hint { max-width: 82px; text-align: center; }
 }
-@media (max-width: 480px) {
-  .art-page { padding-left: 20px; padding-right: 20px; }
-  .art-grid { display: block; }
-  .art-photo + .art-photo { margin-top: 28px; }
-  .photo-dialog { padding: 14px; }
-  .photo-dialog-toolbar { gap: 7px; flex-wrap: wrap; }
-  .photo-dialog button { padding: 8px; font-size: 10px; }
+@media (max-height: 480px) and (orientation: landscape) {
+  .photo-dialog[open] { gap: 6px; }
+  .photo-dialog { padding-top: 8px; padding-bottom: 8px; }
+  .photo-dialog-figure { gap: 6px; }
 }

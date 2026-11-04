@@ -1,20 +1,24 @@
 ---
 layout: default
-title: Art
+title: Photos
 permalink: /art/
 art_gallery: true
 interactive: true
-description: Coyote Hills photographs and color studies.
 ---
 <div class="art-page">
-  <header class="art-header"><h1>Art</h1></header>
-  <section class="art-collection" aria-labelledby="coyote-hills-title">
-    <div class="art-section-heading"><h2 id="coyote-hills-title">Coyote Hills</h2><p>Fremont, California</p></div>
+  <header class="art-header">
+    <h1 id="photos-title">Photos</h1>
+  </header>
+  <section class="art-collection" aria-labelledby="photos-title">
+    <div class="art-section-heading art-collection-heading">
+      <p>{{ site.data.art.size }} photos <span aria-hidden="true">/</span> Tap to explore</p>
+    </div>
     <div class="art-grid">
       {% for photo in site.data.art %}
-      <figure class="art-photo{% if photo.id == 'bay' %} art-photo-wide{% endif %}">
-        <a href="{{ photo.file | relative_url }}" data-photo-viewer aria-label="Enlarge {{ photo.title | escape }}"><img src="{{ photo.file | relative_url }}" alt="{{ photo.alt | escape }}" width="{{ photo.width }}" height="{{ photo.height }}"{% unless forloop.first %} loading="lazy"{% endunless %} decoding="async"></a>
-        <figcaption><span class="photo-title">{{ photo.title }}</span>{% include photo-credit.html photo=photo %}</figcaption>
+      <figure class="art-photo{% if photo.wide %} art-photo-wide{% endif %}">
+        <a href="{{ photo.file | relative_url }}" data-photo-viewer aria-label="Enlarge photograph {{ forloop.index }}">
+          <img src="{{ photo.thumbnail | relative_url }}" srcset="{{ photo.small | relative_url }} 640w, {{ photo.thumbnail | relative_url }} 1280w" sizes="{% if photo.wide %}(max-width: 760px) calc(100vw - 40px), (max-width: 1200px) calc(100vw - 72px), 1128px{% else %}(max-width: 760px) calc(100vw - 40px), (max-width: 1200px) calc((100vw - 104px) / 2), 548px{% endif %}" alt="Photograph {{ forloop.index }}" width="{{ photo.width }}" height="{{ photo.height }}"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async">
+        </a>
       </figure>
       {% endfor %}
     </div>
@@ -33,6 +37,17 @@ description: Coyote Hills photographs and color studies.
   <section class="art-observatory"><h2><a href="{{ '/2025/01/01/infinite-observatory.html' | relative_url }}">The Infinite Observatory</a></h2></section>
 </div>
 <dialog class="photo-dialog" data-photo-dialog aria-label="Photograph viewer">
-  <div class="photo-dialog-toolbar"><button type="button" data-photo-prev aria-label="Previous photograph">← Previous</button><span data-photo-count aria-live="polite"></span><button type="button" data-photo-next aria-label="Next photograph">Next →</button><button type="button" data-photo-close>Close ×</button></div>
-  <figure><img data-photo-full alt=""><figcaption data-photo-caption></figcaption></figure>
+  <div class="photo-dialog-toolbar">
+    <span data-photo-count aria-live="polite" aria-atomic="true"></span>
+    <button type="button" data-photo-close aria-label="Close photograph viewer" autofocus>Close <span aria-hidden="true">×</span></button>
+  </div>
+  <figure class="photo-dialog-figure">
+    <div class="photo-dialog-stage" data-photo-stage><img data-photo-full alt="" draggable="false"></div>
+  </figure>
+  <div class="photo-dialog-navigation">
+    <button type="button" data-photo-prev aria-label="Previous photograph"><span aria-hidden="true">←</span> Previous</button>
+    <p class="photo-dialog-hint">Swipe or use arrow keys</p>
+    <button type="button" data-photo-next aria-label="Next photograph">Next <span aria-hidden="true">→</span></button>
+  </div>
+  <p class="photo-dialog-status" data-photo-status role="status"></p>
 </dialog>
