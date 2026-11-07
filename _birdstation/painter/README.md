@@ -26,6 +26,11 @@ Spark took about 20 seconds per image, with 3.46 GiB peak PyTorch GPU allocation
 Prompts and seeds were revised for the weaker results; the illustrations still
 have species-level inaccuracies and are not substitutes for identification photos.
 
+Coverage was checked against the station archive on November 6, 2026: all 56
+species, including tentative matches, have portraits. That backfill added 17
+portraits with collection numbers 40 through 56. New detections do not trigger
+generation; future species still need a reviewed batch.
+
 The installed runtime has `checkpoints/minit2i-l-16/transformer/`,
 `checkpoints/minit2i-l-16/scheduler/`, and `text-encoder/`. Weights and environments
 are not stored in Git. On GB10, the runner initializes CUDA before model loading
