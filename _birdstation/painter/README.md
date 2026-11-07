@@ -21,7 +21,7 @@ Runtime: `/home/nimitz/projects/bird-painter` on SSH host `nimitz`.
   text encoder. Model weights are safetensors and were SHA-256 verified at setup.
 - This is checkpoint inference. No bird-specific training has been performed.
 
-The published collection contains 39 selected portraits. Generation on this
+The published collection contains 56 selected portraits. Generation on this
 Spark took about 20 seconds per image, with 3.46 GiB peak PyTorch GPU allocation.
 Prompts and seeds were revised for the weaker results; the illustrations still
 have species-level inaccuracies and are not substitutes for identification photos.

@@ -271,5 +271,124 @@ window.gardenPortraits = Object.freeze({
     "guide": "https://www.allaboutbirds.org/guide/White-breasted_Nuthatch/id",
     "number": 39,
     "file": "portraits/sitta-carolinensis.webp"
+  },
+  "Astur cooperii": {
+    "file": "portraits/astur-cooperii.webp",
+    "number": 40,
+    "description": "A dark cap, blue-gray back, rust-colored barring below, and a long banded tail.",
+    "plumage": "Adult",
+    "guide": "https://www.allaboutbirds.org/guide/Coopers_Hawk/id"
+  },
+  "Anser caerulescens": {
+    "file": "portraits/anser-caerulescens.webp",
+    "number": 41,
+    "description": "White plumage with black flight feathers, pink feet, and a pink bill with a dark grin patch.",
+    "plumage": "Adult, white morph",
+    "guide": "https://www.allaboutbirds.org/guide/Snow_Goose/id"
+  },
+  "Sitta pygmaea": {
+    "file": "portraits/sitta-pygmaea.webp",
+    "number": 42,
+    "description": "A tiny nuthatch with a brown cap, gray back, and a creamy underside.",
+    "plumage": "Adult",
+    "guide": "https://www.allaboutbirds.org/guide/Pygmy_Nuthatch/id"
+  },
+  "Gavia immer": {
+    "file": "portraits/gavia-immer.webp",
+    "number": 43,
+    "description": "A black head, checkered black-and-white back, red eye, and narrow striped neck bands.",
+    "plumage": "Adult, breeding plumage",
+    "guide": "https://www.allaboutbirds.org/guide/Common_Loon/id"
+  },
+  "Larus argentatus": {
+    "file": "portraits/larus-argentatus.webp",
+    "number": 44,
+    "description": "A large gull with a pale gray back, pink legs, and a yellow bill marked with red.",
+    "plumage": "Adult, breeding plumage",
+    "guide": "https://ebird.org/species/euhgul1"
+  },
+  "Piranga ludoviciana": {
+    "file": "portraits/piranga-ludoviciana.webp",
+    "number": 45,
+    "description": "A red-orange head and yellow body contrast with black wings carrying pale wingbars.",
+    "plumage": "Adult male, breeding plumage",
+    "guide": "https://www.allaboutbirds.org/guide/Western_Tanager/id"
+  },
+  "Lanius borealis": {
+    "file": "portraits/lanius-borealis.webp",
+    "number": 46,
+    "description": "A gray songbird with a dark eye mask, hooked bill, white wing patch, and long black tail.",
+    "plumage": "Adult",
+    "guide": "https://www.allaboutbirds.org/guide/Northern_Shrike/id"
+  },
+  "Tringa melanoleuca": {
+    "file": "portraits/tringa-melanoleuca.webp",
+    "number": 47,
+    "description": "A long, slightly upturned bill and bright yellow legs distinguish this tall shorebird.",
+    "plumage": "Adult, nonbreeding plumage",
+    "guide": "https://www.allaboutbirds.org/guide/Greater_Yellowlegs/id"
+  },
+  "Leuconotopicus villosus": {
+    "file": "portraits/leuconotopicus-villosus.webp",
+    "number": 48,
+    "description": "A straight, substantial bill, white back stripe, and bold black-and-white face.",
+    "plumage": "Adult female",
+    "guide": "https://www.allaboutbirds.org/guide/Hairy_Woodpecker/id"
+  },
+  "Zonotrichia leucophrys": {
+    "file": "portraits/zonotrichia-leucophrys.webp",
+    "number": 49,
+    "description": "Bold black-and-white crown stripes sit above a plain gray face and small pale bill.",
+    "plumage": "Adult",
+    "guide": "https://www.allaboutbirds.org/guide/White-crowned_Sparrow/id"
+  },
+  "Anas crecca": {
+    "file": "portraits/anas-crecca.webp",
+    "number": 50,
+    "description": "A small duck with mottled brown plumage, a dark eye stripe, and a short dark bill.",
+    "plumage": "Adult female",
+    "guide": "https://www.allaboutbirds.org/guide/Green-winged_Teal/id"
+  },
+  "Falco sparverius": {
+    "file": "portraits/falco-sparverius.webp",
+    "number": 51,
+    "description": "A small falcon with blue-gray wings, a rusty back and tail, and two dark face stripes.",
+    "plumage": "Adult male",
+    "guide": "https://www.allaboutbirds.org/guide/American_Kestrel/id"
+  },
+  "Streptopelia decaocto": {
+    "file": "portraits/streptopelia-decaocto.webp",
+    "number": 52,
+    "description": "A pale gray-beige dove with a dark half-collar, dark bill, and broad tail.",
+    "plumage": "Adult",
+    "guide": "https://www.allaboutbirds.org/guide/Eurasian_Collared-Dove/id"
+  },
+  "Anas platyrhynchos": {
+    "file": "portraits/anas-platyrhynchos.webp",
+    "number": 53,
+    "description": "A green head, white neck ring, chestnut breast, and curled black tail feathers.",
+    "plumage": "Adult male, breeding plumage",
+    "guide": "https://www.allaboutbirds.org/guide/Mallard/id"
+  },
+  "Haemorhous cassinii": {
+    "file": "portraits/haemorhous-cassinii.webp",
+    "number": 54,
+    "description": "A bright red peaked crown, rosy face and breast, and brown streaked wings and back.",
+    "plumage": "Adult male",
+    "guide": "https://www.allaboutbirds.org/guide/Cassins_Finch/id"
+  },
+  "Nycticorax nycticorax": {
+    "file": "portraits/nycticorax-nycticorax.webp",
+    "number": 55,
+    "description": "A stocky brown young heron with pale spots on the wings and streaks on its underside.",
+    "plumage": "Juvenile",
+    "guide": "https://www.allaboutbirds.org/guide/Black-crowned_Night_Heron/id"
+  },
+  "Anthus rubescens": {
+    "file": "portraits/anthus-rubescens.webp",
+    "number": 56,
+    "description": "A slender brown-gray bird with a fine bill, pale eyebrow, and streaks across its buff breast.",
+    "plumage": "Adult, nonbreeding plumage",
+    "guide": "https://www.allaboutbirds.org/guide/American_Pipit/id"
   }
 });
